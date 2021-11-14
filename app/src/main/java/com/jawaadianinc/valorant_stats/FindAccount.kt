@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Html
 import android.text.method.LinkMovementMethod
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +19,7 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 import java.net.URL
 
 
@@ -29,9 +31,6 @@ class FindAccount : AppCompatActivity() {
     private lateinit var imagebackground :ImageView
 
     val imagesURL = arrayOf("https://mfiles.alphacoders.com/918/918510.jpg",
-        "https://mfiles.alphacoders.com/929/929666.jpg",
-        "https://mfiles.alphacoders.com/878/878029.jpg",
-        "https://mfiles.alphacoders.com/929/929924.png",
         "https://mfiles.alphacoders.com/921/921074.jpg",
         "https://mfiles.alphacoders.com/908/908217.png",
         "https://mfiles.alphacoders.com/864/864178.png",
@@ -44,62 +43,114 @@ class FindAccount : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_findaccount)
 
-        val userNameEditText : EditText = findViewById(R.id.editTextValorantName)
-        val findaccountButton : Button = findViewById(R.id.generalStats)
-        val matchHistoryButton : Button = findViewById(R.id.matchHistory)
-        val agentsButton : Button = findViewById(R.id.agents)
-        val updatesButton : Button = findViewById(R.id.updateBT)
+        val userNameEditText: EditText = findViewById(R.id.editTextValorantName)
+        val findaccountButton: Button = findViewById(R.id.generalStats)
+        val matchHistoryButton: Button = findViewById(R.id.matchHistory)
+        val agentsButton: Button = findViewById(R.id.agents)
+        val updatesButton: Button = findViewById(R.id.updateBT)
+
+        val addname: Button = findViewById(R.id.addname)
+        val delete: Button = findViewById(R.id.delete)
+        val mySpinner = findViewById<View>(R.id.spinner) as Spinner
+
+        val strings = java.util.ArrayList<String>()
+        val file = File(this.filesDir, "texts")
+        if (!file.exists()) {
+            file.mkdir()
+        }
+        val gpxfile = File(file, "users")
+        if (!gpxfile.exists()) {
+            gpxfile.createNewFile()
+        }
+        gpxfile.forEachLine {
+            strings.add(it)
+        }
+
+        val arrayAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, strings)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        mySpinner.adapter = arrayAdapter
 
         imagebackground = findViewById(R.id.imagebackground)
         Picasso.get().load(imagesURL.random()).into(imagebackground)
-
         handler = Handler(Looper.getMainLooper())
-
         runnable = Runnable {
             doTask(handler)
         }
 
+        delete.setOnClickListener {
+            val file = File(this.filesDir, "texts")
+            if (file.exists()) {
+                val gpxfile = File(file, "users")
+                if (gpxfile.exists()) {
+                    gpxfile.delete()
+                    Toast.makeText(this, "Deleted!", Toast.LENGTH_SHORT).show()
+                    refresh()
+                } else {
+                    Toast.makeText(this, "Already Deleted", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        addname.setOnClickListener {
+            if (!isEmpty()) {
+                if (verify(userNameEditText.text.toString())) {
+                    val file = File(this.filesDir, "texts")
+                    if (!file.exists()) {
+                        file.mkdir()
+                    }
+                    try {
+                        val gpxfile = File(file, "users")
+                        if (!gpxfile.exists()) {
+                            gpxfile.createNewFile()
+                        }
+                        var pass = true
+                        gpxfile.forEachLine {
+                            if (it == userNameEditText.text.toString()) {
+                                AlertDialog.Builder(this).setTitle("Name is already in file!")
+                                    .setMessage("Please enter something else and try again!")
+                                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                                    .setIcon(android.R.drawable.ic_dialog_alert).show()
+                                pass = false
+                            }
+                        }
+
+                        if (pass) {
+                            if (gpxfile.readText() == "") {
+                                gpxfile.appendText(userNameEditText.text.toString())
+                            } else {
+                                gpxfile.appendText("\n" + userNameEditText.text.toString())
+                            }
+                            Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
+                            refresh()
+                        }
+                    } catch (e: java.lang.Exception) {
+                        Toast.makeText(this, "Error: $e", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+        }
+
+
         handler.postDelayed(runnable, 500)
 
-        matchHistoryButton.setOnClickListener{
-            if (!isEmpty()){
-                if (verify(userNameEditText.text.toString())){
-                    findMatches(userNameEditText.text.toString())
-                }
+        matchHistoryButton.setOnClickListener {
+            if (mySpinner.selectedItem != null) {
+                findMatches(mySpinner.selectedItem.toString())
             }
         }
 
-        findaccountButton.setOnClickListener{
-            if (!isEmpty()){
-                if (verify(userNameEditText.text.toString())){
-                    findAccount(userNameEditText.text.toString())
-                }
+        findaccountButton.setOnClickListener {
+            if (mySpinner.selectedItem != null) {
+                findAccount(mySpinner.selectedItem.toString())
             }
         }
 
-        agentsButton.setOnClickListener{
-            if (!isEmpty()){
-                if (verify(userNameEditText.text.toString())){
-                    val agentsIntent = Intent(this@FindAccount, AgentsActivity::class.java)
-                    var name = ""
-                    name = when (userNameEditText.text.toString()) {
-                        "1" -> {
-                            "SprinkledRainbow#1593"
-                        }
-                        "2" -> {
-                            "Slayzerzz#1169"
-                        }
-                        "3" -> {
-                            "AwesomeGamer#4100"
-                        }
-                        else -> {
-                            userNameEditText.text.toString()
-                        }
-                    }
-                    agentsIntent.putExtra("Name", name)
-                    startActivity(agentsIntent)
-                }
-            }
+        agentsButton.setOnClickListener {
+            val agentsIntent = Intent(this@FindAccount, AgentsActivity::class.java)
+            agentsIntent.putExtra("Name", mySpinner.selectedItem.toString())
+            startActivity(agentsIntent)
         }
         
         updatesButton.setOnClickListener{
@@ -109,28 +160,6 @@ class FindAccount : AppCompatActivity() {
         //COMPARE STUFF WOOP WOOP
         findViewById<Button>(R.id.compareButton).setOnClickListener{
             compareStats()
-//            if (!isEmpty()){
-//                if (verify(userNameEditText.text.toString())){
-//                    var name = ""
-//                    name = when (userNameEditText.text.toString()) {
-//                        "1" -> {
-//                            "SprinkledRainbow#1593"
-//                        }
-//                        "2" -> {
-//                            "Slayzerzz#1169"
-//                        }
-//                        "3" -> {
-//                            "AwesomeGamer#4100"
-//                        }
-//                        else -> {
-//                            userNameEditText.text.toString()
-//                        }
-//                    }
-//
-//
-//
-//                }
-//            }
         }
 
 
@@ -157,24 +186,8 @@ class FindAccount : AppCompatActivity() {
     }
 
     private fun verify(RiotName: String) : Boolean {
-        var name = ""
-
-        name = when (RiotName) {
-            "1" -> {
-                "SprinkledRainbow#1593"
-            }
-            "2" -> {
-                "Slayzerzz#1169"
-            }
-            "3" -> {
-                "AwesomeGamer#4100"
-            }
-            else -> {
-                RiotName
-            }
-        }
-
-        val check : Boolean = "#" in name
+        val name = RiotName
+        val check: Boolean = "#" in name
 
         if (check){
             try {
@@ -490,6 +503,12 @@ class FindAccount : AppCompatActivity() {
     }
 
 
+    fun refresh() {
+        finish()
+        val i = Intent(this, FindAccount::class.java)
+        startActivity(i)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
 
 
 }
