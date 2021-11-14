@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.jawaadianinc.valorant_stats">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+
     <application
+        tools:ignore="LockedOrientationActivity"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,18 +17,22 @@
         android:theme="@style/Theme.VALORANT_stats">
         <activity
             android:name=".CompareActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ValorantUpdatesActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_valorant_updates"
             android:theme="@style/Theme.VALORANT_stats.NoActionBar" />
         <activity
             android:name=".AgentsActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
 
         <receiver
             android:name=".PlayerDetailsWidget"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -38,17 +45,18 @@
 
         <activity
             android:name=".MatchHistoryActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
-        <activity
-            android:name=".MenuPicker"
-            android:exported="true" />
+
         <activity
             android:name=".StatsActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:label="@string/title_activity_stats"
             android:theme="@style/Theme.VALORANT_stats.NoActionBar" />
         <activity
             android:name=".SplashActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -59,6 +67,7 @@
         </activity>
         <activity
             android:name=".FindAccount"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats" />
     </application>
 

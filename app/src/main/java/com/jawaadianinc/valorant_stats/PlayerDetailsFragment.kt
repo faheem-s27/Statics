@@ -34,9 +34,7 @@ class PlayerDetailsFragment : Fragment() {
         val Name = requireActivity().intent.extras!!.getString("RiotName")
         val ID = requireActivity().intent.extras!!.getString("RiotID")
         val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
-
-        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID"
-
+        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
         doAsync {
             try {
                 val matchhistoryURL = URL(allmatches).readText()
@@ -109,10 +107,11 @@ class PlayerDetailsFragment : Fragment() {
                 for (i in 0 until redplayers.length()){
                     val player = redplayers[i] as JSONObject
                     val name = player.getString("name")
+                    val agent = player.getString("character")
                     val score = player.getJSONObject("stats").getString("score")
                     redplayerCodes += (player.getString("player_title"))
                     uiThread {
-                        mAdapter.add("Name: $name, Score: $score")
+                        mAdapter.add("$name - $agent")
                     }
                 }
 
@@ -135,10 +134,11 @@ class PlayerDetailsFragment : Fragment() {
                 for (i in 0 until blueplayers.length()){
                     val player = blueplayers[i] as JSONObject
                     val name = player.getString("name")
+                    val agent = player.getString("character")
                     val score = player.getJSONObject("stats").getString("score")
                     blueplayerCodes += (player.getString("player_title"))
                     uiThread {
-                        blueAdapter.add("Name: $name, Score: $score")
+                        blueAdapter.add("$name - $agent")
                     }
                 }
 

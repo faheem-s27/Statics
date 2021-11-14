@@ -32,7 +32,7 @@ class RoundsDetailsFragment : Fragment() {
         val ID = requireActivity().intent.extras!!.getString("RiotID")
         val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
 
-        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID"
+        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
         doAsync {
             try {

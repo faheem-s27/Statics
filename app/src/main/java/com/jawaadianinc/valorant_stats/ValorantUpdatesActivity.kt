@@ -48,7 +48,7 @@ class ValorantUpdatesActivity : AppCompatActivity() {
 
         val arrayList = ArrayList<String>()
         val listview : ListView = findViewById(R.id.updateListView)
-        listview.isNestedScrollingEnabled = true;
+        listview.isNestedScrollingEnabled = true
         val mAdapter = object :
             ArrayAdapter<String?>(
                 applicationContext!!, android.R.layout.simple_list_item_1,
@@ -106,7 +106,6 @@ class ValorantUpdatesActivity : AppCompatActivity() {
                         dismissButton.setOnClickListener {
                             popupWindow.dismiss()
                         }
-
                         val data = data[position] as JSONObject
                         val URL = data.getString("url")
                         val webpage = popupView.findViewById(R.id.updatePage) as WebView

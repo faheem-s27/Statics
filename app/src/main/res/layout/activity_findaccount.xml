@@ -7,165 +7,174 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/nestedScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".FindAccount">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/ic_launcher_background"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="Find Username" />
+
+        <ImageView
+            android:id="@+id/imagebackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+        <EditText
+            android:id="@+id/editTextValorantName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="64dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="64dp"
+            android:backgroundTint="@color/purple_500"
+            android:ems="10"
+            android:fitsSystemWindows="true"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:hapticFeedbackEnabled="true"
+            android:hint="Enter a Riot Name with #"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
+            android:id="@+id/scrollView2"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:context=".FindAccount">
+            app:layout_constraintTop_toBottomOf="@+id/editTextValorantName">
 
-            <ImageView
-                android:id="@+id/imagebackground"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/linearLayout3"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@color/ic_launcher_background"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="?attr/actionBarTheme"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:title="Find Username" />
+                <Button
+                    android:id="@+id/updateBT"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Valorant Updates"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="150dp"
+                    app:icon="@drawable/update"
+                    app:iconSize="25dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/agents2"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="@+id/agents2"
+                    app:layout_constraintTop_toBottomOf="@+id/agents2"
+                    app:strokeColor="#FFFFFF" />
 
-            <EditText
-                android:id="@+id/editTextValorantName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="64dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="64dp"
-                android:backgroundTint="@color/purple_500"
-                android:ems="10"
-                android:fitsSystemWindows="true"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:hapticFeedbackEnabled="true"
-                android:hint="Enter a Riot Name with #"
-                android:inputType="textPersonName"
-                android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+                <Button
+                    android:id="@+id/matchHistory"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Match History"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/matchhistory"
+                    app:iconSize="30dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/generalStats"
+                    app:layout_constraintStart_toStartOf="@+id/generalStats"
+                    app:layout_constraintTop_toBottomOf="@+id/generalStats" />
 
-            <Button
-                android:id="@+id/generalStats"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="General Stats"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="20dp"
-                app:icon="@drawable/searchicon"
-                app:iconSize="30dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextValorantName" />
+                <Button
+                    android:id="@+id/compareButton"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Compare Stats"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="150dp"
+                    app:icon="@drawable/compare"
+                    app:iconSize="25dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/generalStats"
+                    app:layout_constraintStart_toStartOf="@+id/matchHistory"
+                    app:layout_constraintTop_toBottomOf="@+id/matchHistory"
+                    app:strokeColor="#FFFFFF" />
 
-            <Button
-                android:id="@+id/matchHistory"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Match History"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="20dp"
-                app:icon="@drawable/matchhistory"
-                app:iconSize="30dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.502"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/compareButton" />
+                <Button
+                    android:id="@+id/generalStats"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="General Stats"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/searchicon"
+                    app:iconSize="30dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/agents"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Top Agents"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="20dp"
-                app:icon="@drawable/agentesicon"
-                app:iconSize="30dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/matchHistory" />
+                <Button
+                    android:id="@+id/agents"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Top Agents"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/agentesicon"
+                    app:iconSize="30dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/compareButton"
+                    app:layout_constraintHorizontal_bias="0.497"
+                    app:layout_constraintStart_toStartOf="@+id/compareButton"
+                    app:layout_constraintTop_toBottomOf="@+id/compareButton" />
 
-            <Button
-                android:id="@+id/agents2"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Top Guns"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="20dp"
-                app:icon="@drawable/fahemememgaygun"
-                app:iconSize="30dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/agents" />
-
-
-            <Button
-                android:id="@+id/updateBT"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="Valorant Updates"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="150dp"
-                app:icon="@drawable/update"
-                app:iconSize="25dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/agents2"
-                app:strokeColor="#FFFFFF" />
-
-            <Button
-                android:id="@+id/compareButton"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="Compare Stats"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="150dp"
-                app:icon="@drawable/compare"
-                app:iconSize="25dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/generalStats"
-                app:strokeColor="#FFFFFF" />
-
+                <Button
+                    android:id="@+id/agents2"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Top Guns"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/fahemememgaygun"
+                    app:iconSize="30dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/agents"
+                    app:layout_constraintStart_toStartOf="@+id/agents"
+                    app:layout_constraintTop_toBottomOf="@+id/agents" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

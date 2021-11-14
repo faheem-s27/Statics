@@ -108,29 +108,29 @@ class FindAccount : AppCompatActivity() {
 
         //COMPARE STUFF WOOP WOOP
         findViewById<Button>(R.id.compareButton).setOnClickListener{
-            if (!isEmpty()){
-                if (verify(userNameEditText.text.toString())){
-                    var name = ""
-                    name = when (userNameEditText.text.toString()) {
-                        "1" -> {
-                            "SprinkledRainbow#1593"
-                        }
-                        "2" -> {
-                            "Slayzerzz#1169"
-                        }
-                        "3" -> {
-                            "AwesomeGamer#4100"
-                        }
-                        else -> {
-                            userNameEditText.text.toString()
-                        }
-                    }
-
-                    compareStats(name)
-
-                }
-            }
-        //
+            compareStats()
+//            if (!isEmpty()){
+//                if (verify(userNameEditText.text.toString())){
+//                    var name = ""
+//                    name = when (userNameEditText.text.toString()) {
+//                        "1" -> {
+//                            "SprinkledRainbow#1593"
+//                        }
+//                        "2" -> {
+//                            "Slayzerzz#1169"
+//                        }
+//                        "3" -> {
+//                            "AwesomeGamer#4100"
+//                        }
+//                        else -> {
+//                            userNameEditText.text.toString()
+//                        }
+//                    }
+//
+//
+//
+//                }
+//            }
         }
 
 
@@ -330,7 +330,6 @@ class FindAccount : AppCompatActivity() {
         val progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Fetching Matches")
         progressDialog.setMessage("Please wait a moment")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER) // There are 3 styles, You'll figure it out :)
         progressDialog.setCancelable(false)
         var name = ""
 
@@ -350,14 +349,13 @@ class FindAccount : AppCompatActivity() {
         }
 
         val nameSplit = name.split("#")
-
         val Name = nameSplit[0]
         val ID = nameSplit[1]
-
         if (isNetworkAvailable()) {
             progressDialog.show()
             val doesUserExist = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID"
-            val matchHistoryURL = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID"
+            val matchHistoryURL =
+                "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
             doAsync {
                 try{
@@ -365,8 +363,6 @@ class FindAccount : AppCompatActivity() {
                     val timetoFindOut = JSONObject(existUserText)
                     val datatoseeiftheyexist = timetoFindOut["data"] as JSONObject
                     datatoseeiftheyexist["name"].toString()
-
-
                     //find Matches
                     try{
                         val matchhistoryURL = URL(matchHistoryURL).readText()
@@ -385,14 +381,19 @@ class FindAccount : AppCompatActivity() {
 
                             uiThread {
                                 val builder = AlertDialog.Builder(this@FindAccount)
-                                builder.setTitle("Here are the last 5 matches!")
+                                builder.setTitle("Here are the last 10 matches!")
                                 builder.setItems(
                                     arrayOf<CharSequence>(
                                         matches[0],
                                         matches[1],
                                         matches[2],
                                         matches[3],
-                                        matches[4]
+                                        matches[4],
+                                        matches[5],
+                                        matches[6],
+                                        matches[7],
+                                        matches[8],
+                                        matches[9]
                                     )
                                 ) { _, which ->
                                     when (which) {
@@ -401,6 +402,11 @@ class FindAccount : AppCompatActivity() {
                                         2 -> matchActivityStart(Name, ID, 2)
                                         3 -> matchActivityStart(Name, ID, 3)
                                         4 -> matchActivityStart(Name, ID, 4)
+                                        5 -> matchActivityStart(Name, ID, 5)
+                                        6 -> matchActivityStart(Name, ID, 6)
+                                        7 -> matchActivityStart(Name, ID, 7)
+                                        8 -> matchActivityStart(Name, ID, 8)
+                                        9 -> matchActivityStart(Name, ID, 9)
                                     }
                                 }
                                 progressDialog.dismiss()
@@ -479,19 +485,8 @@ class FindAccount : AppCompatActivity() {
 
     }
 
-    private fun compareStats(RiotName: String){
-
-        val nameSplit = RiotName.split("#")
-
-        val Name = nameSplit[0]
-        val ID = nameSplit[1]
-
-
-        //val intent = Intent(this, CompareActivity::class.java)
-
+    private fun compareStats() {
         startActivity(Intent(this, CompareActivity::class.java))
-
-
     }
 
 

@@ -44,7 +44,7 @@ class MatchDetailsFragment : Fragment() {
         val ID = requireActivity().intent.extras!!.getString("RiotID")
         val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
 
-        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID"
+        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
         doAsync {
             try{
@@ -100,13 +100,15 @@ class MatchDetailsFragment : Fragment() {
                     val roundsPlayed = metadata.getString("rounds_played")
                     val mode = metadata.getString("mode")
                     val timePlayed = metadata.getInt("game_length")
-                    val inMinutes = timePlayed/60000
+                    val server = metadata.getString("cluster")
+                    val inMinutes = timePlayed / 60000
 
                     val teams = matchData.getJSONObject("teams")
                     val didredWin = teams.getJSONObject("red").getBoolean("has_won")
 
                     mAdapter.add("Map: $map")
                     mAdapter.add("Mode: $mode")
+                    mAdapter.add("Server: $server")
                     mAdapter.add("Started: $game_started")
                     mAdapter.add("Duration: $inMinutes minutes")
                     mAdapter.add("Rounds Played: $roundsPlayed")

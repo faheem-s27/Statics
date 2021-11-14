@@ -57,7 +57,6 @@ class MatchHistoryActivity : AppCompatActivity() {
         })
 
         val title : TextView = findViewById(R.id.title)
-        val Name: String? = intent.getStringExtra("RiotName")
         title.text = "Match Information"
 
 
