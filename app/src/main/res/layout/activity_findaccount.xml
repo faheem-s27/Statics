@@ -65,10 +65,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="8dp"
             android:text="Add name"
             android:textColor="#FFFFFF"
             app:cornerRadius="15dp"
+            app:icon="@drawable/add_button"
+            app:iconGravity="start"
+            app:iconSize="30dp"
+            app:iconTint="#FFFFFF"
             app:layout_constraintEnd_toStartOf="@+id/delete"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextValorantName" />
@@ -79,9 +83,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:text="Delete all names"
+            android:text="Delete names"
             android:textColor="#FFFFFF"
             app:cornerRadius="15dp"
+            app:icon="@drawable/deleteicon"
+            app:iconGravity="textEnd"
+            app:iconSize="30dp"
+            app:iconTint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextValorantName" />
 
@@ -104,7 +112,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:foregroundGravity="center"
-            android:pointerIcon="arrow"
+            android:pointerIcon="hand"
             android:spinnerMode="dropdown"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -224,7 +232,9 @@
                     app:layout_constraintEnd_toEndOf="@+id/agents"
                     app:layout_constraintStart_toStartOf="@+id/agents"
                     app:layout_constraintTop_toBottomOf="@+id/agents" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

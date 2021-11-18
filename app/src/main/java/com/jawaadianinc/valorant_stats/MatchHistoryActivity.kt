@@ -37,6 +37,14 @@ class MatchHistoryActivity : AppCompatActivity() {
                 tabLayout?.addTab(it)
             }
         }
+
+        tabLayout?.newTab()?.setText("Details")?.setIcon(R.drawable.moredetails).let {
+            if (it != null) {
+                tabLayout?.addTab(it)
+            }
+        }
+
+
         val adapter = tabLayout?.tabCount?.let { MatchHistoryAdapter(supportFragmentManager, it) }
         viewPager?.adapter = adapter
         viewPager?.offscreenPageLimit = 3

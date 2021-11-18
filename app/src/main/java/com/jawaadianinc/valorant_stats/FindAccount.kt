@@ -30,13 +30,16 @@ class FindAccount : AppCompatActivity() {
     private lateinit var runnable: Runnable
     private lateinit var imagebackground :ImageView
 
-    val imagesURL = arrayOf("https://mfiles.alphacoders.com/918/918510.jpg",
+    val imagesURL = arrayOf(
+        "https://mfiles.alphacoders.com/918/918510.jpg",
         "https://mfiles.alphacoders.com/921/921074.jpg",
+        "https://i.pinimg.com/originals/3a/1f/70/3a1f70e6b2fad80fa59a34dab44b7882.gif",
         "https://mfiles.alphacoders.com/908/908217.png",
         "https://mfiles.alphacoders.com/864/864178.png",
-    "https://1.bp.blogspot.com/-w9Si9jtaaK4/XuFPpqPZqqI/AAAAAAAASWY/GCrORIscy-8zubmSvrJ2_6qkmt3lXMP4QCK4BGAsYHg/d/valorant-wallpaper-2020-06-10-172425-2-heroscreen.cc.jpg",
-    "https://hdandroidwallpaper.com/wp-content/uploads/2020/12/valorant-Wallpaper-Mobile.jpg",
-    "https://www.mordeo.org/files/uploads/2020/05/Sage-Valorant-4K-Ultra-HD-Mobile-Wallpaper-950x1689.jpg")
+        "https://1.bp.blogspot.com/-w9Si9jtaaK4/XuFPpqPZqqI/AAAAAAAASWY/GCrORIscy-8zubmSvrJ2_6qkmt3lXMP4QCK4BGAsYHg/d/valorant-wallpaper-2020-06-10-172425-2-heroscreen.cc.jpg",
+        "https://hdandroidwallpaper.com/wp-content/uploads/2020/12/valorant-Wallpaper-Mobile.jpg",
+        "https://www.mordeo.org/files/uploads/2020/05/Sage-Valorant-4K-Ultra-HD-Mobile-Wallpaper-950x1689.jpg"
+    )
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,11 +86,13 @@ class FindAccount : AppCompatActivity() {
             if (file.exists()) {
                 val gpxfile = File(file, "users")
                 if (gpxfile.exists()) {
-                    gpxfile.delete()
-                    Toast.makeText(this, "Deleted!", Toast.LENGTH_SHORT).show()
-                    refresh()
-                } else {
-                    Toast.makeText(this, "Already Deleted", Toast.LENGTH_SHORT).show()
+                    if (gpxfile.readText() == "") {
+                        Toast.makeText(this, "Already Deleted!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        gpxfile.delete()
+                        Toast.makeText(this, "Deleted!", Toast.LENGTH_SHORT).show()
+                        refresh()
+                    }
                 }
             }
         }

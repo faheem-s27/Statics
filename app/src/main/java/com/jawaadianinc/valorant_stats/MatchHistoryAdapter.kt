@@ -13,11 +13,14 @@ class MatchHistoryAdapter(fm: FragmentManager?, var totalTabs: Int) :
             0 -> {
                 MatchDetailsFragment()
             }
-            1 ->{
+            1 -> {
                 PlayerDetailsFragment()
             }
-            2-> {
+            2 -> {
                 RoundsDetailsFragment()
+            }
+            3 -> {
+                RoundsMoreDetailsFragment()
             }
 
             else -> throw IllegalStateException("position $position is invalid for this viewpager")

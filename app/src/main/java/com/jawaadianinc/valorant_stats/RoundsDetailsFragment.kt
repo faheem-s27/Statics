@@ -7,9 +7,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import org.jetbrains.anko.doAsync
@@ -17,6 +15,7 @@ import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+
 
 class RoundsDetailsFragment : Fragment() {
     override fun onCreateView(
@@ -33,6 +32,7 @@ class RoundsDetailsFragment : Fragment() {
         val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
 
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
+        val timelineView: LinearLayout = view.findViewById(R.id.timeLineview)
 
         doAsync {
             try {
@@ -78,13 +78,44 @@ class RoundsDetailsFragment : Fragment() {
                 for (i in 0 until rounds.length()) {
                     val roundDetails = rounds[i] as JSONObject
                     val winning_team = roundDetails.getString("winning_team")
+                    val button = Button(activity?.applicationContext!!)
+                    if (winning_team == "Blue") {
+                        button.setBackgroundColor(Color.parseColor("#18e4b7"))
+                    } else {
+                        button.setBackgroundColor(Color.parseColor("#f94555"))
+                    }
+
+                    button.text = (i + 1).toString()
+                    button.textSize = 1F
+
+                    button.layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams(
+                            25,
+                            50
+                        )
+                    )
+                    button.setOnClickListener {
+                        Toast.makeText(
+                            activity?.applicationContext!!,
+                            "Round ${button.text}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    val transparentButton = Button(activity?.applicationContext!!)
+                    transparentButton.alpha = 0F
+                    transparentButton.layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams(
+                            10, 50
+                        )
+                    )
+
+                    timelineView.addView(button)
+                    timelineView.addView(transparentButton)
                     val ending = roundDetails.getString("end_type")
                     val number = i + 1
-                    mAdapter.add("Round $number, Team Won: $winning_team, won by $ending")
-
-
-
-                    }
+                    mAdapter.add("Round $number, $winning_team won by $ending")
+                }
                 }
 
             } catch (e:Exception){
