@@ -148,10 +148,9 @@
                     app:icon="@drawable/update"
                     app:iconSize="25dp"
                     app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/agents2"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="@+id/agents2"
-                    app:layout_constraintTop_toBottomOf="@+id/agents2"
+                    app:layout_constraintEnd_toEndOf="@+id/compareButton"
+                    app:layout_constraintStart_toStartOf="@+id/compareButton"
+                    app:layout_constraintTop_toBottomOf="@+id/compareButton"
                     app:strokeColor="#FFFFFF" />
 
                 <Button
@@ -201,37 +200,6 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/agents"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Top Agents"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="20dp"
-                    app:icon="@drawable/agentesicon"
-                    app:iconSize="30dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/compareButton"
-                    app:layout_constraintHorizontal_bias="0.497"
-                    app:layout_constraintStart_toStartOf="@+id/compareButton"
-                    app:layout_constraintTop_toBottomOf="@+id/compareButton" />
-
-                <Button
-                    android:id="@+id/agents2"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Top Guns"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="20dp"
-                    app:icon="@drawable/fahemememgaygun"
-                    app:iconSize="30dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/agents"
-                    app:layout_constraintStart_toStartOf="@+id/agents"
-                    app:layout_constraintTop_toBottomOf="@+id/agents" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

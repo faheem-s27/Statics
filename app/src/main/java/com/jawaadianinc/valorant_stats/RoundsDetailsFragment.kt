@@ -86,8 +86,6 @@ class RoundsDetailsFragment : Fragment() {
                     }
 
                     button.text = (i + 1).toString()
-                    button.textSize = 1F
-
                     button.layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams(
                             25,

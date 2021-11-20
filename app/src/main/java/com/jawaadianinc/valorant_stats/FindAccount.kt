@@ -49,7 +49,6 @@ class FindAccount : AppCompatActivity() {
         val userNameEditText: EditText = findViewById(R.id.editTextValorantName)
         val findaccountButton: Button = findViewById(R.id.generalStats)
         val matchHistoryButton: Button = findViewById(R.id.matchHistory)
-        val agentsButton: Button = findViewById(R.id.agents)
         val updatesButton: Button = findViewById(R.id.updateBT)
 
         val addname: Button = findViewById(R.id.addname)
@@ -152,18 +151,18 @@ class FindAccount : AppCompatActivity() {
             }
         }
 
-        agentsButton.setOnClickListener {
-            val agentsIntent = Intent(this@FindAccount, AgentsActivity::class.java)
-            agentsIntent.putExtra("Name", mySpinner.selectedItem.toString())
-            startActivity(agentsIntent)
-        }
-        
-        updatesButton.setOnClickListener{
+//        agentsButton.setOnClickListener {
+//            val agentsIntent = Intent(this@FindAccount, AgentsActivity::class.java)
+//            agentsIntent.putExtra("Name", mySpinner.selectedItem.toString())
+//            startActivity(agentsIntent)
+//        }
+
+        updatesButton.setOnClickListener {
             startActivity(Intent(this, ValorantUpdatesActivity::class.java))
         }
 
         //COMPARE STUFF WOOP WOOP
-        findViewById<Button>(R.id.compareButton).setOnClickListener{
+        findViewById<Button>(R.id.compareButton).setOnClickListener {
             compareStats()
         }
 

@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toTopOf="@+id/textView5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" >
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
 
     </GridView>
 
@@ -28,7 +28,7 @@
         android:id="@+id/textView2"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:background="#FF0000"
+        android:background="#f94555"
         android:gravity="center"
         android:text="RED TEAM"
         android:textColor="#000000"
@@ -43,7 +43,7 @@
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="32dp"
-        android:background="#0090FF"
+        android:background="#18e4b7"
         android:gravity="center"
         android:text="BLUE TEAM"
         android:textColor="#000000"

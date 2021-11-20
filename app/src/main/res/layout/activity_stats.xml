@@ -40,11 +40,11 @@
             app:tabIconTint="@color/white"
             app:tabIndicatorAnimationDuration="1000"
             app:tabIndicatorAnimationMode="elastic"
-            app:tabIndicatorColor="#FF0000"
+            app:tabIndicatorColor="#f94555"
             app:tabIndicatorFullWidth="true"
             app:tabIndicatorGravity="bottom"
             app:tabMode="auto"
-            app:tabSelectedTextColor="#3949AB"
+            app:tabSelectedTextColor="#18e4b7"
             app:tabTextColor="@color/white"
             app:tabUnboundedRipple="true" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -67,7 +67,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        app:backgroundTint="#D81B1B"
+        app:backgroundTint="#f94555"
         app:layout_anchor="@+id/view_pager"
         app:layout_anchorGravity="end|bottom"
         app:layout_constraintBottom_toBottomOf="@+id/view_pager"

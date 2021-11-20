@@ -7,10 +7,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import org.jetbrains.anko.doAsync
@@ -36,9 +33,9 @@ class RoundsMoreDetailsFragment : Fragment() {
 
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
         val spinnerRounds: Spinner = view.findViewById(R.id.roundsSpinner)
-
-        val winningTeam: TextView = view.findViewById(R.id.winningTeam)
-        val SpikeStatus: TextView = view.findViewById(R.id.SpikePlanted)
+        val minimapImage: ImageView = view.findViewById(R.id.mapImage)
+        val mapName: TextView = view.findViewById(R.id.mapName)
+        val coordinates: TextView = view.findViewById(R.id.spikeCoordinates)
 
         doAsync {
             try {
@@ -53,8 +50,10 @@ class RoundsMoreDetailsFragment : Fragment() {
                 val matchdetailsURL = URL(matchURl).readText()
                 val jsonDetails = JSONObject(matchdetailsURL)
                 val matchData = jsonDetails["data"] as JSONObject
-
+                val metadata = matchData.getJSONObject("metadata")
+                val map = metadata.getString("map")
                 val rounds = matchData.getJSONArray("rounds")
+
 
                 uiThread {
                     val arrayList = ArrayList<String>()
@@ -77,8 +76,32 @@ class RoundsMoreDetailsFragment : Fragment() {
                             return item
                         }
                     }
-
                     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    mapName.append(map)
+
+                    when (map) {
+                        "Bind" -> {
+                            minimapImage.setImageResource(R.drawable.bind_minimap)
+                        }
+                        "Ascent" -> {
+                            minimapImage.setImageResource(R.drawable.ascent_minimap)
+                        }
+                        "Split" -> {
+                            minimapImage.setImageResource(R.drawable.split_minimap)
+                        }
+                        "Fracture" -> {
+                            minimapImage.setImageResource(R.drawable.fracture_minimap)
+                        }
+                        "Breeze" -> {
+                            minimapImage.setImageResource(R.drawable.breeze_minimap)
+                        }
+                        "Haven" -> {
+                            minimapImage.setImageResource(R.drawable.haven_minimap)
+                        }
+                        "Icebox" -> {
+                            minimapImage.setImageResource(R.drawable.icebox_minimap)
+                        }
+                    }
 
                     spinnerRounds.adapter = arrayAdapter
                     for (i in 0 until rounds.length()) {
@@ -94,20 +117,14 @@ class RoundsMoreDetailsFragment : Fragment() {
                                 position: Int,
                                 id: Long
                             ) {
-                                //val specificRound = rounds[position] as JSONObject
                                 val details =
                                     handleSpecificRoundDetails(rounds[position] as JSONObject)
+                                try {
+                                    handleCoordinates(details[3].toInt(), details[4].toInt(), map)
+                                } catch (e: Exception) {
 
-                                winningTeam.text = "Team Won:  ${details[0]}"
-                                if (details[0] == "Red") {
-                                    winningTeam.setTextColor(Color.parseColor("#f94555"))
-                                } else {
-                                    winningTeam.setTextColor((Color.parseColor("#18e4b7")))
+                                    coordinates.text = "Spike not planted"
                                 }
-
-                                SpikeStatus.text =
-                                    "Spike Planted?: ${details[1]}\nSpike Defused?: ${details[2]}" +
-                                            "\nPlanted at ${details[3]}, ${details[4]}\nSite ${details[5]}"
                             }
 
                             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -156,5 +173,12 @@ class RoundsMoreDetailsFragment : Fragment() {
 
         return allDetails
     }
+
+    private fun handleCoordinates(x: Int, y: Int, mapName: String) {
+        val coordinates: TextView? = view?.findViewById(R.id.spikeCoordinates)
+        coordinates?.text = "Spike: $x, $y"
+        //TODO DO stuff with the coordinates.
+    }
+
 
 }
