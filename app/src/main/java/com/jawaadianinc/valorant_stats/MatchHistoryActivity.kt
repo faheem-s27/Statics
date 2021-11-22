@@ -38,7 +38,7 @@ class MatchHistoryActivity : AppCompatActivity() {
             }
         }
 
-        tabLayout?.newTab()?.setText("Details")?.setIcon(R.drawable.moredetails).let {
+        tabLayout?.newTab()?.setText("Map")?.setIcon(R.drawable.map).let {
             if (it != null) {
                 tabLayout?.addTab(it)
             }

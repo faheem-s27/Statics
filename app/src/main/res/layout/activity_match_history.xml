@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:background="#0A0F15"
             app:tabGravity="fill"
-            app:tabIconTint="#18e4b7"
+            app:tabIconTint="@color/light_blue_50"
             app:tabIndicatorAnimationDuration="1000"
             app:tabIndicatorAnimationMode="elastic"
             app:tabIndicatorColor="#f94555"

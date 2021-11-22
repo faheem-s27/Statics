@@ -108,6 +108,17 @@ class RoundsDetailsFragment : Fragment() {
                         )
                     )
 
+                    val midButton = Button(activity?.applicationContext!!)
+                    midButton.alpha = 0F
+                    midButton.layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams(
+                            50, 50
+                        )
+                    )
+
+                    if (i == 12) {
+                        timelineView.addView(midButton)
+                    }
                     timelineView.addView(button)
                     timelineView.addView(transparentButton)
                     val ending = roundDetails.getString("end_type")
