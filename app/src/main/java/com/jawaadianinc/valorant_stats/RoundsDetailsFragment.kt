@@ -122,6 +122,8 @@ class RoundsDetailsFragment : Fragment() {
                     timelineView.addView(button)
                     timelineView.addView(transparentButton)
                     val ending = roundDetails.getString("end_type")
+
+
                     val number = i + 1
                     mAdapter.add("Round $number, $winning_team won by $ending")
                 }

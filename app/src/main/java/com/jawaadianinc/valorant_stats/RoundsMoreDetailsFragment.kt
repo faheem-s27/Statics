@@ -231,6 +231,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                 Bitmap.Config.ARGB_8888
             )
 
+
             val playerLocations = plantInfo["player_locations_on_plant"] as JSONArray
 
             for (i in 0 until playerLocations.length()) {
@@ -242,13 +243,29 @@ class RoundsMoreDetailsFragment : Fragment() {
                 val playerTeam = location["player_team"] as String
 
                 val paint = Paint()
-                val radius = 15
+
                 paint.style = Paint.Style.FILL
                 paint.strokeWidth = 10F
-                if (playerTeam == "Red") {
-                    paint.color = Color.RED
+                val radius: Int
+
+                val name = requireActivity().intent.extras!!.getString("RiotName")
+                val id = requireActivity().intent.extras!!.getString("RiotID")
+                val riotName = "$name#$id"
+
+                if (location["player_display_name"] == riotName) {
+                    radius = 17
+                    if (playerTeam == "Red") {
+                        paint.color = Color.RED
+                    } else {
+                        paint.color = Color.BLUE
+                    }
                 } else {
-                    paint.color = Color.BLUE
+                    radius = 15
+                    if (playerTeam == "Red") {
+                        paint.color = Color.parseColor("#f94555")
+                    } else {
+                        paint.color = Color.parseColor("#18e4b7")
+                    }
                 }
                 val finalX: Int = (((y * xMult) + xScalar) * 1000).roundToInt()
                 val finalY: Int = (((x * yMult) + yScalar) * 1000).roundToInt()
@@ -305,7 +322,6 @@ class RoundsMoreDetailsFragment : Fragment() {
         bitmap?.let { Canvas(it) }
             ?.drawCircle(finalX.toFloat(), finalY.toFloat(), radius.toFloat(), paint)
         spikePlanted?.setImageBitmap(bitmap)
-
     }
 
 

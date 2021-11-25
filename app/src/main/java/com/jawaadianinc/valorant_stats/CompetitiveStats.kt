@@ -22,6 +22,7 @@ import org.jetbrains.anko.uiThread
 import org.json.JSONObject
 import java.net.URL
 
+
 class CompetitiveStats : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +38,7 @@ class CompetitiveStats : Fragment() {
         val URLIMAGE = requireActivity().intent.extras!!.getString("URL")
         val Name = requireActivity().intent.extras!!.getString("RiotName")
         val ID = requireActivity().intent.extras!!.getString("RiotID")
+        val background = view.findViewById(R.id.playerBackground) as ImageView
 
         if (activity?.isInMultiWindowMode == true){
             PlayerImage.resize(100, 100)
@@ -75,6 +77,17 @@ class CompetitiveStats : Fragment() {
                         "Name: $Name#$ID\nAccount Level: $account_level\nGetting Ranked Info..."
                 }
 
+                val cards = data["card"] as JSONObject
+                val playerCard = cards["large"].toString()
+                activity?.runOnUiThread {
+                    Picasso
+                        .get()
+                        .load(playerCard)
+                        .fit()
+                        .centerCrop()
+                        .into(background)
+                    background.alpha = 0.2f
+                }
                 try {
                     text =
                         URL("https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/eu/$puuid").readText()
@@ -82,7 +95,7 @@ class CompetitiveStats : Fragment() {
                     data = data["data"] as JSONObject
                     val currentTier = data["currenttierpatched"].toString()
                     activity?.runOnUiThread {
-                        if (activity?.isInMultiWindowMode == true){
+                        if (activity?.isInMultiWindowMode == true) {
                             PlayerName.text = "Name: $Name#$ID\nAccount Level: $account_level"
                         }
                         else {

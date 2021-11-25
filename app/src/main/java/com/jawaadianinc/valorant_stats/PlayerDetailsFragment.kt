@@ -109,9 +109,10 @@ class PlayerDetailsFragment : Fragment() {
                     val name = player.getString("name")
                     val agent = player.getString("character")
                     val score = player.getJSONObject("stats").getString("score")
+                    val level = player.getString("level")
                     redplayerCodes += (player.getString("player_title"))
                     uiThread {
-                        mAdapter.add("$name - $agent")
+                        mAdapter.add("$name - Level $level")
                     }
                 }
 
@@ -135,10 +136,11 @@ class PlayerDetailsFragment : Fragment() {
                     val player = blueplayers[i] as JSONObject
                     val name = player.getString("name")
                     val agent = player.getString("character")
+                    val level = player.getString("level")
                     val score = player.getJSONObject("stats").getString("score")
                     blueplayerCodes += (player.getString("player_title"))
                     uiThread {
-                        blueAdapter.add("$name - $agent")
+                        blueAdapter.add("$name - Level $level")
                     }
                 }
 
@@ -188,10 +190,12 @@ class PlayerDetailsFragment : Fragment() {
                         val kills = playerrDetails.getJSONObject("stats").getString("kills")
                         val deaths =playerrDetails.getJSONObject("stats").getString("deaths")
                         val assists = playerrDetails.getJSONObject("stats").getString("assists")
+                        val level = playerrDetails.getString("level")
 
                         popupView.findViewById<TextView>(R.id.playertitle).text = redtitlelist[position]
 
                         playerstats.text = "Rank: $tier" +
+                                "\nLevel: $level" +
                                 "\nAgent: $agent" +
                                 "\nScore: $score" +
                                 "\nKills: $kills" +
@@ -212,7 +216,7 @@ class PlayerDetailsFragment : Fragment() {
 
                     }
 
-                    bluegridview.setOnItemClickListener { parent, _, position, _ ->
+                    bluegridview.setOnItemClickListener { _, _, position, _ ->
                         val inflater =
                             view.context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                         val popupView: View = inflater.inflate(R.layout.showredplayer, null)
@@ -238,9 +242,10 @@ class PlayerDetailsFragment : Fragment() {
                         val kills = playerrDetails.getJSONObject("stats").getString("kills")
                         val deaths =playerrDetails.getJSONObject("stats").getString("deaths")
                         val assists = playerrDetails.getJSONObject("stats").getString("assists")
-
+                        val level = playerrDetails.getString("level")
 
                         playerstats.text = "Rank: $tier" +
+                                "\nLevel: $level" +
                                 "\nAgent: $agent" +
                                 "\nScore: $score" +
                                 "\nKills: $kills" +
