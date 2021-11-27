@@ -118,10 +118,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/delete" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/scrollView2"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:fillViewport="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -129,12 +129,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/linearLayout3"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <Button
                     android:id="@+id/updateBT"
@@ -142,15 +138,34 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="Valorant Updates"
+                    android:text="Updates"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="150dp"
                     app:icon="@drawable/update"
                     app:iconSize="25dp"
                     app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/compareButton"
-                    app:layout_constraintStart_toStartOf="@+id/compareButton"
-                    app:layout_constraintTop_toBottomOf="@+id/compareButton"
+                    app:layout_constraintEnd_toEndOf="@+id/splitscreenButton"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/splitscreenButton"
+                    app:layout_constraintTop_toBottomOf="@+id/compareBT"
+                    app:strokeColor="#FFFFFF" />
+
+                <Button
+                    android:id="@+id/compareBT"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Compare"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="150dp"
+                    app:icon="@drawable/compare"
+                    app:iconSize="25dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/splitscreenButton"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/splitscreenButton"
+                    app:layout_constraintTop_toBottomOf="@+id/splitscreenButton"
                     app:strokeColor="#FFFFFF" />
 
                 <Button
@@ -169,15 +184,15 @@
                     app:layout_constraintTop_toBottomOf="@+id/generalStats" />
 
                 <Button
-                    android:id="@+id/compareButton"
+                    android:id="@+id/splitscreenButton"
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="Compare Stats"
+                    android:text="Split screen "
                     android:textColor="#FFFFFF"
                     app:cornerRadius="150dp"
-                    app:icon="@drawable/compare"
+                    app:icon="@drawable/splitscreen"
                     app:iconSize="25dp"
                     app:iconTint="#FFFFFF"
                     app:layout_constraintEnd_toEndOf="@+id/generalStats"
@@ -190,7 +205,7 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
-                    android:text="General Stats"
+                    android:text="Player Stats"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="20dp"
                     app:icon="@drawable/searchicon"
@@ -202,6 +217,16 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/scrollView2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

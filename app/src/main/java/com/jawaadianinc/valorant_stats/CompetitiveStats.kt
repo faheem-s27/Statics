@@ -1,5 +1,6 @@
 package com.jawaadianinc.valorant_stats
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.Typeface
@@ -31,63 +32,51 @@ class CompetitiveStats : Fragment() {
         return inflater.inflate(R.layout.fragment_competitive_stats, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val PlayerName: TextView = view.findViewById(R.id.PlayerName)
-        val PlayerImage: ImageView = view.findViewById(R.id.PlayerImageComp)
-        val URLIMAGE = requireActivity().intent.extras!!.getString("URL")
-        val Name = requireActivity().intent.extras!!.getString("RiotName")
-        val ID = requireActivity().intent.extras!!.getString("RiotID")
-        val background = view.findViewById(R.id.playerBackground) as ImageView
+        val playerName: TextView = view.findViewById(R.id.PlayerName)
+        val playerImage: ImageView = view.findViewById(R.id.PlayerImageComp)
+        val urlImage = requireActivity().intent.extras!!.getString("URL")
+        val name = requireActivity().intent.extras!!.getString("RiotName")
+        val id = requireActivity().intent.extras!!.getString("RiotID")
 
-        if (activity?.isInMultiWindowMode == true){
-            PlayerImage.resize(100, 100)
-        }
-        else{
-            PlayerImage.resize(300, 300)
+        if (activity?.isInMultiWindowMode == true) {
+            playerImage.resize(100, 100)
+        } else {
+            playerImage.resize(300, 300)
         }
 
         Picasso
             .get()
-            .load(URLIMAGE)
+            .load(urlImage)
             .fit()
-            .into(PlayerImage)
-        PlayerName.text = "Name: $Name#$ID"
+            .into(playerImage)
+        playerName.text = "Name: $name#$id"
 
         val progressDialog = ProgressDialog(activity)
         progressDialog.setTitle("Fetching Data")
         progressDialog.setMessage("Please wait a moment")
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER) // There are 3 styles, You'll figure it out :)
         progressDialog.setCancelable(false)
-        
+
         progressDialog.show()
 
-        val GetAccountLevelURL = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID"
+        val getAccountDetails = "https://api.henrikdev.xyz/valorant/v1/account/$name/$id"
 
         doAsync {
             try {
-                var text = URL(GetAccountLevelURL).readText()
+                var text = URL(getAccountDetails).readText()
                 var data = JSONObject(text)
                 data = data["data"] as JSONObject
-                val account_level = data["account_level"].toString()
+                val accountLevel = data["account_level"].toString()
                 val puuid = data["puuid"].toString()
 
                 activity?.runOnUiThread {
-                    PlayerName.text =
-                        "Name: $Name#$ID\nAccount Level: $account_level\nGetting Ranked Info..."
+                    playerName.text =
+                        "Name: $name#$id\nAccount Level: $accountLevel\nGetting Ranked Info..."
                 }
 
-                val cards = data["card"] as JSONObject
-                val playerCard = cards["large"].toString()
-                activity?.runOnUiThread {
-                    Picasso
-                        .get()
-                        .load(playerCard)
-                        .fit()
-                        .centerCrop()
-                        .into(background)
-                    background.alpha = 0.2f
-                }
                 try {
                     text =
                         URL("https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/eu/$puuid").readText()
@@ -96,22 +85,20 @@ class CompetitiveStats : Fragment() {
                     val currentTier = data["currenttierpatched"].toString()
                     activity?.runOnUiThread {
                         if (activity?.isInMultiWindowMode == true) {
-                            PlayerName.text = "Name: $Name#$ID\nAccount Level: $account_level"
-                        }
-                        else {
-                            PlayerName.text =
-                                "Name: $Name\nAccount Level: $account_level\nCurrent Rank: $currentTier"
+                            playerName.text = "Name: $name#$id\nAccount Level: $accountLevel"
+                        } else {
+                            playerName.text =
+                                "Name: $name\nAccount Level: $accountLevel\nCurrent Rank: $currentTier"
                         }
                     }
                 } catch (e: Exception) {
                     activity?.runOnUiThread {
 
                         if (activity?.isInMultiWindowMode == true){
-                            PlayerName.text = "Name: $Name#$ID\nAccount Level: $account_level"
-                        }
-                        else {
-                            PlayerName.text =
-                                "Name: $Name\nAccount Level: $account_level\nCurrent Rank: Unranked"
+                            playerName.text = "Name: $name#$id\nAccount Level: $accountLevel"
+                        } else {
+                            playerName.text =
+                                "Name: $name\nAccount Level: $accountLevel\nCurrent Rank: Unranked"
                         }
                     }
                 }
@@ -127,12 +114,12 @@ class CompetitiveStats : Fragment() {
 
             try {
                 val jsonText =
-                    URL("https://api.tracker.gg/api/v2/valorant/standard/profile/riot/$Name%23$ID").readText()
+                    URL("https://api.tracker.gg/api/v2/valorant/standard/profile/riot/$name%23$id").readText()
                 val jsonObject = JSONObject(jsonText)
                 val compSegments = jsonObject.getJSONObject("data")
                     .getJSONArray("segments").getJSONObject(0)
                     .getJSONObject("stats")
-                val total_time = compSegments.getJSONObject("timePlayed").getString("displayValue")
+                val totalTime = compSegments.getJSONObject("timePlayed").getString("displayValue")
 
                 val arrayList = ArrayList<String>()
                 val listviewComp : ListView = view.findViewById(R.id.listViewSpikeRush)
@@ -158,7 +145,8 @@ class CompetitiveStats : Fragment() {
                 activity?.applicationContext?.let {
                     activity?.runOnUiThread {
                         if (activity?.isInMultiWindowMode == false){
-                            PlayerName.text = PlayerName.text.toString() + "\nTotal Time: $total_time"
+                            playerName.text =
+                                playerName.text.toString() + "\nTotal Time: $totalTime"
                         }
                         listviewComp.adapter = mAdapter
                         val small = jsonObject.getJSONObject("data")
@@ -166,93 +154,93 @@ class CompetitiveStats : Fragment() {
                             .getJSONObject("stats")
 
                         val statsComps: Array<String> = arrayOf(
-                                    "timePlayed",
-                                    "matchesPlayed",
-                                    "matchesWon",
-                                    "matchesLost" ,
-                                    "matchesWinPct" ,
-                                    "matchesDuration" ,
-                                    "roundsPlayed" ,
-                                    "roundsWon" ,
-                                    "roundsLost" ,
-                                    "roundsWinPct" ,
-                                    "roundsDuration" ,
-                                    "econRating" ,
-                                    "econRatingPerMatch" ,
-                                    "econRatingPerRound" ,
-                                    "score" ,
-                                    "scorePerMatch" ,
-                                    "scorePerRound" ,
-                                    "kills" ,
-                                    "killsPerRound" ,
-                                    "killsPerMatch" ,
-                                    "killsPerMinute" ,
-                                    "headshots" ,
-                                    "headshotsPerRound" ,
-                                    "headshotsPerMatch" ,
-                                    "headshotsPerMinute" ,
-                                    "headshotsPercentage" ,
-                                    "deaths" ,
-                                    "deathsPerRound" ,
-                                    "deathsPerMatch" ,
-                                    "deathsPerMinute" ,
-                                    "assists" ,
-                                    "assistsPerMatch" ,
-                                    "assistsPerRound" ,
-                                    "assistsPerMinute" ,
-                                    "kDRatio" ,
-                                    "kDARatio" ,
-                                    "kADRatio" ,
-                                    "damage" ,
-                                    "damagePerMatch" ,
-                                    "damagePerRound" ,
-                                    "damagePerMinute" ,
-                                    "damageReceived" ,
-                                    "plants" ,
-                                    "plantsPerMatch" ,
-                                    "plantsPerRound" ,
-                                    "defuses" ,
-                                    "defusesPerMatch" ,
-                                    "defusesPerRound" ,
-                                    "firstBloods" ,
-                                    "firstBloodsPerMatch" ,
-                                    "grenadeCasts" ,
-                                    "ability1Casts" ,
-                                    "ability2Casts" ,
-                                    "ultimateCasts" ,
-                                    "dealtHeadshots" ,
-                                    "dealtBodyshots" ,
-                                    "dealtLegshots" ,
-                                    "receivedHeadshots" ,
-                                    "receivedBodyshots" ,
-                                    "receivedLegshots" ,
-                                    "deathsFirst",
-                                    "deathsLast" ,
-                                    "mostKillsInMatch" ,
-                                    "mostKillsInRound" ,
-                                    "flawless" ,
-                                    "clutches" ,
-                                    "thrifty" ,
-                                    "aces" ,
-                                    "teamAces" ,
-                                    "attackKDRatio" ,
-                                    "attackKills" ,
-                                    "attackDeaths" ,
-                                    "attackAssists" ,
-                                    "attackRoundsPlayed" ,
-                                    "attackRoundsWon" ,
-                                    "attackRoundsLost" ,
-                                    "attackRoundsWinPct" ,
-                                    "defenseKDRatio" ,
-                                    "defenseKills" ,
-                                    "defenseDeaths" ,
-                                    "defenseAssists" ,
-                                    "defenseRoundsPlayed" ,
-                                    "defenseRoundsWon" ,
-                                    "defenseRoundsLost",
-                                    "defenseRoundsWinPct",
-                                    "rank",
-                                    "peakRank")
+                            "timePlayed",
+                            "matchesPlayed",
+                            "matchesWon",
+                            "matchesLost" ,
+                            "matchesWinPct" ,
+                            "matchesDuration" ,
+                            "roundsPlayed" ,
+                            "roundsWon" ,
+                            "roundsLost" ,
+                            "roundsWinPct" ,
+                            "roundsDuration" ,
+                            "econRating" ,
+                            "econRatingPerMatch" ,
+                            "econRatingPerRound" ,
+                            "score" ,
+                            "scorePerMatch" ,
+                            "scorePerRound" ,
+                            "kills" ,
+                            "killsPerRound" ,
+                            "killsPerMatch" ,
+                            "killsPerMinute" ,
+                            "headshots" ,
+                            "headshotsPerRound" ,
+                            "headshotsPerMatch" ,
+                            "headshotsPerMinute" ,
+                            "headshotsPercentage" ,
+                            "deaths" ,
+                            "deathsPerRound" ,
+                            "deathsPerMatch" ,
+                            "deathsPerMinute" ,
+                            "assists" ,
+                            "assistsPerMatch" ,
+                            "assistsPerRound" ,
+                            "assistsPerMinute" ,
+                            "kDRatio" ,
+                            "kDARatio" ,
+                            "kADRatio" ,
+                            "damage" ,
+                            "damagePerMatch" ,
+                            "damagePerRound" ,
+                            "damagePerMinute" ,
+                            "damageReceived" ,
+                            "plants" ,
+                            "plantsPerMatch" ,
+                            "plantsPerRound" ,
+                            "defuses" ,
+                            "defusesPerMatch" ,
+                            "defusesPerRound" ,
+                            "firstBloods" ,
+                            "firstBloodsPerMatch" ,
+                            "grenadeCasts" ,
+                            "ability1Casts" ,
+                            "ability2Casts" ,
+                            "ultimateCasts" ,
+                            "dealtHeadshots" ,
+                            "dealtBodyshots" ,
+                            "dealtLegshots" ,
+                            "receivedHeadshots" ,
+                            "receivedBodyshots" ,
+                            "receivedLegshots" ,
+                            "deathsFirst",
+                            "deathsLast" ,
+                            "mostKillsInMatch" ,
+                            "mostKillsInRound" ,
+                            "flawless" ,
+                            "clutches" ,
+                            "thrifty" ,
+                            "aces" ,
+                            "teamAces" ,
+                            "attackKDRatio" ,
+                            "attackKills" ,
+                            "attackDeaths" ,
+                            "attackAssists" ,
+                            "attackRoundsPlayed" ,
+                            "attackRoundsWon" ,
+                            "attackRoundsLost" ,
+                            "attackRoundsWinPct" ,
+                            "defenseKDRatio" ,
+                            "defenseKills" ,
+                            "defenseDeaths" ,
+                            "defenseAssists" ,
+                            "defenseRoundsPlayed" ,
+                            "defenseRoundsWon" ,
+                            "defenseRoundsLost",
+                            "defenseRoundsWinPct",
+                            "rank",
+                            "peakRank")
 
                         for (stat in statsComps) {
                             val displayName =
@@ -276,23 +264,24 @@ class CompetitiveStats : Fragment() {
                 }
 
             } catch (e: Exception) {
-            uiThread {
-                AlertDialog.Builder(requireActivity()).setTitle("Error!")
-                    .setMessage("Error Message: $e")
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .setIcon(android.R.drawable.ic_dialog_alert).show()
+                uiThread {
+                    AlertDialog.Builder(requireActivity()).setTitle("Error!")
+                        .setMessage("Error Message: $e")
+                        .setPositiveButton(android.R.string.ok) { _, _ -> }
+                        .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }
             }
         }
     }
-        fun ImageView.resize(
-            newWidth: Int = layoutParams.width, // pixels
-            newHeight: Int = layoutParams.height // pixels
-        ) {
-            layoutParams.apply {
-                width = newWidth // in pixels
-                height = newHeight // in pixels
-                layoutParams = this
-            }
+
+    private fun ImageView.resize(
+        newWidth: Int = layoutParams.width, // pixels
+        newHeight: Int = layoutParams.height // pixels
+    ) {
+        layoutParams.apply {
+            width = newWidth // in pixels
+            height = newHeight // in pixels
+            layoutParams = this
         }
+    }
     }

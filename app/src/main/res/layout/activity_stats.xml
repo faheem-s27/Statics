@@ -58,7 +58,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topAppBar" />
+        app:layout_constraintTop_toBottomOf="@+id/topAppBar">
+
+    </androidx.viewpager.widget.ViewPager>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/refreshFab"
@@ -73,5 +75,15 @@
         app:layout_constraintBottom_toBottomOf="@+id/view_pager"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="?attr/actionModeCloseDrawable" />
+
+    <ImageView
+        android:id="@+id/playerBackgroundMain"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/topAppBar"
+        app:srcCompat="@drawable/update" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

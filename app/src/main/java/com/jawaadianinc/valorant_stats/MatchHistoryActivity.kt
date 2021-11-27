@@ -38,7 +38,7 @@ class MatchHistoryActivity : AppCompatActivity() {
             }
         }
 
-        tabLayout?.newTab()?.setText("Map")?.setIcon(R.drawable.map).let {
+        tabLayout?.newTab()?.setText("Spike Map")?.setIcon(R.drawable.spikeicon).let {
             if (it != null) {
                 tabLayout?.addTab(it)
             }

@@ -142,7 +142,11 @@ class RoundsMoreDetailsFragment : Fragment() {
                     spinnerRounds.adapter = arrayAdapter
                     for (i in 0 until rounds.length()) {
                         val number = i + 1
-                        arrayAdapter.add("Round $number")
+                        val dataofSpike = rounds[i] as JSONObject
+                        val wasSpikePlanted = dataofSpike["bomb_planted"].toString()
+                        if (wasSpikePlanted == "true") {
+                            arrayAdapter.add("Round $number")
+                        }
                     }
 
                     spinnerRounds.onItemSelectedListener =
@@ -153,8 +157,14 @@ class RoundsMoreDetailsFragment : Fragment() {
                                 position: Int,
                                 id: Long
                             ) {
+                                val getRoundName =
+                                    spinnerRounds.getItemAtPosition(position).toString()
+                                val numberinRound = getRoundName.split(" ")
+
+                                val actualRound: Int = numberinRound[1].toInt() - 1
+
                                 val matchDetails =
-                                    handleSpecificRoundDetails(rounds[position] as JSONObject)
+                                    handleSpecificRoundDetails(rounds[actualRound] as JSONObject)
 
                                 if (matchDetails[0] == "Red") {
                                     spikeStats.setTextColor(Color.parseColor("#f94555"))

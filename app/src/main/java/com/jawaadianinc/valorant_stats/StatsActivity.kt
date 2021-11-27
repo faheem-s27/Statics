@@ -3,13 +3,16 @@ package com.jawaadianinc.valorant_stats
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
-
-
+import com.squareup.picasso.Picasso
+import org.jetbrains.anko.doAsync
+import org.json.JSONObject
+import java.net.URL
 
 
 class StatsActivity : AppCompatActivity() {
@@ -65,16 +68,37 @@ class StatsActivity : AppCompatActivity() {
             }
         })
 
-        val title : TextView = findViewById(R.id.title)
+        val title: TextView = findViewById(R.id.title)
         val Name: String? = intent.getStringExtra("RiotName")
-        
+        val ID: String? = intent.getStringExtra("RiotID")
+
+        val player_background: ImageView = findViewById(R.id.playerBackgroundMain)
+        val PlayerURL = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID?force=true"
+
+        doAsync {
+            val text = URL(PlayerURL).readText()
+            var data = JSONObject(text)
+            data = data["data"] as JSONObject
+            val cards = data["card"] as JSONObject
+            val playerCard = cards["large"].toString()
+            runOnUiThread {
+                Picasso
+                    .get()
+                    .load(playerCard)
+                    .fit()
+                    .centerCrop()
+                    .into(player_background)
+                player_background.alpha = 0.2f
+
+            }
+        }
         title.text = "Stats for $Name"
 
-        val refresFab : FloatingActionButton = findViewById(R.id.refreshFab)
-        refresFab.setOnClickListener{
+        val refresFab: FloatingActionButton = findViewById(R.id.refreshFab)
+        refresFab.setOnClickListener {
             finish()
             startActivity(Intent(this, FindAccount::class.java))
         }
-        
+
     }
 }

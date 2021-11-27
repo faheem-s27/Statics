@@ -50,6 +50,7 @@ class FindAccount : AppCompatActivity() {
         val findaccountButton: Button = findViewById(R.id.generalStats)
         val matchHistoryButton: Button = findViewById(R.id.matchHistory)
         val updatesButton: Button = findViewById(R.id.updateBT)
+        val compareButton: Button = findViewById(R.id.compareBT)
 
         val addname: Button = findViewById(R.id.addname)
         val delete: Button = findViewById(R.id.delete)
@@ -151,19 +152,16 @@ class FindAccount : AppCompatActivity() {
             }
         }
 
-//        agentsButton.setOnClickListener {
-//            val agentsIntent = Intent(this@FindAccount, AgentsActivity::class.java)
-//            agentsIntent.putExtra("Name", mySpinner.selectedItem.toString())
-//            startActivity(agentsIntent)
-//        }
-
         updatesButton.setOnClickListener {
             startActivity(Intent(this, ValorantUpdatesActivity::class.java))
         }
 
-        //COMPARE STUFF WOOP WOOP
-        findViewById<Button>(R.id.compareButton).setOnClickListener {
+        findViewById<Button>(R.id.splitscreenButton).setOnClickListener {
             compareStats()
+        }
+
+        compareButton.setOnClickListener {
+            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
         }
 
 
@@ -223,7 +221,7 @@ class FindAccount : AppCompatActivity() {
         val progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Fetching Stats")
         progressDialog.setMessage("Please wait a moment")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER) // There are 3 styles, You'll figure it out :)
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressDialog.setCancelable(false)
 
         var name = ""
@@ -252,7 +250,7 @@ class FindAccount : AppCompatActivity() {
 
             progressDialog.show()
 
-            val doesUserExist = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID"
+            val doesUserExist = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID?force=true"
 
             val URLtoFindAccount = "https://api.tracker.gg/api/v2/valorant/standard/profile/riot/$Name%23$ID"
 
