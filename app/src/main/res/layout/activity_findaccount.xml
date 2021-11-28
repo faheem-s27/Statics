@@ -32,7 +32,7 @@
             android:id="@+id/imagebackground"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:alpha="0.5"
+            android:alpha="0.2"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -132,6 +132,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <View
+                    android:id="@+id/view5"
+                    style="@style/Divider.Horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/generalStats" />
+
+                <View
+                    android:id="@+id/view6"
+                    style="@style/Divider.Horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/viewHistory" />
+
                 <Button
                     android:id="@+id/updateBT"
                     android:layout_width="200dp"
@@ -170,18 +192,48 @@
 
                 <Button
                     android:id="@+id/matchHistory"
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Match History"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:text="Previous"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="20dp"
                     app:icon="@drawable/matchhistory"
                     app:iconSize="30dp"
                     app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/generalStats"
-                    app:layout_constraintStart_toStartOf="@+id/generalStats"
-                    app:layout_constraintTop_toBottomOf="@+id/generalStats" />
+                    app:layout_constraintEnd_toStartOf="@+id/localHistory"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+                <Button
+                    android:id="@+id/viewHistory"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="View Downloaded Matches"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/moredetails"
+                    app:iconSize="30dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/localHistory"
+                    app:layout_constraintStart_toStartOf="@+id/matchHistory"
+                    app:layout_constraintTop_toBottomOf="@+id/matchHistory" />
+
+                <Button
+                    android:id="@+id/localHistory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="32dp"
+                    android:text="Download"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/backupicon"
+                    app:iconSize="30dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
                 <Button
                     android:id="@+id/splitscreenButton"
@@ -195,26 +247,65 @@
                     app:icon="@drawable/splitscreen"
                     app:iconSize="25dp"
                     app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/generalStats"
-                    app:layout_constraintStart_toStartOf="@+id/matchHistory"
-                    app:layout_constraintTop_toBottomOf="@+id/matchHistory"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.502"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView7"
                     app:strokeColor="#FFFFFF" />
 
                 <Button
                     android:id="@+id/generalStats"
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="Player Stats"
+                    android:layout_marginTop="8dp"
+                    android:text="Stats"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="20dp"
                     app:icon="@drawable/searchicon"
                     app:iconSize="30dp"
                     app:iconTint="#FFFFFF"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_bias="0.502"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Player Info"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Match Info"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view5" />
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Ill do this later"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view6" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
@@ -222,7 +313,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/scrollView2"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -24,7 +24,6 @@ import java.net.URL
 
 
 class FindAccount : AppCompatActivity() {
-
     var PLAYERCARD = ""
     private lateinit var handler: Handler
     private lateinit var runnable: Runnable
@@ -51,6 +50,8 @@ class FindAccount : AppCompatActivity() {
         val matchHistoryButton: Button = findViewById(R.id.matchHistory)
         val updatesButton: Button = findViewById(R.id.updateBT)
         val compareButton: Button = findViewById(R.id.compareBT)
+        val local: Button = findViewById(R.id.localHistory)
+        val viewMatch: Button = findViewById(R.id.viewHistory)
 
         val addname: Button = findViewById(R.id.addname)
         val delete: Button = findViewById(R.id.delete)
@@ -162,6 +163,85 @@ class FindAccount : AppCompatActivity() {
 
         compareButton.setOnClickListener {
             Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
+        }
+
+        viewMatch.setOnClickListener {
+            Toast.makeText(this, "Matches are saved but I'll add it soon!", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+        local.setOnClickListener {
+            val progressDialog = ProgressDialog(this)
+            progressDialog.setTitle("Saving Matches")
+            progressDialog.setMessage("Storing matches on local storage.")
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+            //Get matches
+            val fullname = mySpinner.selectedItem.toString()
+            val name = fullname.split("#")
+            val matchHistoryURL =
+                "https://api.henrikdev.xyz/valorant/v3/matches/eu/${name[0]}/${name[1]}?size=10"
+            doAsync {
+                try {
+                    val matchhistoryURL = URL(matchHistoryURL).readText()
+                    val jsonMatches = JSONObject(matchhistoryURL)
+                    val data = jsonMatches["data"] as JSONArray
+
+                    for (i in 0 until data.length()) {
+                        val map = data.getJSONObject(i).getJSONObject("metadata").getString("map")
+                        val mode = data.getJSONObject(i).getJSONObject("metadata").getString("mode")
+                        val matchID =
+                            data.getJSONObject(i).getJSONObject("metadata").getString("matchid")
+                        val matchDatabse = MatchDatabases(this@FindAccount)
+                        matchDatabse.addMatches(
+                            matchID,
+                            mySpinner.selectedItem.toString(),
+                            map,
+                            mode
+                        )
+                    }
+
+                    //Save data
+                    uiThread {
+                        val matchDatabse = MatchDatabases(this@FindAccount)
+                        val matches = matchDatabse.getMatches((mySpinner.selectedItem.toString()))
+                        if (matches != null) {
+                            Toast.makeText(
+                                this@FindAccount,
+                                "${matches.size} matches saved for ${mySpinner.selectedItem}!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                this@FindAccount,
+                                "No saved matches for this user!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        progressDialog.dismiss()
+                    }
+                } catch (e: java.io.FileNotFoundException) {
+                    uiThread {
+                        progressDialog.dismiss()
+                        AlertDialog.Builder(this@FindAccount).setTitle("User Not Found!")
+                            .setMessage("It appears this name '${mySpinner.selectedItem}' does not exist!\nTry a different name")
+                            .setPositiveButton(android.R.string.ok) { _, _ -> }
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show()
+                    }
+                } catch (e: Exception) {
+                    uiThread {
+                        progressDialog.dismiss()
+                        AlertDialog.Builder(this@FindAccount).setTitle("Error!")
+                            .setMessage("Error Message: $e")
+                            .setPositiveButton(android.R.string.ok) { _, _ -> }
+                            .setIcon(android.R.drawable.ic_dialog_alert).show()
+                    }
+                }
+            }
+
         }
 
 
@@ -384,14 +464,18 @@ class FindAccount : AppCompatActivity() {
                         val jsonMatches = JSONObject(matchhistoryURL)
                         val statsus = jsonMatches.getInt("status")
                         if (statsus == 200) {
-
                             val data = jsonMatches["data"] as JSONArray
                             val matches: MutableList<String> = ArrayList()
 
-                            for (i in 0 until data.length()){
-                                val map = data.getJSONObject(i).getJSONObject("metadata").getString("map")
-                                val mode = data.getJSONObject(i).getJSONObject("metadata").getString("mode")
+                            for (i in 0 until data.length()) {
+                                val map =
+                                    data.getJSONObject(i).getJSONObject("metadata").getString("map")
+                                val mode = data.getJSONObject(i).getJSONObject("metadata")
+                                    .getString("mode")
                                 matches.add("\n$mode on $map")
+//                                val matchID = data.getJSONObject(i).getJSONObject("metadata").getString("matchid")
+//                                val matchDatabse = MatchDatabases(this@FindAccount)
+//                                matchDatabse.addMatches(matchID, RiotName, map, mode)
                             }
 
                             uiThread {
@@ -412,20 +496,23 @@ class FindAccount : AppCompatActivity() {
                                     )
                                 ) { _, which ->
                                     when (which) {
-                                        0 -> matchActivityStart(Name, ID, 0)
-                                        1 -> matchActivityStart(Name, ID, 1)
-                                        2 -> matchActivityStart(Name, ID, 2)
-                                        3 -> matchActivityStart(Name, ID, 3)
-                                        4 -> matchActivityStart(Name, ID, 4)
-                                        5 -> matchActivityStart(Name, ID, 5)
-                                        6 -> matchActivityStart(Name, ID, 6)
-                                        7 -> matchActivityStart(Name, ID, 7)
-                                        8 -> matchActivityStart(Name, ID, 8)
-                                        9 -> matchActivityStart(Name, ID, 9)
+                                        0 -> matchActivityStart(Name, ID, 0, "none")
+                                        1 -> matchActivityStart(Name, ID, 1, "none")
+                                        2 -> matchActivityStart(Name, ID, 2, "none")
+                                        3 -> matchActivityStart(Name, ID, 3, "none")
+                                        4 -> matchActivityStart(Name, ID, 4, "none")
+                                        5 -> matchActivityStart(Name, ID, 5, "none")
+                                        6 -> matchActivityStart(Name, ID, 6, "none")
+                                        7 -> matchActivityStart(Name, ID, 7, "none")
+                                        8 -> matchActivityStart(Name, ID, 8, "none")
+                                        9 -> matchActivityStart(Name, ID, 9, "none")
                                     }
                                 }
                                 progressDialog.dismiss()
-                                builder.create().show()
+                                val dialog = builder.create()
+                                dialog.window!!.attributes.windowAnimations =
+                                    R.style.DialogAnimation_2
+                                dialog.show()
                             }
                         }
                         else{
@@ -491,11 +578,12 @@ class FindAccount : AppCompatActivity() {
 
     }
 
-    private fun matchActivityStart(Name: String, ID:String, matchNumber: Int){
+    private fun matchActivityStart(Name: String, ID: String, matchNumber: Int, matchID: String) {
         val matchintent = Intent(this@FindAccount, MatchHistoryActivity::class.java)
         matchintent.putExtra("RiotName", Name)
         matchintent.putExtra("RiotID", ID)
         matchintent.putExtra("MatchNumber", matchNumber)
+        matchintent.putExtra("MatchID", matchID)
         startActivity(matchintent)
 
     }

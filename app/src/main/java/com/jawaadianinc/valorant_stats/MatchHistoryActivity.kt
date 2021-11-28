@@ -22,7 +22,7 @@ class MatchHistoryActivity : AppCompatActivity() {
         viewPager = findViewById<View>(R.id.view_pager_matchHistory) as? ViewPager
         tabLayout?.tabGravity = TabLayout.GRAVITY_CENTER
         tabLayout?.tabMode = TabLayout.MODE_SCROLLABLE
-        tabLayout?.newTab()?.setText("Stats")?.setIcon(R.drawable.stats_icon).let {
+        tabLayout?.newTab()?.setText("Details")?.setIcon(R.drawable.details).let {
             if (it != null) {
                 tabLayout?.addTab(it)
             }

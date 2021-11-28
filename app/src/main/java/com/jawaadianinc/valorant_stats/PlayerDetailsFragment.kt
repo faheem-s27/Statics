@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -19,6 +20,7 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.InputStream
 import java.net.URL
 
 
@@ -100,11 +102,34 @@ class PlayerDetailsFragment : Fragment() {
                 val players = matchData.getJSONObject("players")
                 val redplayers = players.getJSONArray("red")
                 val blueplayers = players.getJSONArray("blue")
+                val allPlayers = players.getJSONArray("all_players")
 
-                var redplayerCodes : Array<String> = arrayOf()
+                var playerNames: Array<String> = arrayOf()
+                var agentURLs: Array<String> = arrayOf()
+
+                for (i in 0 until allPlayers.length()) {
+                    val player = allPlayers[i] as JSONObject
+                    val assets = player["assets"] as JSONObject
+                    val agent = assets["agent"] as JSONObject
+                    playerNames += (player.getString("name"))
+                    agentURLs += agent.getString("small")
+                }
+
+                var drawAble: IntArray = intArrayOf()
+
+                for (i in agentURLs) {
+                    uiThread {
+                        //Toast.makeText(activity?.applicationContext!!, i, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                //val mainAdapter = PlayerAdapter(activity?.applicationContext!!, playerNames, drawAble)
+                //gridView.setAdapter(mainAdapter)
+
+                var redplayerCodes: Array<String> = arrayOf()
                 var blueplayerCodes: Array<String> = arrayOf()
 
-                for (i in 0 until redplayers.length()){
+                for (i in 0 until redplayers.length()) {
                     val player = redplayers[i] as JSONObject
                     val name = player.getString("name")
                     val agent = player.getString("character")
@@ -117,19 +142,20 @@ class PlayerDetailsFragment : Fragment() {
                 }
 
                 var redtitlelist: Array<String> = arrayOf()
-                for (code in redplayerCodes){
-                   doAsync {
-                       try {
-                           val urltogetTitle =
-                               "https://valorant-api.com/v1/playertitles/$code"
-                           val url = URL(urltogetTitle).readText()
-                           val json = JSONObject(url)
-                           redtitlelist += json.getJSONObject("data").getString("titleText")
-                       } catch (e: Exception) {
-                           Toast.makeText(requireActivity(), "Error: $e", Toast.LENGTH_SHORT).show()
-                       }
-                   }
-               }
+                for (code in redplayerCodes) {
+                    doAsync {
+                        try {
+                            val urltogetTitle =
+                                "https://valorant-api.com/v1/playertitles/$code"
+                            val url = URL(urltogetTitle).readText()
+                            val json = JSONObject(url)
+                            redtitlelist += json.getJSONObject("data").getString("titleText")
+                        } catch (e: Exception) {
+                            Toast.makeText(requireActivity(), "Error: $e", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                }
 
 
                 for (i in 0 until blueplayers.length()){
@@ -144,9 +170,7 @@ class PlayerDetailsFragment : Fragment() {
                     }
                 }
 
-
                 var bluetitlelist : Array<String> = arrayOf()
-
                 for (code in blueplayerCodes){
                     doAsync {
                         try {
@@ -277,10 +301,20 @@ class PlayerDetailsFragment : Fragment() {
             }
         }
     }
-    private fun copyText(text:String){
+
+    private fun copyText(text: String) {
         val myClipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val myClip: ClipData = ClipData.newPlainText("Label", text)
         myClipboard.setPrimaryClip(myClip)
+    }
+
+    fun LoadImageFromWebURL(url: String?): Drawable? {
+        return try {
+            val iStream: InputStream = URL(url).content as InputStream
+            Drawable.createFromStream(iStream, "AgentURL")
+        } catch (e: java.lang.Exception) {
+            null
+        }
     }
 
 }
