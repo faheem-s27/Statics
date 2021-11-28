@@ -39,7 +39,6 @@ class RoundsMoreDetailsFragment : Fragment() {
         val id = requireActivity().intent.extras!!.getString("RiotID")
         val matchnumber = requireActivity().intent.extras!!.getInt("MatchNumber")
 
-        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$name/$id?size=10"
         val spinnerRounds: Spinner = view.findViewById(R.id.roundsSpinner)
         val minimapImage: ImageView = view.findViewById(R.id.mapImage)
         val mapName: TextView = view.findViewById(R.id.mapName)
@@ -51,14 +50,21 @@ class RoundsMoreDetailsFragment : Fragment() {
         minimapImage.layoutParams?.width = 1000
         minimapImage.requestLayout()
 
+        val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
+        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/${name}/$id?size=10"
+
         doAsync {
             try {
-                val matchhistoryURL = URL(allmatches).readText()
-                val jsonMatches = JSONObject(matchhistoryURL)
-                val data = jsonMatches["data"] as JSONArray
-                val easier = data.getJSONObject(matchnumber).getJSONObject("metadata")
-                val matchID = easier.getString("matchid")
-
+                var matchID: String = ""
+                if (IDofMatch == "none") {
+                    val matchhistoryURL = URL(allmatches).readText()
+                    val jsonMatches = JSONObject(matchhistoryURL)
+                    val data = jsonMatches["data"] as JSONArray
+                    val easier = data.getJSONObject(matchnumber).getJSONObject("metadata")
+                    matchID = easier.getString("matchid")
+                } else {
+                    matchID = IDofMatch!!
+                }
                 val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
 
                 val matchdetailsURL = URL(matchURl).readText()

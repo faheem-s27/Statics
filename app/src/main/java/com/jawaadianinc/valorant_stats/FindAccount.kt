@@ -166,8 +166,20 @@ class FindAccount : AppCompatActivity() {
         }
 
         viewMatch.setOnClickListener {
-            Toast.makeText(this, "Matches are saved but I'll add it soon!", Toast.LENGTH_SHORT)
-                .show()
+            val matchDatabse = MatchDatabases(this@FindAccount)
+            val matches = matchDatabse.getMatches((mySpinner.selectedItem.toString()))
+            if (matches != null) {
+                val intent = Intent(this@FindAccount, ViewMatches::class.java)
+                intent.putExtra("RiotName", mySpinner.selectedItem.toString())
+                startActivity(intent)
+
+            } else {
+                Toast.makeText(
+                    this@FindAccount,
+                    "No saved matches for this user!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         local.setOnClickListener {
@@ -207,12 +219,14 @@ class FindAccount : AppCompatActivity() {
                     uiThread {
                         val matchDatabse = MatchDatabases(this@FindAccount)
                         val matches = matchDatabse.getMatches((mySpinner.selectedItem.toString()))
+                        progressDialog.dismiss()
                         if (matches != null) {
                             Toast.makeText(
                                 this@FindAccount,
                                 "${matches.size} matches saved for ${mySpinner.selectedItem}!",
                                 Toast.LENGTH_SHORT
                             ).show()
+
                         } else {
                             Toast.makeText(
                                 this@FindAccount,
@@ -220,7 +234,6 @@ class FindAccount : AppCompatActivity() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                        progressDialog.dismiss()
                     }
                 } catch (e: java.io.FileNotFoundException) {
                     uiThread {
@@ -473,9 +486,6 @@ class FindAccount : AppCompatActivity() {
                                 val mode = data.getJSONObject(i).getJSONObject("metadata")
                                     .getString("mode")
                                 matches.add("\n$mode on $map")
-//                                val matchID = data.getJSONObject(i).getJSONObject("metadata").getString("matchid")
-//                                val matchDatabse = MatchDatabases(this@FindAccount)
-//                                matchDatabse.addMatches(matchID, RiotName, map, mode)
                             }
 
                             uiThread {

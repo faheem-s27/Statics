@@ -30,18 +30,22 @@ class RoundsDetailsFragment : Fragment() {
         val Name = requireActivity().intent.extras!!.getString("RiotName")
         val ID = requireActivity().intent.extras!!.getString("RiotID")
         val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
-
-        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
         val timelineView: LinearLayout = view.findViewById(R.id.timeLineview)
+
+        val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
+        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
         doAsync {
             try {
-                val matchhistoryURL = URL(allmatches).readText()
-                val jsonMatches = JSONObject(matchhistoryURL)
-                val data = jsonMatches["data"] as JSONArray
-                val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
-                val matchID = easier.getString("matchid")
-
+                val matchID: String = if (IDofMatch == "none") {
+                    val matchhistoryURL = URL(allmatches).readText()
+                    val jsonMatches = JSONObject(matchhistoryURL)
+                    val data = jsonMatches["data"] as JSONArray
+                    val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
+                    easier.getString("matchid")
+                } else {
+                    IDofMatch!!
+                }
                 val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
 
                 val matchdetailsURL = URL(matchURl).readText()

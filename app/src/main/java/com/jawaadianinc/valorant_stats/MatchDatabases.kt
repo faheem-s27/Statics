@@ -1,77 +1,106 @@
-package com.jawaadianinc.valorant_stats;
+package com.jawaadianinc.valorant_stats
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.content.ContentValues
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+import java.util.*
 
-import org.jetbrains.annotations.NotNull;
+class MatchDatabases(context: Context) : SQLiteOpenHelper(context, "matches.db", null, 1) {
 
-import java.util.ArrayList;
-
-public class MatchDatabases extends SQLiteOpenHelper {
-
-    public static final String MATCH_ID = "MATCH_ID";
-    public static final String USER = "USER";
-    public static final String USERMATCHES = "USERMATCHES";
-    public static final String MAP = "MAP";
-    public static final String GAMEMODE = "GAMEMODE";
-
-    public MatchDatabases(@NotNull Context context) {
-        super(context, "matches.db", null, 1);
+    override fun onCreate(db: SQLiteDatabase) {
+        val createTable =
+            "CREATE TABLE $USERMATCHES (ID INTEGER PRIMARY KEY AUTOINCREMENT, $MATCH_ID TEXT, $USER TEXT, $MAP TEXT, $GAMEMODE TEXT)"
+        db.execSQL(createTable)
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        String createTable = "CREATE TABLE " + USERMATCHES + " (" + MATCH_ID + " TEXT PRIMARY KEY, " + USER + " TEXT, " + MAP + " TEXT, " + GAMEMODE + " TEXT)";
-        db.execSQL(createTable);
-    }
+    override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, i: Int, i1: Int) {}
 
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
-    }
-
-    public boolean addMatches(String matchID, String User, String Map, String Gamemode) {
+    fun addMatches(matchID: String, User: String?, Map: String?, Gamemode: String?): Boolean {
         //Check if matchID exists in database
-        SQLiteDatabase database = this.getReadableDatabase();
-        String SQLString = "SELECT MATCH_ID FROM " + USERMATCHES + " WHERE " + MATCH_ID + " = '" + matchID + "'";
-        Cursor cursor = database.rawQuery(SQLString, null);
+        val database = this.readableDatabase
+        val sqlString =
+            "SELECT MATCH_ID FROM $USERMATCHES WHERE $MATCH_ID = '$matchID' AND $USER = '$User'"
+        val cursor = database.rawQuery(sqlString, null)
         if (cursor.moveToFirst()) {
-            cursor.close();
-            database.close();
-            return false;
+            cursor.close()
+            database.close()
+            return false
         }
 
-        //Execute if match isnt in database
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(MATCH_ID, matchID);
-        cv.put(GAMEMODE, Gamemode);
-        cv.put(MAP, Map);
-        cv.put(USER, User);
-        final long insert = db.insert(USERMATCHES, null, cv);
-        db.close();
-        return insert != -1;
+        //Execute if match isn't in database
+        val db = this.writableDatabase
+        val cv = ContentValues()
+        cv.put(MATCH_ID, matchID)
+        cv.put(GAMEMODE, Gamemode)
+        cv.put(MAP, Map)
+        cv.put(USER, User)
+        val insert = db.insert(USERMATCHES, null, cv)
+        db.close()
+        return insert != -1L
     }
 
-    public ArrayList<String> getMatches(String User) {
-        ArrayList<String> matchesID = new ArrayList<>();
-        String SQLString = "SELECT " + MATCH_ID + " FROM " + USERMATCHES + " WHERE " + USER + " = '" + User + "'";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(SQLString, null);
+    fun getMatches(User: String): ArrayList<String>? {
+        val matchesID = ArrayList<String>()
+        val sqlString =
+            "SELECT $MATCH_ID FROM $USERMATCHES WHERE $USER = '$User'"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(sqlString, null)
+        if (cursor.moveToFirst()) do {
+            val matchID = cursor.getString(0)
+            matchesID.add(matchID)
+        } while (cursor.moveToNext()) else {
+            return null
+        }
+        cursor.close()
+        db.close()
+        return matchesID
+    }
+
+    fun getTotalMatches() {
+
+    }
+
+    fun getTotalUserMatches(User: String): Int {
+        var numberofMatches = 0
+        val sqlString = "SELECT * FROM $USERMATCHES WHERE $USER = '$User'"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(sqlString, null)
         if (cursor.moveToFirst())
             do {
-                String MatchID = cursor.getString(0);
-                matchesID.add(MatchID);
-            } while (cursor.moveToNext());
-        else {
-            return null;
-        }
-        cursor.close();
-        db.close();
-        return matchesID;
+                numberofMatches += 1
+            } while (cursor.moveToNext())
+
+        cursor.close()
+        db.close()
+        return numberofMatches
     }
 
+    fun getallMatches(User: String): ArrayList<String> {
+        val matches = ArrayList<String>()
+        val sqlString = "SELECT $MAP, $GAMEMODE, $MATCH_ID FROM $USERMATCHES WHERE $USER = '$User'"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(sqlString, null)
+        if (cursor.moveToFirst())
+            do {
+                matches.add(
+                    cursor.getString(0) + " " + cursor.getString(1) + ":\n" + cursor.getString(
+                        2
+                    )
+                )
+            } while (cursor.moveToNext())
+
+        cursor.close()
+        db.close()
+        return matches
+    }
+
+
+    companion object {
+        const val MATCH_ID = "MATCH_ID"
+        const val USER = "USER"
+        const val USERMATCHES = "USERMATCHES"
+        const val MAP = "MAP"
+        const val GAMEMODE = "GAMEMODE"
+    }
 }

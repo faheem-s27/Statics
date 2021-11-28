@@ -36,23 +36,28 @@ class PlayerDetailsFragment : Fragment() {
         val Name = requireActivity().intent.extras!!.getString("RiotName")
         val ID = requireActivity().intent.extras!!.getString("RiotID")
         val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
+        val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
+
         doAsync {
             try {
-                val matchhistoryURL = URL(allmatches).readText()
-                val jsonMatches = JSONObject(matchhistoryURL)
-                val data = jsonMatches["data"] as JSONArray
-                val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
-                val matchID = easier.getString("matchid")
-
+                val matchID: String = if (IDofMatch == "none") {
+                    val matchhistoryURL = URL(allmatches).readText()
+                    val jsonMatches = JSONObject(matchhistoryURL)
+                    val data = jsonMatches["data"] as JSONArray
+                    val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
+                    easier.getString("matchid")
+                } else {
+                    IDofMatch!!
+                }
                 val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
 
                 val matchdetailsURL = URL(matchURl).readText()
                 val jsonDetails = JSONObject(matchdetailsURL)
                 val matchData = jsonDetails["data"] as JSONObject
 
-                val gridview : GridView = view.findViewById(R.id.redGridview)
-                val bluegridview : GridView = view.findViewById(R.id.blueGridView)
+                val gridview: GridView = view.findViewById(R.id.redGridview)
+                val bluegridview: GridView = view.findViewById(R.id.blueGridView)
 
                 val arrayList = ArrayList<String>()
                 val mAdapter = object :
