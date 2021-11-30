@@ -91,9 +91,8 @@ class MatchDatabases(context: Context) : SQLiteOpenHelper(context, "matches.db",
         if (cursor.moveToFirst())
             do {
                 matches.add(
-                    "Map: " +
-                            cursor.getString(0) + " " +
-                            "Gamemode: " + cursor.getString(1) + ":\n" + cursor.getString(2)
+                    cursor.getString(2) + ". " +
+                            cursor.getString(0) + ", " + cursor.getString(1)
                 )
             } while (cursor.moveToNext())
 
@@ -114,6 +113,62 @@ class MatchDatabases(context: Context) : SQLiteOpenHelper(context, "matches.db",
         return matchID
     }
 
+    fun filterMap(User: String, Map: String): ArrayList<String> {
+        val matches = ArrayList<String>()
+        val sqlString =
+            "SELECT $MAP, $GAMEMODE, ID FROM $USERMATCHES WHERE $USER = '$User' AND $MAP = '$Map'"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(sqlString, null)
+        if (cursor.moveToFirst())
+            do {
+                matches.add(
+                    cursor.getString(2) + ". " +
+                            cursor.getString(0) + ", " + cursor.getString(1)
+                )
+            } while (cursor.moveToNext())
+
+        cursor.close()
+        db.close()
+        return matches
+    }
+
+    fun filterMode(user: String, Mode: String): ArrayList<String> {
+        val matches = ArrayList<String>()
+        val sqlString =
+            "SELECT $MAP, $GAMEMODE, ID FROM $USERMATCHES WHERE $USER = '$user' AND $GAMEMODE = '$Mode'"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(sqlString, null)
+        if (cursor.moveToFirst())
+            do {
+                matches.add(
+                    cursor.getString(2) + ". " +
+                            cursor.getString(0) + ", " + cursor.getString(1)
+                )
+            } while (cursor.moveToNext())
+
+        cursor.close()
+        db.close()
+        return matches
+    }
+
+    fun filterMapandMode(user: String, map: String, mode: String): ArrayList<String> {
+        val matches = ArrayList<String>()
+        val sqlString =
+            "SELECT $MAP, $GAMEMODE, ID FROM $USERMATCHES WHERE $USER = '$user' AND $GAMEMODE = '$mode' AND $MAP = '$map'"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(sqlString, null)
+        if (cursor.moveToFirst())
+            do {
+                matches.add(
+                    cursor.getString(2) + ". " +
+                            cursor.getString(0) + ", " + cursor.getString(1)
+                )
+            } while (cursor.moveToNext())
+
+        cursor.close()
+        db.close()
+        return matches
+    }
 
     companion object {
         const val MATCH_ID = "MATCH_ID"

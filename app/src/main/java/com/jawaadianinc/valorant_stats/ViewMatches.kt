@@ -8,10 +8,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
@@ -28,6 +25,37 @@ class ViewMatches : AppCompatActivity() {
         val matchList: ListView = findViewById(R.id.matchList)
         val downloadedText: TextView = findViewById(R.id.downloaded)
         val playerImage: ImageView = findViewById(R.id.backgroundPlayer)
+        val mapSpinner: Spinner = findViewById(R.id.mapChooser)
+        val modeSpinner: Spinner = findViewById(R.id.modeChooser)
+
+        val mapList = java.util.ArrayList<String>()
+        mapList.add("All maps")
+        mapList.add("Ascent")
+        mapList.add("Bind")
+        mapList.add("Breeze")
+        mapList.add("Fracture")
+        mapList.add("Haven")
+        mapList.add("Icebox")
+        mapList.add("Split")
+
+        val modeList = java.util.ArrayList<String>()
+        modeList.add("All modes")
+        modeList.add("Competitive")
+        modeList.add("Unrated")
+        modeList.add("Spike Rush")
+        modeList.add("Deathmatch")
+        modeList.add("Escalation")
+        modeList.add("Replication")
+
+        val mapAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mapList)
+        mapAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice)
+        mapSpinner.adapter = mapAdapter
+
+        val modeAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, modeList)
+        modeAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice)
+        modeSpinner.adapter = modeAdapter
 
         val database = MatchDatabases(this)
         totalMatches.gravity = Gravity.CENTER
@@ -64,20 +92,87 @@ class ViewMatches : AppCompatActivity() {
 
         matchList.setOnItemClickListener { _, _, position, _ ->
             val wholeString = matchList.getItemAtPosition(position) as String
-            val splitting = wholeString.split(":\n")
-            val matchID = database.fetchMatchID(splitting[1].toInt())
+            val splitting = wholeString.split(".")
+            val matchID = database.fetchMatchID(splitting[0].toInt())
             val splitName = userName.split("#")
             val RiotName = splitName[0]
             val ID = splitName[1]
             matchActivityStart(RiotName, ID, 0, matchID!!)
         }
 
+        //TODO add filters to database
+        mapSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
+
+
+                    val text = mapSpinner.getItemAtPosition(position).toString()
+                    if (text == "All maps") {
+                        mAdapter.clear()
+                        val listofMatches = database.getallMatches(userName)
+                        for (i in listofMatches) {
+                            mAdapter.add(i)
+                        }
+                        mAdapter.notifyDataSetChanged()
+                        return
+                    }
+                    modeSpinner.setSelection(0)
+                    mAdapter.clear()
+                    val mapMatches = database.filterMap(userName, text)
+                    for (i in mapMatches) {
+                        mAdapter.add(i)
+                    }
+                    mAdapter.notifyDataSetChanged()
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                    TODO("Not yet implemented")
+                }
+            }
+
+        modeSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
+
+                    val text = modeSpinner.getItemAtPosition(position).toString()
+                    if (text == "All modes") {
+                        mAdapter.clear()
+                        val listofMatches = database.getallMatches(userName)
+                        for (i in listofMatches) {
+                            mAdapter.add(i)
+                        }
+                        mAdapter.notifyDataSetChanged()
+                        return
+                    }
+                    mapSpinner.setSelection(0)
+                    mAdapter.clear()
+                    val mapMatches = database.filterMode(userName, text)
+                    for (i in mapMatches) {
+                        mAdapter.add(i)
+                    }
+                    mAdapter.notifyDataSetChanged()
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                    TODO("Not yet implemented")
+                }
+            }
+        //END
+
         val split = userName.split("#")
         val Name = split[0]
         val ID = split[1]
-
         val PlayerURL = "https://api.henrikdev.xyz/valorant/v1/account/${Name}/$ID?force=true"
-
         doAsync {
             val text = URL(PlayerURL).readText()
             var data = JSONObject(text)
