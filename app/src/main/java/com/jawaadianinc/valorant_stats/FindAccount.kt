@@ -50,7 +50,7 @@ class FindAccount : AppCompatActivity() {
         val matchHistoryButton: Button = findViewById(R.id.matchHistory)
         val updatesButton: Button = findViewById(R.id.updateBT)
         val compareButton: Button = findViewById(R.id.compareBT)
-        val local: Button = findViewById(R.id.localHistory)
+//        val local: Button = findViewById(R.id.localHistory)
         val viewMatch: Button = findViewById(R.id.viewHistory)
 
         val addname: Button = findViewById(R.id.addname)
@@ -182,80 +182,80 @@ class FindAccount : AppCompatActivity() {
             }
         }
 
-        local.setOnClickListener {
-            val progressDialog = ProgressDialog(this)
-            progressDialog.setTitle("Saving Matches")
-            progressDialog.setMessage("Storing matches on local storage.")
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            progressDialog.setCancelable(false)
-            progressDialog.show()
-
-            //Get matches
-            val fullname = mySpinner.selectedItem.toString()
-            val name = fullname.split("#")
-            val matchHistoryURL =
-                "https://api.henrikdev.xyz/valorant/v3/matches/eu/${name[0]}/${name[1]}?size=10"
-            doAsync {
-                try {
-                    val matchhistoryURL = URL(matchHistoryURL).readText()
-                    val jsonMatches = JSONObject(matchhistoryURL)
-                    val data = jsonMatches["data"] as JSONArray
-
-                    for (i in 0 until data.length()) {
-                        val map = data.getJSONObject(i).getJSONObject("metadata").getString("map")
-                        val mode = data.getJSONObject(i).getJSONObject("metadata").getString("mode")
-                        val matchID =
-                            data.getJSONObject(i).getJSONObject("metadata").getString("matchid")
-                        val matchDatabse = MatchDatabases(this@FindAccount)
-                        matchDatabse.addMatches(
-                            matchID,
-                            mySpinner.selectedItem.toString(),
-                            map,
-                            mode
-                        )
-                    }
-
-                    //Save data
-                    uiThread {
-                        val matchDatabse = MatchDatabases(this@FindAccount)
-                        val matches = matchDatabse.getMatches((mySpinner.selectedItem.toString()))
-                        progressDialog.dismiss()
-                        if (matches != null) {
-                            Toast.makeText(
-                                this@FindAccount,
-                                "${matches.size} matches saved for ${mySpinner.selectedItem}!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                        } else {
-                            Toast.makeText(
-                                this@FindAccount,
-                                "No saved matches for this user!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                } catch (e: java.io.FileNotFoundException) {
-                    uiThread {
-                        progressDialog.dismiss()
-                        AlertDialog.Builder(this@FindAccount).setTitle("User Not Found!")
-                            .setMessage("It appears this name '${mySpinner.selectedItem}' does not exist!\nTry a different name")
-                            .setPositiveButton(android.R.string.ok) { _, _ -> }
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show()
-                    }
-                } catch (e: Exception) {
-                    uiThread {
-                        progressDialog.dismiss()
-                        AlertDialog.Builder(this@FindAccount).setTitle("Error!")
-                            .setMessage("Error Message: $e")
-                            .setPositiveButton(android.R.string.ok) { _, _ -> }
-                            .setIcon(android.R.drawable.ic_dialog_alert).show()
-                    }
-                }
-            }
-
-        }
+//        local.setOnClickListener {
+//            val progressDialog = ProgressDialog(this)
+//            progressDialog.setTitle("Saving Matches")
+//            progressDialog.setMessage("Storing matches on local storage.")
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+//            progressDialog.setCancelable(false)
+//            progressDialog.show()
+//
+//            //Get matches
+//            val fullname = mySpinner.selectedItem.toString()
+//            val name = fullname.split("#")
+//            val matchHistoryURL =
+//                "https://api.henrikdev.xyz/valorant/v3/matches/eu/${name[0]}/${name[1]}?size=10"
+//            doAsync {
+//                try {
+//                    val matchhistoryURL = URL(matchHistoryURL).readText()
+//                    val jsonMatches = JSONObject(matchhistoryURL)
+//                    val data = jsonMatches["data"] as JSONArray
+//
+//                    for (i in 0 until data.length()) {
+//                        val map = data.getJSONObject(i).getJSONObject("metadata").getString("map")
+//                        val mode = data.getJSONObject(i).getJSONObject("metadata").getString("mode")
+//                        val matchID =
+//                            data.getJSONObject(i).getJSONObject("metadata").getString("matchid")
+//                        val matchDatabse = MatchDatabases(this@FindAccount)
+//                        matchDatabse.addMatches(
+//                            matchID,
+//                            mySpinner.selectedItem.toString(),
+//                            map,
+//                            mode
+//                        )
+//                    }
+//
+//                    //Save data
+//                    uiThread {
+//                        val matchDatabse = MatchDatabases(this@FindAccount)
+//                        val matches = matchDatabse.getMatches((mySpinner.selectedItem.toString()))
+//                        progressDialog.dismiss()
+//                        if (matches != null) {
+//                            Toast.makeText(
+//                                this@FindAccount,
+//                                "${matches.size} matches saved for ${mySpinner.selectedItem}!",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//
+//                        } else {
+//                            Toast.makeText(
+//                                this@FindAccount,
+//                                "No saved matches for this user!",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        }
+//                    }
+//                } catch (e: java.io.FileNotFoundException) {
+//                    uiThread {
+//                        progressDialog.dismiss()
+//                        AlertDialog.Builder(this@FindAccount).setTitle("User Not Found!")
+//                            .setMessage("It appears this name '${mySpinner.selectedItem}' does not exist!\nTry a different name")
+//                            .setPositiveButton(android.R.string.ok) { _, _ -> }
+//                            .setIcon(android.R.drawable.ic_dialog_alert)
+//                            .show()
+//                    }
+//                } catch (e: Exception) {
+//                    uiThread {
+//                        progressDialog.dismiss()
+//                        AlertDialog.Builder(this@FindAccount).setTitle("Error!")
+//                            .setMessage("Error Message: $e")
+//                            .setPositiveButton(android.R.string.ok) { _, _ -> }
+//                            .setIcon(android.R.drawable.ic_dialog_alert).show()
+//                    }
+//                }
+//            }
+//
+//        }
 
 
     }
@@ -486,9 +486,24 @@ class FindAccount : AppCompatActivity() {
                                 val mode = data.getJSONObject(i).getJSONObject("metadata")
                                     .getString("mode")
                                 matches.add("\n$mode on $map")
+                                val matchID =
+                                    data.getJSONObject(i).getJSONObject("metadata")
+                                        .getString("matchid")
+                                val matchDatabse = MatchDatabases(this@FindAccount)
+                                matchDatabse.addMatches(
+                                    matchID,
+                                    RiotName,
+                                    map,
+                                    mode
+                                )
                             }
 
                             uiThread {
+                                Toast.makeText(
+                                    this@FindAccount,
+                                    "Matches saved!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 val builder = AlertDialog.Builder(this@FindAccount)
                                 builder.setTitle("Here are the last 10 matches!")
                                 builder.setItems(

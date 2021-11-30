@@ -2,6 +2,7 @@ package com.jawaadianinc.valorant_stats
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.util.*
@@ -57,8 +58,14 @@ class MatchDatabases(context: Context) : SQLiteOpenHelper(context, "matches.db",
         return matchesID
     }
 
-    fun getTotalMatches() {
-
+    fun getTotalMatches(): Int {
+        val countQuery = "SELECT  * FROM $USERMATCHES"
+        val db = this.readableDatabase
+        val cursor: Cursor = db.rawQuery(countQuery, null)
+        val count: Int = cursor.count
+        cursor.close()
+        db.close()
+        return count
     }
 
     fun getTotalUserMatches(User: String): Int {
@@ -78,21 +85,33 @@ class MatchDatabases(context: Context) : SQLiteOpenHelper(context, "matches.db",
 
     fun getallMatches(User: String): ArrayList<String> {
         val matches = ArrayList<String>()
-        val sqlString = "SELECT $MAP, $GAMEMODE, $MATCH_ID FROM $USERMATCHES WHERE $USER = '$User'"
+        val sqlString = "SELECT $MAP, $GAMEMODE, ID FROM $USERMATCHES WHERE $USER = '$User'"
         val db = this.readableDatabase
         val cursor = db.rawQuery(sqlString, null)
         if (cursor.moveToFirst())
             do {
                 matches.add(
-                    cursor.getString(0) + " " + cursor.getString(1) + ":\n" + cursor.getString(
-                        2
-                    )
+                    "Map: " +
+                            cursor.getString(0) + " " +
+                            "Gamemode: " + cursor.getString(1) + ":\n" + cursor.getString(2)
                 )
             } while (cursor.moveToNext())
 
         cursor.close()
         db.close()
         return matches
+    }
+
+    fun fetchMatchID(ID: Int): String? {
+        var matchID: String? = null
+        val sql = "SELECT $MATCH_ID FROM $USERMATCHES WHERE ID = '$ID'"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(sql, null)
+        if (cursor.moveToFirst()) {
+            matchID = cursor.getString(0)
+        }
+        cursor.close()
+        return matchID
     }
 
 

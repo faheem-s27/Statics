@@ -9,9 +9,14 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.squareup.picasso.Picasso
+import org.jetbrains.anko.doAsync
+import org.json.JSONObject
+import java.net.URL
 
 class ViewMatches : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,11 +26,15 @@ class ViewMatches : AppCompatActivity() {
         val userName = intent.extras!!.getString("RiotName")
         val totalMatches: TextView = findViewById(R.id.totalMatches)
         val matchList: ListView = findViewById(R.id.matchList)
+        val downloadedText: TextView = findViewById(R.id.downloaded)
+        val playerImage: ImageView = findViewById(R.id.backgroundPlayer)
 
         val database = MatchDatabases(this)
         totalMatches.gravity = Gravity.CENTER
         totalMatches.text =
             "$userName\n" + database.getTotalUserMatches(userName!!) + " matches saved"
+
+        downloadedText.text = "Downloaded ${database.getTotalMatches()} total matches!"
 
         val arrayList = ArrayList<String>()
         val mAdapter = object :
@@ -55,15 +64,37 @@ class ViewMatches : AppCompatActivity() {
 
         matchList.setOnItemClickListener { _, _, position, _ ->
             val wholeString = matchList.getItemAtPosition(position) as String
-            val splitting = wholeString.split(":")
-            val matchID = splitting[1]
-
+            val splitting = wholeString.split(":\n")
+            val matchID = database.fetchMatchID(splitting[1].toInt())
             val splitName = userName.split("#")
             val RiotName = splitName[0]
             val ID = splitName[1]
-            matchActivityStart(RiotName, ID, 0, matchID)
-
+            matchActivityStart(RiotName, ID, 0, matchID!!)
         }
+
+        val split = userName.split("#")
+        val Name = split[0]
+        val ID = split[1]
+
+        val PlayerURL = "https://api.henrikdev.xyz/valorant/v1/account/${Name}/$ID?force=true"
+
+        doAsync {
+            val text = URL(PlayerURL).readText()
+            var data = JSONObject(text)
+            data = data["data"] as JSONObject
+            val cards = data["card"] as JSONObject
+            val playerCard = cards["large"].toString()
+            runOnUiThread {
+                Picasso
+                    .get()
+                    .load(playerCard)
+                    .fit()
+                    .centerCrop()
+                    .into(playerImage)
+
+            }
+        }
+
 
     }
 

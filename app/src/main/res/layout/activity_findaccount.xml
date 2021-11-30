@@ -156,7 +156,7 @@
 
                 <Button
                     android:id="@+id/updateBT"
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
@@ -174,7 +174,7 @@
 
                 <Button
                     android:id="@+id/compareBT"
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
@@ -194,50 +194,34 @@
                     android:id="@+id/matchHistory"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="Previous"
+                    android:text="Match History"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="20dp"
                     app:icon="@drawable/matchhistory"
                     app:iconSize="30dp"
                     app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toStartOf="@+id/localHistory"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/viewHistory"
+                    app:layout_constraintStart_toStartOf="@+id/viewHistory"
                     app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
                 <Button
                     android:id="@+id/viewHistory"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="View Downloaded Matches"
+                    android:text="View Saved Matches"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="20dp"
                     app:icon="@drawable/moredetails"
                     app:iconSize="30dp"
                     app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/localHistory"
-                    app:layout_constraintStart_toStartOf="@+id/matchHistory"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/matchHistory" />
 
                 <Button
-                    android:id="@+id/localHistory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="32dp"
-                    android:text="Download"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="20dp"
-                    app:icon="@drawable/backupicon"
-                    app:iconSize="30dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-                <Button
                     android:id="@+id/splitscreenButton"
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
@@ -247,59 +231,24 @@
                     app:icon="@drawable/splitscreen"
                     app:iconSize="25dp"
                     app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.502"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/viewHistory"
+                    app:layout_constraintStart_toStartOf="@+id/viewHistory"
                     app:layout_constraintTop_toBottomOf="@+id/textView7"
                     app:strokeColor="#FFFFFF" />
 
                 <Button
                     android:id="@+id/generalStats"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
                     android:layout_marginTop="8dp"
-                    android:text="Stats"
+                    android:text="Player Stats"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="20dp"
                     app:icon="@drawable/searchicon"
                     app:iconSize="30dp"
                     app:iconTint="#FFFFFF"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-                <Button
-                    android:id="@+id/agent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:checkable="false"
-                    android:clickable="false"
-                    android:text="Agent"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="20dp"
-                    app:icon="@drawable/agentesicon"
-                    app:iconSize="30dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintStart_toEndOf="@+id/generalStats"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-                <Button
-                    android:id="@+id/gun"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:checkable="false"
-                    android:clickable="false"
-                    android:text="Gun"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="20dp"
-                    app:icon="@drawable/gun"
-                    app:iconSize="30dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintStart_toEndOf="@+id/agent"
+                    app:layout_constraintEnd_toEndOf="@+id/matchHistory"
+                    app:layout_constraintStart_toStartOf="@+id/matchHistory"
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
                 <TextView
@@ -334,7 +283,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-black"
-                    android:text="Ill do this later"
+                    android:text="Miscellaneous"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
