@@ -27,23 +27,26 @@ class FindAccount : AppCompatActivity() {
     var PLAYERCARD = ""
     private lateinit var handler: Handler
     private lateinit var runnable: Runnable
-    private lateinit var imagebackground :ImageView
+    private lateinit var imagebackground: ImageView
 
-    val imagesURL = arrayOf(
-        "https://mfiles.alphacoders.com/918/918510.jpg",
-        "https://mfiles.alphacoders.com/921/921074.jpg",
-        "https://i.pinimg.com/originals/3a/1f/70/3a1f70e6b2fad80fa59a34dab44b7882.gif",
-        "https://mfiles.alphacoders.com/908/908217.png",
-        "https://mfiles.alphacoders.com/864/864178.png",
-        "https://1.bp.blogspot.com/-w9Si9jtaaK4/XuFPpqPZqqI/AAAAAAAASWY/GCrORIscy-8zubmSvrJ2_6qkmt3lXMP4QCK4BGAsYHg/d/valorant-wallpaper-2020-06-10-172425-2-heroscreen.cc.jpg",
-        "https://hdandroidwallpaper.com/wp-content/uploads/2020/12/valorant-Wallpaper-Mobile.jpg",
-        "https://www.mordeo.org/files/uploads/2020/05/Sage-Valorant-4K-Ultra-HD-Mobile-Wallpaper-950x1689.jpg"
-    )
-
+    //val imagesURL: Array<String> = arrayOf("https://media.valorant-api.com/playercards/3432dc3d-47da-4675-67ae-53adb1fdad5e/largeart.png")
+    val imagesURL = java.util.ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_findaccount)
+
+        imagesURL.add("https://media.valorant-api.com/playercards/3432dc3d-47da-4675-67ae-53adb1fdad5e/largeart.png")
+
+        doAsync {
+            val getValoImagesURL =
+                JSONObject(URL("https://valorant-api.com/v1/playercards").readText())
+            val images = getValoImagesURL["data"] as JSONArray
+            for (i in 0 until images.length()) {
+                val imageURL = images[i] as JSONObject
+                imagesURL.add(imageURL["largeArt"].toString())
+            }
+        }
 
         val userNameEditText: EditText = findViewById(R.id.editTextValorantName)
         val findaccountButton: Button = findViewById(R.id.generalStats)
@@ -261,8 +264,9 @@ class FindAccount : AppCompatActivity() {
     }
 
     private fun doTask(handler: Handler){
-        Picasso.get().load(imagesURL.random()).placeholder(imagebackground.drawable).into(imagebackground)
-        handler.postDelayed(runnable,4000)
+        Picasso.get().load(imagesURL.random()).placeholder(imagebackground.drawable)
+            .into(imagebackground)
+        handler.postDelayed(runnable, 3000)
 
     }
 

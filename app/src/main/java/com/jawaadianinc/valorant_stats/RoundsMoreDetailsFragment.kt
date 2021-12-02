@@ -56,14 +56,14 @@ class RoundsMoreDetailsFragment : Fragment() {
         doAsync {
             try {
                 var matchID: String = ""
-                if (IDofMatch == "none") {
+                matchID = if (IDofMatch == "none") {
                     val matchhistoryURL = URL(allmatches).readText()
                     val jsonMatches = JSONObject(matchhistoryURL)
                     val data = jsonMatches["data"] as JSONArray
                     val easier = data.getJSONObject(matchnumber).getJSONObject("metadata")
-                    matchID = easier.getString("matchid")
+                    easier.getString("matchid")
                 } else {
-                    matchID = IDofMatch!!
+                    IDofMatch!!
                 }
                 val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
 
@@ -166,9 +166,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                                 val getRoundName =
                                     spinnerRounds.getItemAtPosition(position).toString()
                                 val numberinRound = getRoundName.split(" ")
-
                                 val actualRound: Int = numberinRound[1].toInt() - 1
-
                                 val matchDetails =
                                     handleSpecificRoundDetails(rounds[actualRound] as JSONObject)
 
@@ -187,17 +185,10 @@ class RoundsMoreDetailsFragment : Fragment() {
                                                 "\nSite ${matchDetails[5]}"
                                     )
                                 }
-
-                                try {
-                                    handleSpikeCoordinates(
-                                        matchDetails[3].toInt(), matchDetails[4].toInt(),
-                                        xMult, yMult, xScalar, yScalar
-                                    )
-                                } catch (e: Exception) {
-                                    spikePlanted?.setImageDrawable(null)
-                                    playerPosition?.setImageDrawable(null)
-                                    coordinates.text = ""
-                                }
+                                handleSpikeCoordinates(
+                                    matchDetails[3].toInt(), matchDetails[4].toInt(),
+                                    xMult, yMult, xScalar, yScalar
+                                )
                             }
 
                             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -247,7 +238,6 @@ class RoundsMoreDetailsFragment : Fragment() {
                 Bitmap.Config.ARGB_8888
             )
 
-
             val playerLocations = plantInfo["player_locations_on_plant"] as JSONArray
 
             for (i in 0 until playerLocations.length()) {
@@ -255,15 +245,11 @@ class RoundsMoreDetailsFragment : Fragment() {
                 val actuallocation = location["location"] as JSONObject
                 val x = actuallocation["x"] as Int
                 val y = actuallocation["y"] as Int
-
                 val playerTeam = location["player_team"] as String
-
                 val paint = Paint()
-
                 paint.style = Paint.Style.FILL
                 paint.strokeWidth = 10F
                 val radius: Int
-
                 val name = requireActivity().intent.extras!!.getString("RiotName")
                 val id = requireActivity().intent.extras!!.getString("RiotID")
                 val riotName = "$name#$id"

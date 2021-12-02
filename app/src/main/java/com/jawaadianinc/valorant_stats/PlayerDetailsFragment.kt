@@ -38,7 +38,6 @@ class PlayerDetailsFragment : Fragment() {
         val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
         val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
-
         doAsync {
             try {
                 val matchID: String = if (IDofMatch == "none") {

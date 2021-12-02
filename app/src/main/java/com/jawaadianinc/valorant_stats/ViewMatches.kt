@@ -46,6 +46,7 @@ class ViewMatches : AppCompatActivity() {
         modeList.add("Deathmatch")
         modeList.add("Escalation")
         modeList.add("Replication")
+        modeList.add("Custom Game")
 
         val mapAdapter: ArrayAdapter<String> =
             ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mapList)
@@ -100,7 +101,7 @@ class ViewMatches : AppCompatActivity() {
             matchActivityStart(RiotName, ID, 0, matchID!!)
         }
 
-        //TODO add filters to database
+        //TODO fix bug of mode and gamemode!
         mapSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -109,19 +110,19 @@ class ViewMatches : AppCompatActivity() {
                     position: Int,
                     id: Long
                 ) {
-
-
                     val text = mapSpinner.getItemAtPosition(position).toString()
+                    val modeText = modeSpinner.selectedItem.toString()
                     if (text == "All maps") {
-                        mAdapter.clear()
-                        val listofMatches = database.getallMatches(userName)
-                        for (i in listofMatches) {
-                            mAdapter.add(i)
+                        if (modeText == "All modes") {
+                            mAdapter.clear()
+                            val listofMatches = database.getallMatches(userName)
+                            for (i in listofMatches) {
+                                mAdapter.add(i)
+                            }
+                            mAdapter.notifyDataSetChanged()
+                            return
                         }
-                        mAdapter.notifyDataSetChanged()
-                        return
                     }
-                    modeSpinner.setSelection(0)
                     mAdapter.clear()
                     val mapMatches = database.filterMap(userName, text)
                     for (i in mapMatches) {
@@ -143,18 +144,19 @@ class ViewMatches : AppCompatActivity() {
                     position: Int,
                     id: Long
                 ) {
-
                     val text = modeSpinner.getItemAtPosition(position).toString()
+                    val mapText = mapSpinner.selectedItem.toString()
                     if (text == "All modes") {
-                        mAdapter.clear()
-                        val listofMatches = database.getallMatches(userName)
-                        for (i in listofMatches) {
-                            mAdapter.add(i)
+                        if (mapText == "All maps") {
+                            mAdapter.clear()
+                            val listofMatches = database.getallMatches(userName)
+                            for (i in listofMatches) {
+                                mAdapter.add(i)
+                            }
+                            mAdapter.notifyDataSetChanged()
+                            return
                         }
-                        mAdapter.notifyDataSetChanged()
-                        return
                     }
-                    mapSpinner.setSelection(0)
                     mAdapter.clear()
                     val mapMatches = database.filterMode(userName, text)
                     for (i in mapMatches) {
@@ -186,11 +188,8 @@ class ViewMatches : AppCompatActivity() {
                     .fit()
                     .centerCrop()
                     .into(playerImage)
-
             }
         }
-
-
     }
 
     private fun matchActivityStart(Name: String, ID: String, matchNumber: Int, matchID: String) {
