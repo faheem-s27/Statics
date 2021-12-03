@@ -2,6 +2,8 @@
 An Android application designed to view a player's VALORANT stats, in beta production at the moment with plans to release this on the Google Play Store in the upcoming months!
 By Faheem :)
 
+![Screenshot](fulllogo.png)
+
 ## Features
 - Able to view stats on various gamemodes such as unrated, competitive and more!
 - Being able to see the match history of players!
