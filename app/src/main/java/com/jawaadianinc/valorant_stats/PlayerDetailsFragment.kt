@@ -50,7 +50,6 @@ class PlayerDetailsFragment : Fragment() {
                     IDofMatch!!
                 }
                 val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-
                 val matchdetailsURL = URL(matchURl).readText()
                 val jsonDetails = JSONObject(matchdetailsURL)
                 val matchData = jsonDetails["data"] as JSONObject

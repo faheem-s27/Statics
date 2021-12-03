@@ -297,9 +297,7 @@ class RoundsMoreDetailsFragment : Fragment() {
         xScalarToAdd: Double,
         yScalarToAdd: Double
     ) {
-
         val minimapImage: ImageView? = view?.findViewById(R.id.mapImage)
-
         val coordinates: TextView? = view?.findViewById(R.id.spikeCoordinates)
         val finalX: Int = (((y * xMultiplier) + xScalarToAdd) * 1000).roundToInt()
         val finalY: Int = (((x * yMultiplier) + yScalarToAdd) * 1000).roundToInt()

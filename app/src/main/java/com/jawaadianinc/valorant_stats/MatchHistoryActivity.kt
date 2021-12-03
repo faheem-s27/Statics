@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -71,7 +70,6 @@ class MatchHistoryActivity : AppCompatActivity() {
         val refresFab : FloatingActionButton = findViewById(R.id.refreshFab2)
         refresFab.setOnClickListener{
             finish()
-            startActivity(Intent(this, FindAccount::class.java))
         }
 
     }

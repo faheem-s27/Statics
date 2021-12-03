@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -97,7 +96,6 @@ class StatsActivity : AppCompatActivity() {
         val refresFab: FloatingActionButton = findViewById(R.id.refreshFab)
         refresFab.setOnClickListener {
             finish()
-            startActivity(Intent(this, FindAccount::class.java))
         }
 
     }
