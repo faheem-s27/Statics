@@ -21,10 +21,10 @@ By Faheem :)
 
 
 ## Features for Apex Legends
-### COMING SOON
+- COMING SOON
 
 
-### Coming before first official release
+# Coming before first official release
 These are features which I would like to get done before releasing it on the play store
 
 ## For VALORANT
