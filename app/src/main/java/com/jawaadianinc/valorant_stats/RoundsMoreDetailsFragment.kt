@@ -20,7 +20,6 @@ import kotlin.math.roundToInt
 
 @SuppressLint("SetTextI18n")
 class RoundsMoreDetailsFragment : Fragment() {
-
     var xMult: Double = 0.0
     var yMult: Double = 0.0
     var xScalar: Double = 0.0
@@ -255,7 +254,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                 val riotName = "$name#$id"
 
                 if (location["player_display_name"] == riotName) {
-                    radius = 17
+                    radius = 20
                     if (playerTeam == "Red") {
                         paint.color = Color.RED
                     } else {
@@ -309,6 +308,14 @@ class RoundsMoreDetailsFragment : Fragment() {
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = 15F
         paint.color = Color.BLACK
+
+        val SpikeIcon = BitmapFactory.decodeResource(
+            requireContext().resources,
+            R.drawable.spikelogo
+        )
+
+        val newIcon = Bitmap.createScaledBitmap(SpikeIcon, 100, 100, false)
+
         val bitmap =
             minimapImage.let {
                 minimapImage?.width?.let { it1 ->
@@ -320,7 +327,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                 }
             }
         bitmap?.let { Canvas(it) }
-            ?.drawCircle(finalX.toFloat(), finalY.toFloat(), radius.toFloat(), paint)
+            ?.drawBitmap(newIcon, finalX.toFloat() - 50, finalY.toFloat() - 50, paint)
         spikePlanted?.setImageBitmap(bitmap)
     }
 

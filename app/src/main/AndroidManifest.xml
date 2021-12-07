@@ -15,6 +15,17 @@
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".brawlFindAccount"
+            android:exported="false" />
+        <activity
+            android:name=".BrawlFindAccount"
+            android:exported="false"
+            android:label="@string/title_activity_brawl_find_account"
+            android:theme="@style/Theme.VALORANT_stats.NoActionBar" />
+        <activity
+            android:name=".GamePicker"
+            android:exported="false" />
+        <activity
             android:name=".ViewMatches"
             android:exported="false" />
         <activity
@@ -63,6 +74,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

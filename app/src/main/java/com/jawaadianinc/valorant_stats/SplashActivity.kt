@@ -15,7 +15,7 @@ class SplashActivity : AppCompatActivity() {
 
         val mHandler = Handler()
         mHandler.postDelayed(Runnable {
-            val intent = Intent(this, FindAccount::class.java)
+            val intent = Intent(this, GamePicker::class.java)
             startActivity(intent)
             finish()
         }, 2000L)

@@ -37,7 +37,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/editTextValorantName"
@@ -46,7 +46,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="24dp"
-            android:backgroundTint="@color/purple_500"
+            android:backgroundTint="@color/ic_launcher_background"
             android:ems="10"
             android:fitsSystemWindows="true"
             android:foregroundGravity="center"
@@ -66,6 +66,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/ic_launcher_background"
             android:text="Add name"
             android:textColor="#FFFFFF"
             app:cornerRadius="15dp"
@@ -83,6 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
+            android:backgroundTint="@color/ic_launcher_background"
             android:text="Delete all"
             android:textColor="#FFFFFF"
             app:cornerRadius="15dp"
@@ -159,6 +161,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/ic_launcher_background"
                     android:gravity="center"
                     android:text="Updates"
                     android:textColor="#FFFFFF"
@@ -177,6 +180,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/ic_launcher_background"
                     android:gravity="center"
                     android:text="Compare"
                     android:textColor="#FFFFFF"
@@ -194,6 +198,7 @@
                     android:id="@+id/matchHistory"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/ic_launcher_background"
                     android:text="Match History"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="20dp"
@@ -205,10 +210,28 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
                 <Button
+                    android:id="@+id/download"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/ic_launcher_background"
+                    android:text="Download Matches"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="20dp"
+                    app:icon="@android:drawable/stat_sys_download_done"
+                    app:iconSize="30dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/viewHistory"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/viewHistory"
+                    app:layout_constraintTop_toBottomOf="@+id/matchHistory" />
+
+                <Button
                     android:id="@+id/viewHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/ic_launcher_background"
                     android:text="View Saved Matches"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="20dp"
@@ -216,14 +239,16 @@
                     app:iconSize="30dp"
                     app:iconTint="#FFFFFF"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.497"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/matchHistory" />
+                    app:layout_constraintTop_toBottomOf="@+id/download" />
 
                 <Button
                     android:id="@+id/splitscreenButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/ic_launcher_background"
                     android:gravity="center"
                     android:text="Split screen "
                     android:textColor="#FFFFFF"
@@ -241,6 +266,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/ic_launcher_background"
                     android:text="Player Stats"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="20dp"
