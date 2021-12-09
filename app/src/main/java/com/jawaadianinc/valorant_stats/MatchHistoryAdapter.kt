@@ -22,6 +22,9 @@ class MatchHistoryAdapter(fm: FragmentManager?, var totalTabs: Int) :
             3 -> {
                 RoundsMoreDetailsFragment()
             }
+            4 -> {
+                kill_feed_Fragment()
+            }
 
             else -> throw IllegalStateException("position $position is invalid for this viewpager")
         }

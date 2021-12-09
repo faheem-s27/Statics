@@ -35,7 +35,7 @@ class MatchDetailsFragment : Fragment() {
         progressDialog.setMessage("Please wait a moment")
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER) // There are 3 styles, You'll figure it out :)
         progressDialog.setCancelable(false)
-        progressDialog.show()
+        //progressDialog.show()
 
         val Name = requireActivity().intent.extras!!.getString("RiotName")
         val ID = requireActivity().intent.extras!!.getString("RiotID")
@@ -139,20 +139,22 @@ class MatchDetailsFragment : Fragment() {
                         } catch (e: Exception) {
                         }
                     }
-                    val mapImage : ImageView = view.findViewById(R.id.mapURL)
+                    val mapImage: ImageView = view.findViewById(R.id.mapURL)
                     if (actualtMapUlr !== "") {
                         Picasso.get().load(actualtMapUlr).into(mapImage)
                     }
 
-                    progressDialog.dismiss()
-
+                    //progressDialog.dismiss()
+                    val progress: ProgressBar = view.findViewById(R.id.progress)
+                    progress.visibility = View.INVISIBLE
                 }
 
 
             }
             catch (e:Exception){
                 uiThread {
-                    progressDialog.dismiss()
+                    val progress: ProgressBar = view.findViewById(R.id.progress)
+                    progress.visibility = View.INVISIBLE
                     AlertDialog.Builder(requireActivity()).setTitle("Error!")
                         .setMessage("Error Message: $e")
                         .setPositiveButton(android.R.string.ok) { _, _ -> }

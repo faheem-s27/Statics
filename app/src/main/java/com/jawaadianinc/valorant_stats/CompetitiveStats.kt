@@ -10,10 +10,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -35,6 +32,7 @@ class CompetitiveStats : Fragment() {
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val progress: ProgressBar = view.findViewById(R.id.progress2)
         val playerName: TextView = view.findViewById(R.id.PlayerName)
         val playerImage: ImageView = view.findViewById(R.id.PlayerImageComp)
         val urlImage = requireActivity().intent.extras!!.getString("URL")
@@ -60,7 +58,7 @@ class CompetitiveStats : Fragment() {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER) // There are 3 styles, You'll figure it out :)
         progressDialog.setCancelable(false)
 
-        progressDialog.show()
+        //progressDialog.show()
 
         val getAccountDetails = "https://api.henrikdev.xyz/valorant/v1/account/$name/$id"
 
@@ -93,7 +91,6 @@ class CompetitiveStats : Fragment() {
                     }
                 } catch (e: Exception) {
                     activity?.runOnUiThread {
-
                         if (activity?.isInMultiWindowMode == true){
                             playerName.text = "Name: $name#$id\nAccount Level: $accountLevel"
                         } else {
@@ -259,7 +256,7 @@ class CompetitiveStats : Fragment() {
                                 }
                             }
                         }
-                        progressDialog.dismiss()
+                        progress.visibility = View.INVISIBLE
                     }
                 }
 

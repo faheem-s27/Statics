@@ -3,6 +3,7 @@ package com.jawaadianinc.valorant_stats
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class GamePicker : AppCompatActivity() {
@@ -20,6 +21,10 @@ class GamePicker : AppCompatActivity() {
 
         brawlButton.setOnClickListener {
             startActivity(Intent(this, brawlFindAccount::class.java))
+        }
+
+        apexButton.setOnClickListener {
+            Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show()
         }
 
     }

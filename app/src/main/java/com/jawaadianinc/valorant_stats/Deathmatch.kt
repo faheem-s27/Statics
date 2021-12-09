@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats
 
-import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
@@ -27,21 +26,20 @@ class Deathmatch : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_competitive_stats, container, false)
+        return inflater.inflate(R.layout.fragment_deathmatch, container, false)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val PlayerName: TextView = view.findViewById(R.id.PlayerName)
-        val PlayerImage: ImageView = view.findViewById(R.id.PlayerImageComp)
+        val PlayerName: TextView = view.findViewById(R.id.playerNameDM)
+        val PlayerImage: ImageView = view.findViewById(R.id.playerImageDM)
         val URLIMAGE = requireActivity().intent.extras!!.getString("URL")
         val Name = requireActivity().intent.extras!!.getString("RiotName")
         val ID = requireActivity().intent.extras!!.getString("RiotID")
 
-        if (activity?.isInMultiWindowMode == true){
+        if (activity?.isInMultiWindowMode == true) {
             PlayerImage.resize(100, 100)
-        }
-        else{
+        } else {
             PlayerImage.resize(300, 300)
         }
 
@@ -51,15 +49,6 @@ class Deathmatch : Fragment() {
             .fit()
             .into(PlayerImage)
         PlayerName.text = "Name: $Name#$ID"
-
-        val progressDialog = ProgressDialog(activity)
-        progressDialog.setTitle("Fetching Data")
-        progressDialog.setMessage("Please wait a moment")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER) // There are 3 styles, You'll figure it out :)
-        progressDialog.setCancelable(false)
-
-        progressDialog.show()
-
         val GetAccountLevelURL = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID"
 
         doAsync {
@@ -95,7 +84,7 @@ class Deathmatch : Fragment() {
                 val total_time = compSegments.getJSONObject("timePlayed").getString("displayValue")
 
                 val arrayList = ArrayList<String>()
-                val listviewComp : ListView = view.findViewById(R.id.listViewSpikeRush)
+                val listviewComp: ListView = view.findViewById(R.id.listViewDM)
                 val mAdapter = object :
                     ArrayAdapter<String?>(
                         activity?.applicationContext!!, android.R.layout.simple_list_item_1,
@@ -179,7 +168,6 @@ class Deathmatch : Fragment() {
                                 }
                             }
                         }
-                        progressDialog.dismiss()
                     }
                 }
 

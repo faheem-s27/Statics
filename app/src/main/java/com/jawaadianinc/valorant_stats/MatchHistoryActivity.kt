@@ -43,6 +43,12 @@ class MatchHistoryActivity : AppCompatActivity() {
             }
         }
 
+        tabLayout?.newTab()?.setText("Kill Feed")?.setIcon(R.drawable.killicon).let {
+            if (it != null) {
+                tabLayout?.addTab(it)
+            }
+        }
+
 
         val adapter = tabLayout?.tabCount?.let { MatchHistoryAdapter(supportFragmentManager, it) }
         viewPager?.adapter = adapter
@@ -65,7 +71,6 @@ class MatchHistoryActivity : AppCompatActivity() {
 
         val title : TextView = findViewById(R.id.title)
         title.text = "Match Information"
-
 
         val refresFab : FloatingActionButton = findViewById(R.id.refreshFab2)
         refresFab.setOnClickListener{

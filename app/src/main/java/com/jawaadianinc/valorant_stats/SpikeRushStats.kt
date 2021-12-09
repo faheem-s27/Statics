@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats
 
-import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -49,14 +48,6 @@ class SpikeRushStats : Fragment() {
             .fit()
             .into(PlayerImage)
         PlayerName.text = "Name: $Name#$ID"
-
-        val progressDialog = ProgressDialog(activity)
-        progressDialog.setTitle("Fetching Data")
-        progressDialog.setMessage("Please wait a moment")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER) // There are 3 styles, You'll figure it out :)
-        progressDialog.setCancelable(false)
-
-        progressDialog.show()
 
         val GetAccountLevelURL = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID"
 
@@ -230,7 +221,6 @@ class SpikeRushStats : Fragment() {
                                 }
                             }
                         }
-                        progressDialog.dismiss()
                     }
                 }
 

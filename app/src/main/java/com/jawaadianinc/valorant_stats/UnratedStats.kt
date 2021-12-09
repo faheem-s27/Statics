@@ -1,7 +1,6 @@
 package com.jawaadianinc.valorant_stats
 
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -9,10 +8,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
@@ -33,6 +29,7 @@ class UnratedStats : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val PlayerName: TextView = view.findViewById(R.id.playerName2)
+        val progress: ProgressBar = view.findViewById(R.id.progress3)
         val PlayerImage: ImageView = view.findViewById(R.id.playerImageComp2)
         val URLIMAGE = requireActivity().intent.extras!!.getString("URL")
         val Name = requireActivity().intent.extras!!.getString("RiotName")
@@ -50,14 +47,6 @@ class UnratedStats : Fragment() {
             .fit()
             .into(PlayerImage)
         PlayerName.text = "Name: $Name#$ID"
-
-        val progressDialog = ProgressDialog(activity)
-        progressDialog.setTitle("Fetching Data")
-        progressDialog.setMessage("Please wait a moment")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER) // There are 3 styles, You'll figure it out :)
-        progressDialog.setCancelable(false)
-
-        progressDialog.show()
 
         val GetAccountLevelURL = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID"
 
@@ -229,7 +218,7 @@ class UnratedStats : Fragment() {
                                 }
                             }
                         }
-                        progressDialog.dismiss()
+                        progress.visibility = View.INVISIBLE
                     }
                 }
 

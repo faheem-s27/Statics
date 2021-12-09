@@ -186,7 +186,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                                 }
                                 handleSpikeCoordinates(
                                     matchDetails[3].toInt(), matchDetails[4].toInt(),
-                                    xMult, yMult, xScalar, yScalar
+                                    xMult, yMult, xScalar, yScalar,
                                 )
                             }
 
@@ -229,6 +229,9 @@ class RoundsMoreDetailsFragment : Fragment() {
             val playerPlant = plantInfo["planted_by"] as JSONObject
             allDetails.add(plantInfo["plant_side"].toString()) // WHICH SITE WAS IT?!!?
             allDetails.add(playerPlant.optString("display_name"))
+
+            val spikePlanter = playerPlant.optString("display_name")
+
             val minimapImage: ImageView? = view?.findViewById(R.id.mapImage)
             val playerPosition: ImageView? = view?.findViewById(R.id.playerPos)
             val bitmap: Bitmap? = Bitmap.createBitmap(
@@ -254,9 +257,9 @@ class RoundsMoreDetailsFragment : Fragment() {
                 val riotName = "$name#$id"
 
                 if (location["player_display_name"] == riotName) {
-                    radius = 20
+                    radius = 18
                     if (playerTeam == "Red") {
-                        paint.color = Color.RED
+                        paint.color = Color.parseColor("#8B0000")
                     } else {
                         paint.color = Color.BLUE
                     }
@@ -270,9 +273,19 @@ class RoundsMoreDetailsFragment : Fragment() {
                 }
                 val finalX: Int = (((y * xMult) + xScalar) * 1000).roundToInt()
                 val finalY: Int = (((x * yMult) + yScalar) * 1000).roundToInt()
+                val SpikeIcon = BitmapFactory.decodeResource(
+                    requireContext().resources,
+                    R.drawable.spikelogo
+                )
 
-                bitmap?.let { Canvas(it) }
-                    ?.drawCircle(finalX.toFloat(), finalY.toFloat(), radius.toFloat(), paint)
+                val newIcon = Bitmap.createScaledBitmap(SpikeIcon, 60, 60, false)
+                if (spikePlanter == location["player_display_name"]) {
+                    bitmap?.let { Canvas(it) }
+                        ?.drawBitmap(newIcon, finalX.toFloat() - 30, finalY.toFloat() - 30, paint)
+                } else {
+                    bitmap?.let { Canvas(it) }
+                        ?.drawCircle(finalX.toFloat(), finalY.toFloat(), radius.toFloat(), paint)
+                }
             }
 
             playerPosition?.setImageBitmap(bitmap)
@@ -309,26 +322,27 @@ class RoundsMoreDetailsFragment : Fragment() {
         paint.strokeWidth = 15F
         paint.color = Color.BLACK
 
-        val SpikeIcon = BitmapFactory.decodeResource(
-            requireContext().resources,
-            R.drawable.spikelogo
-        )
-
-        val newIcon = Bitmap.createScaledBitmap(SpikeIcon, 100, 100, false)
-
-        val bitmap =
-            minimapImage.let {
-                minimapImage?.width?.let { it1 ->
-                    Bitmap.createBitmap(
-                        it1,
-                        minimapImage.height,
-                        Bitmap.Config.ARGB_8888
-                    )
-                }
-            }
-        bitmap?.let { Canvas(it) }
-            ?.drawBitmap(newIcon, finalX.toFloat() - 50, finalY.toFloat() - 50, paint)
-        spikePlanted?.setImageBitmap(bitmap)
+//        val SpikeIcon = BitmapFactory.decodeResource(
+//            requireContext().resources,
+//            R.drawable.spikelogo
+//        )
+//
+//        val newIcon = Bitmap.createScaledBitmap(SpikeIcon, 100, 100, false)
+//
+//        val bitmap =
+//            minimapImage.let {
+//                minimapImage?.width?.let { it1 ->
+//                    Bitmap.createBitmap(
+//                        it1,
+//                        minimapImage.height,
+//                        Bitmap.Config.ARGB_8888
+//                    )
+//                }
+//            }
+//
+//        bitmap?.let { Canvas(it) }
+//            ?.drawBitmap(newIcon, finalX.toFloat() - 50, finalY.toFloat() - 50, paint)
+//        spikePlanted?.setImageBitmap(bitmap)
     }
 
 

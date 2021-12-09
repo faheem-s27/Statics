@@ -26,7 +26,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="Find Username" />
+            app:title="Find VALORANT account" />
 
         <ImageView
             android:id="@+id/imagebackground"
@@ -44,20 +44,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:backgroundTint="@color/ic_launcher_background"
+            android:backgroundTint="@color/teal_700"
             android:ems="10"
             android:fitsSystemWindows="true"
             android:foregroundGravity="center"
+            android:foregroundTint="#FFFFFF"
             android:gravity="center"
             android:hapticFeedbackEnabled="true"
-            android:hint="Enter VALORANT name"
+            android:hint="Name#1234"
+            android:hyphenationFrequency="full"
             android:inputType="textPersonName"
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_wrapBehaviorInParent="horizontal_only" />
 
         <Button
             android:id="@+id/addname"
@@ -329,6 +333,17 @@
             app:layout_constraintTop_toBottomOf="@+id/view2">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Type your full VALORANT  name here"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
