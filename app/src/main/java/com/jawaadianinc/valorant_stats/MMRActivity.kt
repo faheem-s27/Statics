@@ -114,7 +114,6 @@ class MMRActivity : AppCompatActivity() {
                 val rawDates = ArrayList<String>()
 
                 for (i in 0 until MMRArray.length()) {
-                    val color: String
                     val currentMMR = MMRArray[i] as JSONObject
                     val number = currentMMR["ranking_in_tier"] as Int
                     val date = currentMMR["date"] as String

@@ -3,19 +3,14 @@ package com.jawaadianinc.valorant_stats
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.TypedValue
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -53,245 +48,119 @@ class PlayerDetailsFragment : Fragment() {
                 val matchdetailsURL = URL(matchURl).readText()
                 val jsonDetails = JSONObject(matchdetailsURL)
                 val matchData = jsonDetails["data"] as JSONObject
-
-                val gridview: GridView = view.findViewById(R.id.redGridview)
-                val bluegridview: GridView = view.findViewById(R.id.blueGridView)
-
-                val arrayList = ArrayList<String>()
-                val mAdapter = object :
-                    ArrayAdapter<String?>(
-                        activity?.applicationContext!!, android.R.layout.simple_expandable_list_item_1,
-                        arrayList as List<String?>
-                    ) {
-                    override fun getView(
-                        position: Int,
-                        convertView: View?,
-                        parent: ViewGroup
-                    ): View {
-                        val item = super.getView(position, convertView, parent) as TextView
-                        item.setTextColor(Color.parseColor("#FFFFFF"))
-                        item.setTypeface(item.typeface, Typeface.BOLD)
-                        item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
-
-                        return item
-                    }
-                }
-
-                val bluelist = ArrayList<String>()
-                val blueAdapter = object :
-                    ArrayAdapter<String?>(
-                        activity?.applicationContext!!, android.R.layout.simple_expandable_list_item_1,
-                        bluelist as List<String?>
-                    ) {
-                    override fun getView(
-                        position: Int,
-                        convertView: View?,
-                        parent: ViewGroup
-                    ): View {
-                        val item = super.getView(position, convertView, parent) as TextView
-                        item.setTextColor(Color.parseColor("#FFFFFF"))
-                        item.setTypeface(item.typeface, Typeface.BOLD)
-                        item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
-
-                        return item
-                    }
-                }
-
-                uiThread {
-                    gridview.adapter = mAdapter
-                    bluegridview.adapter = blueAdapter
-                }
-
                 val players = matchData.getJSONObject("players")
-                val redplayers = players.getJSONArray("red")
-                val blueplayers = players.getJSONArray("blue")
                 val allPlayers = players.getJSONArray("all_players")
+                val bloo = players.getJSONArray("blue")
+                val red = players.getJSONArray("red")
+                val playerNames = ArrayList<String>()
+                val playerTeam = ArrayList<String>()
+                val playerLevels = ArrayList<String>()
+                val playerRanks = ArrayList<String>()
+                val playerAgentURL = ArrayList<String>()
+                val playerScore = ArrayList<String>()
+                val playerKills = ArrayList<String>()
+                val playerDeaths = ArrayList<String>()
+                val playerAssists = ArrayList<String>()
 
-                var playerNames: Array<String> = arrayOf()
-                var agentURLs: Array<String> = arrayOf()
-
-                for (i in 0 until allPlayers.length()) {
-                    val player = allPlayers[i] as JSONObject
-                    val assets = player["assets"] as JSONObject
+                for (i in 0 until red.length()) {
+                    val currentPlayer = red[i] as JSONObject
+                    val stats = currentPlayer["stats"] as JSONObject
+                    val assets = currentPlayer["assets"] as JSONObject
                     val agent = assets["agent"] as JSONObject
-                    playerNames += (player.getString("name"))
-                    agentURLs += agent.getString("small")
+                    playerNames += currentPlayer["name"] as String
+                    playerTeam += currentPlayer["team"] as String
+                    playerLevels += currentPlayer.getString("level")
+                    playerKills += stats.getString("kills")
+                    playerDeaths += stats.getString("deaths")
+                    playerAssists += stats.getString("assists")
+                    playerScore += stats.getString("score")
+                    playerAgentURL += agent["small"] as String
+                    playerRanks += currentPlayer["currenttier_patched"] as String
+                }
+                for (i in 0 until bloo.length()) {
+                    val currentPlayer = bloo[i] as JSONObject
+                    val stats = currentPlayer["stats"] as JSONObject
+                    val assets = currentPlayer["assets"] as JSONObject
+                    val agent = assets["agent"] as JSONObject
+                    playerNames += currentPlayer["name"] as String
+                    playerTeam += currentPlayer["team"] as String
+                    playerLevels += currentPlayer.getString("level")
+                    playerKills += stats.getString("kills")
+                    playerDeaths += stats.getString("deaths")
+                    playerAssists += stats.getString("assists")
+                    playerScore += stats.getString("score")
+                    playerAgentURL += agent["small"] as String
+                    playerRanks += currentPlayer["currenttier_patched"] as String
                 }
 
-                var drawAble: IntArray = intArrayOf()
-
-                for (i in agentURLs) {
-                    uiThread {
-                        //Toast.makeText(activity?.applicationContext!!, i, Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                //val mainAdapter = PlayerAdapter(activity?.applicationContext!!, playerNames, drawAble)
-                //gridView.setAdapter(mainAdapter)
-
-                var redplayerCodes: Array<String> = arrayOf()
-                var blueplayerCodes: Array<String> = arrayOf()
-
-                for (i in 0 until redplayers.length()) {
-                    val player = redplayers[i] as JSONObject
-                    val name = player.getString("name")
-                    val agent = player.getString("character")
-                    val score = player.getJSONObject("stats").getString("score")
-                    val level = player.getString("level")
-                    redplayerCodes += (player.getString("player_title"))
-                    uiThread {
-                        mAdapter.add("$name - Level $level")
-                    }
-                }
-
-                var redtitlelist: Array<String> = arrayOf()
-                for (code in redplayerCodes) {
-                    doAsync {
-                        try {
-                            val urltogetTitle =
-                                "https://valorant-api.com/v1/playertitles/$code"
-                            val url = URL(urltogetTitle).readText()
-                            val json = JSONObject(url)
-                            redtitlelist += json.getJSONObject("data").getString("titleText")
-                        } catch (e: Exception) {
-                            Toast.makeText(requireActivity(), "Error: $e", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-                }
-
-
-                for (i in 0 until blueplayers.length()){
-                    val player = blueplayers[i] as JSONObject
-                    val name = player.getString("name")
-                    val agent = player.getString("character")
-                    val level = player.getString("level")
-                    val score = player.getJSONObject("stats").getString("score")
-                    blueplayerCodes += (player.getString("player_title"))
-                    uiThread {
-                        blueAdapter.add("$name - Level $level")
-                    }
-                }
-
-                var bluetitlelist : Array<String> = arrayOf()
-                for (code in blueplayerCodes){
-                    doAsync {
-                        try {
-                            val urltogetTitle =
-                                "https://valorant-api.com/v1/playertitles/$code"
-                            val url = URL(urltogetTitle).readText()
-                            val json = JSONObject(url)
-                            bluetitlelist += json.getJSONObject("data").getString("titleText")
-                        } catch (e: Exception) {
-                            Toast.makeText(requireActivity(), "Error: $e", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-
+                val playerList: ListView = view.findViewById<ListView>(R.id.playerList)
 
                 uiThread {
-                    gridview.setOnItemClickListener { _, _, position, _ ->
-                        val inflater =
-                            view.context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                        val popupView: View = inflater.inflate(R.layout.showredplayer, null)
-                        val width = LinearLayout.LayoutParams.MATCH_PARENT
-                        val height = LinearLayout.LayoutParams.MATCH_PARENT
-                        val focusable = true
-                        val popupWindow = PopupWindow(popupView, width, height, focusable)
-                        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
-
-                        val playernameTitle = popupView.findViewById<TextView>(R.id.playerName)
-                        val playerrDetails = redplayers[position] as JSONObject
-                        playernameTitle.text = playerrDetails.getString("name") + "#" + playerrDetails.getString("tag")
-
-                        val playerImage : ImageView = popupView.findViewById(R.id.playerImage)
-                        val playerImageCode = playerrDetails.getString("player_card")
-                        val imageURL = "https://media.valorant-api.com/playercards/$playerImageCode/displayicon.png"
-                        Picasso.get().load(imageURL).into(playerImage)
+                    val players = PlayerAdapter(
+                        requireActivity(),
+                        playerAgentURL,
+                        playerTeam,
+                        playerNames,
+                        playerScore,
+                        playerKills,
+                        playerDeaths,
+                        playerAssists
+                    )
+                    playerList.adapter = players
 
 
-                        val playerstats = popupView.findViewById<TextView>(R.id.playerstatsText)
-                        val tier = playerrDetails.getString("currenttier_patched")
-                        val agent = playerrDetails.getString("character")
-                        val score = playerrDetails.getJSONObject("stats").getString("score")
-                        val kills = playerrDetails.getJSONObject("stats").getString("kills")
-                        val deaths =playerrDetails.getJSONObject("stats").getString("deaths")
-                        val assists = playerrDetails.getJSONObject("stats").getString("assists")
-                        val level = playerrDetails.getString("level")
-
-                        popupView.findViewById<TextView>(R.id.playertitle).text = redtitlelist[position]
-
-                        playerstats.text = "Rank: $tier" +
-                                "\nLevel: $level" +
-                                "\nAgent: $agent" +
-                                "\nScore: $score" +
-                                "\nKills: $kills" +
-                                "\nDeaths: $deaths" +
-                                "\nAssists: $assists"
-
-
-                        val dismissbutton : Button = popupView.findViewById(R.id.dismiss)
-                        dismissbutton.setOnClickListener{
-                            popupWindow.dismiss()
-                        }
-
-                        val copyButton : Button = popupView.findViewById(R.id.copyPlayerName)
-                        copyButton.setOnClickListener{
-                            copyText(playernameTitle.text.toString())
-                            Toast.makeText(requireActivity(), "Copied Name!", Toast.LENGTH_SHORT).show()
-                        }
-
-                    }
-
-                    bluegridview.setOnItemClickListener { _, _, position, _ ->
-                        val inflater =
-                            view.context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                        val popupView: View = inflater.inflate(R.layout.showredplayer, null)
-                        val width = LinearLayout.LayoutParams.MATCH_PARENT
-                        val height = LinearLayout.LayoutParams.MATCH_PARENT
-                        val focusable = true
-                        val popupWindow = PopupWindow(popupView, width, height, focusable)
-                        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
-
-                        val playernameTitle = popupView.findViewById<TextView>(R.id.playerName)
-                        val playerrDetails = blueplayers[position] as JSONObject
-                        playernameTitle.text = playerrDetails.getString("name") + "#" + playerrDetails.getString("tag")
-
-                        val playerImage : ImageView = popupView.findViewById(R.id.playerImage)
-                        val playerImageCode = playerrDetails.getString("player_card")
-                        val imageURL = "https://media.valorant-api.com/playercards/$playerImageCode/displayicon.png"
-                        Picasso.get().load(imageURL).into(playerImage)
-
-                        val playerstats = popupView.findViewById<TextView>(R.id.playerstatsText)
-                        val tier = playerrDetails.getString("currenttier_patched")
-                        val agent = playerrDetails.getString("character")
-                        val score = playerrDetails.getJSONObject("stats").getString("score")
-                        val kills = playerrDetails.getJSONObject("stats").getString("kills")
-                        val deaths =playerrDetails.getJSONObject("stats").getString("deaths")
-                        val assists = playerrDetails.getJSONObject("stats").getString("assists")
-                        val level = playerrDetails.getString("level")
-
-                        playerstats.text = "Rank: $tier" +
-                                "\nLevel: $level" +
-                                "\nAgent: $agent" +
-                                "\nScore: $score" +
-                                "\nKills: $kills" +
-                                "\nDeaths: $deaths" +
-                                "\nAssists: $assists"
-                        popupView.findViewById<TextView>(R.id.playertitle).text = bluetitlelist[position]
-
-                        val dismissbutton : Button = popupView.findViewById(R.id.dismiss)
-                        dismissbutton.setOnClickListener{
-                            popupWindow.dismiss()
-                        }
-
-                        val copyButton : Button = popupView.findViewById(R.id.copyPlayerName)
-                        copyButton.setOnClickListener{
-                            copyText(playernameTitle.text.toString())
-                            Toast.makeText(requireActivity(), "Copied Name!", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
+//                    gridview.setOnItemClickListener { _, _, position, _ ->
+//                        val inflater =
+//                            view.context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//                        val popupView: View = inflater.inflate(R.layout.showredplayer, null)
+//                        val width = LinearLayout.LayoutParams.MATCH_PARENT
+//                        val height = LinearLayout.LayoutParams.MATCH_PARENT
+//                        val focusable = true
+//                        val popupWindow = PopupWindow(popupView, width, height, focusable)
+//                        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+//
+//                        val playernameTitle = popupView.findViewById<TextView>(R.id.playerName)
+//                        val playerrDetails = redplayers[position] as JSONObject
+//                        playernameTitle.text = playerrDetails.getString("name") + "#" + playerrDetails.getString("tag")
+//
+//                        val playerImage : ImageView = popupView.findViewById(R.id.playerImage)
+//                        val playerImageCode = playerrDetails.getString("player_card")
+//                        val imageURL = "https://media.valorant-api.com/playercards/$playerImageCode/displayicon.png"
+//                        Picasso.get().load(imageURL).into(playerImage)
+//
+//
+//                        val playerstats = popupView.findViewById<TextView>(R.id.playerstatsText)
+//                        val tier = playerrDetails.getString("currenttier_patched")
+//                        val agent = playerrDetails.getString("character")
+//                        val score = playerrDetails.getJSONObject("stats").getString("score")
+//                        val kills = playerrDetails.getJSONObject("stats").getString("kills")
+//                        val deaths =playerrDetails.getJSONObject("stats").getString("deaths")
+//                        val assists = playerrDetails.getJSONObject("stats").getString("assists")
+//                        val level = playerrDetails.getString("level")
+//
+//                        popupView.findViewById<TextView>(R.id.playertitle).text = redtitlelist[position]
+//
+//                        playerstats.text = "Rank: $tier" +
+//                                "\nLevel: $level" +
+//                                "\nAgent: $agent" +
+//                                "\nScore: $score" +
+//                                "\nKills: $kills" +
+//                                "\nDeaths: $deaths" +
+//                                "\nAssists: $assists"
+//
+//
+//                        val dismissbutton : Button = popupView.findViewById(R.id.dismiss)
+//                        dismissbutton.setOnClickListener{
+//                            popupWindow.dismiss()
+//                        }
+//
+//                        val copyButton : Button = popupView.findViewById(R.id.copyPlayerName)
+//                        copyButton.setOnClickListener{
+//                            copyText(playernameTitle.text.toString())
+//                            Toast.makeText(requireActivity(), "Copied Name!", Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                    }
                 }
             }
             catch (e: Exception){
