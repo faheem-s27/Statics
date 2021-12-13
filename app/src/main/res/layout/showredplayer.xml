@@ -13,8 +13,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
-        android:layout_height="461dp"
-        app:cardBackgroundColor="#1B3755"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/ic_launcher_background"
         app:cardCornerRadius="30dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -68,6 +68,7 @@
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
+                android:backgroundTint="@color/ic_launcher_background"
                 android:text="Copy Name"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="15dp"
@@ -75,13 +76,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/playerstatsText" />
+                app:layout_constraintTop_toBottomOf="@+id/playerstatsText"
+                app:strokeColor="@color/light_blue_600"
+                app:strokeWidth="4dp" />
 
             <Button
                 android:id="@+id/dismiss"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
+                android:backgroundTint="@color/ic_launcher_background"
                 android:text="Dismiss"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="15dp"
@@ -89,7 +93,9 @@
                 app:layout_constraintEnd_toEndOf="@+id/copyPlayerName"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/copyPlayerName"
-                app:layout_constraintTop_toBottomOf="@+id/copyPlayerName" />
+                app:layout_constraintTop_toBottomOf="@+id/copyPlayerName"
+                app:strokeColor="@color/light_blue_600"
+                app:strokeWidth="4dp" />
 
             <TextView
                 android:id="@+id/playertitle"

@@ -50,6 +50,7 @@ class FindAccount : AppCompatActivity() {
 
         val userNameEditText: EditText = findViewById(R.id.editTextValorantName)
         val findaccountButton: Button = findViewById(R.id.generalStats)
+        val MMR: Button = findViewById(R.id.MMR)
         val matchHistoryButton: Button = findViewById(R.id.matchHistory)
         val updatesButton: Button = findViewById(R.id.updateBT)
         val compareButton: Button = findViewById(R.id.compareBT)
@@ -59,6 +60,7 @@ class FindAccount : AppCompatActivity() {
         val addname: Button = findViewById(R.id.addname)
         val delete: Button = findViewById(R.id.delete)
         val mySpinner = findViewById<View>(R.id.spinner) as Spinner
+
 
         val strings = java.util.ArrayList<String>()
         val file = File(this.filesDir, "texts")
@@ -166,6 +168,41 @@ class FindAccount : AppCompatActivity() {
 
         compareButton.setOnClickListener {
             Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
+        }
+
+        MMR.setOnClickListener {
+            val fullname = mySpinner.selectedItem.toString()
+            val name = fullname.split("#")
+            val doesUserExist =
+                "https://api.henrikdev.xyz/valorant/v1/account/${name[0]}/${name[1]}?force=true"
+            val progressDialog = ProgressDialog(this)
+            progressDialog.setTitle("Verifying User")
+            progressDialog.setMessage("Checking if user exists.")
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+            doAsync {
+                try {
+                    JSONObject(URL(doesUserExist).readText())
+                    val intent = Intent(this@FindAccount, MMRActivity::class.java)
+                    intent.putExtra("RiotName", name[0])
+                    intent.putExtra("RiotID", name[1])
+                    progressDialog.dismiss()
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    progressDialog.dismiss()
+                    uiThread {
+                        AlertDialog.Builder(this@FindAccount).setTitle("User Not Found!")
+                            .setMessage("It appears this name '${mySpinner.selectedItem}' does not exist!\nTry a different name")
+                            .setPositiveButton(android.R.string.ok) { _, _ -> }
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show()
+                    }
+                }
+            }
+
+
         }
 
         viewMatch.setOnClickListener {

@@ -46,7 +46,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:backgroundTint="@color/teal_700"
+            android:backgroundTint="#f94555"
             android:ems="10"
             android:fitsSystemWindows="true"
             android:foregroundGravity="center"
@@ -147,7 +147,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/generalStats" />
+                    app:layout_constraintTop_toBottomOf="@+id/MMR" />
 
                 <View
                     android:id="@+id/view6"
@@ -280,6 +280,23 @@
                     app:layout_constraintEnd_toEndOf="@+id/matchHistory"
                     app:layout_constraintStart_toStartOf="@+id/matchHistory"
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+                <Button
+                    android:id="@+id/MMR"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/ic_launcher_background"
+                    android:text="Rank Rating"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/rankicon"
+                    app:iconSize="30dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/matchHistory"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/matchHistory"
+                    app:layout_constraintTop_toBottomOf="@+id/generalStats" />
 
                 <TextView
                     android:id="@+id/textView3"

@@ -15,6 +15,9 @@
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".MMRActivity"
+            android:exported="false" />
+        <activity
             android:name=".brawlFindAccount"
             android:exported="false" />
         <activity
