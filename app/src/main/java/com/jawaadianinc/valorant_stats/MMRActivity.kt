@@ -1,6 +1,7 @@
 package com.jawaadianinc.valorant_stats
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
@@ -137,45 +138,13 @@ class MMRActivity : AppCompatActivity() {
                     textView.setTypeface(Typeface.DEFAULT_BOLD)
                     textView.text = "Previous rank changes"
                     textView.gravity = Gravity.CENTER
-                    textView.textSize = 20f
+                    textView.textSize = 30f
                     scroll.addHeaderView(textView)
                     progressDialog.dismiss()
 
                     scroll.setOnItemClickListener { _, _, position, _ ->
                         val rawDate = rawDates[position - 1]
-                        val matchHistoryURL =
-                            "https://api.henrikdev.xyz/valorant/v3/matches/eu/${RiotName}/${RiotID}?size=10"
-
-                        doAsync {
-                            val matchhistoryURL = URL(matchHistoryURL).readText()
-                            val jsonMatches = JSONObject(matchhistoryURL)
-                            val matchData = jsonMatches["data"] as JSONArray
-                            var matchID: String = ""
-
-                            for (i in 0 until matchData.length()) {
-                                val match = matchData[i] as JSONObject
-//                                val gameStart = match.getString("game_start")
-//
-//                                if (gameStart.toString() == rawDate.toString())
-//                                {
-//                                    matchID = match["matchid"] as String
-//                                }
-                            }
-                            uiThread {
-                                if (matchID != "") {
-                                    Toast.makeText(this@MMRActivity, matchID, Toast.LENGTH_SHORT)
-                                        .show()
-                                } else {
-                                    Toast.makeText(
-                                        this@MMRActivity,
-                                        "No match found :(",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-
-                        }
-
+                        trytoFindMatch(rawDate.toLong())
                     }
                 }
 
@@ -191,4 +160,51 @@ class MMRActivity : AppCompatActivity() {
 
         }
     }
+
+    private fun trytoFindMatch(gameStarting: Long) {
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setTitle("Tracing back match!")
+        progressDialog.setMessage("Attempting to find match (Not always successful!)")
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+        val RiotName = intent.extras!!.getString("RiotName")
+        val RiotID = intent.extras!!.getString("RiotID")
+        val matchHistoryURL =
+            "https://api.henrikdev.xyz/valorant/v3/matches/eu/${RiotName}/${RiotID}?size=10"
+        doAsync {
+            val jsonMatches = JSONObject(URL(matchHistoryURL).readText())
+            val dataforMatch = jsonMatches["data"] as JSONArray
+            var matchID: String = ""
+
+            for (i in 0 until dataforMatch.length()) {
+                val specificMatch = dataforMatch[i] as JSONObject
+                val match = specificMatch["metadata"] as JSONObject
+                val startGameID = match["game_start"] as Long
+                if (startGameID == gameStarting) {
+                    matchID = match["matchid"] as String
+                }
+            }
+            uiThread {
+                progressDialog.dismiss()
+                if (matchID != "") {
+                    val matchintent = Intent(this@MMRActivity, MatchHistoryActivity::class.java)
+                    matchintent.putExtra("RiotName", RiotName)
+                    matchintent.putExtra("RiotID", RiotID)
+                    matchintent.putExtra("MatchNumber", 0)
+                    matchintent.putExtra("MatchID", matchID)
+                    startActivity(matchintent)
+                } else {
+                    Toast.makeText(
+                        this@MMRActivity,
+                        "No match found :(",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+        }
+    }
+
 }
