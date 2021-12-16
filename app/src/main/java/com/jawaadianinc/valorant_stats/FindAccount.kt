@@ -56,6 +56,7 @@ class FindAccount : AppCompatActivity() {
         val compareButton: Button = findViewById(R.id.compareBT)
         val local: Button = findViewById(R.id.download)
         val viewMatch: Button = findViewById(R.id.viewHistory)
+        val leaderBoard: Button = findViewById(R.id.leaderboard)
 
         val addname: Button = findViewById(R.id.addname)
         val delete: Button = findViewById(R.id.delete)
@@ -204,6 +205,11 @@ class FindAccount : AppCompatActivity() {
 
 
         }
+
+        leaderBoard.setOnClickListener {
+            startActivity(Intent(this, leaderBoardActivity::class.java))
+        }
+
 
         viewMatch.setOnClickListener {
             val matchDatabse = MatchDatabases(this@FindAccount)

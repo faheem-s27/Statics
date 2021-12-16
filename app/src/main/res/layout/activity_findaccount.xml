@@ -202,6 +202,7 @@
                     android:id="@+id/matchHistory"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:backgroundTint="@color/ic_launcher_background"
                     android:text="Match History"
                     android:textColor="#FFFFFF"
@@ -248,21 +249,42 @@
                     app:layout_constraintTop_toBottomOf="@+id/download" />
 
                 <Button
+                    android:id="@+id/leaderboard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/ic_launcher_background"
+                    android:gravity="center"
+                    android:text="LeaderBoard"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="150dp"
+                    app:icon="@drawable/stats_icon"
+                    app:iconSize="25dp"
+                    app:iconTint="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="@+id/viewHistory"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/viewHistory"
+                    app:layout_constraintTop_toBottomOf="@+id/textView7"
+                    app:strokeColor="#FFFFFF" />
+
+                <Button
                     android:id="@+id/splitscreenButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="@color/ic_launcher_background"
                     android:gravity="center"
-                    android:text="Split screen "
+                    android:text="Split screen"
                     android:textColor="#FFFFFF"
                     app:cornerRadius="150dp"
+
                     app:icon="@drawable/splitscreen"
                     app:iconSize="25dp"
                     app:iconTint="#FFFFFF"
                     app:layout_constraintEnd_toEndOf="@+id/viewHistory"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/viewHistory"
-                    app:layout_constraintTop_toBottomOf="@+id/textView7"
+                    app:layout_constraintTop_toBottomOf="@+id/leaderboard"
                     app:strokeColor="#FFFFFF" />
 
                 <Button

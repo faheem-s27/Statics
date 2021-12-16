@@ -198,7 +198,7 @@ class MMRActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this@MMRActivity,
-                        "No match found :(",
+                        "Couldn't find match :(",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
