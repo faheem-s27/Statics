@@ -14,6 +14,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -29,7 +31,6 @@ class FindAccount : AppCompatActivity() {
     private lateinit var runnable: Runnable
     private lateinit var imagebackground: ImageView
 
-    //val imagesURL: Array<String> = arrayOf("https://media.valorant-api.com/playercards/3432dc3d-47da-4675-67ae-53adb1fdad5e/largeart.png")
     val imagesURL = java.util.ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +63,6 @@ class FindAccount : AppCompatActivity() {
         val delete: Button = findViewById(R.id.delete)
         val mySpinner = findViewById<View>(R.id.spinner) as Spinner
 
-
         val strings = java.util.ArrayList<String>()
         val file = File(this.filesDir, "texts")
         if (!file.exists()) {
@@ -87,6 +87,9 @@ class FindAccount : AppCompatActivity() {
         runnable = Runnable {
             doTask(handler)
         }
+
+        val matchDatabse = MatchDatabases(this@FindAccount)
+        syncFireBase()
 
         delete.setOnClickListener {
             val file = File(this.filesDir, "texts")
@@ -212,7 +215,6 @@ class FindAccount : AppCompatActivity() {
 
 
         viewMatch.setOnClickListener {
-            val matchDatabse = MatchDatabases(this@FindAccount)
             val matches = matchDatabse.getMatches((mySpinner.selectedItem.toString()))
             if (matches != null) {
                 val intent = Intent(this@FindAccount, ViewMatches::class.java)
@@ -272,7 +274,7 @@ class FindAccount : AppCompatActivity() {
                                 "${matches.size} matches saved for ${mySpinner.selectedItem}!",
                                 Toast.LENGTH_SHORT
                             ).show()
-
+                            syncFireBase()
                         } else {
                             Toast.makeText(
                                 this@FindAccount,
@@ -530,16 +532,6 @@ class FindAccount : AppCompatActivity() {
                                 val mode = data.getJSONObject(i).getJSONObject("metadata")
                                     .getString("mode")
                                 matches.add("\n$mode on $map")
-//                                val matchID =
-//                                    data.getJSONObject(i).getJSONObject("metadata")
-//                                        .getString("matchid")
-//                                val matchDatabse = MatchDatabases(this@FindAccount)
-//                                matchDatabse.addMatches(
-//                                    matchID,
-//                                    RiotName,
-//                                    map,
-//                                    mode
-//                                )
                             }
 
                             uiThread {
@@ -656,13 +648,50 @@ class FindAccount : AppCompatActivity() {
         startActivity(Intent(this, CompareActivity::class.java))
     }
 
-
-    fun refresh() {
+    private fun refresh() {
         finish()
         val i = Intent(this, FindAccount::class.java)
         startActivity(i)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
+    private fun syncFireBase() {
+        val matchDatabse = MatchDatabases(this@FindAccount)
+        try {
+            val userList = java.util.ArrayList<String>()
+            val sqlString =
+                "SELECT ${MatchDatabases.USER} FROM ${MatchDatabases.USERMATCHES}"
+            val db = matchDatabse.readableDatabase
+            val cursor = db.rawQuery(sqlString, null)
+            if (cursor.moveToFirst()) do {
+                val users = cursor.getString(0)
+                if (!userList.contains(users)) {
+                    userList.add(users)
+                }
+            } while (cursor.moveToNext())
+            val database = Firebase.database
+            val playersRef = database.getReference("VALORANT/players")
+            cursor.close()
+            db.close()
+
+            for (user in userList) {
+                val userFinal = user.split("#")
+                val newString =
+                    "SELECT ${MatchDatabases.MATCH_ID}, ${MatchDatabases.MAP}, ${MatchDatabases.GAMEMODE} FROM ${MatchDatabases.USERMATCHES} WHERE ${MatchDatabases.USER} = '${user}'"
+                val db = matchDatabse.readableDatabase
+                val matchDCursor = db.rawQuery(newString, null)
+                if (matchDCursor.moveToFirst()) do {
+                    playersRef.child(userFinal[0]).child("Tag").setValue(userFinal[1])
+                    playersRef.child(userFinal[0]).child("Matches").child(matchDCursor.getString(0))
+                        .setValue(matchDCursor.getString(2) + " on " + matchDCursor.getString(1))
+                } while (matchDCursor.moveToNext())
+                matchDCursor.close()
+                db.close()
+            }
+
+        } catch (e: Exception) {
+            Toast.makeText(this@FindAccount, e.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
 
 }

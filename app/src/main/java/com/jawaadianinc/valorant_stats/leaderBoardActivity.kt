@@ -12,6 +12,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -26,7 +27,6 @@ class leaderBoardActivity : AppCompatActivity() {
 
         val search: EditText = findViewById(R.id.searchLeaderboard)
         val circle: ProgressBar = findViewById(R.id.progressBar)
-
         val leaderboardList: ListView = findViewById(R.id.leaderList)
         val arrayList = ArrayList<String>()
         val mAdapter = object :
@@ -43,24 +43,32 @@ class leaderBoardActivity : AppCompatActivity() {
                 item.setTextColor(Color.parseColor("#FFFFFF"))
                 item.setTypeface(item.typeface, Typeface.BOLD)
                 item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
-
                 return item
             }
         }
         leaderboardList.adapter = mAdapter
 
         doAsync {
-            val json =
-                JSONArray(URL("https://api.henrikdev.xyz/valorant/v1/leaderboard/eu").readText())
-            for (i in 0 until json.length()) {
-                val currentPlayer = json[i] as JSONObject
-                val name = currentPlayer["gameName"] as String
-                val tag = currentPlayer["tagLine"] as String
-                uiThread {
-                    if (name != "") {
-                        mAdapter.add("${name}#${tag}")
-                        circle.visibility = View.INVISIBLE
+            try {
+                val json =
+                    JSONArray(URL("https://api.henrikdev.xyz/valorant/v1/leaderboard/eu").readText())
+                for (i in 0 until json.length()) {
+                    val currentPlayer = json[i] as JSONObject
+                    val name = currentPlayer["gameName"] as String
+                    val tag = currentPlayer["tagLine"] as String
+                    uiThread {
+                        if (name != "") {
+                            mAdapter.add("${name}#${tag}")
+                            circle.visibility = View.INVISIBLE
+                        }
                     }
+                }
+            } catch (e: Exception) {
+                uiThread {
+                    AlertDialog.Builder(this@leaderBoardActivity).setTitle("Error!")
+                        .setMessage("Error Message: $e")
+                        .setPositiveButton(android.R.string.ok) { _, _ -> }
+                        .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }
             }
         }
