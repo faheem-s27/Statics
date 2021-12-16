@@ -7,9 +7,11 @@ By Faheem :)
 ## Features for VALORANT
 - Able to view stats on various gamemodes such as unrated, competitive and more!
 - Being able to see the match history of players!
+- MMR history to be able to view your recent losses and wins of your current rank and be able to find a match correlationg to that rank gain/loss
 - Match history will be stored inside of a database so all matches will be kept up to date and stored to see all past games!
 - View an image of the VALORANT minimap and see all of the spike plants and each player positions!
 - Be able to utilize splitscreen on Android and see an optimized UI for splitscreen mode so that you can compare player stats at ease!
+- Style matched to VALORANT such as colours and player tabs!
 - Smooth, fluid UI!
 - Full dark mode obviously :)
 
@@ -28,11 +30,9 @@ By Faheem :)
 These are features which I would like to get done before releasing it on the play store
 
 ## For VALORANT
-- MMR history
 - Migration of local database to online database
 - Add account linking
 - Adding kill feed to the map
-- Upgrade visuals 
 - Colour selection in settings
 - Add side by side comparasion
 - Statistical anaylsis of each game
