@@ -10,8 +10,8 @@ android {
         applicationId "com.jawaadianinc.valorant_stats"
         minSdk 24
         targetSdk 31
-        versionCode 17
-        versionName "1.7"
+        versionCode 181
+        versionName "1.81 Beta"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

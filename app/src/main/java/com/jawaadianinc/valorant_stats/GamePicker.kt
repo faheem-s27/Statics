@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,6 +22,12 @@ class GamePicker : AppCompatActivity() {
         val valoButton: Button = findViewById(R.id.valo)
         val brawlButton: Button = findViewById(R.id.brawl)
         val apexButton: Button = findViewById(R.id.apex)
+
+        AlertDialog.Builder(this).setTitle("BETA PHASE")
+            .setMessage("Hello. This version of the app (1.81 Beta) is a beta version. Some features are incomplete/buggy, I will fix these in upcoming updates")
+            .setPositiveButton(android.R.string.ok) { _, _ -> }
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show()
 
         valoButton.setOnClickListener {
             startActivity(Intent(this, FindAccount::class.java))
