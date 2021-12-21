@@ -10,10 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.json.JSONObject
 import java.net.URL
+
+
+
 
 class ViewMatches : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +67,30 @@ class ViewMatches : AppCompatActivity() {
         modeSpinner.adapter = modeAdapter
 
         val database = MatchDatabases(this)
+        val fireBase = Firebase.database
+        val splitName = userName!!.split("#")
+        val playersRef = fireBase.getReference("VALORANT/players/" + splitName[0] + "/Matches")
+        playersRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (child in dataSnapshot.children) {
+                    // Do magic here
+                    database.addMatches(
+                        child.key.toString(),
+                        userName,
+                        child.child("Map").value.toString(),
+                        child.child("Mode").value.toString()
+                    )
+                }
+                totalMatches.text =
+                    "$userName\n" + database.getTotalUserMatches(userName!!) + " matches saved"
+                downloadedText.text = "Downloaded ${database.getTotalMatches()} total matches!"
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
         totalMatches.gravity = Gravity.CENTER
         totalMatches.text =
             "$userName\n" + database.getTotalUserMatches(userName!!) + " matches saved"
@@ -98,10 +130,9 @@ class ViewMatches : AppCompatActivity() {
             val splitName = userName.split("#")
             val RiotName = splitName[0]
             val ID = splitName[1]
-            matchActivityStart(RiotName, ID, 0, matchID!!)
+            matchActivityStart(RiotName, ID, matchID!!)
         }
 
-        //TODO fix bug of mode and gamemode!
         mapSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -192,11 +223,11 @@ class ViewMatches : AppCompatActivity() {
         }
     }
 
-    private fun matchActivityStart(Name: String, ID: String, matchNumber: Int, matchID: String) {
+    private fun matchActivityStart(Name: String, ID: String, matchID: String) {
         val matchintent = Intent(this@ViewMatches, MatchHistoryActivity::class.java)
         matchintent.putExtra("RiotName", Name)
         matchintent.putExtra("RiotID", ID)
-        matchintent.putExtra("MatchNumber", matchNumber)
+        matchintent.putExtra("MatchNumber", 0)
         matchintent.putExtra("MatchID", matchID)
         startActivity(matchintent)
 

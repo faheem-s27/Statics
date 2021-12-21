@@ -51,9 +51,10 @@ class leaderBoardActivity : AppCompatActivity() {
         doAsync {
             try {
                 val json =
-                    JSONArray(URL("https://api.henrikdev.xyz/valorant/v1/leaderboard/eu").readText())
-                for (i in 0 until json.length()) {
-                    val currentPlayer = json[i] as JSONObject
+                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v2/leaderboard/eu").readText())
+                val players = json["players"] as JSONArray
+                for (i in 0 until players.length()) {
+                    val currentPlayer = players[i] as JSONObject
                     val name = currentPlayer["gameName"] as String
                     val tag = currentPlayer["tagLine"] as String
                     uiThread {

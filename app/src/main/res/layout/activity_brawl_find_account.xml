@@ -6,74 +6,59 @@
     android:layout_height="match_parent"
     tools:context=".brawlFindAccount">
 
-    <EditText
-        android:id="@+id/brawlName"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/brawlStats"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:ems="10"
-        android:hint="Enter Name"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Search"
+        android:backgroundTint="@color/ic_launcher_background"
+        android:text="Stats"
         android:textColor="#FFFFFF"
         android:textSize="16dp"
         android:textStyle="bold"
+        app:cornerRadius="100dp"
+        app:icon="@drawable/players_icon"
+        app:iconSize="30dp"
+        app:iconTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listofNames" />
-
-    <Button
-        android:id="@+id/saveName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:textColor="#FFFFFF"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/brawlID"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/brawlName"
-        app:layout_constraintTop_toTopOf="@+id/brawlName" />
+        app:layout_constraintTop_toBottomOf="@+id/brawlID" />
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Your Brawl name:  "
-        android:textSize="24sp"
-        android:textStyle="bold|italic"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Brawl Name:"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/brawlID"
+        app:layout_constraintEnd_toStartOf="@+id/brawlID"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search" />
+        app:layout_constraintTop_toTopOf="@+id/brawlID" />
 
     <EditText
         android:id="@+id/brawlID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:ems="10"
+        android:foregroundGravity="center"
+        android:gravity="center"
         android:hint="Enter Brawl ID"
         android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/brawlName" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
-    <Spinner
-        android:id="@+id/listofNames"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/brawlID" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_brawlhallatext" />
 </androidx.constraintlayout.widget.ConstraintLayout>

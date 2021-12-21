@@ -77,7 +77,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/playerstatsText"
-                app:strokeColor="@color/light_blue_600"
+                app:strokeColor="@color/light_blue_900"
                 app:strokeWidth="4dp" />
 
             <Button
@@ -94,20 +94,8 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/copyPlayerName"
                 app:layout_constraintTop_toBottomOf="@+id/copyPlayerName"
-                app:strokeColor="@color/light_blue_600"
+                app:strokeColor="@color/light_blue_900"
                 app:strokeWidth="4dp" />
-
-            <TextView
-                android:id="@+id/playertitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="{Player Title}"
-                android:textSize="16sp"
-                android:textStyle="italic"
-                app:layout_constraintBottom_toTopOf="@+id/playerstatsText"
-                app:layout_constraintEnd_toEndOf="@+id/playerstatsText"
-                app:layout_constraintStart_toStartOf="@+id/playerstatsText"
-                app:layout_constraintTop_toBottomOf="@+id/playerImage" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

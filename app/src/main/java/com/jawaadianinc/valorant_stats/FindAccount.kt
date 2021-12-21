@@ -36,9 +36,7 @@ class FindAccount : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_findaccount)
-
         imagesURL.add("https://media.valorant-api.com/playercards/3432dc3d-47da-4675-67ae-53adb1fdad5e/largeart.png")
-
         doAsync {
             val getValoImagesURL =
                 JSONObject(URL("https://valorant-api.com/v1/playercards").readText())
@@ -215,19 +213,9 @@ class FindAccount : AppCompatActivity() {
 
 
         viewMatch.setOnClickListener {
-            val matches = matchDatabse.getMatches((mySpinner.selectedItem.toString()))
-            if (matches != null) {
-                val intent = Intent(this@FindAccount, ViewMatches::class.java)
-                intent.putExtra("RiotName", mySpinner.selectedItem.toString())
-                startActivity(intent)
-
-            } else {
-                Toast.makeText(
-                    this@FindAccount,
-                    "No saved matches for this user!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            val intent = Intent(this@FindAccount, ViewMatches::class.java)
+            intent.putExtra("RiotName", mySpinner.selectedItem.toString())
+            startActivity(intent)
         }
 
         local.setOnClickListener {
@@ -255,6 +243,13 @@ class FindAccount : AppCompatActivity() {
                         val matchID =
                             data.getJSONObject(i).getJSONObject("metadata").getString("matchid")
                         val matchDatabse = MatchDatabases(this@FindAccount)
+                        val database = Firebase.database
+                        val playersRef = database.getReference("VALORANT/players")
+                        playersRef.child(name[0]).child("Tag").setValue(name[1])
+                        playersRef.child(name[0]).child("Matches").child(matchID).child("Map")
+                            .setValue(map)
+                        playersRef.child(name[0]).child("Matches").child(matchID).child("Mode")
+                            .setValue(mode)
                         matchDatabse.addMatches(
                             matchID,
                             mySpinner.selectedItem.toString(),
@@ -386,11 +381,8 @@ class FindAccount : AppCompatActivity() {
         val ID = nameSplit[1]
 
         if (isNetworkAvailable()) {
-
             progressDialog.show()
-
             val doesUserExist = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID?force=true"
-
             val URLtoFindAccount = "https://api.tracker.gg/api/v2/valorant/standard/profile/riot/$Name%23$ID"
 
             doAsync {
@@ -404,6 +396,9 @@ class FindAccount : AppCompatActivity() {
                             val datatoseeiftheyexist = timetoFindOut["data"] as JSONObject
                             datatoseeiftheyexist["name"].toString()
                             userExist = true
+                            val database = Firebase.database
+                            val playersRef = database.getReference("VALORANT/players")
+                            playersRef.child(Name).child("Tag").setValue(ID)
                         }
                         catch (e: java.io.FileNotFoundException){
                             progressDialog.dismiss()
@@ -439,9 +434,14 @@ class FindAccount : AppCompatActivity() {
 
                         runOnUiThread {
                             progressDialog.dismiss()
-                            val d = AlertDialog.Builder(this@FindAccount).setTitle("Private account!")
-                                .setMessage(Html.fromHtml("It appears this name '$RiotName' is private.\nTo access that data they will need to sign in with" +
-                                        "<a href=\"$SignInUrl\"> this link</a>\nHowever they can still check their match history!"))
+                            val d =
+                                AlertDialog.Builder(this@FindAccount).setTitle("Private account!")
+                                    .setMessage(
+                                        Html.fromHtml(
+                                            "It appears this account '$RiotName' is private.\nTo access this data the owner of the account will need to sign in with" +
+                                                    "<a href=\"$SignInUrl\"> this link</a>"
+                                        )
+                                    )
                                 .setPositiveButton(android.R.string.ok) { _, _ -> }
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .show()
@@ -532,9 +532,26 @@ class FindAccount : AppCompatActivity() {
                                 val mode = data.getJSONObject(i).getJSONObject("metadata")
                                     .getString("mode")
                                 matches.add("\n$mode on $map")
-                            }
+                                val matchID = data.getJSONObject(i).getJSONObject("metadata")
+                                    .getString("matchid")
+                                val database = Firebase.database
+                                val playersRef = database.getReference("VALORANT/players")
+                                playersRef.child(Name).child("Tag").setValue(ID)
+                                playersRef.child(Name).child("Matches").child(matchID).child("Map")
+                                    .setValue(map)
+                                playersRef.child(Name).child("Matches").child(matchID).child("Mode")
+                                    .setValue(mode)
 
+                                val matchDatabse = MatchDatabases(this@FindAccount)
+                                matchDatabse.addMatches(
+                                    matchID,
+                                    RiotName,
+                                    map,
+                                    mode
+                                )
+                            }
                             uiThread {
+                                syncFireBase()
                                 val builder = AlertDialog.Builder(this@FindAccount)
                                 builder.setTitle("Here are the last 10 matches!")
                                 builder.setItems(
@@ -683,7 +700,9 @@ class FindAccount : AppCompatActivity() {
                 if (matchDCursor.moveToFirst()) do {
                     playersRef.child(userFinal[0]).child("Tag").setValue(userFinal[1])
                     playersRef.child(userFinal[0]).child("Matches").child(matchDCursor.getString(0))
-                        .setValue(matchDCursor.getString(2) + " on " + matchDCursor.getString(1))
+                        .child("Map").setValue(matchDCursor.getString(1))
+                    playersRef.child(userFinal[0]).child("Matches").child(matchDCursor.getString(0))
+                        .child("Mode").setValue(matchDCursor.getString(2))
                 } while (matchDCursor.moveToNext())
                 matchDCursor.close()
                 db.close()

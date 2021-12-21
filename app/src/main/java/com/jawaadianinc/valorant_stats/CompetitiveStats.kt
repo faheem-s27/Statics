@@ -240,20 +240,26 @@ class CompetitiveStats : Fragment() {
                             "peakRank")
 
                         for (stat in statsComps) {
-                            val displayName =
-                                small.getJSONObject(stat).getString("displayName")
-                            val displayValue =
-                                small.getJSONObject(stat).getString("displayValue")
-                            when {
-                                small.getJSONObject(stat).getString("displayCategory") == "Attack" -> {
-                                    mAdapter.add("$displayName (Attack): $displayValue")
+                            try {
+                                val displayName =
+                                    small.getJSONObject(stat).getString("displayName")
+                                val displayValue =
+                                    small.getJSONObject(stat).getString("displayValue")
+                                when {
+                                    small.getJSONObject(stat)
+                                        .getString("displayCategory") == "Attack" -> {
+                                        mAdapter.add("$displayName (Attack): $displayValue")
+                                    }
+                                    small.getJSONObject(stat)
+                                        .getString("displayCategory") == "Defense" -> {
+                                        mAdapter.add("$displayName (Defense): $displayValue")
+                                    }
+                                    else -> {
+                                        mAdapter.add("$displayName: $displayValue")
+                                    }
                                 }
-                                small.getJSONObject(stat).getString("displayCategory") == "Defense" -> {
-                                    mAdapter.add("$displayName (Defense): $displayValue")
-                                }
-                                else -> {
-                                    mAdapter.add("$displayName: $displayValue")
-                                }
+                            } catch (e: Exception) {
+
                             }
                         }
                         progress.visibility = View.INVISIBLE
