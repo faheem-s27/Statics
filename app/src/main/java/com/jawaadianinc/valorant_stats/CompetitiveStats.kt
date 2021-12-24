@@ -45,6 +45,8 @@ class CompetitiveStats : Fragment() {
             playerImage.resize(300, 300)
         }
 
+        playerImage.scaleType = ImageView.ScaleType.FIT_XY;
+
         Picasso
             .get()
             .load(urlImage)
@@ -83,19 +85,19 @@ class CompetitiveStats : Fragment() {
                     val currentTier = data["currenttierpatched"].toString()
                     activity?.runOnUiThread {
                         if (activity?.isInMultiWindowMode == true) {
-                            playerName.text = "Name: $name#$id\nAccount Level: $accountLevel"
+                            playerName.text = "$name\nLevel: $accountLevel"
                         } else {
                             playerName.text =
-                                "Name: $name\nAccount Level: $accountLevel\nCurrent Rank: $currentTier"
+                                "$name\nLevel: $accountLevel\nRank: $currentTier"
                         }
                     }
                 } catch (e: Exception) {
                     activity?.runOnUiThread {
                         if (activity?.isInMultiWindowMode == true){
-                            playerName.text = "Name: $name#$id\nAccount Level: $accountLevel"
+                            playerName.text = "$name\nLevel: $accountLevel"
                         } else {
                             playerName.text =
-                                "Name: $name\nAccount Level: $accountLevel\nCurrent Rank: Unranked"
+                                "$name\nLevel: $accountLevel\nRank: Unranked"
                         }
                     }
                 }

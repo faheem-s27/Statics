@@ -27,11 +27,11 @@ class RoundsDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val progressBar: ProgressBar = view.findViewById(R.id.progressRoundsDetails)
         val Name = requireActivity().intent.extras!!.getString("RiotName")
         val ID = requireActivity().intent.extras!!.getString("RiotID")
         val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
         val timelineView: LinearLayout = view.findViewById(R.id.timeLineview)
-
         val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
@@ -88,22 +88,13 @@ class RoundsDetailsFragment : Fragment() {
                     } else {
                         button.setBackgroundColor(Color.parseColor("#f94555"))
                     }
-
-                    button.text = (i + 1).toString()
+                    //button.text = (i + 1).toString()
                     button.layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams(
                             25,
                             50
                         )
                     )
-                    button.setOnClickListener {
-                        Toast.makeText(
-                            activity?.applicationContext!!,
-                            "Round ${button.text}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
                     val transparentButton = Button(activity?.applicationContext!!)
                     transparentButton.alpha = 0F
                     transparentButton.layoutParams = LinearLayout.LayoutParams(
@@ -116,7 +107,7 @@ class RoundsDetailsFragment : Fragment() {
                     midButton.alpha = 0F
                     midButton.layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams(
-                            50, 50
+                            40, 50
                         )
                     )
 
@@ -126,11 +117,10 @@ class RoundsDetailsFragment : Fragment() {
                     timelineView.addView(button)
                     timelineView.addView(transparentButton)
                     val ending = roundDetails.getString("end_type")
-
-
                     val number = i + 1
                     mAdapter.add("Round $number, $winning_team won by $ending")
                 }
+                    progressBar.visibility = View.GONE
                 }
 
             } catch (e:Exception){

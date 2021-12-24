@@ -47,7 +47,7 @@ class SpikeRushStats : Fragment() {
             .load(URLIMAGE)
             .fit()
             .into(PlayerImage)
-        PlayerName.text = "Name: $Name#$ID"
+        PlayerName.text = Name
 
         val GetAccountLevelURL = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID"
 
@@ -61,7 +61,7 @@ class SpikeRushStats : Fragment() {
 
                 activity?.runOnUiThread {
                     PlayerName.text =
-                        "Name: $Name#$ID\nAccount Level: $account_level"
+                        "$Name\nLevel: $account_level"
                 }
 
 

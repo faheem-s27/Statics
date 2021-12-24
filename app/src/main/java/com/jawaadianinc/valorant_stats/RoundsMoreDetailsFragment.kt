@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.*
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,14 +42,13 @@ class RoundsMoreDetailsFragment : Fragment() {
         val spinnerRounds: Spinner = view.findViewById(R.id.roundsSpinner)
         val minimapImage: ImageView = view.findViewById(R.id.mapImage)
         val mapName: TextView = view.findViewById(R.id.mapName)
-        val coordinates: TextView = view.findViewById(R.id.spikeCoordinates)
-        val spikePlanted: ImageView? = view.findViewById(R.id.SpikePlanted)
-        val playerPosition: ImageView? = view.findViewById(R.id.playerPos)
+        val display: Display = requireActivity().windowManager.defaultDisplay
+        val width = display.width
 
-        minimapImage.layoutParams?.height = 1000
-        minimapImage.layoutParams?.width = 1000
+        minimapImage.layoutParams?.height = width
+        minimapImage.layoutParams?.width = width
         minimapImage.requestLayout()
-
+        minimapImage.scaleType = ImageView.ScaleType.FIT_XY;
         val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/${name}/$id?size=10"
 
@@ -65,16 +65,13 @@ class RoundsMoreDetailsFragment : Fragment() {
                     IDofMatch!!
                 }
                 val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-
                 val matchdetailsURL = URL(matchURl).readText()
                 val jsonDetails = JSONObject(matchdetailsURL)
                 val matchData = jsonDetails["data"] as JSONObject
                 val metadata = matchData.getJSONObject("metadata")
                 val map = metadata.getString("map")
                 val rounds = matchData.getJSONArray("rounds")
-
                 var mapUUID = ""
-
                 val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
                 val mapData = jsonOfMap["data"] as JSONArray
 
@@ -185,8 +182,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                                     )
                                 }
                                 handleSpikeCoordinates(
-                                    matchDetails[3].toInt(), matchDetails[4].toInt(),
-                                    xMult, yMult, xScalar, yScalar,
+                                    matchDetails[3].toInt(), matchDetails[4].toInt()
                                 )
                             }
 
@@ -208,7 +204,6 @@ class RoundsMoreDetailsFragment : Fragment() {
 
     private fun handleSpecificRoundDetails(specificRound: JSONObject): ArrayList<String> {
         val allDetails = ArrayList<String>()
-
         allDetails.add(specificRound["winning_team"].toString()) // TEAM WON
         if (specificRound["bomb_planted"].toString() == "true") {
             allDetails.add("Yes")
@@ -231,12 +226,10 @@ class RoundsMoreDetailsFragment : Fragment() {
             allDetails.add(playerPlant.optString("display_name"))
 
             val spikePlanter = playerPlant.optString("display_name")
-
-            val minimapImage: ImageView? = view?.findViewById(R.id.mapImage)
             val playerPosition: ImageView? = view?.findViewById(R.id.playerPos)
             val bitmap: Bitmap? = Bitmap.createBitmap(
-                minimapImage!!.width,
-                minimapImage.height,
+                1000,
+                1000,
                 Bitmap.Config.ARGB_8888
             )
 
@@ -297,52 +290,15 @@ class RoundsMoreDetailsFragment : Fragment() {
             allDetails.add(null.toString())
             allDetails.add(null.toString())
         }
-
         return allDetails
     }
 
     private fun handleSpikeCoordinates(
         x: Int,
-        y: Int,
-        xMultiplier: Double,
-        yMultiplier: Double,
-        xScalarToAdd: Double,
-        yScalarToAdd: Double
+        y: Int
     ) {
-        val minimapImage: ImageView? = view?.findViewById(R.id.mapImage)
         val coordinates: TextView? = view?.findViewById(R.id.spikeCoordinates)
-        val finalX: Int = (((y * xMultiplier) + xScalarToAdd) * 1000).roundToInt()
-        val finalY: Int = (((x * yMultiplier) + yScalarToAdd) * 1000).roundToInt()
         coordinates?.text = "Spike planted at: $x, $y"
-
-        val spikePlanted: ImageView? = view?.findViewById(R.id.SpikePlanted)
-        val paint = Paint()
-        val radius = 17
-        paint.style = Paint.Style.STROKE
-        paint.strokeWidth = 15F
-        paint.color = Color.BLACK
-
-//        val SpikeIcon = BitmapFactory.decodeResource(
-//            requireContext().resources,
-//            R.drawable.spikelogo
-//        )
-//
-//        val newIcon = Bitmap.createScaledBitmap(SpikeIcon, 100, 100, false)
-//
-//        val bitmap =
-//            minimapImage.let {
-//                minimapImage?.width?.let { it1 ->
-//                    Bitmap.createBitmap(
-//                        it1,
-//                        minimapImage.height,
-//                        Bitmap.Config.ARGB_8888
-//                    )
-//                }
-//            }
-//
-//        bitmap?.let { Canvas(it) }
-//            ?.drawBitmap(newIcon, finalX.toFloat() - 50, finalY.toFloat() - 50, paint)
-//        spikePlanted?.setImageBitmap(bitmap)
     }
 
 

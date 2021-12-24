@@ -1,12 +1,17 @@
 package com.jawaadianinc.valorant_stats
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -22,9 +27,11 @@ class GamePicker : AppCompatActivity() {
         val valoButton: Button = findViewById(R.id.valo)
         val brawlButton: Button = findViewById(R.id.brawl)
         val apexButton: Button = findViewById(R.id.apex)
+        val requestButton: Button = findViewById(R.id.request)
+        val requestStats: TextView = findViewById(R.id.databaseGameRequests)
 
         AlertDialog.Builder(this).setTitle("BETA PHASE")
-            .setMessage("Hello. This version of the app (1.81 Beta) is a beta version. Some features are incomplete/buggy, I will fix these in upcoming updates")
+            .setMessage("Hey! This version (1.83 Beta) is a beta version. Some UI and features are incomplete/buggy, they will be fixed in upcoming updates")
             .setPositiveButton(android.R.string.ok) { _, _ -> }
             .setIcon(android.R.drawable.ic_dialog_alert)
             .show()
@@ -41,9 +48,14 @@ class GamePicker : AppCompatActivity() {
             Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show()
         }
 
+        requestButton.setOnClickListener {
+            showAlertWithTextInputLayout(this)
+        }
+
         val database = Firebase.database
         val playersRef = database.getReference("VALORANT/players")
         val brawlRef = database.getReference("Brawlhalla/players")
+        val gameReuqestRef = database.getReference("gameRequests")
 
         playersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -67,6 +79,50 @@ class GamePicker : AppCompatActivity() {
             }
         })
 
+        gameReuqestRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val number = dataSnapshot.childrenCount
+                requestStats.text = "$number game requests"
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("The read failed: " + databaseError.code)
+            }
+        })
+    }
+
+    private fun showAlertWithTextInputLayout(context: Context) {
+        val textInputLayout = TextInputLayout(context)
+        val input = EditText(context)
+        textInputLayout.hint = "Game name"
+        textInputLayout.addView(input)
+        textInputLayout.setPadding(
+            resources.getDimensionPixelOffset(R.dimen.dp_19), // if you look at android alert_dialog.xml, you will see the message textview have margin 14dp and padding 5dp. This is the reason why I use 19 here
+            0,
+            resources.getDimensionPixelOffset(R.dimen.dp_19),
+            0
+        )
+        val database = Firebase.database
+        val gameReuqestRef = database.getReference("gameRequests")
+        val alert = AlertDialog.Builder(context)
+            .setTitle("Request a game")
+            .setView(textInputLayout)
+            .setMessage("Please enter a game that you want to see stats on")
+            .setPositiveButton("Submit") { dialog, _ ->
+                // do some thing with input.text
+                if (input.text.isNotEmpty()) {
+                    gameReuqestRef.push().setValue(input.text.toString())
+                    val contextView = findViewById<View>(R.id.request)
+                    val snackbar = Snackbar
+                        .make(contextView, "Sent request!", Snackbar.LENGTH_LONG)
+                    snackbar.show()
+                    dialog.cancel()
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }.create()
+        alert.show()
     }
 
 }

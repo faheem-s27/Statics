@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
@@ -113,25 +114,40 @@ class PlayerDetailsFragment : Fragment() {
                         val width = LinearLayout.LayoutParams.MATCH_PARENT
                         val height = LinearLayout.LayoutParams.MATCH_PARENT
                         val focusable = true
-                        val popupWindow = PopupWindow(popupView, width, height, focusable)
+                        var popupWindow = PopupWindow(popupView, width, height, focusable)
                         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+                        val dim_layout = view.findViewById(R.id.dim_layout) as LinearLayout
+                        dim_layout.visibility = View.VISIBLE
 
                         val playernameTitle = popupView.findViewById<TextView>(R.id.playerName)
                         playernameTitle.text = playerNames[position]
-
                         val playerImage: ImageView = popupView.findViewById(R.id.playerImage)
                         Picasso.get().load(playerAgentURL[position]).into(playerImage)
-
-
                         val playerstats = popupView.findViewById<TextView>(R.id.playerstatsText)
                         val tier = playerRanks[position]
                         val level = playerLevels[position]
+                        val score = playerScore[position]
+                        val kills = playerKills[position]
+                        val deaths = playerDeaths[position]
+                        val assists = playerAssists[position]
 
-                        playerstats.text = "Rank: $tier\nLevel: $level"
-
+                        if (tier == "Unrated") {
+                            playerstats.text = "Level: $level" +
+                                    "\nScore: $score" +
+                                    "\nKills: $kills" +
+                                    "\nDeaths: $deaths" +
+                                    "\nAssists: $assists"
+                        } else {
+                            playerstats.text = "Rank: $tier\nLevel: $level" +
+                                    "\nScore: $score" +
+                                    "\nKills: $kills" +
+                                    "\nDeaths: $deaths" +
+                                    "\nAssists: $assists"
+                        }
                         val dismissbutton: Button = popupView.findViewById(R.id.dismiss)
                         dismissbutton.setOnClickListener {
                             popupWindow.dismiss()
+                            dim_layout.visibility = View.INVISIBLE
                         }
 
                         val copyButton: Button = popupView.findViewById(R.id.copyPlayerName)

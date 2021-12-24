@@ -27,7 +27,7 @@ class PlayerAdapter(
         if (convertView == null) row = inflater.inflate(R.layout.player_row, null, true)
         val agentImage = row!!.findViewById<View>(R.id.agentImage) as ImageView
         val playerNameText = row.findViewById<View>(R.id.nameofPlayer) as TextView
-        val playerScoreText = row.findViewById<View>(R.id.Score) as TextView
+        //val playerScoreText = row.findViewById<View>(R.id.Score) as TextView
         val KDA = row.findViewById<View>(R.id.KDA) as TextView
         var color = ""
         color = if (playerTeam[position] == "Blue") {
@@ -43,14 +43,16 @@ class PlayerAdapter(
             .centerCrop()
             .into(agentImage)
 
-        playerNameText.text = playerName[position]
-        playerScoreText.text = playerScore[position]
+        val playerOnlyName = playerName[position].split("#")
+
+        playerNameText.text = playerOnlyName[0]
+        //playerScoreText.text = playerScore[position]
         KDA.text =
             "${playerKills[position]} / ${playerDeaths[position]} / ${playerAssists[position]}"
 
         //Setting colour
         playerNameText.setBackgroundColor(Color.parseColor(color))
-        playerScoreText.setBackgroundColor(Color.parseColor(color))
+        //playerScoreText.setBackgroundColor(Color.parseColor(color))
         KDA.setBackgroundColor(Color.parseColor(color))
 
         return row

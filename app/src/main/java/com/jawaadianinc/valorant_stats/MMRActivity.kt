@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.net.URL
 
@@ -81,6 +82,7 @@ class MMRActivity : AppCompatActivity() {
                     if (progressNumber <= 100) {
                         number.text = "$progressNumber/100"
                     } else {
+                        rankProgress.max = 1200
                         number.text = progressNumber.toString()
                     }
                     rankName.text = patched
@@ -101,6 +103,9 @@ class MMRActivity : AppCompatActivity() {
                                 .fit()
                                 .centerInside()
                                 .into(rankIcon)
+
+                            rankIcon.resize(200, 200)
+                            rankIcon.scaleType = ImageView.ScaleType.FIT_XY;
                         }
                     }
                 }
@@ -148,6 +153,16 @@ class MMRActivity : AppCompatActivity() {
                     }
                 }
 
+            } catch (e: JSONException) {
+                uiThread {
+                    progressDialog.dismiss()
+                    AlertDialog.Builder(this@MMRActivity).setTitle("Unranked!")
+                        .setMessage("This user is either unranked or hasn't played competitive in a long time.")
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
+                            startActivity(Intent(this@MMRActivity, FindAccount::class.java))
+                        }
+                        .setIcon(android.R.drawable.ic_dialog_alert).show()
+                }
             } catch (e: Exception) {
                 uiThread {
                     progressDialog.dismiss()
@@ -204,6 +219,17 @@ class MMRActivity : AppCompatActivity() {
                 }
             }
 
+        }
+    }
+
+    private fun ImageView.resize(
+        newWidth: Int = layoutParams.width, // pixels
+        newHeight: Int = layoutParams.height // pixels
+    ) {
+        layoutParams.apply {
+            width = newWidth // in pixels
+            height = newHeight // in pixels
+            layoutParams = this
         }
     }
 

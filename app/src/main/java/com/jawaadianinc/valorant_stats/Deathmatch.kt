@@ -61,7 +61,7 @@ class Deathmatch : Fragment() {
 
                 activity?.runOnUiThread {
                     PlayerName.text =
-                        "Name: $Name#$ID\nAccount Level: $account_level"
+                        "$Name\nLevel: $account_level"
                 }
 
 

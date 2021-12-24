@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/agentImage"
@@ -26,23 +26,11 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/Score"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_row="0"
-        android:layout_column="2"
-        android:layout_gravity="center_horizontal"
-        android:padding="15dp"
-        android:text="529"
-        android:textSize="16dp"
-        android:textStyle="bold" />
-
-    <TextView
         android:id="@+id/KDA"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_row="0"
-        android:layout_column="3"
+        android:layout_column="2"
         android:layout_gravity="center_horizontal"
         android:padding="15dp"
         android:text="27 / 13 / 7"

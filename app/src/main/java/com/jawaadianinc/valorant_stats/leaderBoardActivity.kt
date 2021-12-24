@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -26,8 +27,9 @@ class leaderBoardActivity : AppCompatActivity() {
         setContentView(R.layout.activity_leader_board)
 
         val search: EditText = findViewById(R.id.searchLeaderboard)
-        val circle: ProgressBar = findViewById(R.id.progressBar)
+        val progress: ProgressBar = findViewById(R.id.progressBar)
         val leaderboardList: ListView = findViewById(R.id.leaderList)
+        val loadingText: TextView = findViewById(R.id.loadingText)
         val arrayList = ArrayList<String>()
         val mAdapter = object :
             ArrayAdapter<String?>(
@@ -47,22 +49,37 @@ class leaderBoardActivity : AppCompatActivity() {
             }
         }
         leaderboardList.adapter = mAdapter
+        leaderboardList.visibility = View.INVISIBLE
+        search.visibility = View.INVISIBLE
+        var totalPlayers = 0
 
         doAsync {
             try {
                 val json =
                     JSONObject(URL("https://api.henrikdev.xyz/valorant/v2/leaderboard/eu").readText())
                 val players = json["players"] as JSONArray
-                for (i in 0 until players.length()) {
-                    val currentPlayer = players[i] as JSONObject
-                    val name = currentPlayer["gameName"] as String
-                    val tag = currentPlayer["tagLine"] as String
-                    uiThread {
+                uiThread {
+                    progress.max = players.length()
+                    for (i in 0 until players.length()) {
+                        val currentPlayer = players[i] as JSONObject
+                        val name = currentPlayer["gameName"] as String
+                        val tag = currentPlayer["tagLine"] as String
                         if (name != "") {
                             mAdapter.add("${name}#${tag}")
-                            circle.visibility = View.INVISIBLE
+                            totalPlayers += 1
                         }
+                        progress.progress = i
                     }
+                }
+                uiThread {
+                    progress.visibility = View.INVISIBLE
+                    leaderboardList.visibility = View.VISIBLE
+                    loadingText.visibility = View.INVISIBLE
+                    search.visibility = View.VISIBLE
+                    val contextView = findViewById<View>(R.id.loadingText)
+                    val snackbar = Snackbar
+                        .make(contextView, "Loaded $totalPlayers players", Snackbar.LENGTH_LONG)
+                    snackbar.show()
                 }
             } catch (e: Exception) {
                 uiThread {
@@ -80,15 +97,12 @@ class leaderBoardActivity : AppCompatActivity() {
         }
 
         search.addTextChangedListener(object : TextWatcher {
-
             override fun afterTextChanged(s: Editable) {}
-
             override fun beforeTextChanged(
                 s: CharSequence, start: Int,
                 count: Int, after: Int
             ) {
             }
-
             override fun onTextChanged(
                 s: CharSequence, start: Int,
                 before: Int, count: Int
@@ -97,7 +111,6 @@ class leaderBoardActivity : AppCompatActivity() {
             }
         })
     }
-
     private fun copyText(text: String) {
         val myClipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val myClip: ClipData = ClipData.newPlainText("Label", text)

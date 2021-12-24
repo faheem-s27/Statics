@@ -33,8 +33,15 @@ class MMRAdapter(
             changeText.setTextColor(Color.parseColor("#18e4b7"))
         }
 
-        rank.text = rankNames[position] + ", " + currentNumber[position] + "/100"
-        number.progress = currentNumber[position].toInt()
-        return row
+        return if (currentNumber[position].toInt() <= 100) {
+            rank.text = rankNames[position] + ", " + currentNumber[position] + "/100"
+            number.progress = currentNumber[position].toInt()
+            number.max = 1200
+            row
+        } else {
+            rank.text = rankNames[position] + ", " + currentNumber[position]
+            number.progress = currentNumber[position].toInt()
+            row
+        }
     }
 }

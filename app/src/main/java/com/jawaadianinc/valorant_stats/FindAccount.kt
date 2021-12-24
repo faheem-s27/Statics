@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
@@ -120,10 +121,14 @@ class FindAccount : AppCompatActivity() {
                         var pass = true
                         gpxfile.forEachLine {
                             if (it == userNameEditText.text.toString()) {
-                                AlertDialog.Builder(this).setTitle("Name is already in file!")
-                                    .setMessage("Please enter something else and try again!")
-                                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                                    .setIcon(android.R.drawable.ic_dialog_alert).show()
+                                val contextView = findViewById<View>(R.id.generalStats)
+                                val snackbar = Snackbar
+                                    .make(
+                                        contextView,
+                                        "User already in file!",
+                                        Snackbar.LENGTH_LONG
+                                    )
+                                snackbar.show()
                                 pass = false
                             }
                         }
@@ -195,11 +200,10 @@ class FindAccount : AppCompatActivity() {
                 } catch (e: Exception) {
                     progressDialog.dismiss()
                     uiThread {
-                        AlertDialog.Builder(this@FindAccount).setTitle("User Not Found!")
-                            .setMessage("It appears this name '${mySpinner.selectedItem}' does not exist!\nTry a different name")
-                            .setPositiveButton(android.R.string.ok) { _, _ -> }
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show()
+                        val contextView = findViewById<View>(R.id.generalStats)
+                        val snackbar = Snackbar
+                            .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
+                        snackbar.show()
                     }
                 }
             }
@@ -280,12 +284,13 @@ class FindAccount : AppCompatActivity() {
                     }
                 } catch (e: java.io.FileNotFoundException) {
                     uiThread {
+
                         progressDialog.dismiss()
-                        AlertDialog.Builder(this@FindAccount).setTitle("User Not Found!")
-                            .setMessage("It appears this name '${mySpinner.selectedItem}' does not exist!\nTry a different name")
-                            .setPositiveButton(android.R.string.ok) { _, _ -> }
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show()
+                        val contextView = findViewById<View>(R.id.generalStats)
+                        val snackbar = Snackbar
+                            .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
+                        snackbar.show()
+
                     }
                 } catch (e: Exception) {
                     uiThread {
@@ -312,11 +317,11 @@ class FindAccount : AppCompatActivity() {
         if (userNameEditText.text.isNotEmpty()){
             return false
         }
-        else{
-            AlertDialog.Builder(this).setTitle("Nothing there!")
-                .setMessage("Please enter something in the field and try again!")
-                .setPositiveButton(android.R.string.ok) { _, _ -> }
-                .setIcon(android.R.drawable.ic_dialog_alert).show()
+        else {
+            val contextView = findViewById<View>(R.id.generalStats)
+            val snackbar = Snackbar
+                .make(contextView, "Enter something!", Snackbar.LENGTH_LONG)
+            snackbar.show()
         }
         return true
     }
@@ -334,11 +339,11 @@ class FindAccount : AppCompatActivity() {
             }
             return true
         }
-        else{
-            AlertDialog.Builder(this).setTitle("Incorrect Format")
-                .setMessage("Please ensure the name includes the #")
-                .setPositiveButton(android.R.string.ok) { _, _ -> }
-                .setIcon(android.R.drawable.ic_dialog_alert).show()
+        else {
+            val contextView = findViewById<View>(R.id.generalStats)
+            val snackbar = Snackbar
+                .make(contextView, "Include the # in the Riot Name!", Snackbar.LENGTH_LONG)
+            snackbar.show()
         }
         return false
     }
@@ -403,12 +408,10 @@ class FindAccount : AppCompatActivity() {
                         catch (e: java.io.FileNotFoundException){
                             progressDialog.dismiss()
                             runOnUiThread {
-                                AlertDialog.Builder(this@FindAccount)
-                                    .setTitle("User Not Found!")
-                                    .setMessage("It appears this name '$RiotName' does not exist!\nTry a different name")
-                                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show()
+                                val contextView = findViewById<View>(R.id.generalStats)
+                                val snackbar = Snackbar
+                                    .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
+                                snackbar.show()
                             }
                         }
 
@@ -451,13 +454,12 @@ class FindAccount : AppCompatActivity() {
                         }
                     }
 
-                    catch (e: java.io.FileNotFoundException){
+                    catch (e: java.io.FileNotFoundException) {
                         progressDialog.dismiss()
-                        AlertDialog.Builder(this@FindAccount).setTitle("User Not Found!")
-                            .setMessage("It appears this name '$RiotName' does not exist!\nTry a different name")
-                            .setPositiveButton(android.R.string.ok) { _, _ -> }
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show()
+                        val contextView = findViewById<View>(R.id.generalStats)
+                        val snackbar = Snackbar
+                            .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
+                        snackbar.show()
                     }
 
 
@@ -472,11 +474,11 @@ class FindAccount : AppCompatActivity() {
                 }
             }
         }
-        else{
-            AlertDialog.Builder(this).setTitle("No Internet Connection")
-                .setMessage("Please check your internet connection and try again")
-                .setPositiveButton(android.R.string.ok) { _, _ -> }
-                .setIcon(android.R.drawable.ic_dialog_alert).show()
+        else {
+            val contextView = findViewById<View>(R.id.generalStats)
+            val snackbar = Snackbar
+                .make(contextView, "No internet connection!", Snackbar.LENGTH_LONG)
+            snackbar.show()
         }
     }
 
@@ -622,12 +624,11 @@ class FindAccount : AppCompatActivity() {
                 }
                 catch (e: java.io.FileNotFoundException){
                     uiThread{
-                    progressDialog.dismiss()
-                    AlertDialog.Builder(this@FindAccount).setTitle("User Not Found!")
-                        .setMessage("It appears this name '$RiotName' does not exist!\nTry a different name")
-                        .setPositiveButton(android.R.string.ok) { _, _ -> }
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show()
+                        progressDialog.dismiss()
+                        val contextView = findViewById<View>(R.id.generalStats)
+                        val snackbar = Snackbar
+                            .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
+                        snackbar.show()
                     }
                 }
                 catch (e: Exception) {
@@ -642,11 +643,11 @@ class FindAccount : AppCompatActivity() {
             }
 
         }
-        else{
-            AlertDialog.Builder(this).setTitle("No Internet Connection")
-                .setMessage("Please check your internet connection and try again")
-                .setPositiveButton(android.R.string.ok) { _, _ -> }
-                .setIcon(android.R.drawable.ic_dialog_alert).show()
+        else {
+            val contextView = findViewById<View>(R.id.generalStats)
+            val snackbar = Snackbar
+                .make(contextView, "No internet connection!", Snackbar.LENGTH_LONG)
+            snackbar.show()
         }
 
     }
@@ -708,8 +709,16 @@ class FindAccount : AppCompatActivity() {
                 db.close()
             }
 
+            val contextView = findViewById<View>(R.id.generalStats)
+            val snackbar = Snackbar
+                .make(contextView, "Database synced!", Snackbar.LENGTH_SHORT)
+            snackbar.show()
+
         } catch (e: Exception) {
-            Toast.makeText(this@FindAccount, e.toString(), Toast.LENGTH_SHORT).show()
+            val contextView = findViewById<View>(R.id.generalStats)
+            val snackbar = Snackbar
+                .make(contextView, "Database not synced!", Snackbar.LENGTH_SHORT)
+            snackbar.show()
         }
     }
 
