@@ -21,6 +21,10 @@
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_valorant_updates.xml" value="0.3625" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_view_matches.xml" value="0.2298611111111111" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/content_scrolling.xml" value="0.3625" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/fragment_brawl_player_clan.xml" value="0.2326388888888889" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/fragment_brawl_player_ranked.xml" value="0.2326388888888889" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/fragment_brawl_player_ranked2v2s.xml" value="0.2326388888888889" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/fragment_brawl_player_stats.xml" value="0.2326388888888889" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/fragment_competitive_stats.xml" value="0.3625" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/fragment_deathmatch.xml" value="0.3625" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/fragment_kill_feed.xml" value="0.2326388888888889" />
@@ -86,7 +90,7 @@
       </value>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

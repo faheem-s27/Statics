@@ -80,6 +80,7 @@ class MMRActivity : AppCompatActivity() {
                 uiThread {
                     rankProgress.progress = progressNumber
                     if (progressNumber <= 100) {
+                        rankProgress.max = 100
                         number.text = "$progressNumber/100"
                     } else {
                         rankProgress.max = 1200

@@ -2,6 +2,7 @@ package com.jawaadianinc.valorant_stats
 
 import android.annotation.SuppressLint
 import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Display
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -25,6 +27,7 @@ class RoundsMoreDetailsFragment : Fragment() {
     var yMult: Double = 0.0
     var xScalar: Double = 0.0
     var yScalar: Double = 0.0
+    var mapofPlayerandAgent: MutableMap<String, String> = mutableMapOf("player" to "agent")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,6 +94,18 @@ class RoundsMoreDetailsFragment : Fragment() {
                 yMult = details["yMultiplier"] as Double
                 xScalar = details["xScalarToAdd"] as Double
                 yScalar = details["yScalarToAdd"] as Double
+
+                val allPlayers =
+                    matchData.getJSONObject("players").getJSONArray("all_players") as JSONArray
+                for (i in 0 until allPlayers.length()) {
+                    val data = allPlayers[i] as JSONObject
+                    val playerName = data.getString("name")
+                    val playerTag = data.getString("tag")
+                    val agentURL =
+                        data.getJSONObject("assets").getJSONObject("agent").getString("small")
+                    val fullName = playerName + "#" + playerTag
+                    mapofPlayerandAgent[fullName] = agentURL
+                }
 
                 uiThread {
                     val arrayList = ArrayList<String>()
@@ -271,13 +286,58 @@ class RoundsMoreDetailsFragment : Fragment() {
                     R.drawable.spikelogo
                 )
 
+                //Draw Agent BitMaps
+                val playerName = location["player_display_name"] as String
+                val agentURL = mapofPlayerandAgent.getValue(playerName)
                 val newIcon = Bitmap.createScaledBitmap(SpikeIcon, 60, 60, false)
                 if (spikePlanter == location["player_display_name"]) {
+                    if (playerTeam == "Red") {
+                        paint.colorFilter = PorterDuffColorFilter(
+                            Color.parseColor("#f94555"),
+                            PorterDuff.Mode.SRC_ATOP
+                        )
+                    } else {
+                        paint.colorFilter = PorterDuffColorFilter(
+                            Color.parseColor("#18e4b7"),
+                            PorterDuff.Mode.SRC_ATOP
+                        )
+                    }
                     bitmap?.let { Canvas(it) }
                         ?.drawBitmap(newIcon, finalX.toFloat() - 30, finalY.toFloat() - 30, paint)
                 } else {
-                    bitmap?.let { Canvas(it) }
-                        ?.drawCircle(finalX.toFloat(), finalY.toFloat(), radius.toFloat(), paint)
+
+                    Picasso.get().load(agentURL).into(object : com.squareup.picasso.Target {
+                        override fun onBitmapLoaded(
+                            playerBitMap: Bitmap?,
+                            from: Picasso.LoadedFrom?
+                        ) {
+                            val resizedBitmap =
+                                Bitmap.createScaledBitmap(playerBitMap!!, 50, 50, false);
+                            if (playerTeam == "Red") {
+                                paint.colorFilter = PorterDuffColorFilter(
+                                    Color.parseColor("#f94555"),
+                                    PorterDuff.Mode.DST_ATOP
+                                )
+                            } else {
+                                paint.colorFilter = PorterDuffColorFilter(
+                                    Color.parseColor("#18e4b7"),
+                                    PorterDuff.Mode.DST_ATOP
+                                )
+                            }
+                            bitmap?.let { Canvas(it) }
+                                ?.drawBitmap(
+                                    resizedBitmap!!,
+                                    finalX.toFloat() - 25,
+                                    finalY.toFloat() - 25,
+                                    paint
+                                )
+                        }
+
+                        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+                        override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
+                    })
+
+
                 }
             }
 
@@ -300,6 +360,4 @@ class RoundsMoreDetailsFragment : Fragment() {
         val coordinates: TextView? = view?.findViewById(R.id.spikeCoordinates)
         coordinates?.text = "Spike planted at: $x, $y"
     }
-
-
 }

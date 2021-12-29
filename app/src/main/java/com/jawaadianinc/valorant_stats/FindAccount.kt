@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Html
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -23,7 +24,10 @@ import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.io.FileNotFoundException
 import java.net.URL
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FindAccount : AppCompatActivity() {
@@ -57,7 +61,7 @@ class FindAccount : AppCompatActivity() {
         val local: Button = findViewById(R.id.download)
         val viewMatch: Button = findViewById(R.id.viewHistory)
         val leaderBoard: Button = findViewById(R.id.leaderboard)
-
+        val recentPlayers: Button = findViewById(R.id.recentPlayers)
         val addname: Button = findViewById(R.id.addname)
         val delete: Button = findViewById(R.id.delete)
         val mySpinner = findViewById<View>(R.id.spinner) as Spinner
@@ -284,13 +288,11 @@ class FindAccount : AppCompatActivity() {
                     }
                 } catch (e: java.io.FileNotFoundException) {
                     uiThread {
-
                         progressDialog.dismiss()
                         val contextView = findViewById<View>(R.id.generalStats)
                         val snackbar = Snackbar
                             .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
                         snackbar.show()
-
                     }
                 } catch (e: Exception) {
                     uiThread {
@@ -303,13 +305,92 @@ class FindAccount : AppCompatActivity() {
                 }
             }
         }
+
+        recentPlayers.setOnClickListener {
+            val contextView = findViewById<View>(R.id.generalStats)
+            val snackbar = Snackbar
+                .make(contextView, "Searching for players...", Snackbar.LENGTH_LONG)
+            snackbar.show()
+            val fullName = mySpinner.selectedItem.toString()
+            val split = fullName.split("#")
+            val matchHistoryURL =
+                "https://api.henrikdev.xyz/valorant/v3/matches/eu/${split[0]}/${split[1]}?size=10"
+            doAsync {
+                try {
+                    val json = JSONObject(URL(matchHistoryURL).readText())
+                    val data = json["data"] as JSONArray
+                    val players: ArrayList<String> = ArrayList()
+                    var filterMode = arrayOf("")
+                    for (i in 0 until data.length()) {
+                        val allPlayers = data.getJSONObject(i).getJSONObject("players")
+                            .getJSONArray("all_players") as JSONArray
+                        for (j in 0 until allPlayers.length()) {
+                            players += allPlayers.getJSONObject(j)
+                                .getString("name") + "#" + allPlayers.getJSONObject(j)
+                                .getString("tag")
+                        }
+                    }
+                    for (player in players) {
+                        if (!filterMode.contains(player)) {
+                            filterMode += player
+                        }
+                    }
+                    var i = 0
+                    var finalName: String? = null
+                    for (player in filterMode) {
+                        val occurrences = Collections.frequency(players, player)
+                        if (occurrences > i) {
+                            if (fullName != player) {
+                                i = occurrences
+                                if (i != 1) {
+                                    finalName = player
+                                }
+                            }
+                        }
+                    }
+                    if (finalName != null) {
+                        uiThread {
+                            val builder = AlertDialog.Builder(this@FindAccount)
+                            builder.setTitle("$finalName was in $i/10 games")
+                            builder.setItems(
+                                arrayOf<CharSequence>(
+                                    "Coming soon!"
+                                )
+                            )
+                            { _, which ->
+                                when (which) {
+                                    //0 ->
+                                }
+                            }
+                            val dialog = builder.create()
+                            dialog.window!!.attributes.windowAnimations =
+                                R.style.DialogAnimation_2
+                            dialog.show()
+                        }
+                    } else {
+                        val snackbar = Snackbar
+                            .make(contextView, "No matching players found!", Snackbar.LENGTH_SHORT)
+                        snackbar.show()
+                    }
+                } catch (e: FileNotFoundException) {
+                    val snackbar = Snackbar
+                        .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
+                    snackbar.show()
+                } catch (e: Exception) {
+                    Log.d("players", e.toString())
+                    val snackbar = Snackbar
+                        .make(contextView, "Error occurred!", Snackbar.LENGTH_LONG)
+                    snackbar.show()
+
+                }
+            }
+        }
     }
 
     private fun doTask(handler: Handler){
         Picasso.get().load(imagesURL.random()).placeholder(imagebackground.drawable)
             .into(imagebackground)
         handler.postDelayed(runnable, 5000)
-
     }
 
     private fun isEmpty(): Boolean {
@@ -571,16 +652,76 @@ class FindAccount : AppCompatActivity() {
                                     )
                                 ) { _, which ->
                                     when (which) {
-                                        0 -> matchActivityStart(Name, ID, 0, "none")
-                                        1 -> matchActivityStart(Name, ID, 1, "none")
-                                        2 -> matchActivityStart(Name, ID, 2, "none")
-                                        3 -> matchActivityStart(Name, ID, 3, "none")
-                                        4 -> matchActivityStart(Name, ID, 4, "none")
-                                        5 -> matchActivityStart(Name, ID, 5, "none")
-                                        6 -> matchActivityStart(Name, ID, 6, "none")
-                                        7 -> matchActivityStart(Name, ID, 7, "none")
-                                        8 -> matchActivityStart(Name, ID, 8, "none")
-                                        9 -> matchActivityStart(Name, ID, 9, "none")
+                                        0 -> matchActivityStart(
+                                            Name,
+                                            ID,
+                                            0,
+                                            data.getJSONObject(0).getJSONObject("metadata")
+                                                .getString("matchid")
+                                        )
+                                        1 -> matchActivityStart(
+                                            Name,
+                                            ID,
+                                            1,
+                                            data.getJSONObject(1).getJSONObject("metadata")
+                                                .getString("matchid")
+                                        )
+                                        2 -> matchActivityStart(
+                                            Name,
+                                            ID,
+                                            2,
+                                            data.getJSONObject(2).getJSONObject("metadata")
+                                                .getString("matchid")
+                                        )
+                                        3 -> matchActivityStart(
+                                            Name,
+                                            ID,
+                                            3,
+                                            data.getJSONObject(3).getJSONObject("metadata")
+                                                .getString("matchid")
+                                        )
+                                        4 -> matchActivityStart(
+                                            Name,
+                                            ID,
+                                            4,
+                                            data.getJSONObject(4).getJSONObject("metadata")
+                                                .getString("matchid")
+                                        )
+                                        5 -> matchActivityStart(
+                                            Name,
+                                            ID,
+                                            5,
+                                            data.getJSONObject(5).getJSONObject("metadata")
+                                                .getString("matchid")
+                                        )
+                                        6 -> matchActivityStart(
+                                            Name,
+                                            ID,
+                                            6,
+                                            data.getJSONObject(6).getJSONObject("metadata")
+                                                .getString("matchid")
+                                        )
+                                        7 -> matchActivityStart(
+                                            Name,
+                                            ID,
+                                            7,
+                                            data.getJSONObject(7).getJSONObject("metadata")
+                                                .getString("matchid")
+                                        )
+                                        8 -> matchActivityStart(
+                                            Name,
+                                            ID,
+                                            8,
+                                            data.getJSONObject(8).getJSONObject("metadata")
+                                                .getString("matchid")
+                                        )
+                                        9 -> matchActivityStart(
+                                            Name,
+                                            ID,
+                                            9,
+                                            data.getJSONObject(9).getJSONObject("metadata")
+                                                .getString("matchid")
+                                        )
                                     }
                                 }
                                 progressDialog.dismiss()
@@ -659,7 +800,6 @@ class FindAccount : AppCompatActivity() {
         matchintent.putExtra("MatchNumber", matchNumber)
         matchintent.putExtra("MatchID", matchID)
         startActivity(matchintent)
-
     }
 
     private fun compareStats() {

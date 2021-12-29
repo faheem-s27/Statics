@@ -30,11 +30,11 @@ class GamePicker : AppCompatActivity() {
         val requestButton: Button = findViewById(R.id.request)
         val requestStats: TextView = findViewById(R.id.databaseGameRequests)
 
-        AlertDialog.Builder(this).setTitle("BETA PHASE")
-            .setMessage("Hey! This version (1.83 Beta) is a beta version. Some UI and features are incomplete/buggy, they will be fixed in upcoming updates")
-            .setPositiveButton(android.R.string.ok) { _, _ -> }
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .show()
+//        AlertDialog.Builder(this).setTitle("WARNING")
+//            .setMessage("Hey! This version 1.84 is a beta version. Some UI and features are incomplete/buggy, they will be fixed in upcoming updates")
+//            .setPositiveButton(android.R.string.ok) { _, _ -> }
+//            .setIcon(android.R.drawable.ic_dialog_alert)
+//            .show()
 
         valoButton.setOnClickListener {
             startActivity(Intent(this, FindAccount::class.java))

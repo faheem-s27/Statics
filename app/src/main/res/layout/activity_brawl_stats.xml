@@ -6,13 +6,59 @@
     android:layout_height="match_parent"
     tools:context=".brawlStatsActivity">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Coming soon!"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/ic_launcher_background"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/topAppBar">
+
+    </androidx.viewpager.widget.ViewPager>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/topAppBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#0A0F15"
+        android:nestedScrollingEnabled="true"
+        android:overScrollMode="ifContentScrolls"
+        android:theme="@style/Theme.VALORANT_stats.AppBarOverlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:liftOnScroll="true">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="?actionBarSize"
+            android:padding="@dimen/appbar_padding"
+            android:text="Brawlhalla stats for {name}"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#0A0F15"
+            android:textAlignment="gravity"
+            app:tabGravity="fill"
+            app:tabIconTint="@color/white"
+            app:tabIndicatorAnimationDuration="1000"
+            app:tabIndicatorAnimationMode="elastic"
+            app:tabIndicatorColor="#f94555"
+            app:tabIndicatorFullWidth="true"
+            app:tabIndicatorGravity="bottom"
+            app:tabMode="auto"
+            app:tabSelectedTextColor="#18e4b7"
+            app:tabTextColor="@color/white"
+            app:tabUnboundedRipple="true" />
+    </com.google.android.material.appbar.AppBarLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

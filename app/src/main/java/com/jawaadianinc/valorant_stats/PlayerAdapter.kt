@@ -35,7 +35,6 @@ class PlayerAdapter(
         } else {
             "#f94555"
         }
-
         Picasso
             .get()
             .load(agentURL[position])
@@ -44,7 +43,6 @@ class PlayerAdapter(
             .into(agentImage)
 
         val playerOnlyName = playerName[position].split("#")
-
         playerNameText.text = playerOnlyName[0]
         //playerScoreText.text = playerScore[position]
         KDA.text =
