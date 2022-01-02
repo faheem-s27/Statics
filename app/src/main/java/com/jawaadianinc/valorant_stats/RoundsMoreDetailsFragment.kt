@@ -5,10 +5,7 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.Display
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -187,14 +184,15 @@ class RoundsMoreDetailsFragment : Fragment() {
                                     spikeStats.setTextColor(Color.parseColor("#18e4b7"))
                                 }
 
-                                spikeStats.text = "Was Spike Planted? : ${matchDetails[1]}" +
-                                        "\nWas Spike Defused? : ${matchDetails[2]}"
+//                                spikeStats.text = "Was Spike Planted? : ${matchDetails[1]}" +
+//                                        "\nWas Spike Defused? : ${matchDetails[2]}"
 
                                 if (matchDetails[5] != "null") {
-                                    spikeStats.append(
-                                        "\nPlanted By: ${matchDetails[6]}" +
-                                                "\nSite ${matchDetails[5]}"
-                                    )
+                                    spikeStats.text =
+                                        "Planted By: ${matchDetails[6]}" +
+                                                "\n${matchDetails[0]} won"
+                                    spikeStats.gravity = Gravity.END
+
                                 }
                                 handleSpikeCoordinates(
                                     matchDetails[3].toInt(), matchDetails[4].toInt()
@@ -243,8 +241,8 @@ class RoundsMoreDetailsFragment : Fragment() {
             val spikePlanter = playerPlant.optString("display_name")
             val playerPosition: ImageView? = view?.findViewById(R.id.playerPos)
             val bitmap: Bitmap? = Bitmap.createBitmap(
-                1000,
-                1000,
+                929,
+                929,
                 Bitmap.Config.ARGB_8888
             )
 
@@ -279,8 +277,8 @@ class RoundsMoreDetailsFragment : Fragment() {
                         paint.color = Color.parseColor("#18e4b7")
                     }
                 }
-                val finalX: Int = (((y * xMult) + xScalar) * 1000).roundToInt()
-                val finalY: Int = (((x * yMult) + yScalar) * 1000).roundToInt()
+                val finalX: Int = (((y * xMult) + xScalar) * 929).roundToInt()
+                val finalY: Int = (((x * yMult) + yScalar) * 929).roundToInt()
                 val SpikeIcon = BitmapFactory.decodeResource(
                     requireContext().resources,
                     R.drawable.spikelogo
@@ -305,7 +303,6 @@ class RoundsMoreDetailsFragment : Fragment() {
                     bitmap?.let { Canvas(it) }
                         ?.drawBitmap(newIcon, finalX.toFloat() - 30, finalY.toFloat() - 30, paint)
                 } else {
-
                     Picasso.get().load(agentURL).into(object : com.squareup.picasso.Target {
                         override fun onBitmapLoaded(
                             playerBitMap: Bitmap?,
@@ -332,12 +329,9 @@ class RoundsMoreDetailsFragment : Fragment() {
                                     paint
                                 )
                         }
-
                         override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
                         override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
                     })
-
-
                 }
             }
 

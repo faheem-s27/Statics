@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spikeCoordinates"
-        app:srcCompat="@drawable/icebox_minimap" />
+        app:srcCompat="@drawable/just_statics" />
 
     <TextView
         android:id="@+id/mapName"

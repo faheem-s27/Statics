@@ -57,24 +57,25 @@ class MatchDetailsFragment : Fragment() {
                     IDofMatch!!
                 }
                 val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-                val getMapImage = "https://api.tracker.gg/api/v2/valorant/rap-matches/$matchID"
+                val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
+                val mapData = jsonOfMap["data"] as JSONArray
 
                 val matchdetailsURL = URL(matchURl).readText()
                 val jsonDetails = JSONObject(matchdetailsURL)
                 val matchData = jsonDetails["data"] as JSONObject
+                val metadata = matchData.getJSONObject("metadata")
+                val map = metadata.getString("map")
 
                 var actualtMapUlr = ""
-                try {
-                    val matchMapURl = URL(getMapImage).readText()
-                    val jsonMapImage = JSONObject(matchMapURl)
-                    val mapURL = jsonMapImage["data"] as JSONObject
-                    actualtMapUlr = mapURL.getJSONObject("metadata").getString("mapImageUrl")
+                for (i in 0 until mapData.length()) {
+                    val mapNamefromJSON = mapData[i] as JSONObject
+                    val nameofMpa = mapNamefromJSON["displayName"]
+                    if (nameofMpa == map) {
+                        actualtMapUlr = mapNamefromJSON["splash"].toString()
+                    }
                 }
-                catch (e:Exception){}
-
-
                 val arrayList = ArrayList<String>()
-                val listviewComp : ListView = view.findViewById(R.id.listViewMatchDetails)
+                val listviewComp: ListView = view.findViewById(R.id.listViewMatchDetails)
                 val mAdapter = object :
                     ArrayAdapter<String?>(
                         activity?.applicationContext!!, android.R.layout.simple_list_item_1,

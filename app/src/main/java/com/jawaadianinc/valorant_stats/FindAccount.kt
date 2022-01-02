@@ -2,6 +2,7 @@ package com.jawaadianinc.valorant_stats
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
@@ -335,33 +336,37 @@ class FindAccount : AppCompatActivity() {
                             filterMode += player
                         }
                     }
-                    var i = 0
-                    var finalName: String? = null
+                    var mapofPlayerOccurences: MutableMap<String, Int> = mutableMapOf("Name" to 10)
+                    val finalName: String? = null
                     for (player in filterMode) {
                         val occurrences = Collections.frequency(players, player)
-                        if (occurrences > i) {
-                            if (fullName != player) {
-                                i = occurrences
-                                if (i != 1) {
-                                    finalName = player
-                                }
+                        if (player != fullName) {
+                            if (occurrences > 1) {
+                                mapofPlayerOccurences[player] = occurrences
                             }
                         }
                     }
-                    if (finalName != null) {
+
+                    mapofPlayerOccurences.remove("Name", 10)
+                    val result =
+                        mapofPlayerOccurences.toList().sortedBy { (_, value) -> value }.toMap()
+                    var finalList = arrayOf("")
+                    val list = result.toList()
+                    list.forEach {
+                        finalList += it.first + " in ${it.second} games"
+                    }
+                    finalList.reverse()
+                    finalList = finalList.filter { x: String? -> x != "" }.toTypedArray()
+
+
+                    if (finalList.isNotEmpty()) {
                         uiThread {
                             val builder = AlertDialog.Builder(this@FindAccount)
-                            builder.setTitle("$finalName was in $i/10 games")
-                            builder.setItems(
-                                arrayOf<CharSequence>(
-                                    "Coming soon!"
-                                )
-                            )
-                            { _, which ->
-                                when (which) {
-                                    //0 ->
-                                }
-                            }
+                            builder.setTitle("Found ${filterMode.count()} players in last 10 games!")
+                            builder.setItems(finalList,
+                                DialogInterface.OnClickListener { _, itemIndex ->
+                                    addNameToList(finalList[itemIndex])
+                                })
                             val dialog = builder.create()
                             dialog.window!!.attributes.windowAnimations =
                                 R.style.DialogAnimation_2
@@ -369,7 +374,7 @@ class FindAccount : AppCompatActivity() {
                         }
                     } else {
                         val snackbar = Snackbar
-                            .make(contextView, "No matching players found!", Snackbar.LENGTH_SHORT)
+                            .make(contextView, "No repeating players found!", Snackbar.LENGTH_SHORT)
                         snackbar.show()
                     }
                 } catch (e: FileNotFoundException) {
@@ -381,7 +386,6 @@ class FindAccount : AppCompatActivity() {
                     val snackbar = Snackbar
                         .make(contextView, "Error occurred!", Snackbar.LENGTH_LONG)
                     snackbar.show()
-
                 }
             }
         }
@@ -429,10 +433,53 @@ class FindAccount : AppCompatActivity() {
         return false
     }
 
-    private fun isNetworkAvailable(): Boolean { val cm = getSystemService(
-        Context.CONNECTIVITY_SERVICE
-    ) as ConnectivityManager
+    private fun isNetworkAvailable(): Boolean {
+        val cm = getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
         return cm.activeNetworkInfo?.isConnected == true
+    }
+
+    private fun addNameToList(name: String) {
+
+        val cropName = name.split(" in")
+
+        val file = File(this.filesDir, "texts")
+        if (!file.exists()) {
+            file.mkdir()
+        }
+        try {
+            val gpxfile = File(file, "users")
+            if (!gpxfile.exists()) {
+                gpxfile.createNewFile()
+            }
+            var pass = true
+            gpxfile.forEachLine {
+                if (it == cropName[0]) {
+                    val contextView = findViewById<View>(R.id.generalStats)
+                    val snackbar = Snackbar
+                        .make(
+                            contextView,
+                            "User already in file!",
+                            Snackbar.LENGTH_LONG
+                        )
+                    snackbar.show()
+                    pass = false
+                }
+            }
+
+            if (pass) {
+                if (gpxfile.readText() == "") {
+                    gpxfile.appendText(cropName[0])
+                } else {
+                    gpxfile.appendText("\n" + cropName[0])
+                }
+                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
+                refresh()
+            }
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(this, "Error: $e", Toast.LENGTH_SHORT).show()
+        }
     }
 
 
@@ -746,7 +793,7 @@ class FindAccount : AppCompatActivity() {
                         uiThread {
                             progressDialog.dismiss()
                             AlertDialog.Builder(this@FindAccount).setTitle("Server Error!")
-                                .setMessage("This seems to be a server error which will be fixed soon! (hopefully)\"\nError Message:\n$e")
+                                .setMessage("This seems to be a server error which will be fixed soon!")
                                 .setPositiveButton(android.R.string.ok) { _, _ -> }
                                 .setIcon(android.R.drawable.ic_dialog_alert).show()
                         }
