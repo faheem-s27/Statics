@@ -126,7 +126,7 @@ class MMRActivity : AppCompatActivity() {
                     val date = currentMMR["date"] as String
                     val currentTiername = currentMMR["currenttierpatched"] as String
                     val change = currentMMR["mmr_change_to_last_game"] as Int
-                    val RAW = currentMMR["date_raw"] as Long
+                    val RAW = currentMMR["date_raw"] as Int
                     dates += date
                     changes += change.toString()
                     numberMMR += number.toString()
@@ -150,7 +150,7 @@ class MMRActivity : AppCompatActivity() {
 
                     scroll.setOnItemClickListener { _, _, position, _ ->
                         val rawDate = rawDates[position - 1]
-                        trytoFindMatch(rawDate.toLong())
+                        trytoFindMatch(rawDate.toInt())
                     }
                 }
 
@@ -177,7 +177,7 @@ class MMRActivity : AppCompatActivity() {
         }
     }
 
-    private fun trytoFindMatch(gameStarting: Long) {
+    private fun trytoFindMatch(gameStarting: Int) {
         val progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Tracing back match!")
         progressDialog.setMessage("Attempting to find match (Not always successful!)")
@@ -197,7 +197,7 @@ class MMRActivity : AppCompatActivity() {
             for (i in 0 until dataforMatch.length()) {
                 val specificMatch = dataforMatch[i] as JSONObject
                 val match = specificMatch["metadata"] as JSONObject
-                val startGameID = match["game_start"] as Long
+                val startGameID = match["game_start"] as Int
                 if (startGameID == gameStarting) {
                     matchID = match["matchid"] as String
                 }
@@ -222,7 +222,6 @@ class MMRActivity : AppCompatActivity() {
 
         }
     }
-
     private fun ImageView.resize(
         newWidth: Int = layoutParams.width, // pixels
         newHeight: Int = layoutParams.height // pixels
@@ -233,5 +232,4 @@ class MMRActivity : AppCompatActivity() {
             layoutParams = this
         }
     }
-
 }

@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
+import java.io.FileNotFoundException
 import java.net.URL
 
 class SpikeRushStats : Fragment() {
@@ -224,6 +225,13 @@ class SpikeRushStats : Fragment() {
                     }
                 }
 
+            } catch (e: FileNotFoundException) {
+                uiThread {
+                    AlertDialog.Builder(requireActivity()).setTitle("Could not be fetched!")
+                        .setMessage("Server unavailable, try again later :/")
+                        .setPositiveButton(android.R.string.ok) { _, _ -> }
+                        .setIcon(android.R.drawable.ic_dialog_alert).show()
+                }
             } catch (e: Exception) {
                 uiThread {
                     AlertDialog.Builder(requireActivity()).setTitle("Error!")

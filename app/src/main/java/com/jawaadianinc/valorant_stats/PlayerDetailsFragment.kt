@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -46,6 +47,7 @@ class PlayerDetailsFragment : Fragment() {
                     IDofMatch!!
                 }
                 val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
+                Log.d("Match", matchURl)
                 val matchdetailsURL = URL(matchURl).readText()
                 val jsonDetails = JSONObject(matchdetailsURL)
                 val matchData = jsonDetails["data"] as JSONObject

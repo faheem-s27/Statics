@@ -50,7 +50,6 @@ class PlayerAdapter(
 
         //Setting colour
         playerNameText.setBackgroundColor(Color.parseColor(color))
-        //playerScoreText.setBackgroundColor(Color.parseColor(color))
         KDA.setBackgroundColor(Color.parseColor(color))
 
         return row

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
@@ -85,13 +86,12 @@ class RoundsMoreDetailsFragment : Fragment() {
 
                 val spikeStats: TextView = view.findViewById(R.id.SpikeStats)
                 val mapCoordinates =
-                    JSONObject(URL("https://valorant-api.com/v1/maps/${mapUUID}").readText())
-                val details = mapCoordinates["data"] as JSONObject
-                xMult = details["xMultiplier"] as Double
-                yMult = details["yMultiplier"] as Double
-                xScalar = details["xScalarToAdd"] as Double
-                yScalar = details["yScalarToAdd"] as Double
-
+                    JSONObject(URL("https://valorant-api.com/v1/maps/${mapUUID}").readText())["data"] as JSONObject
+                xMult = mapCoordinates["xMultiplier"] as Double
+                yMult = mapCoordinates["yMultiplier"] as Double
+                xScalar = mapCoordinates["xScalarToAdd"] as Double
+                yScalar = mapCoordinates["yScalarToAdd"] as Double
+                Log.d("agent", "hi")
                 val allPlayers =
                     matchData.getJSONObject("players").getJSONArray("all_players") as JSONArray
                 for (i in 0 until allPlayers.length()) {
@@ -100,7 +100,8 @@ class RoundsMoreDetailsFragment : Fragment() {
                     val playerTag = data.getString("tag")
                     val agentURL =
                         data.getJSONObject("assets").getJSONObject("agent").getString("small")
-                    val fullName = playerName + "#" + playerTag
+                    Log.d("agent", agentURL)
+                    val fullName = "$playerName#$playerTag"
                     mapofPlayerandAgent[fullName] = agentURL
                 }
 
@@ -121,7 +122,6 @@ class RoundsMoreDetailsFragment : Fragment() {
                             item.setTextColor(Color.parseColor("#FFFFFF"))
                             item.setTypeface(item.typeface, Typeface.BOLD)
                             item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
-
                             return item
                         }
                     }
@@ -177,7 +177,6 @@ class RoundsMoreDetailsFragment : Fragment() {
                                 val actualRound: Int = numberinRound[1].toInt() - 1
                                 val matchDetails =
                                     handleSpecificRoundDetails(rounds[actualRound] as JSONObject)
-
                                 if (matchDetails[0] == "Red") {
                                     spikeStats.setTextColor(Color.parseColor("#f94555"))
                                 } else {
@@ -235,14 +234,14 @@ class RoundsMoreDetailsFragment : Fragment() {
             allDetails.add(lol.optString("x")) // X COORDINATE OF SPIKE
             allDetails.add(lol.optString("y")) // Y COORDINATE OF SPIKE
             val playerPlant = plantInfo["planted_by"] as JSONObject
-            allDetails.add(plantInfo["plant_side"].toString()) // WHICH SITE WAS IT?!!?
+            allDetails.add(plantInfo["plant_site"].toString()) // WHICH SITE WAS IT?!!?
             allDetails.add(playerPlant.optString("display_name"))
 
             val spikePlanter = playerPlant.optString("display_name")
             val playerPosition: ImageView? = view?.findViewById(R.id.playerPos)
             val bitmap: Bitmap? = Bitmap.createBitmap(
-                929,
-                929,
+                1000,
+                1000,
                 Bitmap.Config.ARGB_8888
             )
 
@@ -277,8 +276,8 @@ class RoundsMoreDetailsFragment : Fragment() {
                         paint.color = Color.parseColor("#18e4b7")
                     }
                 }
-                val finalX: Int = (((y * xMult) + xScalar) * 929).roundToInt()
-                val finalY: Int = (((x * yMult) + yScalar) * 929).roundToInt()
+                val finalX: Int = (((y * xMult) + xScalar) * 1000).roundToInt()
+                val finalY: Int = (((x * yMult) + yScalar) * 1000).roundToInt()
                 val SpikeIcon = BitmapFactory.decodeResource(
                     requireContext().resources,
                     R.drawable.spikelogo

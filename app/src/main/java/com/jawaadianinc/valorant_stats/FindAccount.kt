@@ -287,7 +287,7 @@ class FindAccount : AppCompatActivity() {
                             ).show()
                         }
                     }
-                } catch (e: java.io.FileNotFoundException) {
+                } catch (e: FileNotFoundException) {
                     uiThread {
                         progressDialog.dismiss()
                         val contextView = findViewById<View>(R.id.generalStats)
@@ -524,31 +524,18 @@ class FindAccount : AppCompatActivity() {
                     {
                         var userExist = false
                         try {
-                            val existUserText = URL(doesUserExist).readText()
-                            val timetoFindOut = JSONObject(existUserText)
+                            val timetoFindOut = JSONObject(URL(doesUserExist).readText())
                             val datatoseeiftheyexist = timetoFindOut["data"] as JSONObject
-                            datatoseeiftheyexist["name"].toString()
-                            userExist = true
+                            val playerName = datatoseeiftheyexist["name"].toString()
+                            Log.d("test", playerName)
                             val database = Firebase.database
                             val playersRef = database.getReference("VALORANT/players")
                             playersRef.child(Name).child("Tag").setValue(ID)
-                        }
-                        catch (e: java.io.FileNotFoundException){
-                            progressDialog.dismiss()
-                            runOnUiThread {
-                                val contextView = findViewById<View>(R.id.generalStats)
-                                val snackbar = Snackbar
-                                    .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
-                                snackbar.show()
-                            }
-                        }
 
-                        if (userExist) {
-                            val text = URL(URLtoFindAccount).readText()
-                            val answer = JSONObject(text)
-                            val data = answer["data"] as JSONObject
-                            val platFormInfo = data["platformInfo"] as JSONObject
-                            PLAYERCARD = platFormInfo["avatarUrl"].toString()
+                            val data = datatoseeiftheyexist["card"] as JSONObject
+                            val platFormInfo = data["small"] as String
+                            PLAYERCARD = platFormInfo
+
                             runOnUiThread {
                                 val intent = Intent(this@FindAccount, StatsActivity::class.java)
                                 intent.putExtra("RiotName", Name)
@@ -557,12 +544,19 @@ class FindAccount : AppCompatActivity() {
                                 progressDialog.dismiss()
                                 startActivity(intent)
                             }
+
+                        } catch (e: FileNotFoundException) {
+                            progressDialog.dismiss()
+                            runOnUiThread {
+                                val contextView = findViewById<View>(R.id.generalStats)
+                                val snackbar = Snackbar
+                                    .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
+                                snackbar.show()
+                            }
                         }
-
-                    } catch (e: java.io.FileNotFoundException) {
-
-                        val SignInUrl = "https://tracker.gg/valorant/profile/riot/$Name%23$ID/overview"
-
+                    } catch (e: FileNotFoundException) {
+                        val SignInUrl =
+                            "https://tracker.gg/valorant/profile/riot/$Name%23$ID/overview"
                         runOnUiThread {
                             progressDialog.dismiss()
                             val d =
@@ -580,15 +574,13 @@ class FindAccount : AppCompatActivity() {
                                 LinkMovementMethod.getInstance()
                             }
                         }
-                    }
-
-                    catch (e: java.io.FileNotFoundException) {
-                        progressDialog.dismiss()
-                        val contextView = findViewById<View>(R.id.generalStats)
-                        val snackbar = Snackbar
-                            .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
-                        snackbar.show()
-                    }
+                    } catch (e: FileNotFoundException) {
+                    progressDialog.dismiss()
+                    val contextView = findViewById<View>(R.id.generalStats)
+                    val snackbar = Snackbar
+                        .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
+                    snackbar.show()
+                }
 
 
                 catch (e: Exception) {
@@ -788,8 +780,7 @@ class FindAccount : AppCompatActivity() {
                             }
                         }
 
-                    }
-                    catch (e: java.io.FileNotFoundException) {
+                    } catch (e: FileNotFoundException) {
                         uiThread {
                             progressDialog.dismiss()
                             AlertDialog.Builder(this@FindAccount).setTitle("Server Error!")
@@ -797,8 +788,7 @@ class FindAccount : AppCompatActivity() {
                                 .setPositiveButton(android.R.string.ok) { _, _ -> }
                                 .setIcon(android.R.drawable.ic_dialog_alert).show()
                         }
-                    }
-                    catch (e: Exception) {
+                    } catch (e: Exception) {
                         uiThread {
                             progressDialog.dismiss()
                             AlertDialog.Builder(this@FindAccount).setTitle("Error!")
@@ -809,17 +799,15 @@ class FindAccount : AppCompatActivity() {
                     }
 
 
-                }
-                catch (e: java.io.FileNotFoundException){
-                    uiThread{
+                } catch (e: FileNotFoundException) {
+                    uiThread {
                         progressDialog.dismiss()
                         val contextView = findViewById<View>(R.id.generalStats)
                         val snackbar = Snackbar
                             .make(contextView, "User not found!", Snackbar.LENGTH_LONG)
                         snackbar.show()
                     }
-                }
-                catch (e: Exception) {
+                } catch (e: Exception) {
                     uiThread {
                         progressDialog.dismiss()
                         AlertDialog.Builder(this@FindAccount).setTitle("Error!")
