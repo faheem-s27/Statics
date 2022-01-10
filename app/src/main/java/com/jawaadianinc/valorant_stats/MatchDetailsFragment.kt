@@ -48,22 +48,21 @@ class MatchDetailsFragment : Fragment() {
 
         doAsync {
             try {
-                val matchID: String = if (IDofMatch == "none") {
-                    val matchhistoryURL = URL(allmatches).readText()
-                    val jsonMatches = JSONObject(matchhistoryURL)
-                    val data = jsonMatches["data"] as JSONArray
-                    val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
-                    easier.getString("matchid")
-                } else {
-                    IDofMatch!!
-                }
-                val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
+//                val matchID: String = if (IDofMatch == "none") {
+//                    val matchhistoryURL = URL(allmatches).readText()
+//                    val jsonMatches = JSONObject(matchhistoryURL)
+//                    val data = jsonMatches["data"] as JSONArray
+//                    val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
+//                    easier.getString("matchid")
+//                } else {
+//                    IDofMatch!!
+//                }
+//                val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
                 val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
                 val mapData = jsonOfMap["data"] as JSONArray
 
-                val matchdetailsURL = URL(matchURl).readText()
-                val jsonDetails = JSONObject(matchdetailsURL)
-                val matchData = jsonDetails["data"] as JSONObject
+                val jsonDetails = MatchHistoryActivity.matchJSON
+                val matchData = jsonDetails?.get("data") as JSONObject
                 val metadata = matchData.getJSONObject("metadata")
                 val map = metadata.getString("map")
 

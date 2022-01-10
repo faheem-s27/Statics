@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.DataSnapshot
@@ -29,12 +30,7 @@ class GamePicker : AppCompatActivity() {
         val apexButton: Button = findViewById(R.id.apex)
         val requestButton: Button = findViewById(R.id.request)
         val requestStats: TextView = findViewById(R.id.databaseGameRequests)
-
-//        AlertDialog.Builder(this).setTitle("WARNING")
-//            .setMessage("Hey! This version 1.84 is a beta version. Some UI and features are incomplete/buggy, they will be fixed in upcoming updates")
-//            .setPositiveButton(android.R.string.ok) { _, _ -> }
-//            .setIcon(android.R.drawable.ic_dialog_alert)
-//            .show()
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
         valoButton.setOnClickListener {
             startActivity(Intent(this, FindAccount::class.java))
@@ -94,10 +90,10 @@ class GamePicker : AppCompatActivity() {
     private fun showAlertWithTextInputLayout(context: Context) {
         val textInputLayout = TextInputLayout(context)
         val input = EditText(context)
-        textInputLayout.hint = "Game name"
+        textInputLayout.hint = "Name of game"
         textInputLayout.addView(input)
         textInputLayout.setPadding(
-            resources.getDimensionPixelOffset(R.dimen.dp_19), // if you look at android alert_dialog.xml, you will see the message textview have margin 14dp and padding 5dp. This is the reason why I use 19 here
+            resources.getDimensionPixelOffset(R.dimen.dp_19),
             0,
             resources.getDimensionPixelOffset(R.dimen.dp_19),
             0
@@ -124,5 +120,4 @@ class GamePicker : AppCompatActivity() {
             }.create()
         alert.show()
     }
-
 }

@@ -165,9 +165,14 @@ class FindAccount : AppCompatActivity() {
         }
 
         findaccountButton.setOnClickListener {
-            if (mySpinner.selectedItem != null) {
-                findAccount(mySpinner.selectedItem.toString())
-            }
+//            if (mySpinner.selectedItem != null) {
+//                findAccount(mySpinner.selectedItem.toString())
+//            }
+            //TODO add this after fix
+            AlertDialog.Builder(this@FindAccount).setTitle("Disabled!")
+                .setMessage("Due to authentication issues, this feature is disabled and will be enabled in the upcoming updates\nSorry!")
+                .setPositiveButton(android.R.string.ok) { _, _ -> }
+                .setIcon(android.R.drawable.ic_dialog_alert).show()
         }
 
         updatesButton.setOnClickListener {

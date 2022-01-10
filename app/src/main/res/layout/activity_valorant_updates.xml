@@ -20,6 +20,7 @@
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/ic_launcher_background"
             android:fitsSystemWindows="true"
             app:collapsedTitleGravity="start"
             app:contentScrim="@color/ic_launcher_background"

@@ -1,0 +1,12 @@
+NEW FEATURE PLANNED: LIVE STATS
+A new VALORANT feature enabling you to see the current live stats of a VALORANT player and see whether they are currently in a game or not. However due to this infomation being highly secure and not officially meant to be exploited like I am doing. The only method in which we can track a persons live stats is, by accessing a file in the VALORANT folder which is called the LockFile, this file is ONLY regenerated every time you open up VALORANT and will be deleted upon closing the game.
+
+The lockfile contains the keys and authorisation passwords which will enable me to access this sensetive information. The keys and passwords are changed everytime with this lockfile.
+
+Now, if this app was personal only to me, then that means my Discord Bot can open up the lockfile and use the keys to get the data and maybe send this out onto like a sever (lets say u were tracking my stats while i was in game)
+
+Now becaesu im making this app for everyone, I need the users to download something onto their PCs so that when they launch up VLAORANT then that software can access that Lockfile and then send the information to my discord bot which can then be sent to my mobile app via epic connection because its made by meeeeeee ezzzzzzzzzzzzzzzzz
+
+
+SECOND IDEAAAAAAAA
+Make a VALORANT bot that friend requests you and track their stats instead using the lockfile on my pc using friends presence or something like that.

@@ -55,20 +55,20 @@ class RoundsMoreDetailsFragment : Fragment() {
 
         doAsync {
             try {
-                var matchID: String = ""
-                matchID = if (IDofMatch == "none") {
-                    val matchhistoryURL = URL(allmatches).readText()
-                    val jsonMatches = JSONObject(matchhistoryURL)
-                    val data = jsonMatches["data"] as JSONArray
-                    val easier = data.getJSONObject(matchnumber).getJSONObject("metadata")
-                    easier.getString("matchid")
-                } else {
-                    IDofMatch!!
-                }
-                val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-                val matchdetailsURL = URL(matchURl).readText()
-                val jsonDetails = JSONObject(matchdetailsURL)
-                val matchData = jsonDetails["data"] as JSONObject
+//                var matchID: String = ""
+//                matchID = if (IDofMatch == "none") {
+//                    val matchhistoryURL = URL(allmatches).readText()
+//                    val jsonMatches = JSONObject(matchhistoryURL)
+//                    val data = jsonMatches["data"] as JSONArray
+//                    val easier = data.getJSONObject(matchnumber).getJSONObject("metadata")
+//                    easier.getString("matchid")
+//                } else {
+//                    IDofMatch!!
+//                }
+//                val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
+                //val matchdetailsURL = URL(matchURl).readText()
+                val jsonDetails = MatchHistoryActivity.matchJSON
+                val matchData = jsonDetails?.get("data") as JSONObject
                 val metadata = matchData.getJSONObject("metadata")
                 val map = metadata.getString("map")
                 val rounds = matchData.getJSONArray("rounds")

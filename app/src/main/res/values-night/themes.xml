@@ -15,12 +15,12 @@
     </style>
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">#0c0000</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorAccent">@color/Valorant_SplashColourBackground</item>
-        <item name="android:statusBarColor">@color/Valorant_SplashColourBackground</item>
+        <item name="colorAccent">@color/ic_launcher_background</item>
+        <item name="android:statusBarColor">@color/ic_launcher_background</item>
     </style>
 
 

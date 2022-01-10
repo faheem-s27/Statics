@@ -113,9 +113,8 @@ class CompetitiveStats : Fragment() {
             }
 
             try {
-                val jsonText =
-                    URL("https://api.tracker.gg/api/v2/valorant/standard/profile/riot/$name%23$id").readText()
-                val jsonObject = JSONObject(jsonText)
+                val jsonObject =
+                    JSONObject(URL("https://api.tracker.gg/api/v2/valorant/standard/profile/riot/$name%23$id").readText())
                 val compSegments = jsonObject.getJSONObject("data")
                     .getJSONArray("segments").getJSONObject(0)
                     .getJSONObject("stats")

@@ -18,11 +18,12 @@
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorAccent">@color/Valorant_SplashColourBackground</item>
+        <item name="colorAccent">@color/ic_launcher_background</item>
     </style>
 
     <style name="Theme.VALORANT_stats.NoActionBar">
@@ -33,14 +34,6 @@
     <style name="Theme.VALORANT_stats.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.VALORANT_stats.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="Theme.VALORANT_stats.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
-        <item name="appWidgetRadius">8dp</item>
-        <item name="appWidgetPadding">4dp</item>
-        <item name="appWidgetInnerRadius">4dp</item>
-    </style>
-
-    <style name="Theme.VALORANT_stats.AppWidgetContainer" parent="Theme.VALORANT_stats.AppWidgetContainerParent" />
 
 
 </resources>
