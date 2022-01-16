@@ -15,9 +15,12 @@
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
         <activity
-            android:theme="@style/Theme.VALORANT_stats"
-            android:name=".brawlStatsActivity"
+            android:name=".valorantPlayerStatsOverall"
             android:exported="false" />
+        <activity
+            android:name=".brawlStatsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VALORANT_stats" />
         <activity
             android:name=".leaderBoardActivity"
             android:exported="false" />
@@ -26,8 +29,8 @@
             android:exported="false" />
         <activity
             android:name=".brawlFindAccount"
-            android:theme="@style/Theme.VALORANT_stats"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.VALORANT_stats" />
         <activity
             android:name=".GamePicker"
             android:exported="false" />
@@ -48,7 +51,6 @@
             android:name=".AgentsActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".MatchHistoryActivity"
             android:exported="true"
@@ -67,6 +69,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

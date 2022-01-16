@@ -29,7 +29,6 @@ class GamePicker : AppCompatActivity() {
         val brawlButton: Button = findViewById(R.id.brawl)
         val apexButton: Button = findViewById(R.id.apex)
         val requestButton: Button = findViewById(R.id.request)
-        val requestStats: TextView = findViewById(R.id.databaseGameRequests)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
         valoButton.setOnClickListener {
@@ -68,17 +67,6 @@ class GamePicker : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val number = dataSnapshot.childrenCount
                 brawlStats.text = "Tracking $number Brawlhalla players!"
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("The read failed: " + databaseError.code)
-            }
-        })
-
-        gameReuqestRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val number = dataSnapshot.childrenCount
-                requestStats.text = "$number game requests"
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

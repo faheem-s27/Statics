@@ -48,16 +48,6 @@ class MatchDetailsFragment : Fragment() {
 
         doAsync {
             try {
-//                val matchID: String = if (IDofMatch == "none") {
-//                    val matchhistoryURL = URL(allmatches).readText()
-//                    val jsonMatches = JSONObject(matchhistoryURL)
-//                    val data = jsonMatches["data"] as JSONArray
-//                    val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
-//                    easier.getString("matchid")
-//                } else {
-//                    IDofMatch!!
-//                }
-//                val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
                 val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
                 val mapData = jsonOfMap["data"] as JSONArray
 

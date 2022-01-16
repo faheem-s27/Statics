@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
-import android.view.*
+import android.view.Display
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -40,6 +42,7 @@ class RoundsMoreDetailsFragment : Fragment() {
         val id = requireActivity().intent.extras!!.getString("RiotID")
         val matchnumber = requireActivity().intent.extras!!.getInt("MatchNumber")
 
+        val defuseBT: Button = requireView().findViewById(R.id.defuseBT)
         val spinnerRounds: Spinner = view.findViewById(R.id.roundsSpinner)
         val minimapImage: ImageView = view.findViewById(R.id.mapImage)
         val mapName: TextView = view.findViewById(R.id.mapName)
@@ -50,23 +53,9 @@ class RoundsMoreDetailsFragment : Fragment() {
         minimapImage.layoutParams?.width = width
         minimapImage.requestLayout()
         minimapImage.scaleType = ImageView.ScaleType.FIT_XY;
-        val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
-        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/${name}/$id?size=10"
 
         doAsync {
             try {
-//                var matchID: String = ""
-//                matchID = if (IDofMatch == "none") {
-//                    val matchhistoryURL = URL(allmatches).readText()
-//                    val jsonMatches = JSONObject(matchhistoryURL)
-//                    val data = jsonMatches["data"] as JSONArray
-//                    val easier = data.getJSONObject(matchnumber).getJSONObject("metadata")
-//                    easier.getString("matchid")
-//                } else {
-//                    IDofMatch!!
-//                }
-//                val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-                //val matchdetailsURL = URL(matchURl).readText()
                 val jsonDetails = MatchHistoryActivity.matchJSON
                 val matchData = jsonDetails?.get("data") as JSONObject
                 val metadata = matchData.getJSONObject("metadata")
@@ -91,7 +80,6 @@ class RoundsMoreDetailsFragment : Fragment() {
                 yMult = mapCoordinates["yMultiplier"] as Double
                 xScalar = mapCoordinates["xScalarToAdd"] as Double
                 yScalar = mapCoordinates["yScalarToAdd"] as Double
-                Log.d("agent", "hi")
                 val allPlayers =
                     matchData.getJSONObject("players").getJSONArray("all_players") as JSONArray
                 for (i in 0 until allPlayers.length()) {
@@ -100,7 +88,6 @@ class RoundsMoreDetailsFragment : Fragment() {
                     val playerTag = data.getString("tag")
                     val agentURL =
                         data.getJSONObject("assets").getJSONObject("agent").getString("small")
-                    Log.d("agent", agentURL)
                     val fullName = "$playerName#$playerTag"
                     mapofPlayerandAgent[fullName] = agentURL
                 }
@@ -189,8 +176,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                                 if (matchDetails[5] != "null") {
                                     spikeStats.text =
                                         "Planted By: ${matchDetails[6]}" +
-                                                "\n${matchDetails[0]} won"
-                                    spikeStats.gravity = Gravity.END
+                                                ", ${matchDetails[0]} won"
 
                                 }
                                 handleSpikeCoordinates(
@@ -215,6 +201,8 @@ class RoundsMoreDetailsFragment : Fragment() {
     }
 
     private fun handleSpecificRoundDetails(specificRound: JSONObject): ArrayList<String> {
+        val defuseBT: Button = requireView().findViewById(R.id.defuseBT)
+        val minimapImage: ImageView = requireView().findViewById(R.id.mapImage)
         val allDetails = ArrayList<String>()
         allDetails.add(specificRound["winning_team"].toString()) // TEAM WON
         if (specificRound["bomb_planted"].toString() == "true") {
@@ -222,9 +210,11 @@ class RoundsMoreDetailsFragment : Fragment() {
         } else {
             allDetails.add("No")
         } // WAS BOMB PLANTED
-        if (specificRound["bomb_defused"].toString() == "true") {
+        if (specificRound["bomb_defused"] == true) {
+            defuseBT.visibility = View.VISIBLE
             allDetails.add("Yes")
         } else {
+            defuseBT.visibility = View.INVISIBLE
             allDetails.add("No")
         } // WAS BOMB DEFUSED
 
@@ -256,20 +246,17 @@ class RoundsMoreDetailsFragment : Fragment() {
                 val paint = Paint()
                 paint.style = Paint.Style.FILL
                 paint.strokeWidth = 10F
-                val radius: Int
                 val name = requireActivity().intent.extras!!.getString("RiotName")
                 val id = requireActivity().intent.extras!!.getString("RiotID")
                 val riotName = "$name#$id"
 
                 if (location["player_display_name"] == riotName) {
-                    radius = 18
                     if (playerTeam == "Red") {
                         paint.color = Color.parseColor("#8B0000")
                     } else {
                         paint.color = Color.BLUE
                     }
                 } else {
-                    radius = 15
                     if (playerTeam == "Red") {
                         paint.color = Color.parseColor("#f94555")
                     } else {
@@ -346,11 +333,8 @@ class RoundsMoreDetailsFragment : Fragment() {
         return allDetails
     }
 
-    private fun handleSpikeCoordinates(
-        x: Int,
-        y: Int
-    ) {
-        val coordinates: TextView? = view?.findViewById(R.id.spikeCoordinates)
-        coordinates?.text = "Spike planted at: $x, $y"
+    private fun handleSpikeCoordinates(x: Int, y: Int) {
+        //val coordinates: TextView? = view?.findViewById(R.id.spikeCoordinates)
+        //coordinates?.text = "Spike planted at: $x, $y"
     }
 }

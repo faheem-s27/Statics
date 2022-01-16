@@ -31,6 +31,29 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/just_statics" />
 
+    <TextView
+        android:id="@+id/databaseStatsBrawl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Getting Stats"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/databaseStatsValo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Getting Stats"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/databaseStatsBrawl"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:id="@+id/scroll"
@@ -47,11 +70,9 @@
 
             <Button
                 android:id="@+id/apex"
-                android:layout_width="0dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="#cc3432 "
                 android:text="Apex Legends"
                 android:textAlignment="center"
@@ -67,25 +88,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/brawl" />
 
-            <TextView
-                android:id="@+id/databaseStatsValo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Getting Stats"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/databaseStatsBrawl" />
-
             <Button
                 android:id="@+id/brawl"
-                android:layout_width="0dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="#046892 "
                 android:text="BRAWLHALLA"
                 android:textAlignment="center"
@@ -101,40 +108,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/valo" />
 
-            <TextView
-                android:id="@+id/databaseStatsBrawl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Getting Stats"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/databaseStatsValo"
-                app:layout_constraintStart_toStartOf="@+id/databaseStatsValo"
-                app:layout_constraintTop_toBottomOf="@+id/databaseGameRequests" />
-
-            <TextView
-                android:id="@+id/databaseGameRequests"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                android:text="Getting Stats"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/request" />
-
             <Button
                 android:id="@+id/valo"
-                android:layout_width="0dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
                 android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
                 android:backgroundTint="@color/ic_launcher_background"
                 android:text="VALORANT"
                 android:textAlignment="center"
@@ -154,7 +132,7 @@
                 android:id="@+id/request"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:backgroundTint="@color/ic_launcher_background"
                 android:text="Request a game to be added!"
                 android:textColor="#FFFFFF"

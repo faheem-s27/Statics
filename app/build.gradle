@@ -10,8 +10,8 @@ android {
         applicationId "com.jawaadianinc.valorant_stats"
         minSdk 24
         targetSdk 31
-        versionCode 189
-        versionName "1.89"
+        versionCode 193
+        versionName "1.93"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -82,4 +82,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx:20.0.3'
     implementation 'com.tomer:fadingtextview:2.5'
     implementation "com.google.guava:guava:31.0.1-android"
+    implementation 'androidx.cardview:cardview:1.0.0'
 }

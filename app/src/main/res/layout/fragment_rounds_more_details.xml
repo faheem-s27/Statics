@@ -7,26 +7,27 @@
     android:layout_height="match_parent"
     tools:context=".RoundsMoreDetailsFragment">
 
-    <Spinner
-        android:id="@+id/roundsSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/mapImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/mapName"
+        app:layout_constraintBottom_toTopOf="@+id/defuseBT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spikeCoordinates"
-        app:srcCompat="@drawable/just_statics" />
+        app:layout_constraintTop_toBottomOf="@+id/roundsSpinner"
+        app:srcCompat="@drawable/haven_minimap" />
+
+    <Spinner
+        android:id="@+id/roundsSpinner"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/mapName"
@@ -42,36 +43,25 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/spikeCoordinates"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Coordinates:"
-        android:textColor="@color/light_blue_50"
-        android:textSize="14sp"
-        android:textStyle="bold|italic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/roundsSpinner" />
-
-    <TextView
         android:id="@+id/SpikeStats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:gravity="center"
         android:text="Planted by:"
-        android:textStyle="italic"
+        android:textSize="14dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/roundsSpinner" />
 
     <ImageView
         android:id="@+id/SpikePlanted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/mapImage"
+        app:layout_constraintEnd_toEndOf="@+id/mapImage"
+        app:layout_constraintStart_toStartOf="@+id/mapImage"
+        app:layout_constraintTop_toTopOf="@+id/mapImage"
         tools:src="@tools:sample/avatars"
         tools:visibility="gone" />
 
@@ -79,11 +69,24 @@
         android:id="@+id/playerPos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/mapImage"
+        app:layout_constraintEnd_toEndOf="@+id/mapImage"
+        app:layout_constraintStart_toStartOf="@+id/mapImage"
+        app:layout_constraintTop_toTopOf="@+id/mapImage"
         tools:src="@tools:sample/avatars"
         tools:visibility="gone" />
+
+    <Button
+        android:id="@+id/defuseBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#0C1117"
+        android:text="See defused map"
+        android:textColor="#FFFFFF"
+        android:visibility="invisible"
+        app:cornerRadius="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/mapName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,18 +34,6 @@ class PlayerDetailsFragment : Fragment() {
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
         doAsync {
             try {
-//                val matchID: String = if (IDofMatch == "none") {
-//                    val matchhistoryURL = URL(allmatches).readText()
-//                    val jsonMatches = JSONObject(matchhistoryURL)
-//                    val data = jsonMatches["data"] as JSONArray
-//                    val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
-//                    easier.getString("matchid")
-//                } else {
-//                    IDofMatch!!
-//                }
-                //val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-                //Log.d("Match", matchURl)
-                //val matchdetailsURL = URL(matchURl).readText()
                 val jsonDetails = MatchHistoryActivity.matchJSON
                 val matchData = jsonDetails?.get("data") as JSONObject
                 val players = matchData.getJSONObject("players")

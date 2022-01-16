@@ -100,7 +100,7 @@ class brawlStatsActivity : AppCompatActivity() {
 
                 val adapter = tabLayout?.tabCount?.let { BrawlAdapter(supportFragmentManager, it) }
                 viewPager?.adapter = adapter
-                viewPager?.offscreenPageLimit = 3
+                viewPager?.offscreenPageLimit = 5
                 viewPager?.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
                 viewPager?.setPageTransformer(true, ZoomOutPageTransformer())
                 tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

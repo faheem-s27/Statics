@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -17,6 +16,9 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
@@ -29,7 +31,6 @@ import java.io.FileNotFoundException
 import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
-
 
 class FindAccount : AppCompatActivity() {
     var PLAYERCARD = ""
@@ -64,15 +65,15 @@ class FindAccount : AppCompatActivity() {
         val leaderBoard: Button = findViewById(R.id.leaderboard)
         val recentPlayers: Button = findViewById(R.id.recentPlayers)
         val addname: Button = findViewById(R.id.addname)
-        val delete: Button = findViewById(R.id.delete)
         val mySpinner = findViewById<View>(R.id.spinner) as Spinner
+        val refreshPlayer: ImageButton = findViewById(R.id.refreshUpdate)
 
         val strings = java.util.ArrayList<String>()
         val file = File(this.filesDir, "texts")
         if (!file.exists()) {
             file.mkdir()
         }
-        val gpxfile = File(file, "users")
+        val gpxfile = File(file, "Players")
         if (!gpxfile.exists()) {
             gpxfile.createNewFile()
         }
@@ -85,48 +86,50 @@ class FindAccount : AppCompatActivity() {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mySpinner.adapter = arrayAdapter
 
-        imagebackground = findViewById(R.id.imagebackground)
-        Picasso.get().load(imagesURL.random()).into(imagebackground)
-        handler = Handler(Looper.getMainLooper())
-        runnable = Runnable {
-            doTask(handler)
-        }
+        mySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parentView: AdapterView<*>?,
+                selectedItemView: View?,
+                position: Int,
+                id: Long
+            ) {
+                updatePlayerUI()
+            }
 
-        val matchDatabse = MatchDatabases(this@FindAccount)
-        syncFireBase()
-
-        delete.setOnClickListener {
-            val file = File(this.filesDir, "texts")
-            if (file.exists()) {
-                val gpxfile = File(file, "users")
-                if (gpxfile.exists()) {
-                    if (gpxfile.readText() == "") {
-                        Toast.makeText(this, "Already Deleted!", Toast.LENGTH_SHORT).show()
-                    } else {
-                        gpxfile.delete()
-                        Toast.makeText(this, "Deleted!", Toast.LENGTH_SHORT).show()
-                        refresh()
-                    }
-                }
+            override fun onNothingSelected(parentView: AdapterView<*>?) {
             }
         }
 
+        imagebackground = findViewById(R.id.imagebackground)
+        Picasso.get().load(imagesURL.random()).into(imagebackground)
+//        handler = Handler(Looper.getMainLooper())
+//        runnable = Runnable {
+//            doTask(handler)
+//        }
+        syncFireBase()
         addname.setOnClickListener {
             if (!isEmpty()) {
                 if (verify(userNameEditText.text.toString())) {
+                    val progressDialog = ProgressDialog(this)
+                    progressDialog.setTitle("Verifying User")
+                    progressDialog.setMessage("Checking if user exists.")
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+                    progressDialog.setCancelable(false)
+                    progressDialog.show()
+
                     val file = File(this.filesDir, "texts")
                     if (!file.exists()) {
                         file.mkdir()
                     }
                     try {
-                        val gpxfile = File(file, "users")
+                        val gpxfile = File(file, "Players")
                         if (!gpxfile.exists()) {
                             gpxfile.createNewFile()
                         }
                         var pass = true
                         gpxfile.forEachLine {
                             if (it == userNameEditText.text.toString()) {
-                                val contextView = findViewById<View>(R.id.generalStats)
+                                val contextView = findViewById<View>(R.id.playerLevel)
                                 val snackbar = Snackbar
                                     .make(
                                         contextView,
@@ -135,28 +138,88 @@ class FindAccount : AppCompatActivity() {
                                     )
                                 snackbar.show()
                                 pass = false
+                                progressDialog.dismiss()
                             }
                         }
-
                         if (pass) {
-                            if (gpxfile.readText() == "") {
-                                gpxfile.appendText(userNameEditText.text.toString())
-                            } else {
-                                gpxfile.appendText("\n" + userNameEditText.text.toString())
+                            //Name Verification
+                            doAsync {
+                                try {
+                                    if (gpxfile.readText() == "") {
+                                        gpxfile.appendText(userNameEditText.text.toString())
+                                    } else {
+                                        gpxfile.appendText("\n" + userNameEditText.text.toString())
+                                    }
+                                    val name = userNameEditText.text.toString().split("#")
+                                    val data =
+                                        JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${name[0]}/${name[1]}?force=true").readText())["data"] as JSONObject
+                                    val database = Firebase.database
+                                    val playersRef = database.getReference("VALORANT/players")
+                                    playersRef.child(name[0]).child("Tag").setValue(name[1])
+                                    playersRef.child(name[0]).child("Avatar")
+                                        .setValue(data.getJSONObject("card").get("small"))
+                                    playersRef.child(name[0]).child("AvatarLarge")
+                                        .setValue(data.getJSONObject("card").get("large"))
+                                    playersRef.child(name[0]).child("Level")
+                                        .setValue(data.get("account_level"))
+                                    uiThread {
+                                        progressDialog.dismiss()
+                                        Toast.makeText(
+                                            this@FindAccount,
+                                            "Saved!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        refresh()
+                                    }
+
+                                } catch (e: Exception) {
+                                    uiThread {
+                                        progressDialog.dismiss()
+                                        val contextView = findViewById<View>(R.id.playerLevel)
+                                        val snackbar = Snackbar
+                                            .make(
+                                                contextView,
+                                                "User not found!",
+                                                Snackbar.LENGTH_LONG
+                                            )
+                                        snackbar.show()
+                                    }
+                                }
                             }
-                            Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
-                            refresh()
                         }
                     } catch (e: java.lang.Exception) {
+                        progressDialog.dismiss()
                         Toast.makeText(this, "Error: $e", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
-
         }
 
+        refreshPlayer.setOnClickListener {
+            val name = mySpinner.selectedItem.toString().split("#")
+            doAsync {
+                val data =
+                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${name[0]}/${name[1]}?force=true").readText())["data"] as JSONObject
+                val database = Firebase.database
+                val playersRef = database.getReference("VALORANT/players")
+                playersRef.child(name[0]).child("Tag").setValue(name[1])
+                playersRef.child(name[0]).child("Avatar")
+                    .setValue(data.getJSONObject("card").get("small"))
+                playersRef.child(name[0]).child("AvatarLarge")
+                    .setValue(data.getJSONObject("card").get("large"))
+                playersRef.child(name[0]).child("Level").setValue(data.get("account_level"))
+                updatePlayerUI()
+                val contextView = findViewById<View>(R.id.playerLevel)
+                uiThread {
+                    val snackbar = Snackbar
+                        .make(contextView, "Player data updated!", Snackbar.LENGTH_LONG)
+                    snackbar.show()
+                }
+            }
+        }
 
-        handler.postDelayed(runnable, 2000)
+        //handler.postDelayed(runnable, 2000)
+        updatePlayerUI()
 
         matchHistoryButton.setOnClickListener {
             if (mySpinner.selectedItem != null) {
@@ -169,10 +232,16 @@ class FindAccount : AppCompatActivity() {
 //                findAccount(mySpinner.selectedItem.toString())
 //            }
             //TODO add this after fix
-            AlertDialog.Builder(this@FindAccount).setTitle("Disabled!")
-                .setMessage("Due to authentication issues, this feature is disabled and will be enabled in the upcoming updates\nSorry!")
-                .setPositiveButton(android.R.string.ok) { _, _ -> }
-                .setIcon(android.R.drawable.ic_dialog_alert).show()
+//            AlertDialog.Builder(this).setTitle("New feature!")
+//                .setMessage("Due to legal issues, I cannot display all previous data about a user, however I am working on a new overall stats screen" +
+//                        " based on the last 10 matches. (In development)")
+//                .setPositiveButton(android.R.string.ok) { _, _ ->
+//                    //startActivity(Intent(this, valorantPlayerStatsOverall::class.java))
+//                    Toast.makeText(applicationContext,
+//                        "Well done", Toast.LENGTH_SHORT).show()
+//                }
+//                .setNegativeButton("No"){ _, _ -> }
+//                .setIcon(android.R.drawable.ic_dialog_alert).show()
         }
 
         updatesButton.setOnClickListener {
@@ -201,7 +270,7 @@ class FindAccount : AppCompatActivity() {
 
             doAsync {
                 try {
-                    JSONObject(URL(doesUserExist).readText())
+                    //JSONObject(URL(doesUserExist).readText())
                     val intent = Intent(this@FindAccount, MMRActivity::class.java)
                     intent.putExtra("RiotName", name[0])
                     intent.putExtra("RiotID", name[1])
@@ -217,14 +286,11 @@ class FindAccount : AppCompatActivity() {
                     }
                 }
             }
-
-
         }
 
         leaderBoard.setOnClickListener {
             startActivity(Intent(this, leaderBoardActivity::class.java))
         }
-
 
         viewMatch.setOnClickListener {
             val intent = Intent(this@FindAccount, ViewMatches::class.java)
@@ -313,9 +379,9 @@ class FindAccount : AppCompatActivity() {
         }
 
         recentPlayers.setOnClickListener {
-            val contextView = findViewById<View>(R.id.generalStats)
+            val contextView = findViewById<View>(R.id.playerLevel)
             val snackbar = Snackbar
-                .make(contextView, "Searching for players...", Snackbar.LENGTH_LONG)
+                .make(contextView, "Looking for recent players...", Snackbar.LENGTH_LONG)
             snackbar.show()
             val fullName = mySpinner.selectedItem.toString()
             val split = fullName.split("#")
@@ -396,15 +462,69 @@ class FindAccount : AppCompatActivity() {
         }
     }
 
-    private fun doTask(handler: Handler){
-        Picasso.get().load(imagesURL.random()).placeholder(imagebackground.drawable)
-            .into(imagebackground)
-        handler.postDelayed(runnable, 5000)
+    private fun updatePlayerUI() {
+        val mySpinner = findViewById<View>(R.id.spinner) as Spinner
+        val playerProfile: ImageView = findViewById(R.id.playerProfile)
+        val playerLevel: TextView = findViewById(R.id.playerLevel)
+        val playerName: TextView = findViewById(R.id.playerNameMenu)
+        doAsync {
+            try {
+                val fullname = mySpinner.selectedItem.toString()
+                if (fullname.isNotBlank()) {
+                    val name = fullname.split("#")
+                    uiThread {
+                        val database = Firebase.database
+                        val playersRef = database.getReference("VALORANT/players")
+                        playersRef.child(name[0]).child("Avatar")
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    val avatar = dataSnapshot.value as String
+                                    Picasso.get().load(avatar).fit().centerInside()
+                                        .into(playerProfile)
+                                }
+
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                }
+                            })
+                        playersRef.child(name[0]).child("Level")
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    playerLevel.text = (dataSnapshot.value as Long).toString()
+                                }
+
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                }
+                            })
+                        playersRef.child(name[0]).child("AvatarLarge")
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    Picasso.get().load(dataSnapshot.value.toString())
+                                        .into(imagebackground)
+                                }
+
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                }
+                            })
+
+                        playerName.text = mySpinner.selectedItem.toString()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d("test", e.toString())
+            }
+        }
+
+    }
+
+    private fun doTask(handler: Handler) {
+//        Picasso.get().load(imagesURL.random()).placeholder(imagebackground.drawable)
+//            .into(imagebackground)
+//        handler.postDelayed(runnable, 5000)
     }
 
     private fun isEmpty(): Boolean {
-        val userNameEditText : EditText = findViewById(R.id.editTextValorantName)
-        if (userNameEditText.text.isNotEmpty()){
+        val userNameEditText: EditText = findViewById(R.id.editTextValorantName)
+        if (userNameEditText.text.isNotEmpty()) {
             return false
         }
         else {
@@ -448,48 +568,62 @@ class FindAccount : AppCompatActivity() {
     private fun addNameToList(name: String) {
 
         val cropName = name.split(" in")
+        val name = cropName[0].split("#")
+        doAsync {
+            val data =
+                JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${name[0]}/${name[1]}?force=true").readText())["data"] as JSONObject
+            val database = Firebase.database
+            val playersRef = database.getReference("VALORANT/players")
+            playersRef.child(name[0]).child("Tag").setValue(name[1])
+            playersRef.child(name[0]).child("Avatar")
+                .setValue(data.getJSONObject("card").get("small"))
+            playersRef.child(name[0]).child("AvatarLarge")
+                .setValue(data.getJSONObject("card").get("large"))
+            playersRef.child(name[0]).child("Level").setValue(data.get("account_level"))
 
-        val file = File(this.filesDir, "texts")
-        if (!file.exists()) {
-            file.mkdir()
-        }
-        try {
-            val gpxfile = File(file, "users")
-            if (!gpxfile.exists()) {
-                gpxfile.createNewFile()
+            val file = File(this@FindAccount.filesDir, "texts")
+            if (!file.exists()) {
+                file.mkdir()
             }
-            var pass = true
-            gpxfile.forEachLine {
-                if (it == cropName[0]) {
-                    val contextView = findViewById<View>(R.id.generalStats)
-                    val snackbar = Snackbar
-                        .make(
-                            contextView,
-                            "User already in file!",
-                            Snackbar.LENGTH_LONG
-                        )
-                    snackbar.show()
-                    pass = false
+            uiThread {
+                try {
+                    val gpxfile = File(file, "Players")
+                    if (!gpxfile.exists()) {
+                        gpxfile.createNewFile()
+                    }
+                    var pass = true
+                    gpxfile.forEachLine {
+                        if (it == cropName[0]) {
+                            val contextView = findViewById<View>(R.id.generalStats)
+                            val snackbar = Snackbar
+                                .make(
+                                    contextView,
+                                    "User already in file!",
+                                    Snackbar.LENGTH_LONG
+                                )
+                            snackbar.show()
+                            pass = false
+                        }
+                    }
+
+                    if (pass) {
+                        if (gpxfile.readText() == "") {
+                            gpxfile.appendText(cropName[0])
+                        } else {
+                            gpxfile.appendText("\n" + cropName[0])
+                        }
+                        Toast.makeText(this@FindAccount, "Saved!", Toast.LENGTH_SHORT).show()
+                        refresh()
+                    }
+                } catch (e: java.lang.Exception) {
+                    Toast.makeText(this@FindAccount, "Error: $e", Toast.LENGTH_SHORT).show()
                 }
             }
-
-            if (pass) {
-                if (gpxfile.readText() == "") {
-                    gpxfile.appendText(cropName[0])
-                } else {
-                    gpxfile.appendText("\n" + cropName[0])
-                }
-                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
-                refresh()
-            }
-        } catch (e: java.lang.Exception) {
-            Toast.makeText(this, "Error: $e", Toast.LENGTH_SHORT).show()
         }
+
     }
 
-
     private fun findAccount(RiotName: String) {
-
         val progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Fetching Stats")
         progressDialog.setMessage("Please wait a moment")
@@ -634,18 +768,17 @@ class FindAccount : AppCompatActivity() {
         val ID = nameSplit[1]
         if (isNetworkAvailable()) {
             progressDialog.show()
-            val doesUserExist = "https://api.henrikdev.xyz/valorant/v1/account/$Name/$ID"
             val matchHistoryURL =
                 "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
             doAsync {
-                try{
-                    val existUserText = URL(doesUserExist).readText()
-                    val timetoFindOut = JSONObject(existUserText)
-                    val datatoseeiftheyexist = timetoFindOut["data"] as JSONObject
-                    datatoseeiftheyexist["name"].toString()
+                try {
+//                    val existUserText = URL(doesUserExist).readText()
+//                    val timetoFindOut = JSONObject(existUserText)
+//                    val datatoseeiftheyexist = timetoFindOut["data"] as JSONObject
+//                    datatoseeiftheyexist["name"].toString()
                     //find Matches
-                    try{
+                    try {
                         val matchhistoryURL = URL(matchHistoryURL).readText()
                         val jsonMatches = JSONObject(matchhistoryURL)
                         val statsus = jsonMatches.getInt("status")
@@ -848,8 +981,7 @@ class FindAccount : AppCompatActivity() {
 
     private fun refresh() {
         finish()
-        val i = Intent(this, FindAccount::class.java)
-        startActivity(i)
+        startActivity(Intent(this, FindAccount::class.java))
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
@@ -889,17 +1021,17 @@ class FindAccount : AppCompatActivity() {
                 db.close()
             }
 
-            val contextView = findViewById<View>(R.id.generalStats)
-            val snackbar = Snackbar
-                .make(contextView, "Database synced!", Snackbar.LENGTH_SHORT)
-            snackbar.show()
+//            val contextView = findViewById<View>(R.id.generalStats)
+//            val snackbar = Snackbar
+//                .make(contextView, "Database synced!", Snackbar.LENGTH_SHORT)
+//            snackbar.show()
 
         } catch (e: Exception) {
             val contextView = findViewById<View>(R.id.generalStats)
             val snackbar = Snackbar
                 .make(contextView, "Database not synced!", Snackbar.LENGTH_SHORT)
             snackbar.show()
+            Log.d("database", e.toString())
         }
     }
-
 }

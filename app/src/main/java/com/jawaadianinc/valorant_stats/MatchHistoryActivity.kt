@@ -1,5 +1,6 @@
 package com.jawaadianinc.valorant_stats
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -28,6 +29,13 @@ class MatchHistoryActivity : AppCompatActivity() {
         val IDofMatch = intent.extras!!.getString("MatchID")
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setTitle("Getting information")
+        progressDialog.setMessage("Collecting match details!")
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
         doAsync {
             val matchID: String = if (IDofMatch == "none") {
                 val matchhistoryURL = URL(allmatches).readText()
@@ -42,6 +50,7 @@ class MatchHistoryActivity : AppCompatActivity() {
             matchJSON = JSONObject(URL(matchURl).readText())
 
             uiThread {
+                progressDialog.dismiss()
                 tabLayout = findViewById<View>(R.id.tabsforMatch) as? TabLayout
                 viewPager = findViewById<View>(R.id.view_pager_matchHistory) as? ViewPager
                 tabLayout?.tabGravity = TabLayout.GRAVITY_CENTER
@@ -78,7 +87,7 @@ class MatchHistoryActivity : AppCompatActivity() {
                 val adapter =
                     tabLayout?.tabCount?.let { MatchHistoryAdapter(supportFragmentManager, it) }
                 viewPager?.adapter = adapter
-                viewPager?.offscreenPageLimit = 3
+                viewPager?.offscreenPageLimit = 5
                 viewPager?.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
                 viewPager?.setPageTransformer(true, ZoomOutPageTransformer())
                 tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
