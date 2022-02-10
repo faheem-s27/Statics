@@ -10,12 +10,12 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
-        startActivity(Intent(this, GamePicker::class.java))
+        startActivity(Intent(this, GamePickerMenu::class.java))
         finish()
 
 //        val mHandler = Handler()
 //        mHandler.postDelayed(Runnable {
-//            val intent = Intent(this, GamePicker::class.java)
+//            val intent = Intent(this, GamePickerMenu::class.java)
 //            startActivity(intent)
 //            finish()
 //        }, 2000L)

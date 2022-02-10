@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:textAlignment="center"
+        app:icon="@drawable/valologo"
+        app:iconSpaceReserved="true"
+        app:title="VALORANT">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="switch_preference_1"
+            android:title="In development :D" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:icon="@drawable/brawllogo"
+        app:title="Brawlhalla" />
+
+</PreferenceScreen>

@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.jawaadianinc.valorant_stats.valorant.ValorantUpdatesActivity">
+    <item
+        android:id="@+id/About"
+        android:icon="@drawable/info"
+        android:title="About"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/spikeicon"
+        android:orderInCategory="100"
+        android:title="@string/action_settings" />
+</menu>

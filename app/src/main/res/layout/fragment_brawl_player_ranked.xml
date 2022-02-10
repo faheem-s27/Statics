@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout11"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".brawl_playerRanked">
+    tools:context=".brawlhalla.brawl_playerRanked">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

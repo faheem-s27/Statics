@@ -15,48 +15,52 @@
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
         <activity
-            android:name=".valorantPlayerStatsOverall"
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".valorant.valorantPlayerStatsOverall"
             android:exported="false" />
         <activity
-            android:name=".brawlStatsActivity"
+            android:name=".brawlhalla.brawlStatsActivity"
             android:exported="false"
             android:theme="@style/Theme.VALORANT_stats" />
         <activity
-            android:name=".leaderBoardActivity"
+            android:name=".valorant.leaderBoardActivity"
             android:exported="false" />
         <activity
-            android:name=".MMRActivity"
+            android:name=".valorant.MMRActivity"
             android:exported="false" />
         <activity
-            android:name=".brawlFindAccount"
+            android:name=".brawlhalla.brawlFindAccount"
             android:exported="false"
             android:theme="@style/Theme.VALORANT_stats" />
         <activity
-            android:name=".GamePicker"
+            android:name=".GamePickerMenu"
             android:exported="false" />
         <activity
-            android:name=".ViewMatches"
+            android:name=".valorant.ViewMatches"
             android:exported="false" />
         <activity
-            android:name=".CompareActivity"
+            android:name=".valorant.CompareActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ValorantUpdatesActivity"
+            android:name=".valorant.ValorantUpdatesActivity"
             android:exported="true"
             android:label="@string/title_activity_valorant_updates"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats.NoActionBar" />
         <activity
-            android:name=".AgentsActivity"
+            android:name=".valorant.AgentsActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MatchHistoryActivity"
+            android:name=".valorant.MatchHistoryActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".StatsActivity"
+            android:name=".valorant.StatsActivity"
             android:exported="true"
             android:label="@string/title_activity_stats"
             android:screenOrientation="portrait"
@@ -74,9 +78,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FindAccount"
+            android:name=".valorant.FindAccount"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

@@ -4,65 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GamePicker">
+    tools:context=".GamePickerMenu">
 
-    <TextView
-        android:id="@+id/textView4"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:background="@color/ic_launcher_background"
+        android:foregroundGravity="center"
         android:gravity="center"
-        android:text="Statics"
-        android:textSize="45sp"
-        android:textStyle="bold"
+        android:minHeight="?attr/actionBarSize"
+        android:textAlignment="gravity"
+        android:theme="?attr/actionBarTheme"
+        app:buttonGravity="center_vertical"
+        app:circularflow_angles="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:subtitle="Choose your game"
+        app:subtitleTextColor="#ACA8A8"
+        app:title="Statics Main Menu"
+        app:titleTextColor="#FFFFFF" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:alpha="0.3"
-        android:scaleType="centerInside"
+        android:alpha="0.4"
+        android:background="@color/ic_launcher_background"
+        android:backgroundTint="@color/ic_launcher_background"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2"
         app:srcCompat="@drawable/just_statics" />
 
-    <TextView
-        android:id="@+id/databaseStatsBrawl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Getting Stats"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/databaseStatsValo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Getting Stats"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/databaseStatsBrawl"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <androidx.core.widget.NestedScrollView
-        android:layout_width="0dp"
         android:id="@+id/scroll"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -74,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:backgroundTint="#cc3432 "
+                android:fontFamily="@font/baloo_bhai"
                 android:text="Apex Legends"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
@@ -85,15 +72,43 @@
                 app:iconSize="60dp"
                 app:iconTint="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/brawl" />
+                app:layout_constraintTop_toBottomOf="@+id/databaseStatsFortnite"
+                app:strokeColor="#000000"
+                app:strokeWidth="3dp" />
+
+            <Button
+                android:id="@+id/fortnite"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#3ca2e2"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Fortnite"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                app:cornerRadius="15dp"
+                app:icon="@drawable/fortnite_logo"
+                app:iconGravity="textTop"
+                app:iconSize="60dp"
+                app:iconTint="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.504"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/databaseStatsBrawl"
+                app:strokeColor="#000000"
+                app:strokeWidth="3dp" />
 
             <Button
                 android:id="@+id/brawl"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="#046892 "
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#0cd6bf"
+                android:fontFamily="@font/baloo_bhai"
                 android:text="BRAWLHALLA"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
@@ -105,8 +120,11 @@
                 app:iconSize="60sp"
                 app:iconTint="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.504"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/valo" />
+                app:layout_constraintTop_toBottomOf="@+id/databaseStatsValo"
+                app:strokeColor="#000000"
+                app:strokeWidth="3dp" />
 
             <Button
                 android:id="@+id/valo"
@@ -114,32 +132,91 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:backgroundTint="@color/ic_launcher_background"
+                android:fontFamily="@font/baloo_bhai"
+                android:lineSpacingExtra="8sp"
                 android:text="VALORANT"
                 android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textSize="30sp"
+                android:textAllCaps="false"
+                android:textColor="#FF4B50"
+                android:textSize="30dp"
                 android:textStyle="bold"
                 app:cornerRadius="15dp"
                 app:icon="@drawable/valologo"
                 app:iconGravity="textTop"
+                app:iconPadding="10dp"
                 app:iconSize="60sp"
                 app:iconTint="#FF4B50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="@color/black"
+                app:strokeWidth="3dp" />
 
             <Button
                 android:id="@+id/request"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:backgroundTint="@color/ic_launcher_background"
-                android:text="Request a game to be added!"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Request a game!"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="50dp"
                 app:layout_constraintEnd_toEndOf="@+id/apex"
+                app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="@+id/apex"
+                app:layout_constraintTop_toBottomOf="@+id/databaseStatsApex" />
+
+            <TextView
+                android:id="@+id/databaseStatsBrawl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/brawl" />
+
+            <TextView
+                android:id="@+id/databaseStatsFortnite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Coming soon!"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fortnite" />
+
+            <TextView
+                android:id="@+id/databaseStatsApex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Coming soon!"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/apex" />
+
+            <TextView
+                android:id="@+id/databaseStatsValo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/valo" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
