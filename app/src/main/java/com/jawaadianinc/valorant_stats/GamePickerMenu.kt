@@ -2,21 +2,28 @@ package com.jawaadianinc.valorant_stats
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -24,15 +31,24 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.brawlhalla.brawlFindAccount
 import com.jawaadianinc.valorant_stats.valorant.FindAccount
+import com.squareup.picasso.Picasso
 
 
 class GamePickerMenu : AppCompatActivity() {
+    private val RC_SIGN_IN: Int = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_picker)
 
         val toolbar: Toolbar = findViewById<View>(R.id.toolbar2) as Toolbar
         setSupportActionBar(toolbar)
+
+        FirebaseApp.initializeApp(/*context=*/this)
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        firebaseAppCheck.installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance()
+        )
 
         val textStats: TextView = findViewById(R.id.databaseStatsValo)
         val brawlStats: TextView = findViewById(R.id.databaseStatsBrawl)
@@ -53,11 +69,10 @@ class GamePickerMenu : AppCompatActivity() {
         apexButton.translationY = -200f
         fortniteButton.translationY = -200f
 
-
-        valoButton.animate().alpha(1f).translationYBy(200f).duration = 1500
-        brawlButton.animate().alpha(1f).translationYBy(200f).setDuration(1500).startDelay = 400
-        fortniteButton.animate().alpha(1f).translationYBy(200f).setDuration(1500).startDelay = 800
-        apexButton.animate().alpha(1f).translationYBy(200f).setDuration(1500).startDelay = 1200
+        valoButton.animate().alpha(1f).translationYBy(200f).duration = 600
+        brawlButton.animate().alpha(1f).translationYBy(200f).setDuration(600).startDelay = 200
+        fortniteButton.animate().alpha(1f).translationYBy(200f).setDuration(600).startDelay = 400
+        apexButton.animate().alpha(1f).translationYBy(200f).setDuration(600).startDelay = 600
 
         valoButton.setOnClickListener {
             startActivity(Intent(this, FindAccount::class.java))
@@ -79,10 +94,15 @@ class GamePickerMenu : AppCompatActivity() {
             showAlertWithTextInputLayout(this)
         }
 
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+        val mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         val database = Firebase.database
         val playersRef = database.getReference("VALORANT/players")
         val brawlRef = database.getReference("Brawlhalla/players")
-        val gameReuqestRef = database.getReference("gameRequests")
+        //val gameReuqestRef = database.getReference("gameRequests")
 
         playersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -105,6 +125,68 @@ class GamePickerMenu : AppCompatActivity() {
                 println("The read failed: " + databaseError.code)
             }
         })
+
+        val account = GoogleSignIn.getLastSignedInAccount(this)
+        val signIn: SignInButton = findViewById(R.id.sign_in_button)
+        val name: TextView = findViewById(R.id.accountName)
+        val pic: ImageView = findViewById(R.id.accountProfile)
+        val circle = findViewById<View>(R.id.circle)
+        val logOut: Button = findViewById(R.id.logOut)
+        logOut.setOnClickListener {
+            mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this) {
+                    startActivity(Intent(this, SplashActivity::class.java))
+                }
+        }
+
+        if (account == null) {
+            signIn.visibility = View.VISIBLE
+            name.visibility = View.INVISIBLE
+            pic.visibility = View.INVISIBLE
+            circle.visibility = View.INVISIBLE
+        } else {
+            showProfile(account.displayName!!, account.photoUrl!!)
+        }
+
+        signIn.setOnClickListener {
+            val signInIntent: Intent = mGoogleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SIGN_IN) {
+            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
+            handleSignInResult(task)
+        }
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            showProfile(account.displayName!!, account.photoUrl!!)
+        } catch (e: ApiException) {
+            Toast.makeText(this, "Failed to sign in :/", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showProfile(name: String, profilePic: Uri) {
+        val signIn: SignInButton = findViewById(R.id.sign_in_button)
+        val nameText: TextView = findViewById(R.id.accountName)
+        val pic: ImageView = findViewById(R.id.accountProfile)
+        val circle = findViewById<View>(R.id.circle)
+        signIn.visibility = View.INVISIBLE
+        nameText.visibility = View.VISIBLE
+        pic.visibility = View.VISIBLE
+        circle.visibility = View.VISIBLE
+        nameText.text = "Welcome ${name}!"
+        Picasso.get().load(profilePic).fit().centerInside()
+            .into(pic)
+        val database = Firebase.database
+        val accounts = database.getReference("Users/Google")
+        accounts.child(name).child("PhotoURL").setValue(profilePic.toString())
+
     }
 
     private fun showAlertWithTextInputLayout(context: Context) {
@@ -163,4 +245,5 @@ class GamePickerMenu : AppCompatActivity() {
     fun goToAbout() {
         //TODO add about section to app!
     }
+
 }

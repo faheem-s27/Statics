@@ -1,10 +1,12 @@
 package com.jawaadianinc.valorant_stats.valorant
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.Html
@@ -13,7 +15,6 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
@@ -39,6 +40,7 @@ class FindAccount : AppCompatActivity() {
     private lateinit var imagebackground: ImageView
 
     val imagesURL = java.util.ArrayList<String>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -236,7 +238,7 @@ class FindAccount : AppCompatActivity() {
 //                .setMessage("Due to legal issues, I cannot display all previous data about a user, however I am working on a new overall stats screen" +
 //                        " based on the last 10 matches. (In development)")
 //                .setPositiveButton(android.R.string.ok) { _, _ ->
-//                    //startActivity(Intent(this, valorantPlayerStatsOverall::class.java))
+//                    //startActivity(Intent(this, ValorantPlayerStatsOverall::class.java))
 //                    Toast.makeText(applicationContext,
 //                        "Well done", Toast.LENGTH_SHORT).show()
 //                }
@@ -395,7 +397,9 @@ class FindAccount : AppCompatActivity() {
                         }
                     }
 
-                    mapofPlayerOccurences.remove("Name", 10)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        mapofPlayerOccurences.remove("Name", 10)
+                    }
                     val result =
                         mapofPlayerOccurences.toList().sortedBy { (_, value) -> value }.toMap()
                     var finalList = arrayOf("")
@@ -438,115 +442,141 @@ class FindAccount : AppCompatActivity() {
     }
 
     private fun updatePlayerUI() {
-        val mySpinner = findViewById<View>(R.id.spinner) as Spinner
-        val playerProfile: ImageView = findViewById(R.id.playerProfile)
-        val playerLevel: TextView = findViewById(R.id.playerLevel)
-        val playerName: TextView = findViewById(R.id.playerNameMenu)
-        doAsync {
-            try {
-                val fullname = mySpinner.selectedItem.toString()
-                if (fullname.isNotBlank()) {
-                    val name = fullname.split("#")
-                    uiThread {
-                        val database = Firebase.database
-                        val playersRef = database.getReference("VALORANT/players")
-                        playersRef.child(name[0]).child("Avatar")
-                            .addListenerForSingleValueEvent(object : ValueEventListener {
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    try {
-                                        val avatar = dataSnapshot.value as String
-                                        Picasso.get().load(avatar).fit().centerInside()
-                                            .into(playerProfile)
-                                    } catch (e: Exception) {
-                                        doAsync {
-                                            val data =
-                                                JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${name[0]}/${name[1]}?force=true").readText())["data"] as JSONObject
-                                            val database = Firebase.database
-                                            val playersRef =
-                                                database.getReference("VALORANT/players")
-                                            playersRef.child(name[0]).child("Tag").setValue(name[1])
-                                            playersRef.child(name[0]).child("Avatar")
-                                                .setValue(data.getJSONObject("card").get("small"))
-                                            playersRef.child(name[0]).child("AvatarLarge")
-                                                .setValue(data.getJSONObject("card").get("large"))
-                                            playersRef.child(name[0]).child("Level")
-                                                .setValue(data.get("account_level"))
-                                            uiThread {
-                                                updatePlayerUI()
+        try {
+            val mySpinner = findViewById<View>(R.id.spinner) as Spinner
+            val playerProfile: ImageView = findViewById(R.id.playerProfile)
+            val playerLevel: TextView = findViewById(R.id.playerLevel)
+            val playerName: TextView = findViewById(R.id.playerNameMenu)
+            val fullname = mySpinner.selectedItem.toString()
+            val name = fullname.split("#")
+            var player = PlayerClass(name[0], name[1])
+            //Toast.makeText(this, player.toString(), Toast.LENGTH_SHORT).show()
+
+            doAsync {
+                try {
+                    if (fullname.isNotBlank()) {
+                        uiThread {
+                            val database = Firebase.database
+                            val playersRef = database.getReference("VALORANT/players")
+                            playersRef.child(name[0]).child("Avatar")
+                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                        try {
+                                            val avatar = dataSnapshot.value as String
+                                            Picasso.get().load(avatar).fit().centerInside()
+                                                .into(playerProfile)
+                                        } catch (e: Exception) {
+                                            doAsync {
+                                                val data =
+                                                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${name[0]}/${name[1]}?force=true").readText())["data"] as JSONObject
+                                                val database = Firebase.database
+                                                val playersRef =
+                                                    database.getReference("VALORANT/players")
+                                                playersRef.child(name[0]).child("Tag")
+                                                    .setValue(name[1])
+                                                playersRef.child(name[0]).child("Avatar")
+                                                    .setValue(
+                                                        data.getJSONObject("card").get("small")
+                                                    )
+                                                playersRef.child(name[0]).child("AvatarLarge")
+                                                    .setValue(
+                                                        data.getJSONObject("card").get("large")
+                                                    )
+                                                playersRef.child(name[0]).child("Level")
+                                                    .setValue(data.get("account_level"))
+                                                uiThread {
+                                                    updatePlayerUI()
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                                override fun onCancelled(databaseError: DatabaseError) {
-                                }
-                            })
-                        playersRef.child(name[0]).child("Level")
-                            .addListenerForSingleValueEvent(object : ValueEventListener {
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    try {
-                                        playerLevel.text = (dataSnapshot.value as Long).toString()
-                                    } catch (e: Exception) {
-                                        doAsync {
-                                            val data =
-                                                JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${name[0]}/${name[1]}?force=true").readText())["data"] as JSONObject
-                                            val database = Firebase.database
-                                            val playersRef =
-                                                database.getReference("VALORANT/players")
-                                            playersRef.child(name[0]).child("Tag").setValue(name[1])
-                                            playersRef.child(name[0]).child("Avatar")
-                                                .setValue(data.getJSONObject("card").get("small"))
-                                            playersRef.child(name[0]).child("AvatarLarge")
-                                                .setValue(data.getJSONObject("card").get("large"))
-                                            playersRef.child(name[0]).child("Level")
-                                                .setValue(data.get("account_level"))
-                                            uiThread {
-                                                updatePlayerUI()
+                                    override fun onCancelled(databaseError: DatabaseError) {
+                                    }
+                                })
+                            playersRef.child(name[0]).child("Level")
+                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                        try {
+                                            playerLevel.text =
+                                                (dataSnapshot.value as Long).toString()
+                                        } catch (e: Exception) {
+                                            doAsync {
+                                                val data =
+                                                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${name[0]}/${name[1]}?force=true").readText())["data"] as JSONObject
+                                                val database = Firebase.database
+                                                val playersRef =
+                                                    database.getReference("VALORANT/players")
+                                                playersRef.child(name[0]).child("Tag")
+                                                    .setValue(name[1])
+                                                playersRef.child(name[0]).child("Avatar")
+                                                    .setValue(
+                                                        data.getJSONObject("card").get("small")
+                                                    )
+                                                playersRef.child(name[0]).child("AvatarLarge")
+                                                    .setValue(
+                                                        data.getJSONObject("card").get("large")
+                                                    )
+                                                playersRef.child(name[0]).child("Level")
+                                                    .setValue(data.get("account_level"))
+                                                uiThread {
+                                                    updatePlayerUI()
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                override fun onCancelled(databaseError: DatabaseError) {
-                                }
-                            })
-                        playersRef.child(name[0]).child("AvatarLarge")
-                            .addListenerForSingleValueEvent(object : ValueEventListener {
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    try {
-                                        Picasso.get().load(dataSnapshot.value.toString())
-                                            .into(imagebackground)
-                                    } catch (e: Exception) {
-                                        doAsync {
-                                            val data =
-                                                JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${name[0]}/${name[1]}?force=true").readText())["data"] as JSONObject
-                                            val database = Firebase.database
-                                            val playersRef =
-                                                database.getReference("VALORANT/players")
-                                            playersRef.child(name[0]).child("Tag").setValue(name[1])
-                                            playersRef.child(name[0]).child("Avatar")
-                                                .setValue(data.getJSONObject("card").get("small"))
-                                            playersRef.child(name[0]).child("AvatarLarge")
-                                                .setValue(data.getJSONObject("card").get("large"))
-                                            playersRef.child(name[0]).child("Level")
-                                                .setValue(data.get("account_level"))
-                                            uiThread {
-                                                updatePlayerUI()
+
+                                    override fun onCancelled(databaseError: DatabaseError) {
+                                    }
+                                })
+                            playersRef.child(name[0]).child("AvatarLarge")
+                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                        try {
+                                            Picasso.get().load(dataSnapshot.value.toString())
+                                                .into(imagebackground)
+                                        } catch (e: Exception) {
+                                            doAsync {
+                                                val data =
+                                                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${name[0]}/${name[1]}?force=true").readText())["data"] as JSONObject
+                                                val database = Firebase.database
+                                                val playersRef =
+                                                    database.getReference("VALORANT/players")
+                                                playersRef.child(name[0]).child("Tag")
+                                                    .setValue(name[1])
+                                                playersRef.child(name[0]).child("Avatar")
+                                                    .setValue(
+                                                        data.getJSONObject("card").get("small")
+                                                    )
+                                                playersRef.child(name[0]).child("AvatarLarge")
+                                                    .setValue(
+                                                        data.getJSONObject("card").get("large")
+                                                    )
+                                                playersRef.child(name[0]).child("Level")
+                                                    .setValue(data.get("account_level"))
+                                                uiThread {
+                                                    updatePlayerUI()
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                                override fun onCancelled(databaseError: DatabaseError) {
-                                }
-                            })
+                                    override fun onCancelled(databaseError: DatabaseError) {
+                                    }
+                                })
 
-                        playerName.text = mySpinner.selectedItem.toString()
+                            playerName.text = mySpinner.selectedItem.toString()
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.d("test", e.toString())
                 }
-            } catch (e: Exception) {
-                Log.d("test", e.toString())
             }
+        } catch (E: Exception) {
+            Toast.makeText(this, "Get started by typing your VALORANT name!", Toast.LENGTH_SHORT)
+                .show()
         }
+
     }
 
     private fun doTask(handler: Handler) {
@@ -1062,9 +1092,9 @@ class FindAccount : AppCompatActivity() {
             }
 
             val contextView = findViewById<View>(R.id.generalStats)
-            val snackbar = Snackbar
-                .make(contextView, "Welcome back!", Snackbar.LENGTH_SHORT)
-            snackbar.show()
+//            val snackbar = Snackbar
+//                .make(contextView, "Welcome back!", Snackbar.LENGTH_SHORT)
+            //snackbar.show()
 
         } catch (e: Exception) {
             val contextView = findViewById<View>(R.id.generalStats)

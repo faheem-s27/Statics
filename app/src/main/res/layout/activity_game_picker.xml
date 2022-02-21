@@ -54,6 +54,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:foregroundGravity="center"
+                app:buttonSize="wide"
+                app:circularflow_angles="50dp"
+                app:circularflow_defaultAngle="50.0"
+                app:circularflow_defaultRadius="50dp"
+                app:colorScheme="auto"
+                app:layout_constraintEnd_toEndOf="@+id/valo"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="@+id/valo"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="invisible" />
+
             <Button
                 android:id="@+id/apex"
                 android:layout_width="300dp"
@@ -71,9 +88,9 @@
                 app:iconGravity="textTop"
                 app:iconSize="60dp"
                 app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/fortnite"
                 app:layout_constraintHorizontal_bias="0.495"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/fortnite"
                 app:layout_constraintTop_toBottomOf="@+id/databaseStatsFortnite"
                 app:strokeColor="#000000"
                 app:strokeWidth="3dp" />
@@ -95,9 +112,9 @@
                 app:iconGravity="textTop"
                 app:iconSize="60dp"
                 app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/brawl"
                 app:layout_constraintHorizontal_bias="0.504"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/brawl"
                 app:layout_constraintTop_toBottomOf="@+id/databaseStatsBrawl"
                 app:strokeColor="#000000"
                 app:strokeWidth="3dp" />
@@ -119,12 +136,34 @@
                 app:iconGravity="textTop"
                 app:iconSize="60sp"
                 app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/valo"
                 app:layout_constraintHorizontal_bias="0.504"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/valo"
                 app:layout_constraintTop_toBottomOf="@+id/databaseStatsValo"
                 app:strokeColor="#000000"
                 app:strokeWidth="3dp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/circle"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                android:elevation="12dp"
+                app:cardCornerRadius="200dp"
+                app:layout_constraintBottom_toBottomOf="@+id/sign_in_button"
+                app:layout_constraintEnd_toEndOf="@+id/sign_in_button"
+                app:layout_constraintStart_toEndOf="@+id/accountName"
+                app:layout_constraintTop_toTopOf="@+id/sign_in_button">
+
+                <ImageView
+                    android:id="@+id/accountProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/valologo"
+                    app:srcCompat="@drawable/agentesicon" />
+
+            </androidx.cardview.widget.CardView>
 
             <Button
                 android:id="@+id/valo"
@@ -147,8 +186,9 @@
                 app:iconSize="60sp"
                 app:iconTint="#FF4B50"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sign_in_button"
                 app:strokeColor="@color/black"
                 app:strokeWidth="3dp" />
 
@@ -156,16 +196,30 @@
                 android:id="@+id/request"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:backgroundTint="@color/ic_launcher_background"
                 android:fontFamily="@font/baloo_bhai"
                 android:text="Request a game!"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="50dp"
                 app:layout_constraintEnd_toEndOf="@+id/apex"
-                app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="@+id/apex"
                 app:layout_constraintTop_toBottomOf="@+id/databaseStatsApex" />
+
+            <Button
+                android:id="@+id/logOut"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/ic_launcher_background"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Log out"
+                android:textColor="#FFFFFF"
+                app:cornerRadius="50dp"
+                app:layout_constraintEnd_toEndOf="@+id/request"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/request"
+                app:layout_constraintTop_toBottomOf="@+id/request" />
 
             <TextView
                 android:id="@+id/databaseStatsBrawl"
@@ -216,6 +270,21 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/valo" />
+
+            <TextView
+                android:id="@+id/accountName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Welcome Faheem Saleem!"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/sign_in_button"
+                app:layout_constraintStart_toStartOf="@+id/sign_in_button"
+                app:layout_constraintTop_toTopOf="@+id/sign_in_button" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

@@ -15,11 +15,15 @@
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_login" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".valorant.valorantPlayerStatsOverall"
+            android:name=".valorant.ValorantPlayerStatsOverall"
             android:exported="false" />
         <activity
             android:name=".brawlhalla.brawlStatsActivity"
