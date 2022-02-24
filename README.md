@@ -14,6 +14,13 @@ By Faheem :)
 - Style matched to VALORANT such as colours and player tabs!
 - Smooth, fluid UI!
 - Full dark mode obviously :)
+- Migration of local database to online database
+- Add account linking
+- Adding kill feed to the map
+- Colour selection in settings
+- Add side by side comparasion
+- Statistical anaylsis of each game
+- Graphs and stuff 👍
 
 ## Features for Brawlhalla
 - Save BrawlID to a game name
@@ -24,16 +31,3 @@ By Faheem :)
 
 ## Features for Apex Legends
 - COMING SOON
-
-
-# Coming before first official release
-These are features which I would like to get done before releasing it on the play store
-
-## For VALORANT
-- Migration of local database to online database
-- Add account linking
-- Adding kill feed to the map
-- Colour selection in settings
-- Add side by side comparasion
-- Statistical anaylsis of each game
-- Graphs and stuff 👍
