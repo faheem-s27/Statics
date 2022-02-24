@@ -1,5 +1,6 @@
 package com.jawaadianinc.valorant_stats
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -43,6 +44,13 @@ class GamePickerMenu : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById<View>(R.id.toolbar2) as Toolbar
         setSupportActionBar(toolbar)
+
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setTitle("Please wait")
+        progressDialog.setMessage("Verifying device. No personal information is being collected")
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+        progressDialog.setCancelable(false)
+        progressDialog.show()
 
         FirebaseApp.initializeApp(/*context=*/this)
         val firebaseAppCheck = FirebaseAppCheck.getInstance()
@@ -108,6 +116,7 @@ class GamePickerMenu : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val number = dataSnapshot.childrenCount
                 textStats.text = "Tracking $number VALORANT players!"
+                progressDialog.dismiss()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

@@ -35,12 +35,8 @@ class PlayerDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val Name = requireActivity().intent.extras!!.getString("RiotName")
         val ID = requireActivity().intent.extras!!.getString("RiotID")
-        val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
-        val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
-        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
         doAsync {
             try {
-
                 val jsonAgents: JSONArray =
                     JSONObject(URL("https://valorant-api.com/v1/agents").readText()).getJSONArray("data")
 
@@ -111,7 +107,6 @@ class PlayerDetailsFragment : Fragment() {
                     )
                     playerList.adapter = players
                     playerList.setOnItemClickListener { _, _, position, _ ->
-
                         val inflater =
                             view.context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                         val popupView: View = inflater.inflate(R.layout.showplayerinfoval, null)

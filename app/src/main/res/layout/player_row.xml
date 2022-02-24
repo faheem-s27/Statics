@@ -14,7 +14,7 @@
         tools:srcCompat="@drawable/refreshicon" />
 
     <TextView
-        android:id="@+id/nameofPlayer"
+        android:id="@+id/NameOfPlayer"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:layout_row="0"

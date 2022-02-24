@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -230,6 +231,12 @@ class FindAccount : AppCompatActivity() {
         }
 
         findaccountButton.setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://faheemsaleem.page.link/app")
+                )
+            )
 //            if (mySpinner.selectedItem != null) {
 //                findAccount(mySpinner.selectedItem.toString())
 //            }

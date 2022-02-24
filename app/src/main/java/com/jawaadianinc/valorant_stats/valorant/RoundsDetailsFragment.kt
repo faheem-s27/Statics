@@ -1,13 +1,14 @@
 package com.jawaadianinc.valorant_stats.valorant
 
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
@@ -27,96 +28,67 @@ class RoundsDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val progressBar: ProgressBar = view.findViewById(R.id.progressRoundsDetails)
-        val Name = requireActivity().intent.extras!!.getString("RiotName")
-        val ID = requireActivity().intent.extras!!.getString("RiotID")
-        val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
         val timelineView: LinearLayout = view.findViewById(R.id.timeLineview)
-        val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
-        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
+
+        val teamWon = ArrayList<String>()
+        val endingType = ArrayList<String>()
+        val roundNumber = ArrayList<String>()
 
         doAsync {
             try {
-//                val matchID: String = if (IDofMatch == "none") {
-//                    val matchhistoryURL = URL(allmatches).readText()
-//                    val jsonMatches = JSONObject(matchhistoryURL)
-//                    val data = jsonMatches["data"] as JSONArray
-//                    val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
-//                    easier.getString("matchid")
-//                } else {
-//                    IDofMatch!!
-//                }
-//                val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-
-                //val matchdetailsURL = URL(matchURl).readText()
                 val jsonDetails = MatchHistoryActivity.matchJSON
                 val matchData = jsonDetails?.get("data") as JSONObject
                 val rounds = matchData.getJSONArray("rounds")
                 uiThread {
-                    val arrayList = ArrayList<String>()
                     val roundsListView: ListView = view.findViewById(R.id.RoundsList)
-                    val mAdapter = object :
-                        ArrayAdapter<String?>(
-                            activity?.applicationContext!!, android.R.layout.simple_list_item_1,
-                            arrayList as List<String?>
-                        ) {
-                        override fun getView(
-                        position: Int,
-                        convertView: View?,
-                        parent: ViewGroup
-                    ): View {
-                        val item = super.getView(position, convertView, parent) as TextView
-                        item.setTextColor(Color.parseColor("#FFFFFF"))
-                        item.setTypeface(item.typeface, Typeface.BOLD)
-                        item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+                    val roundsAdapter =
+                        RoundAdapter(requireActivity(), teamWon, endingType, roundNumber)
 
-                        return item
-                    }
-                }
-
-                roundsListView.adapter = mAdapter
-
-                for (i in 0 until rounds.length()) {
-                    val roundDetails = rounds[i] as JSONObject
-                    val winning_team = roundDetails.getString("winning_team")
-                    val button = Button(activity?.applicationContext!!)
-                    if (winning_team == "Blue") {
-                        button.setBackgroundColor(Color.parseColor("#18e4b7"))
-                    } else {
-                        button.setBackgroundColor(Color.parseColor("#f94555"))
-                    }
-                    //button.text = (i + 1).toString()
-                    button.layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams(
-                            25,
-                            50
+                    for (i in 0 until rounds.length()) {
+                        val roundDetails = rounds[i] as JSONObject
+                        val winning_team = roundDetails.getString("winning_team")
+                        val button = Button(activity?.applicationContext!!)
+                        if (winning_team == "Blue") {
+                            button.setBackgroundColor(Color.parseColor("#18e4b7"))
+                        } else {
+                            button.setBackgroundColor(Color.parseColor("#f94555"))
+                        }
+                        //button.text = (i + 1).toString()
+                        button.layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams(
+                                25,
+                                50
+                            )
                         )
-                    )
-                    val transparentButton = Button(activity?.applicationContext!!)
-                    transparentButton.alpha = 0F
-                    transparentButton.layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams(
-                            10, 50
+                        val transparentButton = Button(activity?.applicationContext!!)
+                        transparentButton.alpha = 0F
+                        transparentButton.layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams(
+                                10, 50
+                            )
                         )
-                    )
 
-                    val midButton = Button(activity?.applicationContext!!)
-                    midButton.alpha = 0F
-                    midButton.layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams(
-                            40, 50
+                        val midButton = Button(activity?.applicationContext!!)
+                        midButton.alpha = 0F
+                        midButton.layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams(
+                                40, 50
+                            )
                         )
-                    )
 
-                    if (i == 12) {
-                        timelineView.addView(midButton)
+                        if (i == 12) {
+                            timelineView.addView(midButton)
+                        }
+                        timelineView.addView(button)
+                        timelineView.addView(transparentButton)
+                        val ending = roundDetails.getString("end_type")
+                        val number = i + 1
+                        teamWon += winning_team
+                        endingType += ending
+                        roundNumber += number.toString()
                     }
-                    timelineView.addView(button)
-                    timelineView.addView(transparentButton)
-                    val ending = roundDetails.getString("end_type")
-                    val number = i + 1
-                    mAdapter.add("Round $number, $winning_team won by $ending")
-                }
                     progressBar.visibility = View.GONE
+                    roundsListView.adapter = roundsAdapter
                 }
 
             } catch (e:Exception){

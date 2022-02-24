@@ -43,9 +43,7 @@ class AgentsActivity : AppCompatActivity() {
                 uiThread {
                     progressDialog.dismiss()
                     topagentText.text = "Top Agent:\n${FirstAgentName?.text()}\nMore Coming soon\nJUST A TEST!?!?!??!"
-
                 }
-
             }
             catch (e: Exception){
                 progressDialog.dismiss()

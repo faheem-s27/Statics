@@ -27,7 +27,7 @@ class PlayerAdapter(
         val inflater = context.layoutInflater
         if (convertView == null) row = inflater.inflate(R.layout.player_row, null, true)
         val agentImage = row!!.findViewById<View>(R.id.agentImage) as ImageView
-        val playerNameText = row.findViewById<View>(R.id.nameofPlayer) as TextView
+        val playerNameText = row.findViewById<View>(R.id.NameOfPlayer) as TextView
         //val playerScoreText = row.findViewById<View>(R.id.Score) as TextView
         val KDA = row.findViewById<View>(R.id.KDA) as TextView
         var color = ""
