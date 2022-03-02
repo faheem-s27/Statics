@@ -3,6 +3,7 @@ package com.jawaadianinc.valorant_stats
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -12,6 +13,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
+import com.jawaadianinc.valorant_stats.valorant.RSOActivity
 import kotlin.system.exitProcess
 
 class SplashActivity : AppCompatActivity() {
@@ -28,10 +30,10 @@ class SplashActivity : AppCompatActivity() {
                 var deepLink: Uri? = null
                 if (pendingDynamicLinkData != null) {
                     deepLink = pendingDynamicLinkData.link
-                    Toast.makeText(this, deepLink.toString(), Toast.LENGTH_SHORT).show()
-//                    val intent = Intent(this, RSOActivity::class.java)
-//                    intent.putExtra("OAuth", "Success!")
-//                    startActivity(intent)
+                    Log.d("RSO", "Link received: " + deepLink.toString())
+                    val intent = Intent(this, RSOActivity::class.java)
+                    intent.putExtra("OAuth", deepLink.toString())
+                    startActivity(intent)
                 }
             }
             .addOnFailureListener(this) {

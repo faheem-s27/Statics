@@ -80,12 +80,17 @@ class MatchHistoryActivity : AppCompatActivity() {
                     }
                 }
 
-                tabLayout?.newTab()?.setText("Kill Feed")?.setIcon(R.drawable.killicon).let {
+                tabLayout?.newTab()?.setText("Kill Map")?.setIcon(R.drawable.killmapicon).let {
                     if (it != null) {
                         tabLayout?.addTab(it)
                     }
                 }
 
+                tabLayout?.newTab()?.setText("Kill Feed")?.setIcon(R.drawable.killicon).let {
+                    if (it != null) {
+                        tabLayout?.addTab(it)
+                    }
+                }
 
                 val adapter =
                     tabLayout?.tabCount?.let { MatchHistoryAdapter(supportFragmentManager, it) }

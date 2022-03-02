@@ -3,6 +3,7 @@ package com.jawaadianinc.valorant_stats.valorant
 import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -19,6 +20,10 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.Instant
+import java.util.*
 
 
 class MatchDetailsFragment : Fragment() {
@@ -65,6 +70,14 @@ class MatchDetailsFragment : Fragment() {
                         actualtMapUlr = mapNamefromJSON["splash"].toString()
                     }
                 }
+
+                val teams = matchData.getJSONObject("teams")
+                val colour = if (teams.getJSONObject("red").getBoolean("has_won")) {
+                    "#f94555"
+                } else {
+                    "#18e4b7"
+                }
+
                 val arrayList = ArrayList<String>()
                 val listviewComp: ListView = view.findViewById(R.id.listViewMatchDetails)
                 val mAdapter = object :
@@ -81,7 +94,7 @@ class MatchDetailsFragment : Fragment() {
                         item.setTextColor(Color.parseColor("#FFFFFF"))
                         item.setTypeface(item.typeface, Typeface.BOLD)
                         item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
-
+                        item.setBackgroundColor(Color.parseColor(colour))
                         return item
                     }
                 }
@@ -96,8 +109,6 @@ class MatchDetailsFragment : Fragment() {
                     val timePlayed = metadata.getInt("game_length")
                     val server = metadata.getString("cluster")
                     val inMinutes = timePlayed / 60000
-
-                    val teams = matchData.getJSONObject("teams")
                     var didredWin = false
 
                     try {
@@ -105,18 +116,22 @@ class MatchDetailsFragment : Fragment() {
                     } catch (e: Exception) {
                         Toast.makeText(
                             activity?.applicationContext!!,
-                            "ERROR: $e",
+                            "Cannot do stats for this game mode (yet)!",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
 
-                    mAdapter.add("Map: $map")
-                    mAdapter.add("Mode: $mode")
-                    mAdapter.add("Server: $server")
-                    mAdapter.add("Started: $game_started")
-                    mAdapter.add("Duration: $inMinutes minutes")
-                    mAdapter.add("Rounds Played: $roundsPlayed")
-
+                    val unixTimeStart = metadata.getInt("game_start")
+                    val date = Date(unixTimeStart * 1000L)
+                    val d: Duration =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            Duration.between(
+                                date.toInstant(),
+                                Instant.now()
+                            )
+                        } else {
+                            TODO("VERSION.SDK_INT < O")
+                        }
                     if (didredWin) {
                         mAdapter.add("Red won!")
                         val score = teams.getJSONObject("red").getString("rounds_won")
@@ -136,6 +151,20 @@ class MatchDetailsFragment : Fragment() {
                         } catch (e: Exception) {
                         }
                     }
+                    mAdapter.add("Rounds Played: $roundsPlayed")
+                    mAdapter.add("Map: $map")
+                    mAdapter.add("Mode: $mode")
+                    mAdapter.add("Server: $server")
+                    mAdapter.add("Started: $game_started")
+                    mAdapter.add("Duration: $inMinutes minutes")
+
+                    try {
+                        val timeinDays = d.toDays()
+                        val timeInHours = d.toHours()
+                        mAdapter.add("Which was $timeinDays days ago/$timeInHours hours ago")
+                    } catch (e: Exception) {
+                    }
+
                     val mapImage: ImageView = view.findViewById(R.id.mapURL)
                     if (actualtMapUlr !== "") {
                         Picasso.get().load(actualtMapUlr).into(mapImage)
@@ -159,6 +188,12 @@ class MatchDetailsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun unixToDate(timeStamp: Long): String? {
+        val time = java.util.Date(timeStamp * 1000)
+        val sdf = SimpleDateFormat("dd")
+        return sdf.format(time)
 
     }
 }

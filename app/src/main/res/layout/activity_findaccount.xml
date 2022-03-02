@@ -39,7 +39,7 @@
             app:cardCornerRadius="200dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/playerProfile"
@@ -50,28 +50,6 @@
                 app:srcCompat="@drawable/agentesicon" />
 
         </androidx.cardview.widget.CardView>
-
-        <EditText
-            android:id="@+id/editTextValorantName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/ic_launcher_background"
-            android:ems="10"
-            android:fitsSystemWindows="true"
-            android:fontFamily="sans-serif-black"
-            android:foregroundGravity="center"
-            android:foregroundTint="#FFFFFF"
-            android:gravity="center"
-            android:hapticFeedbackEnabled="true"
-            android:hint="Name#1234"
-            android:hyphenationFrequency="full"
-            android:inputType="textPersonName"
-            android:minHeight="48dp"
-            android:padding="10dp"
-            app:layout_constraintStart_toStartOf="@+id/spinner"
-            app:layout_constraintTop_toTopOf="@+id/imagebackground"
-            app:layout_wrapBehaviorInParent="horizontal_only" />
 
         <TextView
             android:id="@+id/playerLevel"
@@ -89,22 +67,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/addname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/ic_launcher_background"
-            android:text="Add"
-            android:textColor="#FFFFFF"
-            app:cornerRadius="15dp"
-            app:icon="@drawable/add_button"
-            app:iconGravity="start"
-            app:iconSize="30dp"
-            app:iconTint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextValorantName"
-            app:layout_constraintEnd_toEndOf="@+id/spinner"
-            app:layout_constraintTop_toTopOf="@+id/editTextValorantName" />
-
         <View
             android:id="@+id/view2"
             style="@style/Divider.Horizontal"
@@ -115,21 +77,6 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playerNameMenu" />
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:foregroundGravity="center"
-            android:padding="10dp"
-            android:pointerIcon="hand"
-            android:spinnerMode="dropdown"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addname" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
@@ -402,8 +349,8 @@
             android:layout_height="50dp"
             android:backgroundTint="#00111822"
             android:scaleType="fitCenter"
-            app:layout_constraintEnd_toEndOf="@+id/spinner"
-            app:layout_constraintTop_toBottomOf="@+id/spinner"
+            app:layout_constraintStart_toEndOf="@+id/circle"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/refreshicon" />
 
 
