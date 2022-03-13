@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.VALORANT_stats" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_700</item>
+        <item name="colorPrimary">@color/ic_launcher_background</item>
         <item name="colorPrimaryVariant">@color/ic_launcher_background</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
@@ -11,6 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:navigationBarColor">@color/ic_launcher_background</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -21,6 +22,7 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorAccent">@color/ic_launcher_background</item>
         <item name="android:statusBarColor">@color/ic_launcher_background</item>
+        <item name="android:navigationBarColor">@color/ic_launcher_background</item>
     </style>
 
 

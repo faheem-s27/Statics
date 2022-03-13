@@ -13,6 +13,8 @@
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_findaccount.xml" value="0.22" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_game_picker.xml" value="0.18" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_leader_board.xml" value="0.2326388888888889" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_loading.xml" value="0.2298611111111111" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_logging_in_rso.xml" value="0.2298611111111111" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_match_history.xml" value="0.3625" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_menu_picker.xml" value="0.3625" />
@@ -55,6 +57,7 @@
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/menu/menu_valorant_updates.xml" value="0.2298611111111111" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.21875" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.21979166666666666" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/mipmap/ic_launcher.xml" value="0.181" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/xml/root_preferences.xml" value="0.2298611111111111" />
       </map>
     </option>

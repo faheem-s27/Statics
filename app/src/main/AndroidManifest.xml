@@ -14,7 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
-
+        <activity
+            android:name=".valorant.LoggingInActivityRSO"
+            android:exported="false" />
+        <activity
+            android:name=".LoadingActivity"
+            android:exported="false" />
         <activity
             android:name=".fortnite.findFortniteAccount"
             android:exported="false" />
@@ -77,7 +82,6 @@
             android:name=".valorant.MatchHistoryActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -86,6 +90,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -97,8 +102,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
-
     </application>
 
 </manifest>

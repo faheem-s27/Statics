@@ -14,7 +14,7 @@ class PlayerDatabase(context: Context) : SQLiteOpenHelper(context, "valoPlayers.
 
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, i: Int, i1: Int) {}
 
-    fun getPlayerSignedIn(): String? {
+    fun isPlayerSignedIn(): String? {
         var playerName: String? = null
         val sqlString = "SELECT * FROM $VALOPLAYERS"
         val db = this.readableDatabase
@@ -31,6 +31,10 @@ class PlayerDatabase(context: Context) : SQLiteOpenHelper(context, "valoPlayers.
         const val USERTAG = "USERTAG"
         const val PRIVACY = "PRIVACY"
         const val VALOPLAYERS = "VALOPLAYERS"
+    }
+
+    fun addPlayer() {
+        //TODO add method for adding players to database after RSO authentication
     }
 
 }

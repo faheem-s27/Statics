@@ -1,0 +1,70 @@
+package com.jawaadianinc.valorant_stats.valorant
+
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.webkit.WebView
+import android.widget.Button
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import com.jawaadianinc.valorant_stats.R
+import com.squareup.picasso.Picasso
+import org.jetbrains.anko.doAsync
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.URL
+
+class LoggingInActivityRSO : AppCompatActivity() {
+    private lateinit var imagebackground: ImageView
+    private val imagesURL = java.util.ArrayList<String>()
+    private lateinit var handler: Handler
+    private lateinit var runnable: Runnable
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_logging_in_rso)
+
+        imagesURL.add("https://media.valorant-api.com/playercards/3432dc3d-47da-4675-67ae-53adb1fdad5e/largeart.png")
+        doAsync {
+            val getValoImagesURL =
+                JSONObject(URL("https://valorant-api.com/v1/playercards").readText())
+            val images = getValoImagesURL["data"] as JSONArray
+            for (i in 0 until images.length()) {
+                val imageURL = images[i] as JSONObject
+                imagesURL.add(imageURL["largeArt"].toString())
+            }
+        }
+
+        imagebackground = findViewById(R.id.imageView4)
+        Picasso.get().load(imagesURL.random()).into(imagebackground)
+        handler = Handler(Looper.getMainLooper())
+        runnable = Runnable {
+            doTask(handler)
+        }
+        handler.postDelayed(runnable, 500)
+
+        findViewById<Button>(R.id.signIn).setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://auth.riotgames.com/authorize?client_id=statics&redirect_uri=https://statics-fd699.web.app/authorize.html&response_type=code&scope=openid+offline_access&prompt=login")
+                )
+            )
+        }
+
+        findViewById<WebView>(R.id.privacyPolicy).settings.javaScriptEnabled = true
+        findViewById<WebView>(R.id.privacyPolicy).loadUrl("https://statics-fd699.web.app/privacy.html")
+
+
+    }
+
+    private fun doTask(handler: Handler) {
+        Picasso.get().load(imagesURL.random()).placeholder(imagebackground.drawable)
+            .into(imagebackground)
+        handler.postDelayed(runnable, 4000)
+
+    }
+
+}

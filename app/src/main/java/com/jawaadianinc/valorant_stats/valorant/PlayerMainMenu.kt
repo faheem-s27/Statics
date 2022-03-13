@@ -11,7 +11,10 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.ktx.database
@@ -31,7 +34,7 @@ class FindAccount : AppCompatActivity() {
     private val imagesURL = java.util.ArrayList<String>()
     private lateinit var handler: Handler
     private lateinit var runnable: Runnable
-    val playerName: String? = null
+    private val playerName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,21 +64,22 @@ class FindAccount : AppCompatActivity() {
         Picasso.get().load(imagesURL.random()).into(imagebackground)
         syncFireBase()
 
-        val name = PlayerDatabase(this).getPlayerSignedIn()
+        val name = PlayerDatabase(this).isPlayerSignedIn()
         if (name == null) {
+            startActivity(Intent(this, LoggingInActivityRSO::class.java))
             Toast.makeText(this, "Sign in to continue!", Toast.LENGTH_SHORT).show()
-            MMR.hide()
-            matchHistoryButton.hide()
-            updatesButton.hide()
-            compareButton.hide()
-            viewMatch.hide()
-            recentPlayers.hide()
-            refreshPlayer.hide()
-            findViewById<TextView>(R.id.textView3).hide()
-            findViewById<TextView>(R.id.textView6).hide()
-            findViewById<TextView>(R.id.textView7).hide()
-            findViewById<Button>(R.id.leaderboard).hide()
-            findViewById<Button>(R.id.splitscreenButton).hide()
+//            MMR.hide()
+//            matchHistoryButton.hide()
+//            updatesButton.hide()
+//            compareButton.hide()
+//            viewMatch.hide()
+//            recentPlayers.hide()
+//            refreshPlayer.hide()
+//            findViewById<TextView>(R.id.textView3).hide()
+//            findViewById<TextView>(R.id.textView6).hide()
+//            findViewById<TextView>(R.id.textView7).hide()
+//            findViewById<Button>(R.id.leaderboard).hide()
+//            findViewById<Button>(R.id.splitscreenButton).hide()
         }
 
         matchHistoryButton.setOnClickListener {
@@ -89,7 +93,7 @@ class FindAccount : AppCompatActivity() {
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://auth.riotgames.com/authorize?client_id=statics&redirect_uri=https://statics-fd699.web.app/authorize.html&response_type=code&scope=openid+offline_access")
+                    Uri.parse("https://auth.riotgames.com/authorize?client_id=statics&redirect_uri=https://statics-fd699.web.app/authorize.html&response_type=code&scope=openid+offline_access&prompt=login")
                 )
             )
         }

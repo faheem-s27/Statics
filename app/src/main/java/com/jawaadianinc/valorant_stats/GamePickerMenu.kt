@@ -22,9 +22,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.FirebaseApp
-import com.google.firebase.appcheck.FirebaseAppCheck
-import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -32,6 +29,8 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.brawlhalla.brawlFindAccount
 import com.jawaadianinc.valorant_stats.valorant.FindAccount
+import com.jawaadianinc.valorant_stats.valorant.LoggingInActivityRSO
+import com.jawaadianinc.valorant_stats.valorant.PlayerDatabase
 import com.squareup.picasso.Picasso
 
 
@@ -46,17 +45,12 @@ class GamePickerMenu : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Please wait")
-        progressDialog.setMessage("Verifying device. No personal information is being collected")
+        progressDialog.setTitle("Device Verification in process")
+        progressDialog.setMessage("No personal information is being collected")
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressDialog.setCancelable(false)
-        progressDialog.show()
+        //progressDialog.show()
 
-        FirebaseApp.initializeApp(/*context=*/this)
-        val firebaseAppCheck = FirebaseAppCheck.getInstance()
-        firebaseAppCheck.installAppCheckProviderFactory(
-            SafetyNetAppCheckProviderFactory.getInstance()
-        )
 
         val textStats: TextView = findViewById(R.id.databaseStatsValo)
         val brawlStats: TextView = findViewById(R.id.databaseStatsBrawl)
@@ -83,7 +77,13 @@ class GamePickerMenu : AppCompatActivity() {
         apexButton.animate().alpha(1f).translationYBy(200f).setDuration(600).startDelay = 600
 
         valoButton.setOnClickListener {
-            startActivity(Intent(this, FindAccount::class.java))
+            val name = PlayerDatabase(this).isPlayerSignedIn()
+            if (name == null) {
+                startActivity(Intent(this, LoggingInActivityRSO::class.java))
+                Toast.makeText(this, "Sign in to continue!", Toast.LENGTH_SHORT).show()
+            } else {
+                startActivity(Intent(this, FindAccount::class.java))
+            }
         }
 
         brawlButton.setOnClickListener {
@@ -105,7 +105,7 @@ class GamePickerMenu : AppCompatActivity() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .build()
-        val mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
         val database = Firebase.database
         val playersRef = database.getReference("VALORANT/players")
@@ -181,6 +181,8 @@ class GamePickerMenu : AppCompatActivity() {
     }
 
     private fun showProfile(name: String, profilePic: Uri) {
+        val account = GoogleSignIn.getLastSignedInAccount(this)
+
         val signIn: SignInButton = findViewById(R.id.sign_in_button)
         val nameText: TextView = findViewById(R.id.accountName)
         val pic: ImageView = findViewById(R.id.accountProfile)
@@ -189,8 +191,8 @@ class GamePickerMenu : AppCompatActivity() {
         nameText.visibility = View.VISIBLE
         pic.visibility = View.VISIBLE
         circle.visibility = View.VISIBLE
-        nameText.text = "Welcome ${name}!"
-        Picasso.get().load(profilePic).fit().centerInside()
+        nameText.text = "Hi ${name}!"
+        Picasso.get().load(account?.photoUrl).fit().centerInside()
             .into(pic)
         val database = Firebase.database
         val accounts = database.getReference("Users/Google")
@@ -247,7 +249,7 @@ class GamePickerMenu : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun goToSettings() {
+    private fun goToSettings() {
         startActivity(Intent(this, SettingsActivity::class.java))
     }
 
