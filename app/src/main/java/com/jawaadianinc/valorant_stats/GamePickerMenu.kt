@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats
 
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -44,14 +43,6 @@ class GamePickerMenu : AppCompatActivity() {
         val toolbar: Toolbar = findViewById<View>(R.id.toolbar2) as Toolbar
         setSupportActionBar(toolbar)
 
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Device Verification in process")
-        progressDialog.setMessage("No personal information is being collected")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog.setCancelable(false)
-        //progressDialog.show()
-
-
         val textStats: TextView = findViewById(R.id.databaseStatsValo)
         val brawlStats: TextView = findViewById(R.id.databaseStatsBrawl)
         val valoButton: Button = findViewById(R.id.valo)
@@ -73,14 +64,13 @@ class GamePickerMenu : AppCompatActivity() {
 
         valoButton.animate().alpha(1f).translationYBy(200f).duration = 600
         brawlButton.animate().alpha(1f).translationYBy(200f).setDuration(600).startDelay = 200
-        fortniteButton.animate().alpha(1f).translationYBy(200f).setDuration(600).startDelay = 400
-        apexButton.animate().alpha(1f).translationYBy(200f).setDuration(600).startDelay = 600
+        fortniteButton.animate().alpha(0.3f).translationYBy(200f).setDuration(600).startDelay = 400
+        apexButton.animate().alpha(0.3f).translationYBy(200f).setDuration(600).startDelay = 600
 
         valoButton.setOnClickListener {
             val name = PlayerDatabase(this).isPlayerSignedIn()
             if (name == null) {
                 startActivity(Intent(this, LoggingInActivityRSO::class.java))
-                Toast.makeText(this, "Sign in to continue!", Toast.LENGTH_SHORT).show()
             } else {
                 startActivity(Intent(this, FindAccount::class.java))
             }
@@ -116,7 +106,6 @@ class GamePickerMenu : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val number = dataSnapshot.childrenCount
                 textStats.text = "Tracking $number VALORANT players!"
-                progressDialog.dismiss()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

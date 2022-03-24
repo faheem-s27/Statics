@@ -5,9 +5,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.webkit.WebView
+import android.text.method.LinkMovementMethod
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
@@ -22,9 +23,12 @@ class LoggingInActivityRSO : AppCompatActivity() {
     private lateinit var handler: Handler
     private lateinit var runnable: Runnable
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_logging_in_rso)
+        val hyperLink: TextView = findViewById(R.id.textView11)
+        hyperLink.movementMethod = LinkMovementMethod.getInstance()
 
         imagesURL.add("https://media.valorant-api.com/playercards/3432dc3d-47da-4675-67ae-53adb1fdad5e/largeart.png")
         doAsync {
@@ -53,18 +57,12 @@ class LoggingInActivityRSO : AppCompatActivity() {
                 )
             )
         }
-
-        findViewById<WebView>(R.id.privacyPolicy).settings.javaScriptEnabled = true
-        findViewById<WebView>(R.id.privacyPolicy).loadUrl("https://statics-fd699.web.app/privacy.html")
-
-
     }
 
     private fun doTask(handler: Handler) {
         Picasso.get().load(imagesURL.random()).placeholder(imagebackground.drawable)
             .into(imagebackground)
-        handler.postDelayed(runnable, 4000)
-
+        handler.postDelayed(runnable, 5000)
     }
 
 }

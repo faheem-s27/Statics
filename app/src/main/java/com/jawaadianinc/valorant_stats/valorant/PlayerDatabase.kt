@@ -25,6 +25,11 @@ class PlayerDatabase(context: Context) : SQLiteOpenHelper(context, "valoPlayers.
         return playerName
     }
 
+    fun removePlayer() {}
+
+    fun playerList() {}
+
+
     companion object {
         const val PUUID = "PUUID"
         const val USERNAME = "USERNAME"
