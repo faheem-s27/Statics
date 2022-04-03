@@ -15,6 +15,9 @@
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".valorant.CosmeticsActivity"
+            android:exported="false" />
+        <activity
             android:name=".valorant.LoggingInActivityRSO"
             android:exported="false" />
         <activity
@@ -28,12 +31,11 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="statics-fd699.web.app"
+                    android:pathPrefix="/authorize.html"
                     android:scheme="https" />
             </intent-filter>
         </activity>
@@ -95,7 +97,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".valorant.FindAccount"
+            android:name=".valorant.PlayerMainMenu"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats" />
 

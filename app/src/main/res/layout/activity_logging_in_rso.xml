@@ -16,7 +16,7 @@
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         app:cornerRadius="20dp"
-        app:icon="@drawable/players_icon"
+        app:icon="@drawable/valologo"
         app:iconSize="30dp"
         app:iconTint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"

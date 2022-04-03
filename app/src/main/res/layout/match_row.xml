@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#111822">
+
+    <ImageView
+        android:id="@+id/mapImageRow"
+        android:layout_width="0dp"
+        android:layout_height="125dp"
+        android:alpha="0.4"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <ImageView
+        android:id="@+id/agentImageRow"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="@+id/mapImageRow"
+        app:layout_constraintEnd_toStartOf="@+id/KDA_Row"
+        app:layout_constraintStart_toStartOf="@+id/mapImageRow"
+        app:layout_constraintTop_toTopOf="@+id/mapImageRow"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/KDA_Row"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/baloo_bhai"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/mapImageRow"
+        app:layout_constraintEnd_toEndOf="@+id/mapImageRow"
+        app:layout_constraintStart_toStartOf="@+id/mapImageRow"
+        app:layout_constraintTop_toTopOf="@+id/mapImageRow"
+        tools:text="44/13/8" />
+
+    <TextView
+        android:id="@+id/ModeRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:textColor="#FFFFFF"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/mapImageRow"
+        app:layout_constraintTop_toTopOf="@+id/mapImageRow"
+        tools:text="Unrated" />
+
+    <TextView
+        android:id="@+id/TimeAgoRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:textColor="#FFFFFF"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/mapImageRow"
+        app:layout_constraintEnd_toEndOf="@+id/mapImageRow"
+        tools:text="4 hours ago" />
+</androidx.constraintlayout.widget.ConstraintLayout>

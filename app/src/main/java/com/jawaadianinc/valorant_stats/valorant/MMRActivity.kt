@@ -107,7 +107,7 @@ class MMRActivity : AppCompatActivity() {
                                 .into(rankIcon)
 
                             rankIcon.resize(200, 200)
-                            rankIcon.scaleType = ImageView.ScaleType.FIT_XY;
+                            rankIcon.scaleType = ImageView.ScaleType.FIT_XY
                         }
                     }
                 }
@@ -142,7 +142,7 @@ class MMRActivity : AppCompatActivity() {
                     scroll.adapter = MMRList
 
                     val textView = TextView(this@MMRActivity)
-                    textView.setTypeface(Typeface.DEFAULT_BOLD)
+                    textView.typeface = Typeface.DEFAULT_BOLD
                     textView.text = "Previous rank changes"
                     textView.gravity = Gravity.CENTER
                     textView.textSize = 30f
@@ -161,7 +161,7 @@ class MMRActivity : AppCompatActivity() {
                     AlertDialog.Builder(this@MMRActivity).setTitle("Unranked!")
                         .setMessage("This user is either unranked or hasn't played competitive in a long time.")
                         .setPositiveButton(android.R.string.ok) { _, _ ->
-                            startActivity(Intent(this@MMRActivity, FindAccount::class.java))
+                            startActivity(Intent(this@MMRActivity, PlayerMainMenu::class.java))
                         }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }
@@ -171,7 +171,7 @@ class MMRActivity : AppCompatActivity() {
                     AlertDialog.Builder(this@MMRActivity).setTitle("Error!")
                         .setMessage("There was an issue getting the ranking :/ Error details have been sent to the developer")
                         .setPositiveButton(android.R.string.ok) { _, _ ->
-                            startActivity(Intent(this@MMRActivity, FindAccount::class.java))
+                            startActivity(Intent(this@MMRActivity, PlayerMainMenu::class.java))
                         }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }

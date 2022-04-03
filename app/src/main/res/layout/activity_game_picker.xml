@@ -15,37 +15,32 @@
         android:foregroundGravity="center"
         android:gravity="center"
         android:minHeight="?attr/actionBarSize"
-        android:textAlignment="gravity"
+        android:textAlignment="center"
         android:theme="?attr/actionBarTheme"
         app:buttonGravity="center_vertical"
         app:circularflow_angles="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:subtitle="Choose your game"
         app:subtitleTextColor="#ACA8A8"
-        app:title="Statics Main Menu"
+        app:title="Statics"
         app:titleTextColor="#FFFFFF" />
 
-    <ImageView
-        android:id="@+id/imageView2"
+    <VideoView
+        android:id="@+id/videoView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:alpha="0.4"
-        android:background="@color/ic_launcher_background"
-        android:backgroundTint="@color/ic_launcher_background"
-        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar2"
-        app:srcCompat="@drawable/just_statics" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,28 +50,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/sign_in_button"
-                android:layout_width="0dp"
+            <Button
+                android:id="@+id/signInGoogle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:foregroundGravity="center"
-                app:buttonSize="wide"
-                app:circularflow_angles="50dp"
-                app:circularflow_defaultAngle="50.0"
-                app:circularflow_defaultRadius="50dp"
-                app:colorScheme="auto"
-                app:layout_constraintEnd_toEndOf="@+id/valo"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="@+id/valo"
+                android:backgroundTint="@color/light_blue_50"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Sign in with Google"
+                android:textAlignment="center"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:cornerRadius="50dp"
+                app:icon="@drawable/googleg_standard_color_18"
+                app:iconGravity="start"
+                app:iconSize="20dp"
+                app:iconTint="@color/ic_launcher_background"
+                app:iconTintMode="multiply"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="invisible" />
+                app:strokeColor="#000000"
+                app:strokeWidth="2dp" />
 
             <Button
                 android:id="@+id/apex"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:alpha="0.1"
                 android:backgroundTint="#cc3432 "
                 android:fontFamily="@font/baloo_bhai"
@@ -85,38 +86,13 @@
                 android:textColor="#FFFFFF"
                 android:textSize="30dp"
                 android:textStyle="bold"
+                android:visibility="invisible"
                 app:cornerRadius="15dp"
                 app:icon="@drawable/apexicon_jpg"
                 app:iconGravity="textTop"
                 app:iconSize="60dp"
                 app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="@+id/fortnite"
-                app:layout_constraintHorizontal_bias="0.495"
-                app:layout_constraintStart_toStartOf="@+id/fortnite"
-                app:layout_constraintTop_toBottomOf="@+id/databaseStatsFortnite"
-                app:strokeColor="#000000"
-                app:strokeWidth="3dp" />
-
-            <Button
-                android:id="@+id/fortnite"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:alpha="0.1"
-                android:backgroundTint="#3ca2e2"
-                android:fontFamily="@font/baloo_bhai"
-                android:text="Fortnite"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textSize="30dp"
-                android:textStyle="bold"
-                app:cornerRadius="15dp"
-                app:icon="@drawable/fortnite_logo"
-                app:iconGravity="textTop"
-                app:iconSize="60dp"
-                app:iconTint="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@+id/brawl"
-                app:layout_constraintHorizontal_bias="0.504"
                 app:layout_constraintStart_toStartOf="@+id/brawl"
                 app:layout_constraintTop_toBottomOf="@+id/databaseStatsBrawl"
                 app:strokeColor="#000000"
@@ -134,29 +110,29 @@
                 android:textColor="#FFFFFF"
                 android:textSize="30dp"
                 android:textStyle="bold"
+                android:visibility="invisible"
                 app:cornerRadius="15dp"
                 app:icon="@drawable/brawllogo"
                 app:iconGravity="textTop"
                 app:iconSize="60sp"
                 app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="@+id/valo"
-                app:layout_constraintHorizontal_bias="0.504"
-                app:layout_constraintStart_toStartOf="@+id/valo"
                 app:layout_constraintTop_toBottomOf="@+id/databaseStatsValo"
                 app:strokeColor="#000000"
-                app:strokeWidth="3dp" />
+                app:strokeWidth="3dp"
+                tools:layout_editor_absoluteX="56dp" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/circle"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_centerHorizontal="true"
+                android:layout_marginStart="32dp"
                 android:elevation="12dp"
                 app:cardCornerRadius="200dp"
-                app:layout_constraintBottom_toBottomOf="@+id/sign_in_button"
-                app:layout_constraintEnd_toEndOf="@+id/sign_in_button"
+                app:layout_constraintBottom_toBottomOf="@+id/signInGoogle"
                 app:layout_constraintStart_toEndOf="@+id/accountName"
-                app:layout_constraintTop_toTopOf="@+id/sign_in_button">
+                app:layout_constraintTop_toTopOf="@+id/signInGoogle"
+                tools:visibility="invisible">
 
                 <ImageView
                     android:id="@+id/accountProfile"
@@ -168,32 +144,21 @@
 
             </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/valo"
-                android:layout_width="300dp"
+            <TextView
+                android:id="@+id/accountName"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:backgroundTint="@color/ic_launcher_background"
+                android:layout_marginStart="16dp"
                 android:fontFamily="@font/baloo_bhai"
-                android:lineSpacingExtra="8sp"
-                android:text="VALORANT"
-                android:textAlignment="center"
+                android:text="Welcome Faheem Saleem!"
+                android:textAlignment="textStart"
                 android:textAllCaps="false"
-                android:textColor="#FF4B50"
-                android:textSize="30dp"
+                android:textColor="#FFFFFF"
+                android:textSize="16dp"
                 android:textStyle="bold"
-                app:cornerRadius="15dp"
-                app:icon="@drawable/valologo"
-                app:iconGravity="textTop"
-                app:iconPadding="10dp"
-                app:iconSize="60sp"
-                app:iconTint="#FF4B50"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.495"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sign_in_button"
-                app:strokeColor="@color/black"
-                app:strokeWidth="3dp" />
+                app:layout_constraintBottom_toBottomOf="@+id/signInGoogle"
+                app:layout_constraintStart_toStartOf="@+id/signInGoogle"
+                app:layout_constraintTop_toTopOf="@+id/signInGoogle" />
 
             <Button
                 android:id="@+id/request"
@@ -204,6 +169,7 @@
                 android:fontFamily="@font/baloo_bhai"
                 android:text="Request a game!"
                 android:textColor="#FFFFFF"
+                android:visibility="invisible"
                 app:cornerRadius="50dp"
                 app:layout_constraintEnd_toEndOf="@+id/apex"
                 app:layout_constraintStart_toStartOf="@+id/apex"
@@ -213,16 +179,19 @@
                 android:id="@+id/logOut"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"
                 android:backgroundTint="@color/ic_launcher_background"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Log out"
+                android:text="Sign out of Google"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="50dp"
-                app:layout_constraintEnd_toEndOf="@+id/request"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/request"
-                app:layout_constraintTop_toBottomOf="@+id/request" />
+                app:icon="@drawable/googleg_standard_color_18"
+                app:iconTint="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/signInGoogle"
+                app:layout_constraintStart_toStartOf="@+id/signInGoogle"
+                app:strokeColor="#000000"
+                app:strokeWidth="2dp" />
 
             <TextView
                 android:id="@+id/databaseStatsBrawl"
@@ -232,22 +201,10 @@
                 android:fontFamily="@font/baloo_bhai"
                 android:textSize="15dp"
                 android:textStyle="bold"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/brawl" />
-
-            <TextView
-                android:id="@+id/databaseStatsFortnite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/baloo_bhai"
-                android:text="Coming soon!"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fortnite" />
 
             <TextView
                 android:id="@+id/databaseStatsApex"
@@ -258,6 +215,7 @@
                 android:text="Coming soon!"
                 android:textSize="15dp"
                 android:textStyle="bold"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/apex" />
@@ -274,20 +232,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/valo" />
 
-            <TextView
-                android:id="@+id/accountName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/baloo_bhai"
-                android:text="Welcome Faheem Saleem!"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/sign_in_button"
-                app:layout_constraintStart_toStartOf="@+id/sign_in_button"
-                app:layout_constraintTop_toTopOf="@+id/sign_in_button" />
+            <ImageButton
+                android:id="@+id/valo"
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:scrollbarAlwaysDrawHorizontalTrack="false"
+                android:scrollbarAlwaysDrawVerticalTrack="false"
+                android:tintMode="add"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/accountName"
+                app:srcCompat="@drawable/valorantbutton" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

@@ -13,14 +13,14 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:cardBackgroundColor="@color/ic_launcher_background"
         app:cardCornerRadius="30dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/playerName"
@@ -87,12 +87,10 @@
                 android:text="Agent info"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="15dp"
-                app:layout_constraintBottom_toTopOf="@+id/dismiss"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/copyPlayerName"
-                app:layout_constraintVertical_bias="0.0"
                 app:strokeColor="@color/light_blue_900"
                 app:strokeWidth="4dp" />
 
@@ -106,12 +104,10 @@
                 android:text="Rank Details"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="15dp"
-                app:layout_constraintBottom_toTopOf="@+id/dismiss"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/agentInfo"
-                app:layout_constraintVertical_bias="1.0"
                 app:strokeColor="@color/light_blue_900"
                 app:strokeWidth="4dp" />
 
@@ -119,7 +115,7 @@
                 android:id="@+id/dismiss"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/ic_launcher_background"
                 android:text="Dismiss"
                 android:textColor="#FFFFFF"
@@ -128,7 +124,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/agentInfo"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/agentInfo"
-                app:layout_constraintTop_toBottomOf="@+id/copyPlayerName"
+                app:layout_constraintTop_toBottomOf="@+id/playerRankButon"
                 app:strokeColor="@color/light_blue_900"
                 app:strokeWidth="4dp" />
 

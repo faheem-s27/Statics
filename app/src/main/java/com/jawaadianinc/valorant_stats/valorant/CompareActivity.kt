@@ -16,7 +16,7 @@ class CompareActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_compare)
 
-        val i = Intent(this, FindAccount::class.java)
+        val i = Intent(this, PlayerMainMenu::class.java)
             .setFlags(
                 Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT or
                         Intent.FLAG_ACTIVITY_NEW_TASK or
@@ -25,14 +25,14 @@ class CompareActivity : AppCompatActivity() {
 
         if (isInMultiWindowMode){
             startActivity(i)
-            startActivity(Intent(this, FindAccount::class.java))
+            startActivity(Intent(this, PlayerMainMenu::class.java))
         }
 
         else{
             AlertDialog.Builder(this).setTitle("SplitScreen Error!")
                 .setMessage("Use split screen mode first before comparing stats")
                 .setPositiveButton(android.R.string.ok) { _, _ ->
-                    startActivity(Intent(this, FindAccount::class.java))
+                    startActivity(Intent(this, PlayerMainMenu::class.java))
                     Toast.makeText(applicationContext,
                         "Well done", Toast.LENGTH_SHORT).show()
                 }

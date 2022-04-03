@@ -1,14 +1,12 @@
 package com.jawaadianinc.valorant_stats.valorant
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Base64
-import android.util.Log
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -43,7 +41,14 @@ class RSOActivity : AppCompatActivity() {
         val data: Uri? = intent?.data
         val updateText: TextView = findViewById(R.id.infoText)
         code = data!!.getQueryParameter("code")
-        updateText.text = "Processing data"
+        updateText.text = "Signing in"
+
+        val confirmUserText: TextView = findViewById(R.id.confirmUserText)
+        val confirmButton: Button = findViewById(R.id.confirmUserButton)
+        confirmUserText.alpha = 0f
+        confirmButton.alpha = 0f
+        //confirmUserText.translationY = 200f
+        confirmButton.translationY = 50f
 
         imagesURL.add("https://media.valorant-api.com/playercards/3432dc3d-47da-4675-67ae-53adb1fdad5e/largeart.png")
         doAsync {
@@ -102,12 +107,11 @@ class RSOActivity : AppCompatActivity() {
                 .addHeader("Authorization", Credentials.basic("statics", secret!!))
                 .post(formBody)
                 .build()
-            Log.d("RSO", "${Credentials.basic("statics", secret!!)}")
+
 
             doAsync {
                 val call = client.newCall(request).execute()
                 val json = JSONObject(call.body!!.string())
-                Log.d("RSO", "Token JSON: $json")
                 val accessToken = json.getString("access_token")
                 progressBar.progress = 40
                 uiThread {
@@ -121,27 +125,72 @@ class RSOActivity : AppCompatActivity() {
 
     private fun getUserInfo(token: String) {
         val updateText: TextView = findViewById(R.id.infoText)
-        updateText.text = "Gathering data"
         progressBar.progress = 75
         val client = OkHttpClient()
         val urlBuilder: HttpUrl.Builder =
-            "https://auth.riotgames.com/userinfo".toHttpUrlOrNull()!!.newBuilder()
+            "https://europe.api.riotgames.com/riot/account/v1/accounts/me".toHttpUrlOrNull()!!
+                .newBuilder()
         val url = urlBuilder.build().toString()
         val request = Request.Builder()
             .url(url)
             .addHeader("Authorization", "Bearer $token")
             .build()
 
+
+
         doAsync {
             val call = client.newCall(request).execute()
             val json = JSONObject(call.body!!.string())
-            Log.d("RSO", "User JSON: $json")
-            val sub = json.getString("sub")
+            val puuid = json.getString("puuid")
+
+            val regionURL =
+                "https://europe.api.riotgames.com/riot/account/v1/active-shards/by-game/val/by-puuid/$puuid?api_key=RGAPI-77322163-520c-492f-aabe-6c29a39f44ff"
+            val regionRequest = Request.Builder()
+                .url(regionURL)
+                .build()
+
+            val regionCall = client.newCall(regionRequest).execute()
+            val regionJson = JSONObject(regionCall.body!!.string())
+            val region = regionJson.getString("activeShard")
+
+            val gameName = json.getString("gameName")
+            val gameTag = json.getString("tagLine")
             uiThread {
                 progressBar.progress = 90
-                updateText.text = "Downloading matches"
+                updateText.text = "Tap to finish sign in"
+                confirmUser(puuid, gameName, gameTag, region)
             }
         }
+    }
+
+    private fun confirmUser(puuid: String, gameName: String, gameTag: String, region: String) {
+        val updateText: TextView = findViewById(R.id.infoText)
+        val confirmButton: Button = findViewById(R.id.confirmUserButton)
+        confirmButton.text = "$gameName#$gameTag"
+        confirmButton.animate().alpha(1f).translationYBy(-50f).duration = 500
+
+        confirmButton.setOnClickListener {
+            //save data to firebase
+            val database = Firebase.database
+            val playersRef = database.getReference("VALORANT/RSO")
+            playersRef.child(gameName).child("Puuid").setValue(puuid)
+            playersRef.child(gameName).child("GameTag").setValue(gameTag)
+            playersRef.child(gameName).child("Region").setValue(region)
+            progressBar.progress = 100
+            updateText.text = "Success!"
+
+            //save name to database
+            val playerdb = PlayerDatabase(this)
+            if (playerdb.addPlayer(gameName, gameTag, puuid, region)) {
+                //take user to main valorant screen
+                startActivity(Intent(this, PlayerMainMenu::class.java))
+                overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                finish()
+            } else {
+                Toast.makeText(this, "Error occurred while saving :(", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
     private fun doTask(handler: Handler) {

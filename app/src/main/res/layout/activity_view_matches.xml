@@ -4,45 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#111822"
     tools:context=".valorant.ViewMatches">
 
-    <ImageView
-        android:id="@+id/backgroundPlayer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.2"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:gravity="center"
+        android:text="Getting recent matches"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/update" />
+        app:layout_constraintTop_toBottomOf="@+id/progressBar6"
+        tools:visibility="visible" />
 
-    <TextView
-        android:id="@+id/totalMatches"
+    <ProgressBar
+        android:id="@+id/progressBar6"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:foregroundGravity="center"
-        android:gravity="center"
-        android:text="Total Matches Downloaded:"
-        android:textColor="@color/light_blue_200"
-        android:textSize="24dp"
-        android:textStyle="bold"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:progress="0"
+        android:progressTint="#DD2C00"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/downloaded"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:text="Downloaded Matches!"
-        android:textColor="#304FFE"
-        android:textSize="24sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -51,28 +40,11 @@
         android:id="@+id/matchList"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/totalMatches"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/modeChooser">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
 
     </ListView>
-
-    <Spinner
-        android:id="@+id/mapChooser"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/downloaded" />
-
-    <Spinner
-        android:id="@+id/modeChooser"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapChooser" />
 </androidx.constraintlayout.widget.ConstraintLayout>

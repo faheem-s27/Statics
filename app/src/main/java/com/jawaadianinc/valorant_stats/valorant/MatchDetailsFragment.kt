@@ -56,7 +56,6 @@ class MatchDetailsFragment : Fragment() {
             try {
                 val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
                 val mapData = jsonOfMap["data"] as JSONArray
-
                 val jsonDetails = MatchHistoryActivity.matchJSON
                 val matchData = jsonDetails?.get("data") as JSONObject
                 val metadata = matchData.getJSONObject("metadata")

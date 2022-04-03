@@ -2,12 +2,15 @@ package com.jawaadianinc.valorant_stats
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
+import android.media.MediaPlayer.OnCompletionListener
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
@@ -58,31 +61,48 @@ class LoadingActivity : AppCompatActivity() {
             }
         }
 
+        val updateText: TextView = findViewById(R.id.textView4)
         FirebaseApp.initializeApp(/*context=*/this)
-        val firebaseAppCheck = FirebaseAppCheck.getInstance()
-        firebaseAppCheck.installAppCheckProviderFactory(
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
             SafetyNetAppCheckProviderFactory.getInstance()
         )
 
+        updateText.text = "Connecting to Statics"
+
         val database = Firebase.database
         val playersRef = database.getReference("VALORANT/players")
-        playersRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val number = dataSnapshot.childrenCount
-                startActivity(Intent(this@LoadingActivity, GamePickerMenu::class.java))
-                overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-                finish()
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Toast.makeText(
-                    this@LoadingActivity,
-                    "Failed to connect to Statics!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                loadingProgressBar.visibility = View.GONE
-                loadingText.text = "An error occured while connecting to Statics :("
-            }
+        val videoView = findViewById<VideoView>(R.id.staticsVid)
+        videoView.setVideoPath("https://firebasestorage.googleapis.com/v0/b/statics-fd699.appspot.com/o/newSplashLoading_Trim.mp4?alt=media&token=05f8cb3f-4f24-49d4-b1d6-f349b5781810")
+        videoView.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+            // when vid is done preparing
+            it.setVolume(0f, 0f)
+            videoView.start()
+            updateText.text = "Loading resources"
+        })
+
+        videoView.setOnCompletionListener(OnCompletionListener {
+            //after vid is finished
+            updateText.text = "Finishing up"
+            playersRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val number = dataSnapshot.childrenCount
+                    updateText.text = "Starting"
+                    startActivity(Intent(this@LoadingActivity, GamePickerMenu::class.java))
+                    overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                    finish()
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Toast.makeText(
+                        this@LoadingActivity,
+                        "Failed to connect to Statics!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    loadingProgressBar.visibility = View.GONE
+                    loadingText.text = "An error occured while connecting to Statics :("
+                }
+            })
         })
     }
 

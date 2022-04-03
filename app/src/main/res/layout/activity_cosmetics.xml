@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ic_launcher_background"
+    tools:context=".valorant.CosmeticsActivity">
+
+    <ImageView
+        android:id="@+id/cosmeticBG"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0.2"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:srcCompat="@tools:sample/backgrounds/scenic"
+        tools:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Valorant Cosmetics"
+        android:textAlignment="center"
+        android:textSize="35dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/Subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Tap to see more details"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Title" />
+
+    <View
+        android:id="@+id/vertical_divider"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Subtitle" />
+
+    <View
+        android:id="@+id/horizontal1"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/agentsText" />
+
+    <ImageButton
+        android:id="@+id/agents"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="#00FF0000"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_divider"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Subtitle"
+        app:srcCompat="@drawable/agentsicon"
+        app:tint="#47AEFF" />
+
+    <TextView
+        android:id="@+id/agentsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Agents"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/agents"
+        app:layout_constraintStart_toStartOf="@+id/agents"
+        app:layout_constraintTop_toBottomOf="@+id/agents" />
+
+    <ImageButton
+        android:id="@+id/guns"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="#00FF0000"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/vertical_divider"
+        app:layout_constraintTop_toBottomOf="@+id/Subtitle"
+        app:srcCompat="@drawable/gunicon"
+        app:tint="#ffa76e" />
+
+    <TextView
+        android:id="@+id/gunText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Weapons"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/guns"
+        app:layout_constraintStart_toStartOf="@+id/guns"
+        app:layout_constraintTop_toBottomOf="@+id/guns" />
+
+    <ImageButton
+        android:id="@+id/playerCards"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        android:tint="#e80368"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal1"
+        app:srcCompat="@drawable/wow_0" />
+
+    <TextView
+        android:id="@+id/playerCardsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Player Cards"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/playerCards"
+        app:layout_constraintStart_toStartOf="@+id/playerCards"
+        app:layout_constraintTop_toBottomOf="@+id/playerCards" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

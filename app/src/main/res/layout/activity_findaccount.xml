@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".valorant.FindAccount">
+        tools:context=".valorant.PlayerMainMenu">
 
         <ImageView
             android:id="@+id/imagebackground"
@@ -31,13 +31,13 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/circle"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
             android:elevation="12dp"
             app:cardCornerRadius="200dp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -58,300 +58,320 @@
             android:layout_marginBottom="-20dp"
             android:background="@color/ic_launcher_background"
             android:elevation="100dp"
+            android:fontFamily="@font/baloo_bhai"
             android:padding="5dp"
             android:text="null"
             android:textColor="#FFFFFF"
             android:textSize="16dp"
             android:textStyle="bold|italic"
             app:layout_constraintBottom_toBottomOf="@+id/circle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="@+id/circle"
+            app:layout_constraintStart_toStartOf="@+id/circle"
+            app:layout_constraintTop_toBottomOf="@+id/circle" />
 
         <View
             android:id="@+id/view2"
             style="@style/Divider.Horizontal"
             android:layout_width="0dp"
             android:layout_height="2dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/playerNameMenu" />
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:fillViewport="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view2">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/linearLayout3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <View
-                    android:id="@+id/view5"
-                    style="@style/Divider.Horizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="2dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/MMR" />
-
-                <View
-                    android:id="@+id/view6"
-                    style="@style/Divider.Horizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="2dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recentPlayers" />
-
-                <Button
-                    android:id="@+id/updateBT"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/ic_launcher_background"
-                    android:gravity="center"
-                    android:text="Updates"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="150dp"
-                    app:icon="@drawable/update"
-                    app:iconSize="25dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/splitscreenButton"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/splitscreenButton"
-                    app:layout_constraintTop_toBottomOf="@+id/compareBT"
-                    app:strokeColor="#FFFFFF" />
-
-                <Button
-                    android:id="@+id/compareBT"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/ic_launcher_background"
-                    android:gravity="center"
-                    android:text="Compare"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="150dp"
-                    app:icon="@drawable/compare"
-                    app:iconSize="25dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/splitscreenButton"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/splitscreenButton"
-                    app:layout_constraintTop_toBottomOf="@+id/splitscreenButton"
-                    app:strokeColor="#FFFFFF" />
-
-                <Button
-                    android:id="@+id/matchHistory"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/ic_launcher_background"
-                    android:text="Match History"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="20dp"
-                    app:icon="@drawable/matchhistory"
-                    app:iconSize="30dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/viewHistory"
-                    app:layout_constraintStart_toStartOf="@+id/viewHistory"
-                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-                <Button
-                    android:id="@+id/viewHistory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/ic_launcher_background"
-                    android:text="View Saved Matches"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="20dp"
-                    app:icon="@drawable/moredetails"
-                    app:iconSize="30dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.497"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/matchHistory" />
-
-                <Button
-                    android:id="@+id/recentPlayers"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/ic_launcher_background"
-                    android:text="recent players"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="20dp"
-                    app:icon="@drawable/buddiesicon"
-                    app:iconSize="30dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/viewHistory"
-                    app:layout_constraintHorizontal_bias="0.497"
-                    app:layout_constraintStart_toStartOf="@+id/viewHistory"
-                    app:layout_constraintTop_toBottomOf="@+id/viewHistory" />
-
-                <Button
-                    android:id="@+id/leaderboard"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/ic_launcher_background"
-                    android:gravity="center"
-                    android:text="LeaderBoard"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="150dp"
-                    app:icon="@drawable/stats_icon"
-                    app:iconSize="25dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/viewHistory"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/viewHistory"
-                    app:layout_constraintTop_toBottomOf="@+id/textView7"
-                    app:strokeColor="#FFFFFF" />
-
-                <Button
-                    android:id="@+id/splitscreenButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/ic_launcher_background"
-                    android:gravity="center"
-                    android:text="Split screen"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="150dp"
-
-                    app:icon="@drawable/splitscreen"
-                    app:iconSize="25dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/viewHistory"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/viewHistory"
-                    app:layout_constraintTop_toBottomOf="@+id/leaderboard"
-                    app:strokeColor="#FFFFFF" />
-
-                <Button
-                    android:id="@+id/generalStats"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/ic_launcher_background"
-                    android:clickable="false"
-                    android:text="Sign in"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="20dp"
-                    app:icon="@drawable/players_icon"
-                    app:iconSize="30dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/matchHistory"
-                    app:layout_constraintStart_toStartOf="@+id/matchHistory"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-                <Button
-                    android:id="@+id/MMR"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/ic_launcher_background"
-                    android:text="Rank History"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="20dp"
-                    app:icon="@drawable/rankicon"
-                    app:iconSize="30dp"
-                    app:iconTint="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/matchHistory"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/matchHistory"
-                    app:layout_constraintTop_toBottomOf="@+id/generalStats" />
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-black"
-                    android:text="Player"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-black"
-                    android:text="Matches"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view5" />
-
-                <TextView
-                    android:id="@+id/textView7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-black"
-                    android:text="Miscellaneous"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view6" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.core.widget.NestedScrollView>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/scrollView2"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view2">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@+id/rankNumberMainMenu" />
 
         <TextView
             android:id="@+id/playerNameMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-black"
+            android:fontFamily="@font/baloo_bhai"
             android:text="Name#1234"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="20dp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/circle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/circle"
+            app:layout_constraintTop_toTopOf="@+id/circle"
+            tools:text="SprinkledRainbow#1593" />
+
+        <Button
+            android:id="@+id/RSOLogOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#eb0029"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Sign out"
+            android:textColor="#FFFFFF"
+            app:cornerRadius="150dp"
+            app:icon="@drawable/just_statics"
+            app:iconSize="25dp"
+            app:iconTint="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:strokeColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/rankPatchedMainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:text="Getting rank..."
+            android:textSize="18dp"
+            app:layout_constraintStart_toEndOf="@+id/rankImageMainMenu"
+            app:layout_constraintTop_toTopOf="@+id/rankImageMainMenu" />
+
+        <ProgressBar
+            android:id="@+id/rankProgressMainMenu"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="24"
+            android:progressTint="#EB0029"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toStartOf="@+id/MMRFAB"
+            app:layout_constraintStart_toEndOf="@+id/rankImageMainMenu"
+            app:layout_constraintTop_toBottomOf="@+id/rankPatchedMainMenu"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/rankNumberMainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/baloo_bhai"
+            android:text="24/100"
+            android:textAlignment="center"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@+id/rankProgressMainMenu"
+            app:layout_constraintTop_toBottomOf="@+id/rankProgressMainMenu"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/leaderboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="@color/ic_launcher_background"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="LeaderBoard"
+            android:textColor="#FFFFFF"
+            android:visibility="invisible"
+            app:cornerRadius="150dp"
+            app:icon="@drawable/stats_icon"
+            app:iconSize="25dp"
+            app:iconTint="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/RecentMatchFAB"
+            app:strokeColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/updateBT"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/ic_launcher_background"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Updates"
+            android:textColor="#FFFFFF"
+            android:visibility="invisible"
+            app:cornerRadius="150dp"
+            app:icon="@drawable/update"
+            app:iconSize="25dp"
+            app:iconTint="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="@+id/leaderboard"
+            app:layout_constraintStart_toStartOf="@+id/leaderboard"
+            app:layout_constraintTop_toBottomOf="@+id/leaderboard"
+            app:strokeColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:text="Current Ranking"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:text="Last Match Details"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+        <ImageView
+            android:id="@+id/lastMatchMapImage"
+            android:layout_width="0dp"
+            android:layout_height="125dp"
+            android:layout_marginTop="8dp"
+            android:alpha="0.4"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playerLevel" />
 
-        <ImageButton
-            android:id="@+id/refreshUpdate"
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/RecentMatchFAB" />
+
+        <ImageView
+            android:id="@+id/rankImageMainMenu"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:backgroundTint="#00111822"
-            android:scaleType="fitCenter"
-            app:layout_constraintStart_toEndOf="@+id/circle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/refreshicon" />
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            tools:srcCompat="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/MMRFAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/ic_launcher_background"
+            android:clickable="true"
+            android:foregroundGravity="center"
+            app:backgroundTint="@color/ic_launcher_background"
+            app:fabSize="auto"
+            app:layout_constraintBottom_toBottomOf="@+id/rankNumberMainMenu"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            app:srcCompat="@drawable/rankicon"
+            app:tint="@color/white" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/RecentMatchFAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#C8111822"
+            android:clickable="true"
+            android:foregroundGravity="center"
+            android:visibility="visible"
+            app:backgroundTint="@color/ic_launcher_background"
+            app:fabSize="auto"
+            app:layout_constraintStart_toStartOf="@+id/lastMatchMapImage"
+            app:layout_constraintTop_toBottomOf="@+id/lastMatchMapImage"
+            app:srcCompat="@drawable/recentmatchesicon"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/agentImageMainMenu"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/lastMatchMapImage"
+            app:layout_constraintEnd_toStartOf="@+id/lastMatchStatsMainMenu"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            tools:srcCompat="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/gameStartMainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="12dp"
+            app:layout_constraintBottom_toBottomOf="@+id/lastMatchMapImage"
+            app:layout_constraintEnd_toEndOf="@+id/lastMatchMapImage"
+            tools:text="4 hours ago" />
+
+        <TextView
+            android:id="@+id/gameModeMainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toEndOf="@+id/lastMatchMapImage"
+            app:layout_constraintTop_toTopOf="@+id/lastMatchMapImage"
+            tools:text="Custom game" />
+
+        <TextView
+            android:id="@+id/lastMatchStatsMainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/baloo_bhai"
+            android:shadowColor="#000000"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/lastMatchMapImage"
+            app:layout_constraintEnd_toEndOf="@+id/lastMatchMapImage"
+            app:layout_constraintStart_toStartOf="@+id/lastMatchMapImage"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            tools:text="25/18/5" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:text="👈️ See previous matches!"
+            app:layout_constraintBottom_toBottomOf="@+id/RecentMatchFAB"
+            app:layout_constraintStart_toEndOf="@+id/RecentMatchFAB"
+            app:layout_constraintTop_toTopOf="@+id/RecentMatchFAB" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
