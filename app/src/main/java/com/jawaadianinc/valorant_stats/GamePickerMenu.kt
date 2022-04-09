@@ -31,7 +31,7 @@ import com.jawaadianinc.valorant_stats.brawlhalla.brawlFindAccount
 import com.jawaadianinc.valorant_stats.valorant.CosmeticsActivity
 import com.jawaadianinc.valorant_stats.valorant.LoggingInActivityRSO
 import com.jawaadianinc.valorant_stats.valorant.PlayerDatabase
-import com.jawaadianinc.valorant_stats.valorant.PlayerMainMenu
+import com.jawaadianinc.valorant_stats.valorant.ValorantMainMenu
 import com.squareup.picasso.Picasso
 
 
@@ -54,8 +54,6 @@ class GamePickerMenu : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
         val scroll: View = findViewById(R.id.scroll)
-        //scroll.alpha = 0f
-        //scroll.translationY = 0f
 
         valoButton.alpha = 0f
         brawlButton.alpha = 0f
@@ -182,7 +180,7 @@ class GamePickerMenu : AppCompatActivity() {
         if (valoName == null) {
             startActivity(Intent(this, LoggingInActivityRSO::class.java))
         } else {
-            startActivity(Intent(this, PlayerMainMenu::class.java))
+            startActivity(Intent(this, ValorantMainMenu::class.java))
         }
     }
 

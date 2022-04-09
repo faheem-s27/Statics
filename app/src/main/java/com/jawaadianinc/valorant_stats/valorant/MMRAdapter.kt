@@ -1,6 +1,7 @@
 package com.jawaadianinc.valorant_stats.valorant
 
 import android.app.Activity
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
@@ -26,23 +27,26 @@ class MMRAdapter(
         val changeText = row.findViewById<View>(R.id.changeMMR) as TextView
         val number = row.findViewById<View>(R.id.progressMMR) as ProgressBar
         val rank = row.findViewById<View>(R.id.rankText) as TextView
+        val rankNumber = row.findViewById<View>(R.id.rankNumberMMRLayout) as TextView
         dateText.text = "On " + date[position]
         changeText.text = "Rank Change: " + changeMMR[position]
         if (changeMMR[position].toInt() <= 0) {
             changeText.setTextColor(Color.parseColor("#f94555"))
+            number.progressTintList = ColorStateList.valueOf(Color.parseColor("#f94555"))
         } else {
             changeText.setTextColor(Color.parseColor("#18e4b7"))
+            number.progressTintList = ColorStateList.valueOf(Color.parseColor("#18e4b7"))
         }
 
         return if (currentNumber[position].toInt() <= 100) {
-            rank.text = rankNames[position] + ", " + currentNumber[position] + "/100"
+            rank.text = rankNames[position]
+            rankNumber.text = currentNumber[position] + "/100"
             number.progress = currentNumber[position].toInt()
             number.max = 100
             row
         } else {
-            rank.text = rankNames[position] + ", " + currentNumber[position]
-            number.progress = currentNumber[position].toInt()
-            number.max = 1200
+            rank.text = rankNames[position]
+            rankNumber.text = currentNumber[position]
             row
         }
     }

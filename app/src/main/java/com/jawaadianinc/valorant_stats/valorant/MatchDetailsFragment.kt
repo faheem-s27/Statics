@@ -149,7 +149,26 @@ class MatchDetailsFragment : Fragment() {
                             mAdapter.add("Score: $score : $lost")
                         } catch (e: Exception) {
                         }
+
                     }
+
+                    try {
+                        val timeinDays = d.toDays()
+                        val timeInHours = d.toHours()
+                        when {
+                            timeinDays > 0 -> {
+                                mAdapter.add("Played $timeinDays days ago")
+                            }
+                            timeInHours > 0 -> {
+                                mAdapter.add("Played $timeInHours hours ago")
+                            }
+                            else -> {
+                                mAdapter.add("Played ${d.toMinutes()} minutes ago")
+                            }
+                        }
+                    } catch (e: Exception) {
+                    }
+
                     mAdapter.add("Rounds Played: $roundsPlayed")
                     mAdapter.add("Map: $map")
                     mAdapter.add("Mode: $mode")
@@ -157,12 +176,7 @@ class MatchDetailsFragment : Fragment() {
                     mAdapter.add("Started: $game_started")
                     mAdapter.add("Duration: $inMinutes minutes")
 
-                    try {
-                        val timeinDays = d.toDays()
-                        val timeInHours = d.toHours()
-                        mAdapter.add("Which was $timeinDays days ago/$timeInHours hours ago")
-                    } catch (e: Exception) {
-                    }
+
 
                     val mapImage: ImageView = view.findViewById(R.id.mapURL)
                     if (actualtMapUlr !== "") {

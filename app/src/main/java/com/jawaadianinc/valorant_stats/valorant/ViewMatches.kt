@@ -2,10 +2,10 @@ package com.jawaadianinc.valorant_stats.valorant
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -30,6 +30,9 @@ class ViewMatches : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_matches)
 
+        val region = intent.extras?.getString("Region")
+        val puuid = intent.extras?.getString("PUUID")
+
         // this is about to get sticky
         val database = Firebase.database
         val myRef = database.getReference("VALORANT/key")
@@ -39,111 +42,142 @@ class ViewMatches : AppCompatActivity() {
                 val progessBar: ProgressBar = findViewById(R.id.progressBar6)
                 val matchText: TextView = findViewById(R.id.textView10)
                 val matchList: ListView = findViewById(R.id.matchList)
-                matchList.alpha = 0f
-
-                val playerName = PlayerDatabase(this@ViewMatches).getPlayerName()
-                val split = playerName!!.split("#")
-                val puuid = PlayerDatabase(this@ViewMatches).getPUUID(split[0], split[1])
-                val region = PlayerDatabase(this@ViewMatches).getRegion(puuid = puuid!!)
+                matchList.alpha = 0.2f
                 val URL =
                     "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
                 doAsync {
                     val response = JSONObject(URL(URL).readText())
-                    val history = response.getJSONArray("history")
-                    for (i in 0 until history.length()) {
-                        val currentMatch = history[i] as JSONObject
-                        val matchID = currentMatch.getString("matchId")
-                        //processMatchID(matchID, key!!, region!!, split[0], split[1])
-                        val database = Firebase.database
-                        val RSODB = database.getReference("VALORANT/RSO")
-                        val URL =
-                            "https://$region.api.riotgames.com/val/match/v1/matches/$matchID?api_key=$key"
-                        val response = JSONObject(URL(URL).readText())
-                        //Log.d("match", response.toString())
-                        val matchInfo = response.getJSONObject("matchInfo")
-                        val matchStart = matchInfo.getLong("gameStartMillis")
-                        //Log.d("match", "Original: "+ matchStart.toString())
-                        val map = matchInfo.getString("mapId")
-                        val mode = matchInfo.getString("queueId")
-                        val players = response.getJSONArray("players")
-                        for (i in 0 until players.length()) {
-                            val currentPlayer = players[i] as JSONObject
-                            val puuid = currentPlayer.getString("puuid")
-                            val gameName = currentPlayer.getString("gameName")
-                            val gameTag = currentPlayer.getString("tagLine")
-                            RSODB.child(gameName).child("Puuid").setValue(puuid)
-                            RSODB.child(gameName).child("GameTag").setValue(gameTag)
-                            RSODB.child(gameName).child("Region").setValue(region)
-                            if (gameName == split[0]) {
-                                val kills = currentPlayer.getJSONObject("stats").getInt("kills")
-                                val deaths = currentPlayer.getJSONObject("stats").getInt("deaths")
-                                val assists = currentPlayer.getJSONObject("stats").getInt("assists")
-                                val agentID = currentPlayer.getString("characterId")
-                                var agentImage = ""
-                                var mapName = ""
-                                //this is to get agentName + mapName
-                                val url = "https://valorant-api.com/v1/agents"
-                                val response = JSONObject(URL(url).readText()).getJSONArray("data")
-                                for (i in 0 until response.length()) {
-                                    val currentAgent = response[i] as JSONObject
-                                    if (currentAgent.getString("uuid") == agentID) {
-                                        agentImage = currentAgent.getString("displayIconSmall")
-                                        break
-                                    }
-                                }
-                                val mapURL = "https://valorant-api.com/v1/maps"
-                                val mapResponse =
-                                    JSONObject(URL(mapURL).readText()).getJSONArray("data")
-                                for (i in 0 until mapResponse.length()) {
-                                    val currentMap = mapResponse[i] as JSONObject
-                                    if (currentMap.getString("mapUrl") == map) {
-                                        mapName = currentMap.getString("listViewIcon")
-                                        break
-                                    }
-                                }
+                    val url = "https://valorant-api.com/v1/agents"
+                    val Agentresponse = JSONObject(URL(url).readText()).getJSONArray("data")
+                    val mapURL = "https://valorant-api.com/v1/maps"
+                    val mapResponse =
+                        JSONObject(URL(mapURL).readText()).getJSONArray("data")
+                    val urlName =
+                        "https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/$puuid?api_key=$key"
+                    val responseFromRiot = JSONObject(URL(urlName).readText())
+                    val gameNamePlayer = responseFromRiot.getString("gameName")
+                    val tagLinePlayer = responseFromRiot.getString("tagLine")
 
-                                playerAgentImage += agentImage
-                                mapImage += mapName
-                                timePlayed += matchStart.toString()
-                                KDA += "$kills/$deaths/$assists"
-                                gameMode += mode
-                                matchIDs += matchID
+                    val history = response.getJSONArray("history")
+                    try {
+
+                        for (i in 0 until history.length()) {
+                            if (i > 20) {
+                                throw Exception("Riot Limit Reached")
+                            }
+                            val currentMatch = history[i] as JSONObject
+                            val matchID = currentMatch.getString("matchId")
+                            val database = Firebase.database
+                            val RSODB = database.getReference("VALORANT/RSO")
+                            val URL =
+                                "https://$region.api.riotgames.com/val/match/v1/matches/$matchID?api_key=$key"
+                            val response = JSONObject(URL(URL).readText())
+                            //Log.d("Riot", response.toString())
+                            val matchInfo = response.getJSONObject("matchInfo")
+                            val matchStart = matchInfo.getLong("gameStartMillis")
+                            val gameDuration = matchInfo.getLong("gameLengthMillis")
+                            val map = matchInfo.getString("mapId")
+                            val mode = matchInfo.getString("queueId")
+                            val players = response.getJSONArray("players")
+
+                            var agentImage = ""
+                            var mapName = ""
+
+                            for (i in 0 until players.length()) {
+                                val currentPlayer = players[i] as JSONObject
+                                val puuid = currentPlayer.getString("puuid")
+                                val gameName = currentPlayer.getString("gameName")
+                                val gameTag = currentPlayer.getString("tagLine")
+                                RSODB.child(gameName).child("Puuid").setValue(puuid)
+                                RSODB.child(gameName).child("GameTag").setValue(gameTag)
+                                RSODB.child(gameName).child("Region").setValue(region)
+                                RSODB.child(gameName).child("Matches").child(matchID).child("Map")
+                                    .setValue(map)
+                                RSODB.child(gameName).child("Matches").child(matchID).child("Mode")
+                                    .setValue(mode)
+                                if (gameName == gameNamePlayer) {
+                                    val kills = currentPlayer.getJSONObject("stats").getInt("kills")
+                                    val deaths =
+                                        currentPlayer.getJSONObject("stats").getInt("deaths")
+                                    val assists =
+                                        currentPlayer.getJSONObject("stats").getInt("assists")
+                                    val agentID = currentPlayer.getString("characterId")
+                                    for (i in 0 until Agentresponse.length()) {
+                                        val currentAgent = Agentresponse[i] as JSONObject
+                                        if (currentAgent.getString("uuid") == agentID) {
+                                            agentImage = currentAgent.getString("displayIconSmall")
+                                            break
+                                        }
+                                    }
+
+                                    for (i in 0 until mapResponse.length()) {
+                                        val currentMap = mapResponse[i] as JSONObject
+                                        if (currentMap.getString("mapUrl") == map) {
+                                            mapName = currentMap.getString("listViewIcon")
+                                            break
+                                        }
+                                    }
+
+                                    playerAgentImage += agentImage
+                                    mapImage += mapName
+                                    timePlayed += (matchStart + gameDuration).toString()
+                                    KDA += "$kills/$deaths/$assists"
+                                    gameMode += mode
+                                    matchIDs += matchID
+                                }
+                            }
+                            runOnUiThread {
+                                matchText.text = "Processed ${i + 1} matches"
+                                progessBar.max = history.length()
+                                progessBar.progress = i + 1
+                                //Log.d("match", "Progress: $progress")
+                                val playerName = PlayerDatabase(this@ViewMatches).getPlayerName()
+                                val split = playerName!!.split("#")
+                                val matchList: ListView = findViewById(R.id.matchList)
+                                //matchList.alpha = progress / 100
+                                val matches = MatchAdapter(
+                                    this@ViewMatches,
+                                    playerAgentImage,
+                                    mapImage,
+                                    timePlayed,
+                                    KDA,
+                                    gameMode,
+                                    matchIDs
+                                )
+                                matches.notifyDataSetChanged()
+                                matchList.adapter = matches
+                                matchList.setOnItemClickListener { _, _, _, _ ->
+                                    Toast.makeText(
+                                        this@ViewMatches,
+                                        "Please wait until all matches are loaded!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         }
+                    } catch (e: Exception) {
                         runOnUiThread {
-                            matchText.text = "Processing ${i + 1}/${history.length()} matches"
-                            val number = history.length() / 100.toFloat()
-                            val progress = (i + 1) / number
-                            progessBar.max = history.length()
-                            progessBar.progress = i + 1
-                            //Log.d("match", "Progress: $progress")
-                            val playerName = PlayerDatabase(this@ViewMatches).getPlayerName()
-                            val split = playerName!!.split("#")
-                            val matchList: ListView = findViewById(R.id.matchList)
-                            matchList.alpha = progress / 100
-                            val matches = MatchAdapter(
+                            Toast.makeText(
                                 this@ViewMatches,
-                                playerAgentImage,
-                                mapImage,
-                                timePlayed,
-                                KDA,
-                                gameMode,
-                                matchIDs
-                            )
-                            matchList.adapter = matches
-                            matchList.setOnItemClickListener { _, _, position, _ ->
-                                val matchID = matchIDs[position]
-                                matchActivityStart(split[0], split[1], matchID)
-                            }
+                                "Showing reduced matches due to Riot limits\nPlease wait before requesting again",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            val db = Firebase.database
+                            val ref = db.getReference("VALORANT/errors")
+                            ref.push().setValue(e.toString())
                         }
                     }
                     runOnUiThread {
                         val progessBar: ProgressBar = findViewById(R.id.progressBar6)
                         val matchText: TextView = findViewById(R.id.textView10)
                         val matchList: ListView = findViewById(R.id.matchList)
-                        progessBar.visibility = View.INVISIBLE
-                        matchText.visibility = View.INVISIBLE
-                        matchList.alpha = 1f
+                        matchList.animate().alpha(1f).duration = 1000
+                        progessBar.animate().alpha(0f).duration = 1000
+                        matchText.animate().alpha(0f).duration = 1000
+                        matchList.setOnItemClickListener { _, _, position, _ ->
+                            val matchID = matchIDs[position]
+                            matchActivityStart(gameNamePlayer, tagLinePlayer, matchID)
+                        }
                     }
                 }
             }

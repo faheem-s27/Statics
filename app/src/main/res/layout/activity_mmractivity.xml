@@ -7,11 +7,24 @@
     tools:context=".valorant.MMRActivity">
 
     <ImageView
-        android:id="@+id/playerCardWide"
+        android:id="@+id/playerImageLong"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:alpha="0.2"
-        android:scaleType="center"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/refreshicon"
+        tools:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/playerCardWide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0.6"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/view7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -25,7 +38,7 @@
         style="@style/Divider.Horizontal"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,45 +53,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rankName" />
-
-    <View
-        android:id="@+id/view9"
-        style="@style/Divider.Horizontal"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginBottom="300dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/MMRname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Player Name: "
-        android:textColor="#FFFFFF"
-        android:textSize="24dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/playerCardWide"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/rankProgress"
+        tools:visibility="invisible" />
 
     <ImageView
         android:id="@+id/rankIcon"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/view9"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view7"
-        tools:srcCompat="@drawable/refreshicon" />
+        tools:srcCompat="@drawable/valologo"
+        tools:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/rankProgress"
@@ -88,11 +75,10 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:background="@color/ic_launcher_background"
         android:indeterminate="false"
         android:max="100"
-        android:progress="50"
-        android:progressTint="#18e4b7"
+        android:progress="0"
+        android:progressTint="#DD2C00"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rankIcon" />
@@ -101,8 +87,10 @@
         android:id="@+id/number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/baloo_bhai"
         android:text="/100"
+        android:textColor="#FFFFFF"
+        android:textSize="14dp"
         app:layout_constraintBottom_toTopOf="@+id/rankProgress"
         app:layout_constraintEnd_toEndOf="@+id/rankProgress" />
 
@@ -110,13 +98,13 @@
         android:id="@+id/rankName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:fontFamily="@font/baloo_bhai"
         android:text="Rank:"
-        android:textSize="20dp"
+        android:textColor="#FFFFFF"
+        android:textSize="14dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rankProgress" />
+        app:layout_constraintBottom_toBottomOf="@+id/number"
+        app:layout_constraintStart_toStartOf="@+id/rankProgress" />
 
     <ListView
         android:id="@+id/MMRList"
@@ -128,16 +116,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/middle" />
 
-    <ImageView
-        android:id="@+id/playerImageLong"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="0.1"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/MMRname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/baloo_bhai"
+        android:gravity="center"
+        android:text="Player Name: "
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/playerCardWide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playerCardWide"
-        app:srcCompat="@drawable/refreshicon" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

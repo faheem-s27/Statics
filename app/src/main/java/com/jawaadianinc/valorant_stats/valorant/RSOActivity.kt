@@ -136,6 +136,16 @@ class RSOActivity : AppCompatActivity() {
             .addHeader("Authorization", "Bearer $token")
             .build()
 
+        val database = Firebase.database.getReference("VALORANT/key")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                secret = dataSnapshot.value as String?
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
 
 
         doAsync {
@@ -144,7 +154,7 @@ class RSOActivity : AppCompatActivity() {
             val puuid = json.getString("puuid")
 
             val regionURL =
-                "https://europe.api.riotgames.com/riot/account/v1/active-shards/by-game/val/by-puuid/$puuid?api_key=RGAPI-77322163-520c-492f-aabe-6c29a39f44ff"
+                "https://europe.api.riotgames.com/riot/account/v1/active-shards/by-game/val/by-puuid/$puuid?api_key=$secret"
             val regionRequest = Request.Builder()
                 .url(regionURL)
                 .build()
@@ -157,7 +167,7 @@ class RSOActivity : AppCompatActivity() {
             val gameTag = json.getString("tagLine")
             uiThread {
                 progressBar.progress = 90
-                updateText.text = "Tap to finish sign in"
+                updateText.text = "Finalise sign in"
                 confirmUser(puuid, gameName, gameTag, region)
             }
         }
@@ -172,18 +182,19 @@ class RSOActivity : AppCompatActivity() {
         confirmButton.setOnClickListener {
             //save data to firebase
             val database = Firebase.database
-            val playersRef = database.getReference("VALORANT/RSO")
+            val playersRef = database.getReference("VALORANT/signedInPlayers")
             playersRef.child(gameName).child("Puuid").setValue(puuid)
             playersRef.child(gameName).child("GameTag").setValue(gameTag)
             playersRef.child(gameName).child("Region").setValue(region)
-            progressBar.progress = 100
-            updateText.text = "Success!"
 
             //save name to database
             val playerdb = PlayerDatabase(this)
             if (playerdb.addPlayer(gameName, gameTag, puuid, region)) {
+                progressBar.progress = 100
+                updateText.text = "Success!"
                 //take user to main valorant screen
-                startActivity(Intent(this, PlayerMainMenu::class.java))
+                Toast.makeText(this, "Welcome $gameName!", Toast.LENGTH_LONG).show()
+                startActivity(Intent(this, ValorantMainMenu::class.java))
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout)
                 finish()
             } else {

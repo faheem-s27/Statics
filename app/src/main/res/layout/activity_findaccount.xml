@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".valorant.PlayerMainMenu">
+        tools:context=".valorant.ValorantMainMenu">
 
         <ImageView
             android:id="@+id/imagebackground"
@@ -62,8 +62,8 @@
             android:padding="5dp"
             android:text="null"
             android:textColor="#FFFFFF"
-            android:textSize="16dp"
-            android:textStyle="bold|italic"
+            android:textSize="12dp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/circle"
             app:layout_constraintEnd_toEndOf="@+id/circle"
             app:layout_constraintStart_toStartOf="@+id/circle"
@@ -85,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/baloo_bhai"
-            android:text="Name#1234"
+            android:text="Getting name..."
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="20dp"
@@ -100,6 +100,7 @@
             android:id="@+id/RSOLogOut"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:backgroundTint="#eb0029"
             android:fontFamily="@font/baloo_bhai"
@@ -112,6 +113,24 @@
             app:iconTint="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:strokeColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/sharePlayerProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#eb0029"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Share profile"
+            android:textColor="#FFFFFF"
+            app:cornerRadius="150dp"
+            app:icon="@android:drawable/ic_menu_share"
+            app:iconSize="25dp"
+            app:iconTint="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:strokeColor="#FFFFFF" />
 
@@ -216,7 +235,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/baloo_bhai"
-            android:text="Last Match Details"
+            android:text="Last Match Played"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textSize="20dp"
@@ -230,7 +249,7 @@
             android:layout_width="0dp"
             android:layout_height="125dp"
             android:layout_marginTop="8dp"
-            android:alpha="0.4"
+            android:alpha="0.7"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -303,6 +322,24 @@
             app:srcCompat="@drawable/recentmatchesicon"
             app:tint="@color/white" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/goBackFromLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:alpha="1"
+            android:backgroundTint="#eb0029"
+            android:clickable="true"
+            android:foregroundGravity="center"
+            android:visibility="invisible"
+            app:backgroundTint="@color/ic_launcher_background"
+            app:fabSize="auto"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="?attr/actionModeCloseDrawable"
+            app:tint="@color/white" />
+
         <ImageView
             android:id="@+id/agentImageMainMenu"
             android:layout_width="60dp"
@@ -364,12 +401,15 @@
 
         <TextView
             android:id="@+id/textView7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             android:fontFamily="@font/baloo_bhai"
+            android:gravity="center|left"
             android:text="👈️ See previous matches!"
             app:layout_constraintBottom_toBottomOf="@+id/RecentMatchFAB"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/RecentMatchFAB"
             app:layout_constraintTop_toTopOf="@+id/RecentMatchFAB" />
 

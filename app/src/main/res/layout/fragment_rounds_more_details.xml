@@ -12,10 +12,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/defuseBT"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/roundsSpinner"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/haven_minimap" />
 
     <Spinner
@@ -47,6 +47,7 @@
         android:id="@+id/SpikeStats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/baloo_bhai"
         android:gravity="center"
         android:text="Planted by:"
         android:textSize="14dp"
@@ -81,7 +82,7 @@
         android:id="@+id/defuseBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#0C1117"
+        android:backgroundTint="@color/Valorant_SplashColourBackground"
         android:text="See defused map"
         android:textColor="#FFFFFF"
         android:visibility="invisible"

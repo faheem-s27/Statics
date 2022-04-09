@@ -2,20 +2,21 @@ package com.jawaadianinc.valorant_stats.valorant
 
 import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
-import android.view.Gravity
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.BlurTransformation
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.URL
+import kotlin.math.roundToInt
 
 class MMRActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +26,7 @@ class MMRActivity : AppCompatActivity() {
         val RiotName = intent.extras!!.getString("RiotName")
         val RiotID = intent.extras!!.getString("RiotID")
         val nameText: TextView = findViewById(R.id.MMRname)
-        nameText.text = "$RiotName#$RiotID"
+        nameText.text = "$RiotName#$RiotID\nPrevious ranks"
 
         val playerWideImage: ImageView = findViewById(R.id.playerCardWide)
         val playerLongImage: ImageView = findViewById(R.id.playerImageLong)
@@ -67,9 +68,11 @@ class MMRActivity : AppCompatActivity() {
                     Picasso
                         .get()
                         .load(playerLongCard)
+                        .transform(BlurTransformation(this@MMRActivity))
                         .fit()
                         .centerCrop()
                         .into(playerLongImage)
+
                 }
 
                 val currentTierData = JSONObject(URL(currentTier).readText())
@@ -140,17 +143,10 @@ class MMRActivity : AppCompatActivity() {
                     val MMRList =
                         MMRAdapter(this@MMRActivity, dates, changes, numberMMR, rankname)
                     scroll.adapter = MMRList
-
-                    val textView = TextView(this@MMRActivity)
-                    textView.typeface = Typeface.DEFAULT_BOLD
-                    textView.text = "Previous rank changes"
-                    textView.gravity = Gravity.CENTER
-                    textView.textSize = 30f
-                    scroll.addHeaderView(textView)
                     progressDialog.dismiss()
 
                     scroll.setOnItemClickListener { _, _, position, _ ->
-                        val rawDate = rawDates[position - 1]
+                        val rawDate = rawDates[position]
                         trytoFindMatch(rawDate.toInt())
                     }
                 }
@@ -161,7 +157,7 @@ class MMRActivity : AppCompatActivity() {
                     AlertDialog.Builder(this@MMRActivity).setTitle("Unranked!")
                         .setMessage("This user is either unranked or hasn't played competitive in a long time.")
                         .setPositiveButton(android.R.string.ok) { _, _ ->
-                            startActivity(Intent(this@MMRActivity, PlayerMainMenu::class.java))
+                            startActivity(Intent(this@MMRActivity, ValorantMainMenu::class.java))
                         }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }
@@ -171,7 +167,7 @@ class MMRActivity : AppCompatActivity() {
                     AlertDialog.Builder(this@MMRActivity).setTitle("Error!")
                         .setMessage("There was an issue getting the ranking :/ Error details have been sent to the developer")
                         .setPositiveButton(android.R.string.ok) { _, _ ->
-                            startActivity(Intent(this@MMRActivity, PlayerMainMenu::class.java))
+                            startActivity(Intent(this@MMRActivity, ValorantMainMenu::class.java))
                         }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }
@@ -182,47 +178,77 @@ class MMRActivity : AppCompatActivity() {
 
     private fun trytoFindMatch(gameStarting: Int) {
         val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Tracing back match!")
-        progressDialog.setMessage("Attempting to find match (Not always successful!)")
+        progressDialog.setTitle("Finding match!")
+        progressDialog.setMessage("Please wait...")
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressDialog.setCancelable(false)
         progressDialog.show()
 
-        val RiotName = intent.extras!!.getString("RiotName")
-        val RiotID = intent.extras!!.getString("RiotID")
-        val matchHistoryURL =
-            "https://api.henrikdev.xyz/valorant/v3/matches/eu/${RiotName}/${RiotID}?size=10"
-        doAsync {
-            val jsonMatches = JSONObject(URL(matchHistoryURL).readText())
-            val dataforMatch = jsonMatches["data"] as JSONArray
-            var matchID: String = ""
+        try {
+            val RiotName = intent.extras!!.getString("RiotName")
+            val RiotID = intent.extras!!.getString("RiotID")
+            val puuid = PlayerDatabase(this).getPUUID(RiotName!!, RiotID!!)
+            val region = PlayerDatabase(this).getRegion(puuid!!)
+            val key = intent.extras!!.getString("key")
+            val matchHistoryURL =
+                "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
+            doAsync {
+                try {
+                    val jsonMatches = JSONObject(URL(matchHistoryURL).readText())
+                    val dataforMatch = jsonMatches["history"] as JSONArray
+                    var matchID: String = ""
 
-            for (i in 0 until dataforMatch.length()) {
-                val specificMatch = dataforMatch[i] as JSONObject
-                val match = specificMatch["metadata"] as JSONObject
-                val startGameID = match["game_start"] as Int
-                if (startGameID == gameStarting) {
-                    matchID = match["matchid"] as String
+                    for (i in 0 until dataforMatch.length()) {
+                        val specificMatch = dataforMatch[i] as JSONObject
+                        val startGameID = specificMatch["gameStartTimeMillis"] as Long
+                        val inSeconds: Float = (startGameID / 1000).toFloat()
+                        Log.d("", "${inSeconds.roundToInt()} ${gameStarting}")
+
+                        val topSecond = inSeconds.roundToInt() + 300
+                        val bottomSecond = inSeconds.roundToInt() - 300
+
+                        if (gameStarting in bottomSecond..topSecond) {
+                            matchID = specificMatch["matchId"] as String
+                            break
+                        }
+                    }
+                    uiThread {
+                        progressDialog.dismiss()
+                        if (matchID != "") {
+                            val matchintent =
+                                Intent(this@MMRActivity, MatchHistoryActivity::class.java)
+                            matchintent.putExtra("RiotName", RiotName)
+                            matchintent.putExtra("RiotID", RiotID)
+                            matchintent.putExtra("MatchNumber", 0)
+                            matchintent.putExtra("MatchID", matchID)
+                            startActivity(matchintent)
+                        } else {
+                            Toast.makeText(
+                                this@MMRActivity,
+                                "Couldn't find match :(",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    uiThread {
+                        progressDialog.dismiss()
+                        AlertDialog.Builder(this@MMRActivity).setTitle("Error!")
+                            .setMessage("$e")
+                            .setPositiveButton(android.R.string.ok) { _, _ ->
+                                startActivity(
+                                    Intent(
+                                        this@MMRActivity,
+                                        ValorantMainMenu::class.java
+                                    )
+                                )
+                            }
+                            .setIcon(android.R.drawable.ic_dialog_alert).show()
+                    }
                 }
             }
-            uiThread {
-                progressDialog.dismiss()
-                if (matchID != "") {
-                    val matchintent = Intent(this@MMRActivity, MatchHistoryActivity::class.java)
-                    matchintent.putExtra("RiotName", RiotName)
-                    matchintent.putExtra("RiotID", RiotID)
-                    matchintent.putExtra("MatchNumber", 0)
-                    matchintent.putExtra("MatchID", matchID)
-                    startActivity(matchintent)
-                } else {
-                    Toast.makeText(
-                        this@MMRActivity,
-                        "Couldn't find match :(",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error: $e", Toast.LENGTH_SHORT).show()
         }
     }
     private fun ImageView.resize(

@@ -23,6 +23,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.jawaadianinc.valorant_stats.valorant.LoggingInActivityRSO
+import com.jawaadianinc.valorant_stats.valorant.PlayerDatabase
+import com.jawaadianinc.valorant_stats.valorant.ValorantMainMenu
 
 
 class LoadingActivity : AppCompatActivity() {
@@ -88,9 +91,8 @@ class LoadingActivity : AppCompatActivity() {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val number = dataSnapshot.childrenCount
                     updateText.text = "Starting"
-                    startActivity(Intent(this@LoadingActivity, GamePickerMenu::class.java))
-                    overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-                    finish()
+                    val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
+                    valoAccountStats(valoName)
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -112,6 +114,19 @@ class LoadingActivity : AppCompatActivity() {
         ) as ConnectivityManager
         return cm.activeNetworkInfo?.isConnected == true
     }
+
+    private fun valoAccountStats(valoName: String?) {
+        if (valoName == null) {
+            startActivity(Intent(this, LoggingInActivityRSO::class.java))
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            finish()
+        } else {
+            startActivity(Intent(this, ValorantMainMenu::class.java))
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            finish()
+        }
+    }
+
 }
 
 

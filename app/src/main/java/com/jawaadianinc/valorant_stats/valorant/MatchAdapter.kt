@@ -42,17 +42,22 @@ class MatchAdapter(
             .into(agentImage)
         Picasso.get().load(mapURL[position]).fit().centerInside().into(mapImage)
 
-        if (mode[position] == "unrated") {
-            mode_Text.text = "Unrated"
-        } else if (mode[position] == "") {
-            mode_Text.text = "Custom Game"
-        } else {
-            mode_Text.text = mode[position]
+
+        when {
+            mode[position] == "" -> {
+                mode_Text.text = "Custom Game"
+            }
+            else -> {
+                mode_Text.text = mode[position].replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(
+                        Locale.getDefault()
+                    ) else it.toString()
+                }
+            }
         }
 
         KDA_Text.text = KDA[position]
         val unixTimeStart = timePlayed[position].toLong()
-        //Log.d("match", "timePlayed: $unixTimeStart")
         val date = Date(unixTimeStart)
         val d: Duration =
             Duration.between(

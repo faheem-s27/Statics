@@ -40,7 +40,6 @@ class kill_map_Fragment : Fragment() {
         val name = requireActivity().intent.extras!!.getString("RiotName")
         val id = requireActivity().intent.extras!!.getString("RiotID")
         val minimapImage: ImageView = requireActivity().findViewById(R.id.killMapImage)
-        val killTimeLine: SeekBar = requireView().findViewById(R.id.killTimeLine)
         val display: Display = requireActivity().windowManager.defaultDisplay
         val width = display.width
 
@@ -164,28 +163,6 @@ class kill_map_Fragment : Fragment() {
                             }
                         }
 
-                    killTimeLine.setOnSeekBarChangeListener(object :
-                        SeekBar.OnSeekBarChangeListener {
-
-                        override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                            // Display the current progress of SeekBar
-                            val getRoundName =
-                                spinner.selectedItem.toString()
-                            val numberinRound = getRoundName.split(" ")
-                            val actualRound: Int = numberinRound[1].toInt() - 1
-                            handlePlayerTimeLine(actualRound, i)
-                        }
-
-                        override fun onStartTrackingTouch(seekBar: SeekBar) {
-                            // Do something
-                        }
-
-                        override fun onStopTrackingTouch(seekBar: SeekBar) {
-                            // Do something
-                        }
-                    })
-
-
                     checkBox.setOnCheckedChangeListener { _, isChecked ->
                         val getRoundName =
                             spinner.selectedItem.toString()
@@ -208,8 +185,6 @@ class kill_map_Fragment : Fragment() {
     private fun handlePlayerImages(roundNumber: Int) {
         val jsonDetails = MatchHistoryActivity.matchJSON
         val playerPosition: ImageView? = view?.findViewById(R.id.playerPos2)
-        val killTimeLine: SeekBar = requireView().findViewById(R.id.killTimeLine)
-        killTimeLine.progress = 0
         val bitmap: Bitmap? = Bitmap.createBitmap(
             1000,
             1000,
@@ -347,15 +322,11 @@ class kill_map_Fragment : Fragment() {
         }
 
         playerPosition?.setImageBitmap(bitmap)
-        Log.d("kills", "Total kills: $total")
-        killTimeLine.max = total + 1
     }
 
     private fun handlePlayerDots(roundNumber: Int) {
         val jsonDetails = MatchHistoryActivity.matchJSON
         val playerPosition: ImageView? = view?.findViewById(R.id.playerPos2)
-        val killTimeLine: SeekBar = requireView().findViewById(R.id.killTimeLine)
-        killTimeLine.progress = 0
         val bitmap: Bitmap? = Bitmap.createBitmap(
             1000,
             1000,
@@ -451,20 +422,5 @@ class kill_map_Fragment : Fragment() {
 
         playerPosition?.setImageBitmap(bitmap)
         Log.d("kills", "Total kills: $total")
-        killTimeLine.max = total + 1
     }
-
-    private fun handlePlayerTimeLine(roundNumber: Int, killNumber: Int) {
-        val checkBox: CheckBox = requireView().findViewById(R.id.imageCheckbox)
-        if (killNumber == 0) {
-            Toast.makeText(requireActivity(), "Showing all kills", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(
-                requireActivity(),
-                "Kill #$killNumber... Coming soon!",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
 }

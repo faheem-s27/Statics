@@ -15,6 +15,22 @@
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".valorant.RecieveSharedProfileActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="statics-fd699.web.app"
+                    android:pathPrefix="/valorant/profile"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".valorant.CosmeticsActivity"
             android:exported="false" />
         <activity
@@ -31,8 +47,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="statics-fd699.web.app"
                     android:pathPrefix="/authorize.html"
@@ -43,9 +61,6 @@
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
-        <activity
-            android:name=".valorant.ValorantPlayerStatsOverall"
-            android:exported="false" />
         <activity
             android:name=".brawlhalla.brawlStatsActivity"
             android:exported="false"
@@ -67,19 +82,11 @@
             android:name=".valorant.ViewMatches"
             android:exported="false" />
         <activity
-            android:name=".valorant.CompareActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".valorant.ValorantUpdatesActivity"
             android:exported="true"
             android:label="@string/title_activity_valorant_updates"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats.NoActionBar" />
-        <activity
-            android:name=".valorant.AgentsActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".valorant.MatchHistoryActivity"
             android:exported="true"
@@ -97,7 +104,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".valorant.PlayerMainMenu"
+            android:name=".valorant.ValorantMainMenu"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats" />
 
