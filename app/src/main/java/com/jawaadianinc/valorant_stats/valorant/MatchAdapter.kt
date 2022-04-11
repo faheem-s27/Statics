@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.BlurTransformation
 import java.time.Duration
 import java.time.Instant
 import java.util.*
@@ -28,7 +29,7 @@ class MatchAdapter(
         val inflater = context.layoutInflater
         if (convertView == null) row = inflater.inflate(R.layout.match_row, null, true)
 
-        val agentImage = row!!.findViewById<View>(R.id.agentImageRow) as ImageView
+        val agentImage = row!!.findViewById<View>(R.id.killerIcon) as ImageView
         val mapImage = row.findViewById<View>(R.id.mapImageRow) as ImageView
         val timePlayed_Text = row.findViewById<View>(R.id.TimeAgoRow) as TextView
         val KDA_Text = row.findViewById<View>(R.id.KDA_Row) as TextView
@@ -40,8 +41,8 @@ class MatchAdapter(
             .fit()
             .centerInside()
             .into(agentImage)
-        Picasso.get().load(mapURL[position]).fit().centerInside().into(mapImage)
-
+        Picasso.get().load(mapURL[position]).transform(BlurTransformation(context, 2, 2)).fit()
+            .centerInside().into(mapImage)
 
         when {
             mode[position] == "" -> {
@@ -57,13 +58,14 @@ class MatchAdapter(
         }
 
         KDA_Text.text = KDA[position]
-        val unixTimeStart = timePlayed[position].toLong()
-        val date = Date(unixTimeStart)
+
+        val date = Date(timePlayed[position].toLong())
         val d: Duration =
             Duration.between(
                 date.toInstant(),
                 Instant.now()
             )
+
         val timeinDays = d.toDays()
         val timeInHours = d.toHours()
 

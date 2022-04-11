@@ -7,6 +7,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -60,10 +63,9 @@ class ViewMatches : AppCompatActivity() {
 
                     val history = response.getJSONArray("history")
                     try {
-
                         for (i in 0 until history.length()) {
-                            if (i > 20) {
-                                throw Exception("Riot Limit Reached")
+                            if (i > 30) {
+                                break
                             }
                             val currentMatch = history[i] as JSONObject
                             val matchID = currentMatch.getString("matchId")
@@ -127,14 +129,10 @@ class ViewMatches : AppCompatActivity() {
                                 }
                             }
                             runOnUiThread {
-                                matchText.text = "Processed ${i + 1} matches"
-                                progessBar.max = history.length()
+                                matchText.text = "Processed ${i + 1}/30 matches"
+                                progessBar.max = 30
                                 progessBar.progress = i + 1
-                                //Log.d("match", "Progress: $progress")
-                                val playerName = PlayerDatabase(this@ViewMatches).getPlayerName()
-                                val split = playerName!!.split("#")
                                 val matchList: ListView = findViewById(R.id.matchList)
-                                //matchList.alpha = progress / 100
                                 val matches = MatchAdapter(
                                     this@ViewMatches,
                                     playerAgentImage,
@@ -162,9 +160,6 @@ class ViewMatches : AppCompatActivity() {
                                 "Showing reduced matches due to Riot limits\nPlease wait before requesting again",
                                 Toast.LENGTH_LONG
                             ).show()
-                            val db = Firebase.database
-                            val ref = db.getReference("VALORANT/errors")
-                            ref.push().setValue(e.toString())
                         }
                     }
                     runOnUiThread {
@@ -188,6 +183,14 @@ class ViewMatches : AppCompatActivity() {
         })
         // the end of torture
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        FirebaseApp.initializeApp(/*context=*/this)
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance()
+        )
     }
 
     private fun matchActivityStart(Name: String, ID: String, matchID: String) {

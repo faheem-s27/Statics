@@ -48,7 +48,7 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
 
         goBackFromLink.visibility = View.VISIBLE
         goBackFromLink.setOnClickListener {
-            val intent = Intent(this, GamePickerMenu::class.java)
+            val intent = Intent(this, ValorantMainMenu::class.java)
             startActivity(intent)
         }
 

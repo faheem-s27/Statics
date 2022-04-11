@@ -1,16 +1,14 @@
 package com.jawaadianinc.valorant_stats
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
-import android.media.MediaPlayer.OnCompletionListener
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
@@ -29,25 +27,25 @@ import com.jawaadianinc.valorant_stats.valorant.ValorantMainMenu
 
 
 class LoadingActivity : AppCompatActivity() {
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)
 
         val loadingProgressBar: ProgressBar = findViewById(R.id.progressBar4)
-        val loadingText: TextView = findViewById(R.id.textView4)
+        val updateText: TextView = findViewById(R.id.textView4)
         loadingProgressBar.alpha = 0.2f
-        loadingText.alpha = 0.2f
+        updateText.alpha = 0.2f
 
         loadingProgressBar.translationY = +100f
-        loadingText.translationY = +100f
+        updateText.translationY = +100f
 
         loadingProgressBar.animate().alpha(1f).translationYBy(-100f).duration = 500
-        loadingText.animate().alpha(1f).translationYBy(-100f).duration = 500
-
+        updateText.animate().alpha(1f).translationYBy(-100f).duration = 500
 
         if (!isNetworkAvailable()) {
             loadingProgressBar.visibility = View.INVISIBLE
-            loadingText.text = "Error!\nStatics requires an active internet connection!"
+            updateText.text = "Error!\nStatics requires an active internet connection!"
         }
 
         val appUpdateManager = AppUpdateManagerFactory.create(this)
@@ -64,7 +62,6 @@ class LoadingActivity : AppCompatActivity() {
             }
         }
 
-        val updateText: TextView = findViewById(R.id.textView4)
         FirebaseApp.initializeApp(/*context=*/this)
         FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
             SafetyNetAppCheckProviderFactory.getInstance()
@@ -73,38 +70,26 @@ class LoadingActivity : AppCompatActivity() {
         updateText.text = "Connecting to Statics"
 
         val database = Firebase.database
-        val playersRef = database.getReference("VALORANT/players")
+        val playersRef = database.getReference("VALORANT/RSO")
 
-        val videoView = findViewById<VideoView>(R.id.staticsVid)
-        videoView.setVideoPath("https://firebasestorage.googleapis.com/v0/b/statics-fd699.appspot.com/o/newSplashLoading_Trim.mp4?alt=media&token=05f8cb3f-4f24-49d4-b1d6-f349b5781810")
-        videoView.setOnPreparedListener(MediaPlayer.OnPreparedListener {
-            // when vid is done preparing
-            it.setVolume(0f, 0f)
-            videoView.start()
-            updateText.text = "Loading resources"
-        })
+        updateText.text = "Loading resources"
+        playersRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.childrenCount
+                updateText.text = "Starting"
+                val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
+                valoAccountStats(valoName)
+            }
 
-        videoView.setOnCompletionListener(OnCompletionListener {
-            //after vid is finished
-            updateText.text = "Finishing up"
-            playersRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val number = dataSnapshot.childrenCount
-                    updateText.text = "Starting"
-                    val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
-                    valoAccountStats(valoName)
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Toast.makeText(
-                        this@LoadingActivity,
-                        "Failed to connect to Statics!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    loadingProgressBar.visibility = View.GONE
-                    loadingText.text = "An error occured while connecting to Statics :("
-                }
-            })
+            override fun onCancelled(databaseError: DatabaseError) {
+                Toast.makeText(
+                    this@LoadingActivity,
+                    "Failed to connect to Statics!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                loadingProgressBar.visibility = View.GONE
+                updateText.text = "An error occurred while connecting to Statics :("
+            }
         })
     }
 

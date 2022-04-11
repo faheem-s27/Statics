@@ -3,7 +3,6 @@ package com.jawaadianinc.valorant_stats.valorant
 import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -123,14 +122,10 @@ class MatchDetailsFragment : Fragment() {
                     val unixTimeStart = metadata.getInt("game_start")
                     val date = Date(unixTimeStart * 1000L)
                     val d: Duration =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            Duration.between(
-                                date.toInstant(),
-                                Instant.now()
-                            )
-                        } else {
-                            TODO("VERSION.SDK_INT < O")
-                        }
+                        Duration.between(
+                            date.toInstant(),
+                            Instant.now()
+                        )
                     if (didredWin) {
                         mAdapter.add("Red won!")
                         val score = teams.getJSONObject("red").getString("rounds_won")

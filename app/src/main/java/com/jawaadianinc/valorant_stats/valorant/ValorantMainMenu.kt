@@ -2,13 +2,15 @@ package com.jawaadianinc.valorant_stats.valorant
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -16,6 +18,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.BlurTransformation
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -41,10 +44,19 @@ class ValorantMainMenu : AppCompatActivity() {
         } else {
             playerName = name
         }
+
         val nameSplit = playerName.split("#")
         imagebackground = findViewById(R.id.imagebackground)
 
+        val puuid = PlayerDatabase(this).getPUUID(nameSplit[0], nameSplit[1])
+        val region = PlayerDatabase(this).getRegion(puuid!!)
+
         val database = Firebase.database
+        val playersRef = database.getReference("VALORANT/signedInPlayers")
+        playersRef.child(nameSplit[0]).child("Puuid").setValue(puuid)
+        playersRef.child(nameSplit[0]).child("GameTag").setValue(nameSplit[1])
+        playersRef.child(nameSplit[0]).child("Region").setValue(region)
+
         val myRef = database.getReference("VALORANT/key")
         myRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -66,7 +78,9 @@ class ValorantMainMenu : AppCompatActivity() {
                 val playerLevel: TextView = findViewById(R.id.playerLevel)
                 uiThread {
                     Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
-                    Picasso.get().load(largePic).fit().centerInside().into(imagebackground)
+                    Picasso.get().load(largePic)
+                        .transform(BlurTransformation(this@ValorantMainMenu)).fit().centerInside()
+                        .into(imagebackground)
                     playerLevel.text = data.getInt("account_level").toString()
                 }
             } catch (e: Exception) {
@@ -140,6 +154,14 @@ class ValorantMainMenu : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        FirebaseApp.initializeApp(/*context=*/this)
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance()
+        )
+    }
+
     private fun getRank(RiotName: String, RiotID: String) {
         val rankImageMainMenu: ImageView = findViewById(R.id.rankImageMainMenu)
         val rankPatchedMainMenu: TextView = findViewById(R.id.rankPatchedMainMenu)
@@ -172,7 +194,7 @@ class ValorantMainMenu : AppCompatActivity() {
                             .fit()
                             .centerInside()
                             .into(rankImageMainMenu)
-                        rankImageMainMenu.scaleType = ImageView.ScaleType.FIT_XY
+                        //rankImageMainMenu.scaleType = ImageView.ScaleType.FIT_XY
                         rankPatchedMainMenu.text = patched
                         rankProgressMainMenu.progress = progressNumber
                         rankProgressMainMenu.visibility = View.VISIBLE
@@ -199,16 +221,12 @@ class ValorantMainMenu : AppCompatActivity() {
             var actualtMapUlr = ""
 
             val unixTimeStart = metadata.getInt("game_start")
-            val date = Date(unixTimeStart * 1000L)
+            val date = Date(unixTimeStart.toLong() * 1000)
             val d: Duration =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Duration.between(
-                        date.toInstant(),
-                        Instant.now()
-                    )
-                } else {
-                    TODO("VERSION.SDK_INT < O")
-                }
+                Duration.between(
+                    date.toInstant(),
+                    Instant.now()
+                )
 
             var KDA: String? = null
 
@@ -266,13 +284,13 @@ class ValorantMainMenu : AppCompatActivity() {
                 Picasso
                     .get()
                     .load(actualtMapUlr)
+                    .transform(BlurTransformation(this@ValorantMainMenu, 2, 2))
                     .fit()
                     .centerInside()
                     .into(lastMatchMapImage)
-                lastMatchMapImage.scaleType = ImageView.ScaleType.FIT_XY
-                agentImageMainMenu.scaleType = ImageView.ScaleType.FIT_XY
             }
         }
     }
+
 }
 
