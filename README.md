@@ -2,6 +2,8 @@
 An Android application designed to view a player's stats on various games such as VALORANT, Brawlhalla, Apex legends and more to come soon! Currently in beta production at the moment with plans to release this on the Google Play Store in the upcoming months!
 By Faheem :)
 
+Website: https://statics-fd699.web.app/
+
 ![Screenshot](fulllogo.png)
 
 Valorant Stats Tracker for Android
