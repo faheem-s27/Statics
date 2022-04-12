@@ -4,7 +4,30 @@ By Faheem :)
 
 ![Screenshot](fulllogo.png)
 
-## Features for VALORANT
+Valorant Stats Tracker for Android
+
+Statics is an app designed for people who want to see their Valorant stats on mobile more conveniently without using an external browser or PC
+
+--> Includes official support for RSO! (Riot Sign-On)
+Sign in to your account securely and with ease using the official Riot Sign In!
+No need to input passwords and your data is kept safe
+
+--> You can share Valorant profiles via a generated link within the app
+Want to show off your profile because it's filled with godly stats? Simple! All you have to do is share a Statics link with other users for them to tap and view inside the app with no security compromise
+
+VALORANT
+✔️View stats on various game modes such as unrated, competitive, etc
+✔️Being able to see your match history (up to 40)!
+✔️MMR history to be able to view your recent losses and wins of your current rank and be able to find a match correlating to that rank gain/loss
+✔️Match history will be stored inside of a database so all matches will be kept up to date and stored to see all past games!
+✔️View an image of the Valorant minimap and see all of the spike plants and each player position!
+✔️Smooth, fluid UI!
+✔️Full dark mode :)
+
+Statics isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties.
+Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+
+## [Beta] Features for VALORANT
 - Able to view stats on various gamemodes such as unrated, competitive and more!
 - Being able to see the match history of players!
 - MMR history to be able to view your recent losses and wins of your current rank and be able to find a match correlationg to that rank gain/loss
@@ -23,10 +46,7 @@ By Faheem :)
 - Graphs and stuff 👍
 
 ## Features for Brawlhalla
-- Save BrawlID to a game name
-- See ranked and legend stats
-- See 2v2 ranked partners
-- Be able to search up any valid Brawl ID
+- COMING SOON
 
 
 ## Features for Apex Legends
