@@ -5,7 +5,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.FirebaseApp
@@ -89,12 +92,41 @@ class ValorantMainMenu : AppCompatActivity() {
         }
 
         val MMR: FloatingActionButton = findViewById(R.id.MMRFAB)
-        val updatesButton: Button = findViewById(R.id.updateBT)
-        val leaderBoard: Button = findViewById(R.id.leaderboard)
-        val RSOLogOut: Button = findViewById(R.id.RSOLogOut)
+        val RSOLogOut: FloatingActionButton = findViewById(R.id.RSOLogOut)
         val RecentMatchFAB: FloatingActionButton = findViewById(R.id.RecentMatchFAB)
-        val sharePlayerProfile: Button = findViewById(R.id.sharePlayerProfile)
+        val sharePlayerProfile: FloatingActionButton = findViewById(R.id.sharePlayerProfile)
         val playerNameText: TextView = findViewById(R.id.playerNameMenu)
+        val FABplus: FloatingActionButton = findViewById(R.id.fabPlus)
+
+        var clicked = true
+
+        RSOLogOut.translationY = 200f
+        sharePlayerProfile.translationY = 200f
+        RSOLogOut.visibility = View.INVISIBLE
+        sharePlayerProfile.visibility = View.INVISIBLE
+
+        FABplus.setOnClickListener {
+            if (clicked) {
+                // show the other FAB options
+                RSOLogOut.visibility = View.VISIBLE
+                sharePlayerProfile.visibility = View.VISIBLE
+                FABplus.animate().rotationBy(-45f).duration = 200
+                RSOLogOut.animate().alpha(1f).translationYBy(-200f).duration = 200
+                sharePlayerProfile.animate().alpha(1f).translationYBy(-200f).duration = 200
+                clicked = false
+                RSOLogOut.isClickable = true
+                sharePlayerProfile.isClickable = true
+            } else {
+                // hide the FAB options
+                FABplus.animate().rotationBy(45f).duration = 200
+                RSOLogOut.animate().alpha(0f).translationYBy(200f).duration = 200
+                sharePlayerProfile.animate().alpha(0f).translationYBy(200f).duration = 200
+                RSOLogOut.isClickable = false
+                sharePlayerProfile.isClickable = false
+                clicked = true
+            }
+        }
+
         playerNameText.text = playerName
 
         RSOLogOut.setOnClickListener {
@@ -129,10 +161,7 @@ class ValorantMainMenu : AppCompatActivity() {
             intent.putExtra("Region", region)
             intent.putExtra("PUUID", puuid)
             startActivity(intent)
-        }
-
-        updatesButton.setOnClickListener {
-            startActivity(Intent(this, ValorantUpdatesActivity::class.java))
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
         MMR.setOnClickListener {
@@ -143,10 +172,7 @@ class ValorantMainMenu : AppCompatActivity() {
             intent.putExtra("RiotID", name?.get(1))
             intent.putExtra("key", key)
             startActivity(intent)
-        }
-
-        leaderBoard.setOnClickListener {
-            startActivity(Intent(this, leaderBoardActivity::class.java))
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
         getRank(nameSplit[0], nameSplit[1])
@@ -162,7 +188,7 @@ class ValorantMainMenu : AppCompatActivity() {
         )
     }
 
-    private fun getRank(RiotName: String, RiotID: String) {
+    fun getRank(RiotName: String, RiotID: String) {
         val rankImageMainMenu: ImageView = findViewById(R.id.rankImageMainMenu)
         val rankPatchedMainMenu: TextView = findViewById(R.id.rankPatchedMainMenu)
         val rankProgressMainMenu: ProgressBar = findViewById(R.id.rankProgressMainMenu)
@@ -207,7 +233,7 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     // get last match stats given RiotName and RiotID
-    private fun getLastMatch(RiotName: String, RiotID: String) {
+    fun getLastMatch(RiotName: String, RiotID: String) {
         val lastMatchMapImage: ImageView = findViewById(R.id.lastMatchMapImage)
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$RiotName/$RiotID?size=1"
         val agentImageMainMenu: ImageView = findViewById(R.id.agentImageMainMenu)

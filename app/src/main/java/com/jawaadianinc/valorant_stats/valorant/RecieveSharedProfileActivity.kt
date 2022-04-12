@@ -6,7 +6,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DataSnapshot
@@ -41,15 +44,17 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
         val data: Uri? = intent?.data
 
         val MMR: FloatingActionButton = findViewById(R.id.MMRFAB)
-        val RSOLogOut: Button = findViewById(R.id.RSOLogOut)
+        val RSOLogOut: FloatingActionButton = findViewById(R.id.RSOLogOut)
         val RecentMatchFAB: FloatingActionButton = findViewById(R.id.RecentMatchFAB)
-        val sharePlayerProfile: Button = findViewById(R.id.sharePlayerProfile)
+        val sharePlayerProfile: FloatingActionButton = findViewById(R.id.sharePlayerProfile)
         val goBackFromLink: FloatingActionButton = findViewById(R.id.goBackFromLink)
 
         goBackFromLink.visibility = View.VISIBLE
         goBackFromLink.setOnClickListener {
             val intent = Intent(this, ValorantMainMenu::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            finish()
         }
 
         RecentMatchFAB.setOnClickListener {
@@ -57,6 +62,7 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
             intent.putExtra("Region", regionPlayer)
             intent.putExtra("PUUID", playerPUUID)
             startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
         MMR.setOnClickListener {
@@ -64,6 +70,7 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
             intent.putExtra("RiotName", gameNamePlayer)
             intent.putExtra("RiotID", tagLinePlayer)
             startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
         val progressDialog = ProgressDialog(this)

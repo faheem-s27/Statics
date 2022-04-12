@@ -101,7 +101,7 @@ class MatchHistoryActivity : AppCompatActivity() {
                 tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab) {
                         viewPager?.currentItem = tab.position
-                        if (tab.position == 4) {
+                        if (tab.position == 5) {
                             refresFab.hide()
                         } else {
                             refresFab.show()

@@ -45,7 +45,6 @@ class ViewMatches : AppCompatActivity() {
                 val progessBar: ProgressBar = findViewById(R.id.progressBar6)
                 val matchText: TextView = findViewById(R.id.textView10)
                 val matchList: ListView = findViewById(R.id.matchList)
-                matchList.alpha = 0.2f
                 val URL =
                     "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
                 doAsync {
@@ -64,7 +63,7 @@ class ViewMatches : AppCompatActivity() {
                     val history = response.getJSONArray("history")
                     try {
                         for (i in 0 until history.length()) {
-                            if (i > 30) {
+                            if (i >= 30) {
                                 break
                             }
                             val currentMatch = history[i] as JSONObject
@@ -144,12 +143,12 @@ class ViewMatches : AppCompatActivity() {
                                 )
                                 matches.notifyDataSetChanged()
                                 matchList.adapter = matches
-                                matchList.setOnItemClickListener { _, _, _, _ ->
-                                    Toast.makeText(
-                                        this@ViewMatches,
-                                        "Please wait until all matches are loaded!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                matchList.setOnItemClickListener { _, _, position, _ ->
+                                    matchActivityStart(
+                                        gameNamePlayer,
+                                        tagLinePlayer,
+                                        matchIDs[position]
+                                    )
                                 }
                             }
                         }
@@ -157,7 +156,7 @@ class ViewMatches : AppCompatActivity() {
                         runOnUiThread {
                             Toast.makeText(
                                 this@ViewMatches,
-                                "Showing reduced matches due to Riot limits\nPlease wait before requesting again",
+                                "Too many requests!\nPlease wait before requesting again",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -170,8 +169,7 @@ class ViewMatches : AppCompatActivity() {
                         progessBar.animate().alpha(0f).duration = 1000
                         matchText.animate().alpha(0f).duration = 1000
                         matchList.setOnItemClickListener { _, _, position, _ ->
-                            val matchID = matchIDs[position]
-                            matchActivityStart(gameNamePlayer, tagLinePlayer, matchID)
+                            matchActivityStart(gameNamePlayer, tagLinePlayer, matchIDs[position])
                         }
                     }
                 }

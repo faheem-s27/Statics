@@ -65,6 +65,8 @@ class kill_map_Fragment : Fragment() {
                     val nameofMpa = mapNamefromJSON["displayName"]
                     if (nameofMpa == map) {
                         mapUUID = mapNamefromJSON["uuid"].toString()
+                        view.findViewById<TextView>(R.id.mapName2).text = map
+                        break
                     }
                 }
                 val mapCoordinates =

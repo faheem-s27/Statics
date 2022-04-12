@@ -238,8 +238,12 @@ class MMRActivity : AppCompatActivity() {
                     }
                 }
             }
+        } catch (e: NullPointerException) {
+            Toast.makeText(this, "Cannot view matches from other users!", Toast.LENGTH_SHORT).show()
+            progressDialog.dismiss()
         } catch (e: Exception) {
             Toast.makeText(this, "Error: $e", Toast.LENGTH_SHORT).show()
+            progressDialog.dismiss()
         }
     }
     private fun ImageView.resize(

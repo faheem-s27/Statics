@@ -11,6 +11,7 @@
         android:id="@+id/matchList"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:alpha="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,15 +24,16 @@
         android:id="@+id/textView10"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/ic_launcher_background"
         android:fontFamily="@font/baloo_bhai"
         android:gravity="center"
         android:text="Getting recent matches"
         android:textColor="#FFFFFF"
         android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar6"
         tools:visibility="visible" />
 
     <ProgressBar
@@ -41,12 +43,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/ic_launcher_background"
         android:progress="0"
         android:progressTint="#DD2C00"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
