@@ -5,18 +5,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
@@ -54,42 +49,14 @@ class ValorantMainMenu : AppCompatActivity() {
         val puuid = PlayerDatabase(this).getPUUID(nameSplit[0], nameSplit[1])
         val region = PlayerDatabase(this).getRegion(puuid!!)
 
+        key = intent.extras!!.getString("key")!!
+
         val database = Firebase.database
         val playersRef = database.getReference("VALORANT/signedInPlayers")
         playersRef.child(nameSplit[0]).child("Puuid").setValue(puuid)
         playersRef.child(nameSplit[0]).child("GameTag").setValue(nameSplit[1])
         playersRef.child(nameSplit[0]).child("Region").setValue(region)
 
-        val myRef = database.getReference("VALORANT/key")
-        myRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                key = (dataSnapshot.value as String?).toString()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
-
-        doAsync {
-            try {
-                val data =
-                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true").readText())["data"] as JSONObject
-                val largePic = data.getJSONObject("card").getString("large") as String
-                val smolPic = data.getJSONObject("card").getString("small") as String
-                val playerProfile: ImageView = findViewById(R.id.playerProfile)
-                val playerLevel: TextView = findViewById(R.id.playerLevel)
-                uiThread {
-                    Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
-                    Picasso.get().load(largePic)
-                        .transform(BlurTransformation(this@ValorantMainMenu)).fit().centerInside()
-                        .into(imagebackground)
-                    playerLevel.text = data.getInt("account_level").toString()
-                }
-            } catch (e: Exception) {
-                Log.d("Pic", "Error: $e")
-            }
-        }
 
         val MMR: FloatingActionButton = findViewById(R.id.MMRFAB)
         val RSOLogOut: FloatingActionButton = findViewById(R.id.RSOLogOut)
@@ -97,8 +64,9 @@ class ValorantMainMenu : AppCompatActivity() {
         val sharePlayerProfile: FloatingActionButton = findViewById(R.id.sharePlayerProfile)
         val playerNameText: TextView = findViewById(R.id.playerNameMenu)
         val FABplus: FloatingActionButton = findViewById(R.id.fabPlus)
+        val seekBar: SeekBar = findViewById(R.id.howManyMatches)
 
-        var clicked = true
+        var show = true
 
         RSOLogOut.translationY = 200f
         sharePlayerProfile.translationY = 200f
@@ -106,14 +74,14 @@ class ValorantMainMenu : AppCompatActivity() {
         sharePlayerProfile.visibility = View.INVISIBLE
 
         FABplus.setOnClickListener {
-            if (clicked) {
+            if (show) {
                 // show the other FAB options
                 RSOLogOut.visibility = View.VISIBLE
                 sharePlayerProfile.visibility = View.VISIBLE
-                FABplus.animate().rotationBy(-45f).duration = 200
+                FABplus.animate().rotationBy(45f).duration = 200
                 RSOLogOut.animate().alpha(1f).translationYBy(-200f).duration = 200
                 sharePlayerProfile.animate().alpha(1f).translationYBy(-200f).duration = 200
-                clicked = false
+                show = false
                 RSOLogOut.isClickable = true
                 sharePlayerProfile.isClickable = true
             } else {
@@ -123,7 +91,7 @@ class ValorantMainMenu : AppCompatActivity() {
                 sharePlayerProfile.animate().alpha(0f).translationYBy(200f).duration = 200
                 RSOLogOut.isClickable = false
                 sharePlayerProfile.isClickable = false
-                clicked = true
+                show = true
             }
         }
 
@@ -145,13 +113,29 @@ class ValorantMainMenu : AppCompatActivity() {
             val puuid = PlayerDatabase(this).getPUUID(nameSplit[0], nameSplit[1])
             val region = PlayerDatabase(this).getRegion(puuid = puuid!!)
 
-            val url = Uri.parse("https://statics-fd699.web.app/valorant/profile/$region/$puuid")
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.type = "text/plain"
-            shareIntent.putExtra(Intent.EXTRA_TEXT, url.toString())
+            AlertDialog.Builder(this).setTitle("Disclaimer!")
+                .setMessage(
+                    "Anyone with access to the link can view your matches and rank. " +
+                            "If you are not sure if you want to share your profile, please do not share it!"
+                )
+                .setPositiveButton("Share") { _, _ ->
+                    val url =
+                        Uri.parse("https://statics-fd699.web.app/valorant/profile/$region/$puuid")
+                    val sendIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, url.toString())
+                        type = "text/plain"
+                    }
 
-            val intent = Intent.createChooser(shareIntent, "Share Valorant profile using")
-            startActivity(intent)
+                    val shareIntent =
+                        Intent.createChooser(sendIntent, "Share Valorant profile using")
+                    startActivity(shareIntent)
+
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show()
+                }
+                .setIcon(android.R.drawable.ic_dialog_alert).show()
         }
 
         RecentMatchFAB.setOnClickListener {
@@ -160,6 +144,7 @@ class ValorantMainMenu : AppCompatActivity() {
             val intent = Intent(this, ViewMatches::class.java)
             intent.putExtra("Region", region)
             intent.putExtra("PUUID", puuid)
+            intent.putExtra("NumberOfMatches", seekBar.progress.toString())
             startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
@@ -175,9 +160,80 @@ class ValorantMainMenu : AppCompatActivity() {
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
+        doAsync {
+            try {
+                val data =
+                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true").readText())["data"] as JSONObject
+                val largePic = data.getJSONObject("card").getString("large") as String
+                val smolPic = data.getJSONObject("card").getString("small") as String
+                val playerProfile: ImageView = findViewById(R.id.playerProfile)
+                val playerLevel: TextView = findViewById(R.id.playerLevel)
+                uiThread {
+                    Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
+                    Picasso.get().load(largePic)
+                        .transform(BlurTransformation(this@ValorantMainMenu)).fit().centerInside()
+                        .into(imagebackground)
+                    playerLevel.text = data.getInt("account_level").toString()
+                }
+            } catch (e: Exception) {
+                Log.d("Pic", "Error: $e")
+            }
+        }
+
+
         getRank(nameSplit[0], nameSplit[1])
         getLastMatch(nameSplit[0], nameSplit[1])
+        seekBarMatches(key)
+        val howManyMatches: TextView = findViewById(R.id.textView7)
 
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                howManyMatches.text = "See last $progress matches"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+        })
+
+    }
+
+    private fun seekBarMatches(key: String) {
+        val nameSplit = playerName.split("#")
+        val puuid = PlayerDatabase(this).getPUUID(nameSplit[0], nameSplit[1])
+        val region = PlayerDatabase(this).getRegion(puuid!!)
+
+        val seekBar: SeekBar = findViewById(R.id.howManyMatches)
+        val URL =
+            "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
+
+        doAsync {
+            try {
+                val data =
+                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true").readText())["data"] as JSONObject
+                val largePic = data.getJSONObject("card").getString("large") as String
+                val smolPic = data.getJSONObject("card").getString("small") as String
+                val playerProfile: ImageView = findViewById(R.id.playerProfile)
+                val playerLevel: TextView = findViewById(R.id.playerLevel)
+                uiThread {
+                    Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
+                    Picasso.get().load(largePic)
+                        .transform(BlurTransformation(this@ValorantMainMenu)).fit().centerInside()
+                        .into(imagebackground)
+                    playerLevel.text = data.getInt("account_level").toString()
+                }
+            } catch (e: Exception) {
+                Log.d("Pic", "Error: $e")
+            }
+
+            val number = JSONObject(URL(URL).readText()).getJSONArray("history").length()
+            uiThread {
+                seekBar.max = number
+                seekBar.progress = 5
+            }
+        }
     }
 
     override fun onResume() {
@@ -198,36 +254,40 @@ class ValorantMainMenu : AppCompatActivity() {
         val currentTier = "https://api.henrikdev.xyz/valorant/v1/mmr/eu/${RiotName}/$RiotID"
 
         doAsync {
-            val currentTierData = JSONObject(URL(currentTier).readText())
-            val dataofThis = currentTierData["data"] as JSONObject
-            val currentTierNumber = dataofThis["currenttier"] as Int
-            val progressNumber = dataofThis["ranking_in_tier"] as Int
-            val patched = dataofThis["currenttierpatched"] as String
-            val tiers = JSONObject(URL(tierURL).readText())
-            val tierArray = tiers["data"] as JSONArray
-            val tierData = tierArray[3] as JSONObject
-            val tiersagain = tierData["tiers"] as JSONArray
-            for (j in 0 until tiersagain.length()) {
-                val actualTier = tiersagain[j] as JSONObject
-                val done = actualTier["tier"] as Int
-                if (done == currentTierNumber) {
-                    val tierIcon = actualTier["largeIcon"] as String
-                    runOnUiThread {
-                        rankImageMainMenu.visibility = View.VISIBLE
-                        Picasso
-                            .get()
-                            .load(tierIcon)
-                            .fit()
-                            .centerInside()
-                            .into(rankImageMainMenu)
-                        //rankImageMainMenu.scaleType = ImageView.ScaleType.FIT_XY
-                        rankPatchedMainMenu.text = patched
-                        rankProgressMainMenu.progress = progressNumber
-                        rankProgressMainMenu.visibility = View.VISIBLE
-                        rankNumberMainMenu.text = "$progressNumber/100"
-                        rankNumberMainMenu.visibility = View.VISIBLE
+            try {
+                val currentTierData = JSONObject(URL(currentTier).readText())
+                val dataofThis = currentTierData["data"] as JSONObject
+                val currentTierNumber = dataofThis["currenttier"] as Int
+                val progressNumber = dataofThis["ranking_in_tier"] as Int
+                val patched = dataofThis["currenttierpatched"] as String
+                val tiers = JSONObject(URL(tierURL).readText())
+                val tierArray = tiers["data"] as JSONArray
+                val tierData = tierArray[3] as JSONObject
+                val tiersagain = tierData["tiers"] as JSONArray
+                for (j in 0 until tiersagain.length()) {
+                    val actualTier = tiersagain[j] as JSONObject
+                    val done = actualTier["tier"] as Int
+                    if (done == currentTierNumber) {
+                        val tierIcon = actualTier["largeIcon"] as String
+                        runOnUiThread {
+                            rankImageMainMenu.visibility = View.VISIBLE
+                            Picasso
+                                .get()
+                                .load(tierIcon)
+                                .fit()
+                                .centerInside()
+                                .into(rankImageMainMenu)
+                            //rankImageMainMenu.scaleType = ImageView.ScaleType.FIT_XY
+                            rankPatchedMainMenu.text = patched
+                            rankProgressMainMenu.progress = progressNumber
+                            rankProgressMainMenu.visibility = View.VISIBLE
+                            rankNumberMainMenu.text = "$progressNumber/100"
+                            rankNumberMainMenu.visibility = View.VISIBLE
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                Log.d("Henrik", "Error: $e")
             }
         }
     }
@@ -258,6 +318,7 @@ class ValorantMainMenu : AppCompatActivity() {
 
             val gameModeMainMenu: TextView = findViewById(R.id.gameModeMainMenu)
             val gameMode = metadata.getString("mode")
+            val matchID = metadata.getString("matchid")
 
             val timeinDays = d.toDays()
             val timeInHours = d.toHours()
@@ -289,6 +350,11 @@ class ValorantMainMenu : AppCompatActivity() {
                 }
             }
             runOnUiThread {
+
+                lastMatchMapImage.setOnClickListener {
+                    matchActivityStart(RiotName, RiotID, matchID)
+                }
+
                 when {
                     timeinDays > 0 -> {
                         gameStartMainMenu.text = "$timeinDays days ago"
@@ -318,5 +384,14 @@ class ValorantMainMenu : AppCompatActivity() {
         }
     }
 
+    private fun matchActivityStart(Name: String, ID: String, matchID: String) {
+        val matchintent = Intent(this, MatchHistoryActivity::class.java)
+        matchintent.putExtra("RiotName", Name)
+        matchintent.putExtra("RiotID", ID)
+        matchintent.putExtra("MatchNumber", 0)
+        matchintent.putExtra("MatchID", matchID)
+        startActivity(matchintent)
+
+    }
 }
 

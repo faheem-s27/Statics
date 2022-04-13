@@ -25,7 +25,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="@+id/mapImageRow"
-        app:layout_constraintStart_toStartOf="@+id/mapImageRow"
+        app:layout_constraintStart_toEndOf="@+id/wonbar"
         app:layout_constraintTop_toTopOf="@+id/mapImageRow"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -70,4 +70,13 @@
         app:layout_constraintBottom_toBottomOf="@+id/mapImageRow"
         app:layout_constraintEnd_toEndOf="@+id/mapImageRow"
         tools:text="4 hours ago" />
+
+    <View
+        android:id="@+id/wonbar"
+        android:layout_width="10dp"
+        android:layout_height="0dp"
+        android:background="@color/ic_launcher_background"
+        app:layout_constraintBottom_toBottomOf="@+id/mapImageRow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mapImageRow" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -182,11 +182,12 @@
             android:id="@+id/divider4"
             android:layout_width="0dp"
             android:layout_height="1dp"
+            android:layout_marginTop="24dp"
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="583dp" />
+            app:layout_constraintTop_toBottomOf="@+id/RecentMatchFAB" />
 
         <ImageView
             android:id="@+id/rankImageMainMenu"
@@ -329,20 +330,6 @@
             app:layout_constraintTop_toBottomOf="@+id/textView6"
             tools:text="25/18/5" />
 
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:fontFamily="@font/baloo_bhai"
-            android:gravity="center|left"
-            android:text="See previous 30 matches"
-            android:textAlignment="center"
-            android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/RecentMatchFAB"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/RecentMatchFAB"
-            app:layout_constraintTop_toTopOf="@+id/RecentMatchFAB" />
-
         <View
             android:id="@+id/view2"
             style="@style/Divider.Horizontal"
@@ -385,6 +372,33 @@
             app:layout_constraintStart_toStartOf="@+id/fabPlus"
             app:srcCompat="@drawable/rsologout"
             app:tint="@color/white" />
+
+        <SeekBar
+            android:id="@+id/howManyMatches"
+            style="@android:style/Widget.Material.SeekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:max="30"
+            android:progress="5"
+            android:progressTint="#eb0029"
+            app:layout_constraintBottom_toTopOf="@+id/divider4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/RecentMatchFAB"
+            app:layout_constraintTop_toTopOf="@+id/RecentMatchFAB" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="How many matches?"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/howManyMatches"
+            app:layout_constraintEnd_toEndOf="@+id/howManyMatches"
+            app:layout_constraintStart_toStartOf="@+id/howManyMatches" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

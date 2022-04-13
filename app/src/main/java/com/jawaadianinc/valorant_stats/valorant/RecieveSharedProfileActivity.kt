@@ -80,7 +80,6 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
         progressDialog.setCancelable(false)
         progressDialog.show()
 
-
         if (data != null) {
             val split = data.toString().split("/")
             regionPlayer = split[5]

@@ -1,6 +1,7 @@
 package com.jawaadianinc.valorant_stats.valorant
 
 import android.app.Activity
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -21,6 +22,7 @@ class MatchAdapter(
     private val KDA: ArrayList<String>,
     private val mode: ArrayList<String>,
     private val matchIDs: ArrayList<String>,
+    private val won: ArrayList<String>,
 ) : ArrayAdapter<Any?>(
     context, R.layout.match_row, agentURL as List<Any?>
 ) {
@@ -34,6 +36,19 @@ class MatchAdapter(
         val timePlayed_Text = row.findViewById<View>(R.id.TimeAgoRow) as TextView
         val KDA_Text = row.findViewById<View>(R.id.KDA_Row) as TextView
         val mode_Text = row.findViewById<View>(R.id.ModeRow) as TextView
+        val wonBar = row.findViewById<View>(R.id.wonbar) as View
+
+        when {
+            won[position] == "true" -> {
+                wonBar.setBackgroundColor(Color.parseColor("#18e4b7"))
+            }
+            won[position] == "false" -> {
+                wonBar.setBackgroundColor(Color.parseColor("#ff0000"))
+            }
+            else -> {
+                wonBar.setBackgroundColor(Color.parseColor("#FF111822"))
+            }
+        }
 
         Picasso
             .get()

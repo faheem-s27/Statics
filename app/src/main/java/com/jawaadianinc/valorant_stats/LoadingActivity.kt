@@ -70,15 +70,15 @@ class LoadingActivity : AppCompatActivity() {
         updateText.text = "Connecting to Statics"
 
         val database = Firebase.database
-        val playersRef = database.getReference("VALORANT/RSO")
+        val playersRef = database.getReference("VALORANT/key")
 
         updateText.text = "Loading resources"
         playersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                dataSnapshot.childrenCount
+                val key = (dataSnapshot.value as String?).toString()
                 updateText.text = "Starting"
                 val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
-                valoAccountStats(valoName)
+                valoAccountStats(valoName, key)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -100,13 +100,15 @@ class LoadingActivity : AppCompatActivity() {
         return cm.activeNetworkInfo?.isConnected == true
     }
 
-    private fun valoAccountStats(valoName: String?) {
+    private fun valoAccountStats(valoName: String?, key: String) {
         if (valoName == null) {
             startActivity(Intent(this, LoggingInActivityRSO::class.java))
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             finish()
         } else {
-            startActivity(Intent(this, ValorantMainMenu::class.java))
+            val intent = Intent(this, ValorantMainMenu::class.java)
+            intent.putExtra("key", key)
+            startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             finish()
         }
