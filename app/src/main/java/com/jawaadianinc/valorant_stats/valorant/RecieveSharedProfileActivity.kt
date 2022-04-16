@@ -1,17 +1,16 @@
 package com.jawaadianinc.valorant_stats.valorant
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -20,6 +19,7 @@ import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.GamePickerMenu
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.BlurTransformation
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -37,6 +37,8 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
 
     private lateinit var playerPUUID: String
     private lateinit var regionPlayer: String
+    private var key = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +50,9 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
         val RecentMatchFAB: FloatingActionButton = findViewById(R.id.RecentMatchFAB)
         val sharePlayerProfile: FloatingActionButton = findViewById(R.id.sharePlayerProfile)
         val goBackFromLink: FloatingActionButton = findViewById(R.id.goBackFromLink)
+        val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
+        liveMatchSwitch.visibility = View.INVISIBLE
+        val seekBar: SeekBar = findViewById(R.id.howManyMatches)
 
         goBackFromLink.visibility = View.VISIBLE
         goBackFromLink.setOnClickListener {
@@ -96,8 +101,8 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
         val myRef = database.getReference("VALORANT/key")
         myRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val key = dataSnapshot.value as String?
-                setPlayerBackground(key!!)
+                key = dataSnapshot.value as String
+                setPlayerBackground(key)
                 progressDialog.dismiss()
             }
 
@@ -105,6 +110,60 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
                 TODO("Not yet implemented")
             }
         })
+
+        val howManyMatches: TextView = findViewById(R.id.textView7)
+
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            @SuppressLint("SetTextI18n")
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                howManyMatches.text = "See last $progress matches"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+        })
+
+    }
+
+    private fun seekBarMatches(key: String) {
+        var playerName = "$gameNamePlayer#$tagLinePlayer"
+        val nameSplit = playerName.split("#")
+        val puuid = playerPUUID
+        val region = regionPlayer
+
+        val seekBar: SeekBar = findViewById(R.id.howManyMatches)
+        val URL =
+            "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
+
+        doAsync {
+            try {
+                val data =
+                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true").readText())["data"] as JSONObject
+                val largePic = data.getJSONObject("card").getString("large") as String
+                val smolPic = data.getJSONObject("card").getString("small") as String
+                val playerProfile: ImageView = findViewById(R.id.playerProfile)
+                val playerLevel: TextView = findViewById(R.id.playerLevel)
+                uiThread {
+                    Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
+                    Picasso.get().load(largePic)
+                        .transform(BlurTransformation(this@RecieveSharedProfileActivity)).fit()
+                        .centerInside()
+                        .into(imagebackground)
+                    playerLevel.text = data.getInt("account_level").toString()
+                }
+            } catch (e: Exception) {
+                Log.d("Pic", "Error: $e")
+            }
+
+            val number = JSONObject(URL(URL).readText()).getJSONArray("history").length()
+            uiThread {
+                seekBar.max = number
+                seekBar.progress = 5
+            }
+        }
     }
 
     private fun setPlayerBackground(key: String) {
@@ -149,6 +208,7 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
                     Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
                     Picasso.get().load(largePic).fit().centerInside().into(imagebackground)
                     playerLevel.text = data.getInt("account_level").toString()
+                    seekBarMatches(key)
                 }
             } catch (e: Exception) {
                 runOnUiThread {
@@ -229,14 +289,10 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
             val unixTimeStart = metadata.getInt("game_start")
             val date = Date(unixTimeStart * 1000L)
             val d: Duration =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Duration.between(
-                        date.toInstant(),
-                        Instant.now()
-                    )
-                } else {
-                    TODO("VERSION.SDK_INT < O")
-                }
+                Duration.between(
+                    date.toInstant(),
+                    Instant.now()
+                )
 
             var KDA: String? = null
 
@@ -297,8 +353,6 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
                     .fit()
                     .centerInside()
                     .into(lastMatchMapImage)
-                lastMatchMapImage.scaleType = ImageView.ScaleType.FIT_XY
-                agentImageMainMenu.scaleType = ImageView.ScaleType.FIT_XY
             }
         }
     }

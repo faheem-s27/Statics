@@ -147,33 +147,49 @@ class RSOActivity : AppCompatActivity() {
             }
         })
 
+        val playersRef = Firebase.database.getReference("VALORANT/key")
+        playersRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val key = (dataSnapshot.value as String?).toString()
+                doAsync {
+                    val call = client.newCall(request).execute()
+                    val json = JSONObject(call.body!!.string())
+                    val puuid = json.getString("puuid")
 
-        doAsync {
-            val call = client.newCall(request).execute()
-            val json = JSONObject(call.body!!.string())
-            val puuid = json.getString("puuid")
+                    val regionURL =
+                        "https://europe.api.riotgames.com/riot/account/v1/active-shards/by-game/val/by-puuid/$puuid?api_key=$secret"
+                    val regionRequest = Request.Builder()
+                        .url(regionURL)
+                        .build()
 
-            val regionURL =
-                "https://europe.api.riotgames.com/riot/account/v1/active-shards/by-game/val/by-puuid/$puuid?api_key=$secret"
-            val regionRequest = Request.Builder()
-                .url(regionURL)
-                .build()
+                    val regionCall = client.newCall(regionRequest).execute()
+                    val regionJson = JSONObject(regionCall.body!!.string())
+                    val region = regionJson.getString("activeShard")
 
-            val regionCall = client.newCall(regionRequest).execute()
-            val regionJson = JSONObject(regionCall.body!!.string())
-            val region = regionJson.getString("activeShard")
-
-            val gameName = json.getString("gameName")
-            val gameTag = json.getString("tagLine")
-            uiThread {
-                progressBar.progress = 90
-                updateText.text = "Finalise sign in"
-                confirmUser(puuid, gameName, gameTag, region)
+                    val gameName = json.getString("gameName")
+                    val gameTag = json.getString("tagLine")
+                    uiThread {
+                        progressBar.progress = 90
+                        updateText.text = "Finalise sign in"
+                        confirmUser(puuid, gameName, gameTag, region, key)
+                    }
+                }
             }
-        }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
+
+
     }
 
-    private fun confirmUser(puuid: String, gameName: String, gameTag: String, region: String) {
+    private fun confirmUser(
+        puuid: String,
+        gameName: String,
+        gameTag: String,
+        region: String,
+        key: String
+    ) {
         val updateText: TextView = findViewById(R.id.infoText)
         val confirmButton: Button = findViewById(R.id.confirmUserButton)
         confirmButton.text = "$gameName#$gameTag"
@@ -194,14 +210,15 @@ class RSOActivity : AppCompatActivity() {
                 updateText.text = "Success!"
                 //take user to main valorant screen
                 Toast.makeText(this, "Welcome $gameName!", Toast.LENGTH_LONG).show()
-                startActivity(Intent(this, ValorantMainMenu::class.java))
+                val intent = Intent(this, ValorantMainMenu::class.java)
+                intent.putExtra("key", key)
+                startActivity(intent)
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout)
                 finish()
             } else {
                 Toast.makeText(this, "Error occurred while saving :(", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     private fun doTask(handler: Handler) {

@@ -53,7 +53,7 @@ class RoundsMoreDetailsFragment : Fragment() {
         minimapImage.layoutParams?.height = width
         minimapImage.layoutParams?.width = width
         minimapImage.requestLayout()
-        minimapImage.scaleType = ImageView.ScaleType.FIT_XY;
+        minimapImage.scaleType = ImageView.ScaleType.FIT_XY
 
         doAsync {
             try {
@@ -294,7 +294,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                             from: Picasso.LoadedFrom?
                         ) {
                             val resizedBitmap =
-                                Bitmap.createScaledBitmap(playerBitMap!!, 50, 50, false);
+                                Bitmap.createScaledBitmap(playerBitMap!!, 50, 50, false)
                             if (playerTeam == "Red") {
                                 paint.colorFilter = PorterDuffColorFilter(
                                     Color.parseColor("#f94555"),

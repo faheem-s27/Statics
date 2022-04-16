@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
 import kotlin.math.roundToInt
 
 class brawl_playerStats : Fragment() {
@@ -65,7 +66,11 @@ class brawl_playerStats : Fragment() {
         }
 
         try {
-            brawlLegendName.text = "Most played legend " + legendName.capitalize()
+            brawlLegendName.text = "Most played legend " + legendName.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            }
         } catch (e: kotlin.UninitializedPropertyAccessException) {
             Toast.makeText(
                 requireActivity(),

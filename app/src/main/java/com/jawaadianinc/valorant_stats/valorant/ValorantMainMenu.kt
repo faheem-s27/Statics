@@ -1,17 +1,24 @@
 package com.jawaadianinc.valorant_stats.valorant
 
+import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
@@ -31,10 +38,14 @@ class ValorantMainMenu : AppCompatActivity() {
     private lateinit var imagebackground: ImageView
     private lateinit var playerName: String
     private var key = ""
+    private var region = ""
+    private var puuid = ""
+    private var gameStarted = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_findaccount)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val name = PlayerDatabase(this).getPlayerName()
         if (name == null) {
             startActivity(Intent(this, LoggingInActivityRSO::class.java))
@@ -42,16 +53,26 @@ class ValorantMainMenu : AppCompatActivity() {
         } else {
             playerName = name
         }
+        val database = Firebase.database
 
         val nameSplit = playerName.split("#")
-        imagebackground = findViewById(R.id.imagebackground)
+        puuid = PlayerDatabase(this).getPUUID(nameSplit[0], nameSplit[1])!!
+        region = PlayerDatabase(this).getRegion(puuid)!!
+        try {
+            key = intent.extras!!.getString("key")!!
+        } catch (e: Exception) {
+            val keyRef = database.getReference("VALORANT/key")
+            keyRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    key = (dataSnapshot.value as String?).toString()
+                }
 
-        val puuid = PlayerDatabase(this).getPUUID(nameSplit[0], nameSplit[1])
-        val region = PlayerDatabase(this).getRegion(puuid!!)
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        }
 
-        key = intent.extras!!.getString("key")!!
-
-        val database = Firebase.database
         val playersRef = database.getReference("VALORANT/signedInPlayers")
         playersRef.child(nameSplit[0]).child("Puuid").setValue(puuid)
         playersRef.child(nameSplit[0]).child("GameTag").setValue(nameSplit[1])
@@ -65,6 +86,59 @@ class ValorantMainMenu : AppCompatActivity() {
         val playerNameText: TextView = findViewById(R.id.playerNameMenu)
         val FABplus: FloatingActionButton = findViewById(R.id.fabPlus)
         val seekBar: SeekBar = findViewById(R.id.howManyMatches)
+        val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
+        imagebackground = findViewById(R.id.imagebackground)
+
+        liveMatchSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                // show alert dialog to ask for confirmation
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Match Notification Details")
+                builder.setMessage(
+                    "This feature is experimental and may have some issues\n" +
+                            "Your device will continuously check for any new matches played from now\nWhen a new match has been played, a notification will be sent to your device for you to view details of that match\n" +
+                            "Are you sure you want to enable this?"
+                )
+                builder.setPositiveButton("Yes") { _, _ ->
+                    // continue with Live Match
+                    val progressDialog = ProgressDialog(this)
+                    progressDialog.setTitle("Setting up Match Notifications")
+                    progressDialog.setMessage("Getting latest game played!")
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+                    progressDialog.setCancelable(false)
+                    progressDialog.show()
+                    val URL =
+                        "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
+                    doAsync {
+                        val response = JSONObject(URL(URL).readText()).getJSONArray("history")
+                            .get(0) as JSONObject
+                        gameStarted = response.getString("gameStartTimeMillis")
+                        Thread.sleep(2000)
+                        uiThread {
+                            startLiveMatches(gameStarted)
+                            progressDialog.dismiss()
+                        }
+                    }
+                }
+                builder.setNegativeButton("No") { _, _ ->
+                    liveMatchSwitch.isChecked = false
+                    try {
+                        val intent = Intent(this, LiveMatchService::class.java)
+                        stopService(intent)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+                builder.show()
+            } else {
+                try {
+                    val intent = Intent(this, LiveMatchService::class.java)
+                    stopService(intent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
 
         var show = true
 
@@ -187,6 +261,7 @@ class ValorantMainMenu : AppCompatActivity() {
         val howManyMatches: TextView = findViewById(R.id.textView7)
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 howManyMatches.text = "See last $progress matches"
             }
@@ -199,6 +274,16 @@ class ValorantMainMenu : AppCompatActivity() {
         })
 
     }
+
+    private fun startLiveMatches(gameStart: String) {
+        val intent = Intent(this, LiveMatchService::class.java)
+        intent.putExtra("gameStart", gameStart)
+        intent.putExtra("key", key)
+        intent.putExtra("puuid", puuid)
+        intent.putExtra("region", region)
+        startForegroundService(intent)
+    }
+
 
     private fun seekBarMatches(key: String) {
         val nameSplit = playerName.split("#")
@@ -237,14 +322,14 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     override fun onResume() {
-        super.onResume()
         FirebaseApp.initializeApp(/*context=*/this)
         FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
             SafetyNetAppCheckProviderFactory.getInstance()
         )
+        super.onResume()
     }
 
-    fun getRank(RiotName: String, RiotID: String) {
+    private fun getRank(RiotName: String, RiotID: String) {
         val rankImageMainMenu: ImageView = findViewById(R.id.rankImageMainMenu)
         val rankPatchedMainMenu: TextView = findViewById(R.id.rankPatchedMainMenu)
         val rankProgressMainMenu: ProgressBar = findViewById(R.id.rankProgressMainMenu)
@@ -292,8 +377,7 @@ class ValorantMainMenu : AppCompatActivity() {
         }
     }
 
-    // get last match stats given RiotName and RiotID
-    fun getLastMatch(RiotName: String, RiotID: String) {
+    private fun getLastMatch(RiotName: String, RiotID: String) {
         val lastMatchMapImage: ImageView = findViewById(R.id.lastMatchMapImage)
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$RiotName/$RiotID?size=1"
         val agentImageMainMenu: ImageView = findViewById(R.id.agentImageMainMenu)
@@ -391,7 +475,8 @@ class ValorantMainMenu : AppCompatActivity() {
         matchintent.putExtra("MatchNumber", 0)
         matchintent.putExtra("MatchID", matchID)
         startActivity(matchintent)
-
     }
 }
+
+
 

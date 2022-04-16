@@ -67,12 +67,11 @@ class LoadingActivity : AppCompatActivity() {
             SafetyNetAppCheckProviderFactory.getInstance()
         )
 
-        updateText.text = "Connecting to Statics"
-
+        updateText.text = "Loading resources"
         val database = Firebase.database
         val playersRef = database.getReference("VALORANT/key")
 
-        updateText.text = "Loading resources"
+
         playersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val key = (dataSnapshot.value as String?).toString()
@@ -102,7 +101,9 @@ class LoadingActivity : AppCompatActivity() {
 
     private fun valoAccountStats(valoName: String?, key: String) {
         if (valoName == null) {
-            startActivity(Intent(this, LoggingInActivityRSO::class.java))
+            val intent = Intent(this, LoggingInActivityRSO::class.java)
+            intent.putExtra("key", key)
+            startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             finish()
         } else {

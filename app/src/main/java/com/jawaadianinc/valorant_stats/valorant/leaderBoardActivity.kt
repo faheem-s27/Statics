@@ -108,7 +108,7 @@ class leaderBoardActivity : AppCompatActivity() {
                 s: CharSequence, start: Int,
                 before: Int, count: Int
             ) {
-                mAdapter.filter.filter(s);
+                mAdapter.filter.filter(s)
             }
         })
     }

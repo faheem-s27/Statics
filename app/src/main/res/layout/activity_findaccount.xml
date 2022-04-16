@@ -393,12 +393,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="How many matches?"
+            android:text="Getting total matches..."
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/howManyMatches"
             app:layout_constraintEnd_toEndOf="@+id/howManyMatches"
             app:layout_constraintStart_toStartOf="@+id/howManyMatches" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/liveMatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:text="Match notifications"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
