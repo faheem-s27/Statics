@@ -2,6 +2,7 @@
 An Android application designed to view a player's stats on various games such as Valorant and more to come soon!
 
 Website: https://statics-fd699.web.app/
+
 Play Store: https://play.google.com/store/apps/details?id=com.jawaadianinc.valorant_stats
 
 ![Screenshot](fulllogo.png)
