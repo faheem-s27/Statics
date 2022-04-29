@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ic_launcher_background"
-    tools:context=".valorant.RSOActivity">
+    tools:context=".valo.RSOActivity">
 
     <ImageView
         android:id="@+id/imageView5"
@@ -26,7 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:fontFamily="@font/baloo_bhai"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/valorant"
         android:gravity="center"
         android:text="Logging in..."
         android:textSize="24dp"
@@ -74,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:backgroundTint="@color/ic_launcher_background"
-        android:fontFamily="@font/baloo_bhai"
+        android:fontFamily="@font/valorant"
         android:text="SprinkledRainbow#1593"
         android:textAlignment="center"
         android:textColor="#FFFFFF"

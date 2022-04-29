@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.jawaadianinc.valorant_stats",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 204,
+      "versionName": "2.04",
+      "outputFile": "app-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

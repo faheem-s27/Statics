@@ -10,8 +10,8 @@ android {
         applicationId "com.jawaadianinc.valorant_stats"
         minSdk 26
         targetSdk 31
-        versionCode 204
-        versionName "2.04"
+        versionCode 207
+        versionName "2.07"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -25,7 +25,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -114,4 +115,6 @@ dependencies {
 
     implementation 'jp.wasabeef:picasso-transformations:2.4.0'
     implementation 'com.jjoe64:graphview:4.2.2'
+
+    implementation 'com.github.smarteist:autoimageslider:1.4.0'
 }

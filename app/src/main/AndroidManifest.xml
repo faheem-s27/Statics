@@ -16,7 +16,7 @@
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
         <activity
-            android:name=".valorant.RecieveSharedProfileActivity"
+            android:name=".valo.RecieveSharedProfileActivity"
             android:exported="true">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -32,10 +32,10 @@
         </activity>
 
         <activity
-            android:name=".valorant.CosmeticsActivity"
+            android:name=".valo.CosmeticsAgentsActivity"
             android:exported="false" />
         <activity
-            android:name=".valorant.LoggingInActivityRSO"
+            android:name=".valo.LoggingInActivityRSO"
             android:exported="false" />
         <activity
             android:name=".LoadingActivity"
@@ -44,7 +44,7 @@
             android:name=".fortnite.findFortniteAccount"
             android:exported="false" />
         <activity
-            android:name=".valorant.RSOActivity"
+            android:name=".valo.RSOActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -67,10 +67,10 @@
             android:exported="false"
             android:theme="@style/Theme.VALORANT_stats" />
         <activity
-            android:name=".valorant.leaderBoardActivity"
+            android:name=".valo.leaderBoardActivity"
             android:exported="false" />
         <activity
-            android:name=".valorant.MMRActivity"
+            android:name=".valo.MMRActivity"
             android:exported="false" />
         <activity
             android:name=".brawlhalla.brawlFindAccount"
@@ -80,16 +80,16 @@
             android:name=".GamePickerMenu"
             android:exported="false" />
         <activity
-            android:name=".valorant.ViewMatches"
+            android:name=".valo.ViewMatches"
             android:exported="false" />
         <activity
-            android:name=".valorant.ValorantUpdatesActivity"
+            android:name=".valo.ValorantUpdatesActivity"
             android:exported="true"
             android:label="@string/title_activity_valorant_updates"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats.NoActionBar" />
         <activity
-            android:name=".valorant.MatchHistoryActivity"
+            android:name=".valo.MatchHistoryActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
@@ -105,7 +105,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".valorant.ValorantMainMenu"
+            android:name=".valo.ValorantMainMenu"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats" />
 
@@ -113,7 +113,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <service android:name=".valorant.LiveMatchService" />
+        <service android:name=".valo.LiveMatchService" />
     </application>
 
 </manifest>

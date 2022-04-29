@@ -28,10 +28,10 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.brawlhalla.brawlFindAccount
-import com.jawaadianinc.valorant_stats.valorant.CosmeticsActivity
-import com.jawaadianinc.valorant_stats.valorant.LoggingInActivityRSO
-import com.jawaadianinc.valorant_stats.valorant.PlayerDatabase
-import com.jawaadianinc.valorant_stats.valorant.ValorantMainMenu
+import com.jawaadianinc.valorant_stats.valo.CosmeticsAgentsActivity
+import com.jawaadianinc.valorant_stats.valo.LoggingInActivityRSO
+import com.jawaadianinc.valorant_stats.valo.PlayerDatabase
+import com.jawaadianinc.valorant_stats.valo.ValorantMainMenu
 import com.squareup.picasso.Picasso
 
 
@@ -173,7 +173,7 @@ class GamePickerMenu : AppCompatActivity() {
     }
 
     private fun valoCosmetics() {
-        startActivity(Intent(this, CosmeticsActivity::class.java))
+        startActivity(Intent(this, CosmeticsAgentsActivity::class.java))
     }
 
     private fun valoAccountStats(valoName: String?) {
