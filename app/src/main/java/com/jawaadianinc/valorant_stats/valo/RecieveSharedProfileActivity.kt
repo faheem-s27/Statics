@@ -19,6 +19,7 @@ import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.GamePickerMenu
 import com.jawaadianinc.valorant_stats.LoadingActivity
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import org.jetbrains.anko.doAsync

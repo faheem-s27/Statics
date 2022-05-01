@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.match_info
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

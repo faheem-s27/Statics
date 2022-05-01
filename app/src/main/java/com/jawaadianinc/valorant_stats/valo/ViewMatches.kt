@@ -16,6 +16,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.match_info.MatchAdapter
+import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import org.jetbrains.anko.doAsync
 import org.json.JSONObject
 import java.net.URL

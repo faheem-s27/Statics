@@ -32,7 +32,7 @@
         </activity>
 
         <activity
-            android:name=".valo.CosmeticsAgentsActivity"
+            android:name=".valo.cosmetics.CosmeticsAgentsActivity"
             android:exported="false" />
         <activity
             android:name=".valo.LoggingInActivityRSO"
@@ -89,7 +89,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats.NoActionBar" />
         <activity
-            android:name=".valo.MatchHistoryActivity"
+            android:name=".valo.match_info.MatchHistoryActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity

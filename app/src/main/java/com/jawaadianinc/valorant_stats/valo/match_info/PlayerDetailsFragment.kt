@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.match_info
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -16,6 +16,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.MMRActivity
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -215,8 +216,7 @@ class PlayerDetailsFragment : Fragment() {
                         }
                     }
                 }
-            }
-            catch (e: Exception){
+            } catch (e: Exception) {
                 uiThread {
                     AlertDialog.Builder(requireActivity()).setTitle("Error!")
                         .setMessage("Error Message: $e")

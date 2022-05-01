@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.match_info
 
 import android.graphics.Color
 import android.os.Bundle
@@ -91,7 +91,7 @@ class RoundsDetailsFragment : Fragment() {
                     roundsListView.adapter = roundsAdapter
                 }
 
-            } catch (e:Exception){
+            } catch (e: Exception) {
                 uiThread {
                     AlertDialog.Builder(requireActivity()).setTitle("Error!")
                         .setMessage("Error Message: $e")

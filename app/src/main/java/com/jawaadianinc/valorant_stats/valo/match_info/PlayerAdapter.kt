@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.match_info
 
 import android.app.Activity
 import android.graphics.Color

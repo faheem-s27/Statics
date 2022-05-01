@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout8"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".valo.RoundsMoreDetailsFragment">
+    tools:context=".valo.match_info.RoundsMoreDetailsFragment">
 
     <ImageView
         android:id="@+id/mapImage"

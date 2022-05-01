@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.match_info
 
 import android.annotation.SuppressLint
 import android.graphics.*
@@ -314,6 +314,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                                     paint
                                 )
                         }
+
                         override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
                         override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
                     })

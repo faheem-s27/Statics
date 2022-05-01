@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.match_info
 
 import android.app.ProgressDialog
 import android.graphics.Color
@@ -172,7 +172,6 @@ class MatchDetailsFragment : Fragment() {
                     mAdapter.add("Duration: $inMinutes minutes")
 
 
-
                     val mapImage: ImageView = view.findViewById(R.id.mapURL)
                     if (actualtMapUlr !== "") {
                         Picasso.get().load(actualtMapUlr).into(mapImage)
@@ -184,8 +183,7 @@ class MatchDetailsFragment : Fragment() {
                 }
 
 
-            }
-            catch (e:Exception){
+            } catch (e: Exception) {
                 uiThread {
                     val progress: ProgressBar = view.findViewById(R.id.progress)
                     progress.visibility = View.INVISIBLE

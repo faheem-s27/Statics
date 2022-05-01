@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout6"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".valo.RoundsDetailsFragment">
+    tools:context=".valo.match_info.RoundsDetailsFragment">
 
     <LinearLayout
         android:id="@+id/timeLineview"
