@@ -68,8 +68,10 @@ class ValorantMainMenu : AppCompatActivity() {
 
         Log.d("Player Name", playerName)
 
-        findViewById<Button>(R.id.cosBT).setOnClickListener {
-            startActivity(Intent(this, CosmeticsAgentsActivity::class.java))
+        findViewById<Button>(R.id.agentsCozBT).setOnClickListener {
+            val intent = Intent(this, CosmeticsAgentsActivity::class.java)
+            intent.putExtra("data", "agent")
+            startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
@@ -170,7 +172,7 @@ class ValorantMainMenu : AppCompatActivity() {
                 // show the other FAB options
                 RSOLogOut.visibility = View.VISIBLE
                 sharePlayerProfile.visibility = View.VISIBLE
-                FABplus.animate().rotationBy(45f).duration = 200
+                FABplus.animate().rotationBy(405f).duration = 200
                 RSOLogOut.animate().alpha(1f).translationYBy(-200f).duration = 200
                 sharePlayerProfile.animate().alpha(1f).translationYBy(-200f).duration = 200
                 show = false
@@ -178,7 +180,7 @@ class ValorantMainMenu : AppCompatActivity() {
                 sharePlayerProfile.isClickable = true
             } else {
                 // hide the FAB options
-                FABplus.animate().rotationBy(45f).duration = 200
+                FABplus.animate().rotationBy(-405f).duration = 200
                 RSOLogOut.animate().alpha(0f).translationYBy(200f).duration = 200
                 sharePlayerProfile.animate().alpha(0f).translationYBy(200f).duration = 200
                 RSOLogOut.isClickable = false

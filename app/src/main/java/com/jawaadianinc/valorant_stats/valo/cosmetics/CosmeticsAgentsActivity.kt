@@ -7,13 +7,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.jawaadianinc.valorant_stats.R
 import com.smarteist.autoimageslider.SliderView
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
 
@@ -26,6 +29,9 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
     private val agentDesc = arrayListOf<String>()
     private val voiceLines = arrayListOf<String>()
     private val agentBackground = arrayListOf<String>()
+
+    private lateinit var agentJSON: JSONArray
+
     private val animation = 200L
     private val mediaPlayer = MediaPlayer()
 
@@ -33,7 +39,22 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cosmetics_agents)
         mediaPlayer.start()
-        loadAgentImage()
+
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setTitle("Loading")
+        progressDialog.setMessage("Collecting Data...")
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+        val data = intent.getStringExtra("data")
+        if (data.toString().lowercase() == "agent") {
+            loadAgentImage()
+        } else {
+            Toast.makeText(this, "No data for $data", Toast.LENGTH_SHORT).show()
+        }
+
+        progressDialog.dismiss()
     }
 
     private fun setAgentInfo(position: Int) {
@@ -57,6 +78,30 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
                 start()
             }
         }
+        val abilityNames = ArrayList<String>()
+        val abilityDesc = ArrayList<String>()
+        val abilityIcons = ArrayList<String>()
+
+        var numba = position
+        if (position >= 7) {
+            numba += 1
+        }
+
+        for (i in 0 until agentJSON.getJSONObject(numba).getJSONArray("abilities").length()) {
+            abilityNames += agentJSON.getJSONObject(numba).getJSONArray("abilities")
+                .getJSONObject(i)
+                .getString("displayName")
+            abilityDesc += agentJSON.getJSONObject(numba).getJSONArray("abilities").getJSONObject(i)
+                .getString("description")
+            abilityIcons += agentJSON.getJSONObject(numba).getJSONArray("abilities")
+                .getJSONObject(i)
+                .getString("displayIcon")
+        }
+
+        val abilityList = AgentAbilityAdapter(this, abilityNames, abilityDesc, abilityIcons)
+        val agentAbilityList = findViewById<ListView>(R.id.agentAbilityList)
+        agentAbilityList.adapter = abilityList
+
     }
 
     private fun setImageInSlider(images: ArrayList<String>, imageSlider: SliderView) {
@@ -71,16 +116,11 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
     }
 
     private fun loadAgentImage() {
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Loading")
-        progressDialog.setMessage("Collecting Agent Data...")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog.setCancelable(false)
-        progressDialog.show()
+        findViewById<TextView>(R.id.cosmeticTitle).setTextAnimation("vALORANT Agents", animation)
 
         val imageSlider = findViewById<SliderView>(R.id.imageSlider)
         doAsync {
-            val agentJSON =
+            agentJSON =
                 JSONObject(URL("https://valorant-api.com/v1/agents").readText()).getJSONArray("data")
             for (i in 0 until agentJSON.length()) {
                 try {
@@ -110,7 +150,6 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
             }
             uiThread {
                 setImageInSlider(bustPortrait, imageSlider)
-                progressDialog.dismiss()
             }
         }
     }

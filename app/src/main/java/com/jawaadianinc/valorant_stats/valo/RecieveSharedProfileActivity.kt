@@ -19,6 +19,7 @@ import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.GamePickerMenu
 import com.jawaadianinc.valorant_stats.LoadingActivity
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
@@ -77,6 +78,13 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
             val intent = Intent(this, MMRActivity::class.java)
             intent.putExtra("RiotName", gameNamePlayer)
             intent.putExtra("RiotID", tagLinePlayer)
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
+
+        findViewById<Button>(R.id.agentsCozBT).setOnClickListener {
+            val intent = Intent(this, CosmeticsAgentsActivity::class.java)
+            intent.putExtra("data", "agent")
             startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }

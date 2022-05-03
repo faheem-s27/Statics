@@ -10,9 +10,9 @@
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_brawl_stats.xml" value="0.2326388888888889" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_compare.xml" value="0.3625" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_cosmetics.xml" value="0.2298611111111111" />
-        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_cosmetics_agents.xml" value="0.2298611111111111" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_cosmetics_agents.xml" value="0.2829059829059829" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_find_fortnite_account.xml" value="0.2298611111111111" />
-        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_findaccount.xml" value="0.22" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_findaccount.xml" value="0.30648148148148147" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_game_picker.xml" value="0.2" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_leader_board.xml" value="0.2326388888888889" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_loading.xml" value="0.2298611111111111" />
@@ -28,6 +28,7 @@
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_valorant_player_stats_overall.xml" value="0.2298611111111111" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_valorant_updates.xml" value="0.3625" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_view_matches.xml" value="0.2298611111111111" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/agent_abilities_layout.xml" value="0.2829059829059829" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/content_scrolling.xml" value="0.3625" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/fragment_brawl_player_clan.xml" value="0.2326388888888889" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/fragment_brawl_player_ranked.xml" value="0.2326388888888889" />
