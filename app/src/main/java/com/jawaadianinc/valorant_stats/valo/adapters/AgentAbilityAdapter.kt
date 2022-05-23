@@ -15,16 +15,16 @@ class AgentAbilityAdapter(
     private val abilityDesc: ArrayList<String>,
     private val abilityImage: ArrayList<String>
 ) : ArrayAdapter<Any>(
-    context, R.layout.agent_abilities_layout, abilityDesc as List<Any?>
+    context, R.layout.cosmetic_layout, abilityDesc as List<Any?>
 ) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var row = convertView
         val inflater = context.layoutInflater
-        if (convertView == null) row = inflater.inflate(R.layout.agent_abilities_layout, null, true)
+        if (convertView == null) row = inflater.inflate(R.layout.cosmetic_layout, null, true)
 
-        val abilityNameText = row!!.findViewById<TextView>(R.id.agentAbilityTitle) as TextView
-        val abilityDescText = row.findViewById<TextView>(R.id.agentAbilityDescription) as TextView
-        val abilityImageView = row.findViewById<ImageView>(R.id.agentAbilityIcon) as ImageView
+        val abilityNameText = row!!.findViewById(R.id.agentAbilityTitle) as TextView
+        val abilityDescText = row.findViewById(R.id.agentAbilityDescription) as TextView
+        val abilityImageView = row.findViewById(R.id.agentAbilityIcon) as ImageView
 
         abilityNameText.text = abilityName[position]
         abilityDescText.text = abilityDesc[position]

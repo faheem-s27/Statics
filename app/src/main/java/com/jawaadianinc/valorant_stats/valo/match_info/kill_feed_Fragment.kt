@@ -11,12 +11,13 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.adapters.KillFeedAdapter
 import org.json.JSONArray
 import org.json.JSONObject
 
 class kill_feed_Fragment : Fragment() {
 
-    var mapofPlayerandAgent: MutableMap<String, String> = mutableMapOf("player" to "agent")
+    private var mapofPlayerandAgent: MutableMap<String, String> = mutableMapOf("player" to "agent")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +52,7 @@ class kill_feed_Fragment : Fragment() {
         }
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         val spinner: Spinner =
-            view.findViewById<Spinner>(R.id.roundSelect)
+            view.findViewById(R.id.roundSelect)
         spinner.adapter = arrayAdapter
 
         for (i in 0 until roundDetails.length()) {

@@ -22,7 +22,7 @@ import java.net.URL
 
 class brawlStatsActivity : AppCompatActivity() {
 
-    var tabLayout: TabLayout? = null
+    private var tabLayout: TabLayout? = null
     var viewPager: ViewPager? = null
 
 
@@ -50,17 +50,17 @@ class brawlStatsActivity : AppCompatActivity() {
 
         doAsync {
             try {
-                val playerStats = URL + "/player/$brawlID/stats?api_key=$APIcode"
+                val playerStats = "$URL/player/$brawlID/stats?api_key=$APIcode"
                 playerStatsJSON = JSONObject(URL(playerStats).readText())
 
-                val playerRanked = URL + "/player/$brawlID/ranked?api_key=$APIcode"
+                val playerRanked = "$URL/player/$brawlID/ranked?api_key=$APIcode"
                 playerRankedJson = JSONObject(URL(playerRanked).readText())
 
                 try {
                     val ClanID: String =
                         JSONObject(URL(playerStats).readText()).getJSONObject("clan")
                             .getString("clan_id")
-                    val playerClan = URL + "/clan/$ClanID/?api_key=$APIcode"
+                    val playerClan = "$URL/clan/$ClanID/?api_key=$APIcode"
                     Log.d("brawl", playerClan)
                     playerClanJSON = JSONObject(URL(playerClan).readText())
                 } catch (e: Exception) {

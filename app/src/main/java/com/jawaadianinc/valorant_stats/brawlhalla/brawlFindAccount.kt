@@ -14,11 +14,10 @@ import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
 
 class brawlFindAccount : AppCompatActivity() {
-    var ENDPOINT = ""
     private lateinit var handler: Handler
     private lateinit var runnable: Runnable
     private lateinit var imagebackground: ImageView
-    val imagesURL = java.util.ArrayList<String>()
+    private val imagesURL = java.util.ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

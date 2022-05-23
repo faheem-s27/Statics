@@ -1,10 +1,11 @@
-package com.jawaadianinc.valorant_stats.valo.match_info
+package com.jawaadianinc.valorant_stats.valo.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.jawaadianinc.valorant_stats.valo.match_info.*
 
-class MatchHistoryAdapter(fm: FragmentManager?, var totalTabs: Int) :
+class MatchHistoryAdapter(fm: FragmentManager?, private var totalTabs: Int) :
 
     FragmentPagerAdapter(fm!!) {
 

@@ -10,6 +10,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.ZoomOutPageTransformer
+import com.jawaadianinc.valorant_stats.valo.adapters.MatchHistoryAdapter
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -18,7 +19,7 @@ import java.net.URL
 
 class MatchHistoryActivity : AppCompatActivity() {
 
-    var tabLayout: TabLayout? = null
+    private var tabLayout: TabLayout? = null
     var viewPager: ViewPager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -71,7 +71,7 @@ class brawl_playerStats : Fragment() {
                     Locale.getDefault()
                 ) else it.toString()
             }
-        } catch (e: kotlin.UninitializedPropertyAccessException) {
+        } catch (e: UninitializedPropertyAccessException) {
             Toast.makeText(
                 requireActivity(),
                 json.getString("name") + " has not played enough to get stats!",
@@ -86,7 +86,7 @@ class brawl_playerStats : Fragment() {
         brawlLevel.text = "Level $level"
         brawlProgress.max = 100
         brawlProgress.progress = xpPercent.roundToInt()
-        brawlXP.text = "XP: " + xp
+        brawlXP.text = "XP: $xp"
         brawlName.text = json.getString("name") + "'s stats"
 
 

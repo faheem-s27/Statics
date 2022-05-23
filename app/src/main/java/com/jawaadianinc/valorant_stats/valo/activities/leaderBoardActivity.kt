@@ -104,6 +104,7 @@ class leaderBoardActivity : AppCompatActivity() {
                 count: Int, after: Int
             ) {
             }
+
             override fun onTextChanged(
                 s: CharSequence, start: Int,
                 before: Int, count: Int
@@ -112,6 +113,7 @@ class leaderBoardActivity : AppCompatActivity() {
             }
         })
     }
+
     private fun copyText(text: String) {
         val myClipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val myClip: ClipData = ClipData.newPlainText("Label", text)

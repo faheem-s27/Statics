@@ -24,11 +24,11 @@ import kotlin.math.roundToInt
 
 @SuppressLint("SetTextI18n")
 class RoundsMoreDetailsFragment : Fragment() {
-    var xMult: Double = 0.0
-    var yMult: Double = 0.0
-    var xScalar: Double = 0.0
-    var yScalar: Double = 0.0
-    var mapofPlayerandAgent: MutableMap<String, String> = mutableMapOf("player" to "agent")
+    private var xMult: Double = 0.0
+    private var yMult: Double = 0.0
+    private var xScalar: Double = 0.0
+    private var yScalar: Double = 0.0
+    private var mapofPlayerandAgent: MutableMap<String, String> = mutableMapOf("player" to "agent")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -229,8 +229,8 @@ class RoundsMoreDetailsFragment : Fragment() {
             val spikePlanter = playerPlant.optString("display_name")
             val playerPosition: ImageView? = view?.findViewById(R.id.playerPos)
             val bitmap: Bitmap? = Bitmap.createBitmap(
-                1000,
-                1000,
+                1024,
+                1024,
                 Bitmap.Config.ARGB_8888
             )
 
@@ -262,8 +262,8 @@ class RoundsMoreDetailsFragment : Fragment() {
                         paint.color = Color.parseColor("#18e4b7")
                     }
                 }
-                val finalX: Int = (((y * xMult) + xScalar) * 1000).roundToInt()
-                val finalY: Int = (((x * yMult) + yScalar) * 1000).roundToInt()
+                val finalX: Int = (((y * xMult) + xScalar) * 1024).roundToInt()
+                val finalY: Int = (((x * yMult) + yScalar) * 1024).roundToInt()
                 val SpikeIcon = BitmapFactory.decodeResource(
                     requireContext().resources,
                     R.drawable.spikelogo

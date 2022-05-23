@@ -2,7 +2,6 @@ package com.jawaadianinc.valorant_stats
 
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
@@ -31,7 +30,6 @@ import com.jawaadianinc.valorant_stats.brawlhalla.brawlFindAccount
 import com.jawaadianinc.valorant_stats.valo.LoggingInActivityRSO
 import com.jawaadianinc.valorant_stats.valo.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.ValorantMainMenu
-import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.squareup.picasso.Picasso
 
 
@@ -69,11 +67,11 @@ class GamePickerMenu : AppCompatActivity() {
 
         val videoView = findViewById<VideoView>(R.id.videoView)
         videoView.setVideoPath("https://firebasestorage.googleapis.com/v0/b/statics-fd699.appspot.com/o/splashLoading_Trim.mp4?alt=media&token=a59cf7fe-b77b-4109-9e25-c3dd68804d9c")
-        videoView.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+        videoView.setOnPreparedListener {
             // when vid is done preparing
             it.setVolume(0f, 0f)
             videoView.start()
-        })
+        }
 
         val valoName = PlayerDatabase(this).getPlayerName()
         valoButton.setOnClickListener {
@@ -172,10 +170,6 @@ class GamePickerMenu : AppCompatActivity() {
         }
     }
 
-    private fun valoCosmetics() {
-        startActivity(Intent(this, CosmeticsAgentsActivity::class.java))
-    }
-
     private fun valoAccountStats(valoName: String?) {
         if (valoName == null) {
             startActivity(Intent(this, LoggingInActivityRSO::class.java))
@@ -272,10 +266,6 @@ class GamePickerMenu : AppCompatActivity() {
 
     private fun goToSettings() {
         startActivity(Intent(this, SettingsActivity::class.java))
-    }
-
-    fun goToAbout() {
-        //TODO add about section to app!
     }
 
 }

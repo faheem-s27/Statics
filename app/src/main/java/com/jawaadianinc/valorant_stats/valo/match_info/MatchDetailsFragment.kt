@@ -19,7 +19,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.URL
-import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
 import java.util.*
@@ -196,10 +195,4 @@ class MatchDetailsFragment : Fragment() {
         }
     }
 
-    private fun unixToDate(timeStamp: Long): String? {
-        val time = java.util.Date(timeStamp * 1000)
-        val sdf = SimpleDateFormat("dd")
-        return sdf.format(time)
-
-    }
 }

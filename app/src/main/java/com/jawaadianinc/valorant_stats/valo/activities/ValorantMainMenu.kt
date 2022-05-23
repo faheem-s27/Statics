@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.FirebaseApp
@@ -23,6 +24,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
+import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
@@ -68,12 +70,6 @@ class ValorantMainMenu : AppCompatActivity() {
 
         Log.d("Player Name", playerName)
 
-        findViewById<Button>(R.id.agentsCozBT).setOnClickListener {
-            val intent = Intent(this, CosmeticsAgentsActivity::class.java)
-            intent.putExtra("data", "agent")
-            startActivity(intent)
-            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-        }
 
         val nameSplit = playerName.split("#")
         puuid = PlayerDatabase(this).getPUUID(nameSplit[0], nameSplit[1])!!
@@ -98,7 +94,8 @@ class ValorantMainMenu : AppCompatActivity() {
         playersRef.child(nameSplit[0]).child("GameTag").setValue(nameSplit[1])
         playersRef.child(nameSplit[0]).child("Region").setValue(region)
 
-
+        val agentsCozBT = findViewById<Button>(R.id.agentsCozBT)
+        val weaponsBT = findViewById<Button>(R.id.weaponsBT)
         val MMR: FloatingActionButton = findViewById(R.id.MMRFAB)
         val RSOLogOut: FloatingActionButton = findViewById(R.id.RSOLogOut)
         val RecentMatchFAB: FloatingActionButton = findViewById(R.id.RecentMatchFAB)
@@ -107,7 +104,32 @@ class ValorantMainMenu : AppCompatActivity() {
         val FABplus: FloatingActionButton = findViewById(R.id.fabPlus)
         val seekBar: SeekBar = findViewById(R.id.howManyMatches)
         val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
+
+        val layer: ConstraintLayout = findViewById(R.id.constraintLayout)
+        var listofViews = arrayListOf<View>()
+        layer.childCount.let {
+            for (i in 0 until it) {
+                val v = layer.getChildAt(i)
+                listofViews.add(v)
+            }
+        }
+
+        animateViews(listofViews, 500, 400F)
         imagebackground = findViewById(R.id.imagebackground)
+
+
+        agentsCozBT.setOnClickListener {
+            val intent = Intent(this, CosmeticsAgentsActivity::class.java)
+            intent.putExtra("data", "agent")
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
+        weaponsBT.setOnClickListener {
+            val intent = Intent(this, CosmeticsListActivity::class.java)
+            intent.putExtra("cosmetic", "weapon")
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
 
         liveMatchSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
@@ -494,6 +516,18 @@ class ValorantMainMenu : AppCompatActivity() {
         matchintent.putExtra("MatchNumber", 0)
         matchintent.putExtra("MatchID", matchID)
         startActivity(matchintent)
+    }
+
+    private fun animateViews(view: List<View>, duration: Long, y: Float) {
+        var delay = 0L
+        for (i in view.indices) {
+            val v = view[i]
+            v.alpha = 0f
+            v.translationY = -y
+            v.animate().alpha(1f).setDuration(duration).translationYBy(y).startDelay = delay
+            delay += 25L
+        }
+
     }
 }
 

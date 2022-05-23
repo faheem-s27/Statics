@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
-class BrawlAdapter(fm: FragmentManager?, var totalTabs: Int) :
+class BrawlAdapter(fm: FragmentManager?, private var totalTabs: Int) :
 
     FragmentPagerAdapter(fm!!) {
 

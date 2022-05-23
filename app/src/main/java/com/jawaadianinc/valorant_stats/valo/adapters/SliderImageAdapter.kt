@@ -16,11 +16,6 @@ class MySliderImageAdapter :
         notifyDataSetChanged()
     }
 
-    fun addItem(sliderItem: String) {
-        mSliderItems.add(sliderItem)
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup): VH {
         val inflate: View = LayoutInflater.from(parent.context).inflate(R.layout.image_holder, null)
         return VH(inflate)

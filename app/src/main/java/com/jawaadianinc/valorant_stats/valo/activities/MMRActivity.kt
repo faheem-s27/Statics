@@ -247,6 +247,7 @@ class MMRActivity : AppCompatActivity() {
             progressDialog.dismiss()
         }
     }
+
     private fun ImageView.resize(
         newWidth: Int = layoutParams.width, // pixels
         newHeight: Int = layoutParams.height // pixels

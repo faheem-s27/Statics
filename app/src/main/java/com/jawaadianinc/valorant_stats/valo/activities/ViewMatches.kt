@@ -187,7 +187,6 @@ class ViewMatches : AppCompatActivity() {
                                     timePlayed,
                                     KDA,
                                     gameMode,
-                                    matchIDs,
                                     won
                                 )
                                 matches.notifyDataSetChanged()

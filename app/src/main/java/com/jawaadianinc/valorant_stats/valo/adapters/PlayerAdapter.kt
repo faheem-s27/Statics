@@ -15,7 +15,6 @@ class PlayerAdapter(
     private val agentURL: ArrayList<String>,
     private val playerTeam: ArrayList<String>,
     private val playerName: ArrayList<String>,
-    private val playerScore: ArrayList<String>,
     private val playerKills: ArrayList<String>,
     private val playerDeaths: ArrayList<String>,
     private val playerAssists: ArrayList<String>

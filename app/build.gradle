@@ -10,8 +10,8 @@ android {
         applicationId "com.jawaadianinc.valorant_stats"
         minSdk 26
         targetSdk 31
-        versionCode 207
-        versionName "2.07"
+        versionCode 210
+        versionName "2.10"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -51,6 +51,7 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    namespace 'com.jawaadianinc.valorant_stats'
 }
 
 apply plugin: 'com.android.application'

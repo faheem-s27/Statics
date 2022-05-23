@@ -108,7 +108,7 @@ class LiveMatchService : Service() {
         intent.putExtra("Region", region)
         intent.putExtra("PUUID", puuid)
         intent.putExtra("NumberOfMatches", 1)
-        val pendintIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val pendantIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -127,7 +127,7 @@ class LiveMatchService : Service() {
             .setSmallIcon(R.drawable.just_statics)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
-            .setContentIntent(pendintIntent)
+            .setContentIntent(pendantIntent)
             .build()
         notificationManager.notify(id, notification)
     }

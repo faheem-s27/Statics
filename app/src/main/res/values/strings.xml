@@ -122,5 +122,8 @@
     <string name="login_failed">"Login failed"</string>
 
     <string name="hyperlink">Learn more about the\n<a href="https://statics-fd699.web.app/privacy.html">Statics privacy policy</a></string>
+    <string name="title_activity_weapon_info">WeaponInfo</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
 
 </resources>

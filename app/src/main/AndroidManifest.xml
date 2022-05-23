@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.jawaadianinc.valorant_stats">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,6 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
+        <activity
+            android:name=".valo.cosmetics.weapon.WeaponActivity"
+            android:exported="false" />
+        <activity
+            android:name=".valo.cosmetics.CosmeticsListActivity"
+            android:exported="false" />
         <activity
             android:name=".valo.RecieveSharedProfileActivity"
             android:exported="true">
@@ -30,7 +35,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".valo.cosmetics.CosmeticsAgentsActivity"
             android:exported="false" />

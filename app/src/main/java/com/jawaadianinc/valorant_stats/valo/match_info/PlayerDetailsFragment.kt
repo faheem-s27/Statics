@@ -101,7 +101,6 @@ class PlayerDetailsFragment : Fragment() {
                         playerAgentURL,
                         playerTeam,
                         playerNames,
-                        playerScore,
                         playerKills,
                         playerDeaths,
                         playerAssists
@@ -114,7 +113,7 @@ class PlayerDetailsFragment : Fragment() {
                         val width = LinearLayout.LayoutParams.MATCH_PARENT
                         val height = LinearLayout.LayoutParams.MATCH_PARENT
                         val focusable = true
-                        var popupWindow = PopupWindow(popupView, width, height, focusable)
+                        val popupWindow = PopupWindow(popupView, width, height, focusable)
                         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
                         val dim_layout = view.findViewById(R.id.dim_layout) as LinearLayout
                         dim_layout.visibility = View.VISIBLE

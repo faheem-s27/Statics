@@ -48,7 +48,7 @@ class ValorantUpdatesActivity : AppCompatActivity() {
 
 
         val arrayList = ArrayList<String>()
-        val listview : ListView = findViewById(R.id.updateListView)
+        val listview: ListView = findViewById(R.id.updateListView)
         listview.isNestedScrollingEnabled = true
         val mAdapter = object :
             ArrayAdapter<String?>(
@@ -74,8 +74,8 @@ class ValorantUpdatesActivity : AppCompatActivity() {
 
         val requestURL = "https://api.henrikdev.xyz/valorant/v1/website/en-us"
 
-        doAsync{
-            try{
+        doAsync {
+            try {
                 val URLdata = URL(requestURL).readText()
                 val json = JSONObject(URLdata)
                 val data = json["data"] as JSONArray
@@ -95,13 +95,19 @@ class ValorantUpdatesActivity : AppCompatActivity() {
 
                 uiThread {
                     listview.setOnItemClickListener { _, _, position, _ ->
-                        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                        val inflater =
+                            getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                         val popupView: View = inflater.inflate(R.layout.showupdates, null)
                         val width = LinearLayout.LayoutParams.MATCH_PARENT
                         val height = LinearLayout.LayoutParams.MATCH_PARENT
                         val focusable = true
                         val popupWindow = PopupWindow(popupView, width, height, focusable)
-                        popupWindow.showAtLocation(View(this@ValorantUpdatesActivity), Gravity.CENTER, 0, 0)
+                        popupWindow.showAtLocation(
+                            View(this@ValorantUpdatesActivity),
+                            Gravity.CENTER,
+                            0,
+                            0
+                        )
 
                         val dismissButton = popupView.findViewById(R.id.dismiss) as Button
                         dismissButton.setOnClickListener {
@@ -116,8 +122,7 @@ class ValorantUpdatesActivity : AppCompatActivity() {
                 }
 
 
-            }
-            catch (e: Exception){
+            } catch (e: Exception) {
                 uiThread {
                     progressDialog.dismiss()
                     AlertDialog.Builder(this@ValorantUpdatesActivity).setTitle("Error!")

@@ -31,7 +31,7 @@ class brawl_playerClan : Fragment() {
         }
     }
 
-    fun handleClanJSON(json: JSONObject) {
+    private fun handleClanJSON(json: JSONObject) {
         val tvClanName: TextView = requireView().findViewById(R.id.textView)
         val long = json.getLong("clan_create_date")
         val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.ENGLISH)

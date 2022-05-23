@@ -25,10 +25,10 @@ import java.net.URL
 
 
 class RSOActivity : AppCompatActivity() {
-    var code: String? = null
+    private var code: String? = null
     var secret: String? = null
     var base64encode: String? = null
-    var redirectURL = "https://statics-fd699.web.app/authorize.html"
+    private var redirectURL = "https://statics-fd699.web.app/authorize.html"
     private lateinit var imagebackground: ImageView
     private val imagesURL = java.util.ArrayList<String>()
     private lateinit var handler: Handler

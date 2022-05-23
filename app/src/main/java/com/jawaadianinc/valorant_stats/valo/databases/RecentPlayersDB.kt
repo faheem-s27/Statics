@@ -30,6 +30,7 @@ class RecentPlayersDB(context: Context) : SQLiteOpenHelper(context, "playersFrom
             cv.put(REGION, region)
             val insert = db.insert(RECENTPLAYERS, null, cv)
             db.close()
+            cursor.close()
             return insert != -1L
         }
 

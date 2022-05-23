@@ -21,11 +21,11 @@ import kotlin.math.roundToInt
 
 class kill_map_Fragment : Fragment() {
 
-    var xMult: Double = 0.0
-    var yMult: Double = 0.0
-    var xScalar: Double = 0.0
-    var yScalar: Double = 0.0
-    var mapofPlayerandAgent: MutableMap<String, String> = mutableMapOf("player" to "agent")
+    private var xMult: Double = 0.0
+    private var yMult: Double = 0.0
+    private var xScalar: Double = 0.0
+    private var yScalar: Double = 0.0
+    private var mapofPlayerandAgent: MutableMap<String, String> = mutableMapOf("player" to "agent")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,7 +64,9 @@ class kill_map_Fragment : Fragment() {
                     val nameofMpa = mapNamefromJSON["displayName"]
                     if (nameofMpa == map) {
                         mapUUID = mapNamefromJSON["uuid"].toString()
-                        view.findViewById<TextView>(R.id.mapName2).text = map
+                        uiThread {
+                            view.findViewById<TextView>(R.id.mapName2).text = map
+                        }
                         break
                     }
                 }
@@ -131,7 +133,7 @@ class kill_map_Fragment : Fragment() {
                     }
                     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     val spinner: Spinner =
-                        view.findViewById<Spinner>(R.id.RoundSelectorKillsSpinner)
+                        view.findViewById(R.id.RoundSelectorKillsSpinner)
                     spinner.adapter = arrayAdapter
 
                     val rounds: JSONArray =
@@ -186,8 +188,8 @@ class kill_map_Fragment : Fragment() {
         val jsonDetails = MatchHistoryActivity.matchJSON
         val playerPosition: ImageView? = view?.findViewById(R.id.playerPos2)
         val bitmap: Bitmap? = Bitmap.createBitmap(
-            1000,
-            1000,
+            1024,
+            1024,
             Bitmap.Config.ARGB_8888
         )
         val rounds: JSONArray =
@@ -224,10 +226,10 @@ class kill_map_Fragment : Fragment() {
                     }
                 }
 
-                val finalVictimX: Int = (((victimY.toInt() * xMult) + xScalar) * 1000).roundToInt()
-                val finalVictimY: Int = (((victimX.toInt() * yMult) + yScalar) * 1000).roundToInt()
-                val finalKillerX: Int = (((killerY.toInt() * xMult) + xScalar) * 1000).roundToInt()
-                val finalKillerY: Int = (((killerX.toInt() * yMult) + yScalar) * 1000).roundToInt()
+                val finalVictimX: Int = (((victimY.toInt() * xMult) + xScalar) * 1024).roundToInt()
+                val finalVictimY: Int = (((victimX.toInt() * yMult) + yScalar) * 1024).roundToInt()
+                val finalKillerX: Int = (((killerY * xMult) + xScalar) * 1024).roundToInt()
+                val finalKillerY: Int = (((killerX * yMult) + yScalar) * 1024).roundToInt()
 
                 val killerAgentURL = mapofPlayerandAgent.getValue(killerName as String)
                 val victimAgentURL = mapofPlayerandAgent.getValue(victimName as String)
@@ -328,8 +330,8 @@ class kill_map_Fragment : Fragment() {
         val jsonDetails = MatchHistoryActivity.matchJSON
         val playerPosition: ImageView? = view?.findViewById(R.id.playerPos2)
         val bitmap: Bitmap? = Bitmap.createBitmap(
-            1000,
-            1000,
+            1024,
+            1024,
             Bitmap.Config.ARGB_8888
         )
         val rounds: JSONArray =
@@ -366,10 +368,10 @@ class kill_map_Fragment : Fragment() {
                     }
                 }
 
-                val finalVictimX: Int = (((victimY.toInt() * xMult) + xScalar) * 1000).roundToInt()
-                val finalVictimY: Int = (((victimX.toInt() * yMult) + yScalar) * 1000).roundToInt()
-                val finalKillerX: Int = (((killerY.toInt() * xMult) + xScalar) * 1000).roundToInt()
-                val finalKillerY: Int = (((killerX.toInt() * yMult) + yScalar) * 1000).roundToInt()
+                val finalVictimX: Int = (((victimY.toInt() * xMult) + xScalar) * 1024).roundToInt()
+                val finalVictimY: Int = (((victimX.toInt() * yMult) + yScalar) * 1024).roundToInt()
+                val finalKillerX: Int = (((killerY * xMult) + xScalar) * 1024).roundToInt()
+                val finalKillerY: Int = (((killerX * yMult) + yScalar) * 1024).roundToInt()
 
                 //Paint properties
                 val paint = Paint()

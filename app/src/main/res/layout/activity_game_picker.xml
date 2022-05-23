@@ -116,10 +116,11 @@
                 app:iconGravity="textTop"
                 app:iconSize="60sp"
                 app:iconTint="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/databaseStatsValo"
                 app:strokeColor="#000000"
-                app:strokeWidth="3dp"
-                tools:layout_editor_absoluteX="56dp" />
+                app:strokeWidth="3dp" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/circle"

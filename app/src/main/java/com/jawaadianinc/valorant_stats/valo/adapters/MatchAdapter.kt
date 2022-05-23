@@ -21,7 +21,6 @@ class MatchAdapter(
     private val timePlayed: ArrayList<String>,
     private val KDA: ArrayList<String>,
     private val mode: ArrayList<String>,
-    private val matchIDs: ArrayList<String>,
     private val won: ArrayList<String>,
 ) : ArrayAdapter<Any?>(
     context, R.layout.match_row, agentURL as List<Any?>
@@ -36,7 +35,11 @@ class MatchAdapter(
         val timePlayed_Text = row.findViewById<View>(R.id.TimeAgoRow) as TextView
         val KDA_Text = row.findViewById<View>(R.id.KDA_Row) as TextView
         val mode_Text = row.findViewById<View>(R.id.ModeRow) as TextView
-        val wonBar = row.findViewById<View>(R.id.wonbar) as View
+        val wonBar = row.findViewById(R.id.wonbar) as View
+
+        var listofViews =
+            arrayListOf<View>(agentImage, mapImage, timePlayed_Text, KDA_Text, mode_Text, wonBar)
+        //animateViews(listofViews, 500, 0F)
 
         when {
             won[position] == "true" -> {
@@ -96,5 +99,16 @@ class MatchAdapter(
             }
         }
         return row
+    }
+
+    private fun animateViews(view: List<View>, duration: Long, y: Float) {
+        var delay = 0L
+        for (i in view.indices) {
+            val v = view[i]
+            v.alpha = 0f
+            v.animate().alpha(1f).setDuration(duration).startDelay = delay
+            delay += 50L
+        }
+
     }
 }

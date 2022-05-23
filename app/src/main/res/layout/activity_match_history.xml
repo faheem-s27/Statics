@@ -11,7 +11,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#0A0F15"
+        android:fitsSystemWindows="true"
         android:theme="@style/Theme.VALORANT_stats.AppBarOverlay"
+        app:expanded="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo.match_info
+package com.jawaadianinc.valorant_stats.valo.adapters
 
 import android.app.Activity
 import android.graphics.Color
@@ -29,8 +29,8 @@ class KillFeedAdapter(
         val killerImage = row!!.findViewById<View>(R.id.killerIcon) as ImageView?
         val victimImage = row.findViewById<View>(R.id.victimIcon) as ImageView?
         val weaponImage = row.findViewById<View>(R.id.weaponIcon) as ImageView?
-        val killerColour = row.findViewById<View>(R.id.killColour) as View
-        val victimColour = row.findViewById<View>(R.id.victimColour) as View
+        val killerColour = row.findViewById(R.id.killColour) as View
+        val victimColour = row.findViewById(R.id.victimColour) as View
         val gunName = row.findViewById<View>(R.id.gunName) as TextView
 
         if (killerTeam[position] == "Red") {
