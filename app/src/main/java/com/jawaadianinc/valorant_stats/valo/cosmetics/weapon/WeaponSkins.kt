@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ListView
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticAdapter
+import com.jawaadianinc.valorant_stats.valo.adapters.CosmeticAdapter
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
 import org.json.JSONObject
 

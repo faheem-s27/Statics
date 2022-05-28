@@ -1,8 +1,9 @@
 package com.jawaadianinc.valorant_stats.valo.match_info
 
-import android.app.ProgressDialog
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
@@ -22,6 +23,7 @@ class MatchHistoryActivity : AppCompatActivity() {
     private var tabLayout: TabLayout? = null
     var viewPager: ViewPager? = null
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_match_history)
@@ -33,12 +35,17 @@ class MatchHistoryActivity : AppCompatActivity() {
         val IDofMatch = intent.extras!!.getString("MatchID")
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Getting information")
-        progressDialog.setMessage("Collecting match details!")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog.setCancelable(false)
-        progressDialog.show()
+        // show progress bar while loading
+        val progressBar = ProgressBar(this)
+        progressBar.visibility = View.VISIBLE
+        progressBar.isIndeterminate = true
+
+//        val progressDialog = ProgressDialog(this)
+//        progressDialog.setTitle("Getting information")
+//        progressDialog.setMessage("Collecting match details!")
+//        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+//        progressDialog.setCancelable(false)
+//        progressDialog.show()
 
         doAsync {
             val matchID: String = if (IDofMatch == "none") {
@@ -52,9 +59,22 @@ class MatchHistoryActivity : AppCompatActivity() {
             }
             val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
             matchJSON = JSONObject(URL(matchURl).readText())
+            val metadata = matchJSON!!.getJSONObject("data").getJSONObject("metadata")
+            val map = metadata.getString("map")
+            val mapJSON =
+                JSONObject(URL("https://valorant-api.com/v1/maps").readText()).getJSONArray("data")
+            for (i in 0 until mapJSON.length()) {
+                val currentMap = mapJSON.getJSONObject(i)
+                val name = currentMap.getString("displayName")
+                if (name == map) {
+                    mapURL = currentMap.getString("displayIcon")
+                    break
+                }
+            }
 
             uiThread {
-                progressDialog.dismiss()
+                //progressDialog.dismiss()
+                progressBar.visibility = View.GONE
                 tabLayout = findViewById<View>(R.id.tabsforMatch) as? TabLayout
                 viewPager = findViewById<View>(R.id.view_pager_matchHistory) as? ViewPager
                 tabLayout?.tabGravity = TabLayout.GRAVITY_CENTER
@@ -131,5 +151,6 @@ class MatchHistoryActivity : AppCompatActivity() {
 
     companion object {
         var matchJSON: JSONObject? = null
+        var mapURL: String? = null
     }
 }

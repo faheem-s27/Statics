@@ -106,7 +106,7 @@ class ValorantMainMenu : AppCompatActivity() {
         val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
 
         val layer: ConstraintLayout = findViewById(R.id.constraintLayout)
-        var listofViews = arrayListOf<View>()
+        val listofViews = arrayListOf<View>()
         layer.childCount.let {
             for (i in 0 until it) {
                 val v = layer.getChildAt(i)
@@ -117,7 +117,7 @@ class ValorantMainMenu : AppCompatActivity() {
         animateViews(listofViews, 500, 400F)
         imagebackground = findViewById(R.id.imagebackground)
 
-
+        // ------------------------ Cosmetics ------------------------------------
         agentsCozBT.setOnClickListener {
             val intent = Intent(this, CosmeticsAgentsActivity::class.java)
             intent.putExtra("data", "agent")
@@ -130,6 +130,16 @@ class ValorantMainMenu : AppCompatActivity() {
             startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
+
+        findViewById<Button>(R.id.playerCardsBT).setOnClickListener {
+            val intent = Intent(this, CosmeticsListActivity::class.java)
+            intent.putExtra("cosmetic", "cards")
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
+
+        // ------------------------ End of cosmetics ------------------------------------
+
 
         liveMatchSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
@@ -267,10 +277,10 @@ class ValorantMainMenu : AppCompatActivity() {
 
         MMR.setOnClickListener {
             val fullname = name
-            val name = fullname?.split("#")
+            val name1 = fullname?.split("#")
             val intent = Intent(this@ValorantMainMenu, MMRActivity::class.java)
-            intent.putExtra("RiotName", name?.get(0))
-            intent.putExtra("RiotID", name?.get(1))
+            intent.putExtra("RiotName", name1?.get(0))
+            intent.putExtra("RiotID", name1?.get(1))
             intent.putExtra("key", key)
             startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
@@ -371,6 +381,7 @@ class ValorantMainMenu : AppCompatActivity() {
         super.onResume()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getRank(RiotName: String, RiotID: String) {
         val rankImageMainMenu: ImageView = findViewById(R.id.rankImageMainMenu)
         val rankPatchedMainMenu: TextView = findViewById(R.id.rankPatchedMainMenu)

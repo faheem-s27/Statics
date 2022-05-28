@@ -89,29 +89,39 @@ class kill_map_Fragment : Fragment() {
                     mapofPlayerandAgent[fullName] = agentURL
                 }
                 uiThread {
-                    when (map) {
-                        "Bind" -> {
-                            minimapImage.setImageResource(R.drawable.bind_minimap)
+                    if (MatchHistoryActivity.mapURL == null) {
+                        when (map) {
+                            "Bind" -> {
+                                minimapImage.setImageResource(R.drawable.bind_minimap)
+                            }
+                            "Ascent" -> {
+                                minimapImage.setImageResource(R.drawable.ascent_minimap)
+                            }
+                            "Split" -> {
+                                minimapImage.setImageResource(R.drawable.split_minimap)
+                            }
+                            "Fracture" -> {
+                                minimapImage.setImageResource(R.drawable.fracture_minimap)
+                            }
+                            "Breeze" -> {
+                                minimapImage.setImageResource(R.drawable.breeze_minimap)
+                            }
+                            "Haven" -> {
+                                minimapImage.setImageResource(R.drawable.haven_minimap)
+                            }
+                            "Icebox" -> {
+                                minimapImage.setImageResource(R.drawable.icebox_minimap)
+                            }
                         }
-                        "Ascent" -> {
-                            minimapImage.setImageResource(R.drawable.ascent_minimap)
-                        }
-                        "Split" -> {
-                            minimapImage.setImageResource(R.drawable.split_minimap)
-                        }
-                        "Fracture" -> {
-                            minimapImage.setImageResource(R.drawable.fracture_minimap)
-                        }
-                        "Breeze" -> {
-                            minimapImage.setImageResource(R.drawable.breeze_minimap)
-                        }
-                        "Haven" -> {
-                            minimapImage.setImageResource(R.drawable.haven_minimap)
-                        }
-                        "Icebox" -> {
-                            minimapImage.setImageResource(R.drawable.icebox_minimap)
-                        }
+                    } else {
+//                        minimapImage.setImageBitmap(
+//                            BitmapFactory.decodeStream(
+//                                URL(MatchHistoryActivity.mapURL).openConnection().getInputStream()
+//                            )
+//                        )
+                        Picasso.get().load(MatchHistoryActivity.mapURL).into(minimapImage)
                     }
+
                     val arrayList = ArrayList<String>()
                     val arrayAdapter = object :
                         ArrayAdapter<String>(
@@ -134,7 +144,9 @@ class kill_map_Fragment : Fragment() {
                     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     val spinner: Spinner =
                         view.findViewById(R.id.RoundSelectorKillsSpinner)
-                    spinner.adapter = arrayAdapter
+
+                    // add "All rounds" to the top of the spinner
+                    arrayAdapter.add("All rounds")
 
                     val rounds: JSONArray =
                         jsonDetails.getJSONObject("data").getJSONArray("rounds")
@@ -142,6 +154,8 @@ class kill_map_Fragment : Fragment() {
                         val roundNumnber = i + 1
                         arrayAdapter.add("Round $roundNumnber")
                     }
+
+                    spinner.adapter = arrayAdapter
 
                     spinner.onItemSelectedListener =
                         object : AdapterView.OnItemSelectedListener {
@@ -151,14 +165,22 @@ class kill_map_Fragment : Fragment() {
                                 position: Int,
                                 id: Long
                             ) {
-                                val getRoundName =
-                                    spinner.getItemAtPosition(position).toString()
-                                val numberinRound = getRoundName.split(" ")
-                                val actualRound: Int = numberinRound[1].toInt() - 1
-                                if (checkBox.isChecked) {
-                                    handlePlayerImages(actualRound)
+
+                                // get the index of the selected item
+                                val selectedItemPosition = parent.selectedItemPosition - 1
+                                if (selectedItemPosition == -1) {
+                                    // all rounds
+                                    handleAllRounds(checkBox.isChecked)
+                                } else if (checkBox.isChecked) {
+                                    handlePlayerImages(selectedItemPosition)
                                 } else {
-                                    handlePlayerDots(actualRound)
+                                    handlePlayerDots(selectedItemPosition)
+                                }
+
+                                // sync spinners across all tabs
+                                if (selectedItemPosition != -1) {
+                                    activity!!.findViewById<Spinner>(R.id.roundSelect)
+                                        .setSelection(selectedItemPosition)
                                 }
                             }
 
@@ -167,14 +189,13 @@ class kill_map_Fragment : Fragment() {
                         }
 
                     checkBox.setOnCheckedChangeListener { _, isChecked ->
-                        val getRoundName =
-                            spinner.selectedItem.toString()
-                        val numberinRound = getRoundName.split(" ")
-                        val actualRound: Int = numberinRound[1].toInt() - 1
-                        if (isChecked) {
-                            handlePlayerImages(actualRound)
+                        val getRoundName = spinner.selectedItemPosition - 1
+                        if (getRoundName == -1) {
+                            handleAllRounds(isChecked)
+                        } else if (isChecked) {
+                            handlePlayerImages(getRoundName)
                         } else {
-                            handlePlayerDots(actualRound)
+                            handlePlayerDots(getRoundName)
                         }
                     }
                 }
@@ -236,7 +257,7 @@ class kill_map_Fragment : Fragment() {
 
                 val paint = Paint()
                 paint.style = Paint.Style.FILL
-                paint.strokeWidth = 10F
+                paint.strokeWidth = 8F
                 val radius: Float = 10.0F
                 paint.color = Color.BLACK
 
@@ -246,7 +267,7 @@ class kill_map_Fragment : Fragment() {
                         from: Picasso.LoadedFrom?
                     ) {
                         val resizedBitmap =
-                            Bitmap.createScaledBitmap(playerBitMap!!, 50, 50, false)
+                            Bitmap.createScaledBitmap(playerBitMap!!, 40, 40, false)
                         if (victimColour == "Red") {
                             paint.colorFilter = PorterDuffColorFilter(
                                 Color.parseColor("#f94555"),
@@ -261,8 +282,8 @@ class kill_map_Fragment : Fragment() {
                         bitmap?.let { Canvas(it) }
                             ?.drawBitmap(
                                 resizedBitmap!!,
-                                finalVictimX.toFloat() - 25,
-                                finalVictimY.toFloat() - 25,
+                                finalVictimX.toFloat() - 20,
+                                finalVictimY.toFloat() - 20,
                                 paint
                             )
                     }
@@ -277,7 +298,7 @@ class kill_map_Fragment : Fragment() {
                         from: Picasso.LoadedFrom?
                     ) {
                         val resizedBitmap =
-                            Bitmap.createScaledBitmap(playerBitMap!!, 50, 50, false)
+                            Bitmap.createScaledBitmap(playerBitMap!!, 40, 40, false)
                         if (killerTeam == "Red") {
                             paint.colorFilter = PorterDuffColorFilter(
                                 Color.parseColor("#f94555"),
@@ -292,8 +313,8 @@ class kill_map_Fragment : Fragment() {
                         bitmap?.let { Canvas(it) }
                             ?.drawBitmap(
                                 resizedBitmap!!,
-                                finalKillerX.toFloat() - 25,
-                                finalKillerY.toFloat() - 25,
+                                finalKillerX.toFloat() - 20,
+                                finalKillerY.toFloat() - 20,
                                 paint
                             )
                     }
@@ -309,7 +330,7 @@ class kill_map_Fragment : Fragment() {
                 }
 
                 paint.style = Paint.Style.STROKE
-                paint.strokeWidth = 1F
+                paint.strokeWidth = 3F
                 bitmap?.let { Canvas(it) }
                     ?.drawLine(
                         finalKillerX.toFloat(),
@@ -376,8 +397,8 @@ class kill_map_Fragment : Fragment() {
                 //Paint properties
                 val paint = Paint()
                 paint.style = Paint.Style.FILL_AND_STROKE
-                paint.strokeWidth = 10F
-                val radius: Float = 10.0F
+                paint.strokeWidth = 8F
+                val radius = 6F
                 paint.color = Color.BLACK
 
                 if (victimColour == "Red") {
@@ -423,4 +444,206 @@ class kill_map_Fragment : Fragment() {
 
         playerPosition?.setImageBitmap(bitmap)
     }
+
+    private fun handleAllRounds(imagesEnabled: Boolean) {
+        val jsonDetails = MatchHistoryActivity.matchJSON
+        val playerPosition: ImageView? = view?.findViewById(R.id.playerPos2)
+        val bitmap: Bitmap? = Bitmap.createBitmap(
+            1024,
+            1024,
+            Bitmap.Config.ARGB_8888
+        )
+        val rounds: JSONArray =
+            jsonDetails?.getJSONObject("data")!!.getJSONArray("rounds")
+
+        for (i in 0 until rounds.length()) {
+            val player_stats: JSONArray = rounds.getJSONObject(i).getJSONArray("player_stats")
+            for (j in 0 until player_stats.length()) {
+                val currentPlayer: JSONObject = player_stats.getJSONObject(j)
+                val killEvents: JSONArray = currentPlayer.getJSONArray("kill_events")
+                for (k in 0 until killEvents.length()) {
+                    val currentKill = killEvents[k] as JSONObject
+                    val victimLocation = currentKill.getJSONObject("victim_death_location")
+                    val victimColour = currentKill.getString("victim_team") as String
+                    val victimX = victimLocation.getString("x")
+                    val victimY = victimLocation.getString("y")
+                    val victimName = currentKill.getString("victim_display_name")
+
+                    //Get killer name and location
+                    val killerName = currentKill.get("killer_display_name")
+                    val playerLocationsOnKillArray: JSONArray =
+                        currentKill.getJSONArray("player_locations_on_kill")
+                    var killerX: Int = 0
+                    var killerY: Int = 0
+                    var killerTeam: String = ""
+
+                    for (h in 0 until playerLocationsOnKillArray.length()) {
+                        val player: JSONObject = playerLocationsOnKillArray[h] as JSONObject
+                        val playerName = player.getString("player_display_name")
+                        if (playerName == killerName) {
+                            killerX = player.getJSONObject("location").getString("x").toInt()
+                            killerY = player.getJSONObject("location").getString("y").toInt()
+                            killerTeam = player.getString("player_team")
+                        }
+                    }
+
+                    val finalVictimX: Int =
+                        (((victimY.toInt() * xMult) + xScalar) * 1024).roundToInt()
+                    val finalVictimY: Int =
+                        (((victimX.toInt() * yMult) + yScalar) * 1024).roundToInt()
+                    val finalKillerX: Int = (((killerY * xMult) + xScalar) * 1024).roundToInt()
+                    val finalKillerY: Int = (((killerX * yMult) + yScalar) * 1024).roundToInt()
+                    if (imagesEnabled) {
+                        // doing all kills with images
+                        val killerAgentURL = mapofPlayerandAgent.getValue(killerName as String)
+                        val victimAgentURL = mapofPlayerandAgent.getValue(victimName as String)
+
+                        val paint = Paint()
+                        paint.style = Paint.Style.FILL
+                        paint.strokeWidth = 6F
+                        paint.color = Color.BLACK
+
+                        Picasso.get().load(victimAgentURL)
+                            .into(object : com.squareup.picasso.Target {
+                                override fun onBitmapLoaded(
+                                    playerBitMap: Bitmap?,
+                                    from: Picasso.LoadedFrom?
+                                ) {
+                                    val resizedBitmap =
+                                        Bitmap.createScaledBitmap(playerBitMap!!, 32, 32, false)
+                                    if (victimColour == "Red") {
+                                        paint.colorFilter = PorterDuffColorFilter(
+                                            Color.parseColor("#f94555"),
+                                            PorterDuff.Mode.DST_ATOP
+                                        )
+                                    } else {
+                                        paint.colorFilter = PorterDuffColorFilter(
+                                            Color.parseColor("#18e4b7"),
+                                            PorterDuff.Mode.DST_ATOP
+                                        )
+                                    }
+                                    bitmap?.let { Canvas(it) }
+                                        ?.drawBitmap(
+                                            resizedBitmap!!,
+                                            finalVictimX.toFloat() - 16,
+                                            finalVictimY.toFloat() - 16,
+                                            paint
+                                        )
+                                }
+
+                                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+                                override fun onBitmapFailed(
+                                    e: Exception?,
+                                    errorDrawable: Drawable?
+                                ) {
+                                }
+                            })
+
+                        Picasso.get().load(killerAgentURL)
+                            .into(object : com.squareup.picasso.Target {
+                                override fun onBitmapLoaded(
+                                    playerBitMap: Bitmap?,
+                                    from: Picasso.LoadedFrom?
+                                ) {
+                                    val resizedBitmap =
+                                        Bitmap.createScaledBitmap(playerBitMap!!, 32, 32, false)
+                                    if (killerTeam == "Red") {
+                                        paint.colorFilter = PorterDuffColorFilter(
+                                            Color.parseColor("#f94555"),
+                                            PorterDuff.Mode.DST_ATOP
+                                        )
+                                    } else {
+                                        paint.colorFilter = PorterDuffColorFilter(
+                                            Color.parseColor("#18e4b7"),
+                                            PorterDuff.Mode.DST_ATOP
+                                        )
+                                    }
+                                    bitmap?.let { Canvas(it) }
+                                        ?.drawBitmap(
+                                            resizedBitmap!!,
+                                            finalKillerX.toFloat() - 16,
+                                            finalKillerY.toFloat() - 16,
+                                            paint
+                                        )
+                                }
+
+                                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+                                override fun onBitmapFailed(
+                                    e: Exception?,
+                                    errorDrawable: Drawable?
+                                ) {
+                                }
+                            })
+
+                        if (killerTeam == "Red") {
+                            paint.color = Color.parseColor("#f94555")
+                        } else {
+                            paint.color = Color.parseColor("#18e4b7")
+                        }
+
+                        paint.style = Paint.Style.STROKE
+                        paint.strokeWidth = 2F
+                        bitmap?.let { Canvas(it) }
+                            ?.drawLine(
+                                finalKillerX.toFloat(),
+                                finalKillerY.toFloat(),
+                                finalVictimX.toFloat(),
+                                finalVictimY.toFloat(),
+                                paint
+                            )
+
+                    } else {
+                        // doing all kills without images
+                        //Paint properties
+                        val paint = Paint()
+                        paint.style = Paint.Style.FILL_AND_STROKE
+                        paint.strokeWidth = 6F
+                        val radius = 4F
+                        paint.color = Color.BLACK
+
+                        if (victimColour == "Red") {
+                            paint.color = Color.parseColor("#f94555")
+                        } else {
+                            paint.color = Color.parseColor("#18e4b7")
+                        }
+
+                        bitmap?.let { Canvas(it) }
+                            ?.drawCircle(
+                                finalVictimX.toFloat(),
+                                finalVictimY.toFloat(),
+                                radius, paint
+                            )
+
+                        if (killerTeam == "Red") {
+                            paint.color = Color.parseColor("#f94555")
+                        } else {
+                            paint.color = Color.parseColor("#18e4b7")
+                        }
+
+                        bitmap?.let { Canvas(it) }
+                            ?.drawCircle(
+                                finalKillerX.toFloat(),
+                                finalKillerY.toFloat(),
+                                radius, paint
+                            )
+
+                        paint.style = Paint.Style.STROKE
+                        paint.strokeWidth = 2F
+                        bitmap?.let { Canvas(it) }
+                            ?.drawLine(
+                                finalKillerX.toFloat(),
+                                finalKillerY.toFloat(),
+                                finalVictimX.toFloat(),
+                                finalVictimY.toFloat(),
+                                paint
+                            )
+                    }
+                }
+            }
+        }
+
+        playerPosition?.setImageBitmap(bitmap)
+
+    }
+
 }

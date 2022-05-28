@@ -84,15 +84,16 @@ class kill_feed_Fragment : Fragment() {
                     position: Int,
                     id: Long
                 ) {
-                    val getRoundName =
-                        spinner.getItemAtPosition(position).toString()
-                    val numberinRound = getRoundName.split(" ")
-                    val actualRound: Int = numberinRound[1].toInt() - 1
                     try {
-                        populateKillFeed(actualRound)
+                        populateKillFeed(parent.selectedItemPosition)
                     } catch (e: Exception) {
                         Log.d("MatchError", e.toString())
                     }
+
+                    // syncing other spinner
+//                    activity!!.findViewById<Spinner>(R.id.RoundSelectorKillsSpinner)
+//                        .setSelection(parent.selectedItemPosition - 1)
+
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -114,18 +115,22 @@ class kill_feed_Fragment : Fragment() {
             MatchHistoryActivity.matchJSON!!.getJSONObject("data").getJSONArray("kills")
         for (i in 0 until kills.length()) {
             val round = kills.getJSONObject(i).get("round")
-            if (round == roundNumber) {
-                killer += mapofPlayerandAgent.getValue(
-                    kills.getJSONObject(i).getString("killer_display_name")
-                )
-                killerTeam += kills.getJSONObject(i).getString("killer_team")
-                victim += mapofPlayerandAgent.getValue(
-                    kills.getJSONObject(i).getString("victim_display_name")
-                )
-                victimTeam += kills.getJSONObject(i).getString("victim_team")
-                weapon += kills.getJSONObject(i).getString("damage_weapon_name")
-                weaponIcon += kills.getJSONObject(i).getJSONObject("damage_weapon_assets")
-                    .getString("killfeed_icon")
+            try {
+                if (round == roundNumber) {
+                    weapon += kills.getJSONObject(i).getString("damage_weapon_name")
+                    weaponIcon += kills.getJSONObject(i).getJSONObject("damage_weapon_assets")
+                        .getString("killfeed_icon")
+                    killer += mapofPlayerandAgent.getValue(
+                        kills.getJSONObject(i).getString("killer_display_name")
+                    )
+                    killerTeam += kills.getJSONObject(i).getString("killer_team")
+                    victim += mapofPlayerandAgent.getValue(
+                        kills.getJSONObject(i).getString("victim_display_name")
+                    )
+                    victimTeam += kills.getJSONObject(i).getString("victim_team")
+                }
+            } catch (e: Exception) {
+                Log.d("MatchError", e.toString())
             }
         }
 
