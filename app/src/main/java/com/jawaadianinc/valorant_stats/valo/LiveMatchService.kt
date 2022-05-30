@@ -31,7 +31,7 @@ class LiveMatchService : Service() {
 
         Thread {
             while (true) {
-                Thread.sleep(5000)
+                Thread.sleep(3000)
                 doAsync {
                     try {
                         val URL =
@@ -60,8 +60,8 @@ class LiveMatchService : Service() {
                             }
                             uiThread {
                                 sendNotification(
-                                    "A match was detected!",
-                                    "You just played $mode, tap to see details",
+                                    "Finished a $mode match?",
+                                    "Tap to see details",
                                     notificationID
                                 )
                                 gameStart = timeStarted
@@ -87,8 +87,8 @@ class LiveMatchService : Service() {
         notificationChannel.enableVibration(true)
         notificationManager.createNotificationChannel(notificationChannel)
         val notification = NotificationCompat.Builder(this, "live_matches_service")
-            .setContentTitle("Match Notifications Service")
-            .setContentText("If you see this, the match detection service is working")
+            .setContentTitle("Match Notifications")
+            .setContentText("Service is running")
             .setSmallIcon(R.drawable.just_statics)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)

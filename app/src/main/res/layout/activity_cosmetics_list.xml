@@ -22,6 +22,54 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="vAlorAnt weApons" />
 
+    <Button
+        android:id="@+id/wideCardBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#283840"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Wide"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:cornerRadius="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/smallCardBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#283840"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Small"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:cornerRadius="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/largeCardBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#283840"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Large "
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:cornerRadius="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cosmeticListView"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ListView
         android:id="@+id/cosmeticListView"
         android:layout_width="0dp"

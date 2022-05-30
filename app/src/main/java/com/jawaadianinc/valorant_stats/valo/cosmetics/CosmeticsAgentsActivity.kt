@@ -121,7 +121,9 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         val imageSlider = findViewById<SliderView>(R.id.imageSlider)
         doAsync {
             agentJSON =
-                JSONObject(URL("https://valorant-api.com/v1/agents").readText()).getJSONArray("data")
+                JSONObject(URL("https://valorant-api.com/v1/agents?isPlayableCharacter=true").readText()).getJSONArray(
+                    "data"
+                )
             for (i in 0 until agentJSON.length()) {
                 try {
                     agentRole.add(

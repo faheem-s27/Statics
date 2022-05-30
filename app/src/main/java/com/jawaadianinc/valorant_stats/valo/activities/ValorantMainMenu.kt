@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.activities.TrackerGGScraper
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
@@ -104,6 +105,8 @@ class ValorantMainMenu : AppCompatActivity() {
         val FABplus: FloatingActionButton = findViewById(R.id.fabPlus)
         val seekBar: SeekBar = findViewById(R.id.howManyMatches)
         val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
+        val trackerGGButton: Button = findViewById(R.id.buildTrackerGGProfile)
+
 
         val layer: ConstraintLayout = findViewById(R.id.constraintLayout)
         val listofViews = arrayListOf<View>()
@@ -134,12 +137,24 @@ class ValorantMainMenu : AppCompatActivity() {
         findViewById<Button>(R.id.playerCardsBT).setOnClickListener {
             val intent = Intent(this, CosmeticsListActivity::class.java)
             intent.putExtra("cosmetic", "cards")
+            intent.putExtra("size", "large")
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
+
+        findViewById<Button>(R.id.spraysBT).setOnClickListener {
+            val intent = Intent(this, CosmeticsListActivity::class.java)
+            intent.putExtra("cosmetic", "sprays")
             startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
         // ------------------------ End of cosmetics ------------------------------------
 
+        trackerGGButton.setOnClickListener()
+        {
+            checkForTrackerGG(nameSplit[0], nameSplit[1])
+        }
 
         liveMatchSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
@@ -147,15 +162,14 @@ class ValorantMainMenu : AppCompatActivity() {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Match Notification Details")
                 builder.setMessage(
-                    "This feature is experimental and may have some issues\n" +
-                            "Your device will continuously check for any new matches played from now\nWhen a new match has been played, a notification will be sent to your device for you to view details of that match\n" +
+                    "Your device will continuously check for any new matches played from now\nWhen a new match has been played, a notification will be sent to your device for you to view details of that match\n" +
                             "Are you sure you want to enable this?"
                 )
                 builder.setPositiveButton("Yes") { _, _ ->
                     // continue with Live Match
                     val progressDialog = ProgressDialog(this)
-                    progressDialog.setTitle("Setting up Match Notifications")
-                    progressDialog.setMessage("Getting latest game played!")
+                    progressDialog.setTitle("Setting up")
+                    progressDialog.setMessage("Please wait while we set up your account for match notifications")
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
                     progressDialog.setCancelable(false)
                     progressDialog.show()
@@ -165,7 +179,7 @@ class ValorantMainMenu : AppCompatActivity() {
                         val response = JSONObject(URL(URL).readText()).getJSONArray("history")
                             .get(0) as JSONObject
                         gameStarted = response.getString("gameStartTimeMillis")
-                        Thread.sleep(2000)
+                        Thread.sleep(1000)
                         uiThread {
                             startLiveMatches(gameStarted)
                             progressDialog.dismiss()
@@ -327,6 +341,51 @@ class ValorantMainMenu : AppCompatActivity() {
 
     }
 
+    private fun checkForTrackerGG(gameName: String, gameTag: String) {
+        // show loading dialog
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Checking if eligible...")
+        progressDialog.show()
+        progressDialog.setCancelable(false)
+        doAsync {
+            try {
+                val json = TrackerGGScraper().getProfile(gameName, gameTag)
+                val privacy =
+                    json.getJSONObject("data").getJSONObject("metadata").getString("privacy")
+                uiThread {
+                    progressDialog.dismiss()
+                    if (privacy == "public") {
+                        startTrackerGG(gameName, gameTag)
+                    } else {
+                        // show dialog saying player is not signed in at tracker.gg
+                        val builder = AlertDialog.Builder(this@ValorantMainMenu)
+                        builder.setTitle("Profile is private")
+                        builder.setMessage("To continue, you need to be signed in at tracker.gg and have your profile set to public.")
+                        builder.setPositiveButton("Sign in") { _, _ ->
+                            signIntoTrackerGG(gameName, gameTag)
+                        }
+                        builder.setNegativeButton("Cancel") { _, _ ->
+                            Toast.makeText(
+                                this@ValorantMainMenu,
+                                "Request cancelled",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        builder.show()
+                    }
+                }
+
+            } catch (e: Exception) {
+                uiThread {
+                    progressDialog.dismiss()
+                    Toast.makeText(this@ValorantMainMenu, "Error: $e", Toast.LENGTH_LONG).show()
+                    Log.d("TrackerGG", "Error: $e")
+                }
+            }
+        }
+
+    }
+
     private fun startLiveMatches(gameStart: String) {
         val intent = Intent(this, LiveMatchService::class.java)
         intent.putExtra("gameStart", gameStart)
@@ -336,6 +395,21 @@ class ValorantMainMenu : AppCompatActivity() {
         startForegroundService(intent)
     }
 
+    private fun startTrackerGG(name: String, tag: String) {
+        Toast.makeText(this, "Building profile", Toast.LENGTH_LONG).show()
+//        val intent = Intent(this, TrackerGG::class.java)
+//        intent.putExtra("name", name)
+//        intent.putExtra("tag", tag)
+//        startActivity(intent)
+
+    }
+
+    private fun signIntoTrackerGG(name: String, tag: String) {
+        val SignInUrl = "https://tracker.gg/valorant/profile/riot/$name%23$tag/overview"
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(SignInUrl)
+        startActivity(intent)
+    }
 
     private fun seekBarMatches(key: String) {
         val nameSplit = playerName.split("#")
@@ -536,9 +610,8 @@ class ValorantMainMenu : AppCompatActivity() {
             v.alpha = 0f
             v.translationY = -y
             v.animate().alpha(1f).setDuration(duration).translationYBy(y).startDelay = delay
-            delay += 25L
+            delay += 50L
         }
-
     }
 }
 
