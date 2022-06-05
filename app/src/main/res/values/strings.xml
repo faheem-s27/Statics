@@ -116,7 +116,6 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
@@ -125,5 +124,9 @@
     <string name="title_activity_weapon_info">WeaponInfo</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+
+
+    <string name="welcome">"Welcome to Statics!"</string>
+    <string name="RSO_URL">https://auth.riotgames.com/authorize?client_id=statics&amp;redirect_uri=https://statics-fd699.web.app/authorize.html&amp;response_type=code&amp;scope=openid+offline_access&amp;prompt=login</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.databases
 
 import android.content.ContentValues
 import android.content.Context
@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class PlayerDatabase(context: Context) : SQLiteOpenHelper(context, "ValorantRSO.db", null, 1) {
+class PlayerDatabase(context: Context) : SQLiteOpenHelper(context, "ValorantPlayers.db", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {
         val createTable =
             "CREATE TABLE $VALOPLAYERS ($PUUID TEXT PRIMARY KEY, $USERNAME TEXT, $USERTAG TEXT, $REGION TEXT)"

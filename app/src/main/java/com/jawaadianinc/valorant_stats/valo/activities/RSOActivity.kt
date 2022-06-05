@@ -14,6 +14,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
+import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -111,7 +113,7 @@ class RSOActivity : AppCompatActivity() {
 
             doAsync {
                 val call = client.newCall(request).execute()
-                val json = JSONObject(call.body!!.string())
+                val json = JSONObject(call.body.string())
                 val accessToken = json.getString("access_token")
                 progressBar.progress = 40
                 uiThread {
@@ -153,7 +155,7 @@ class RSOActivity : AppCompatActivity() {
                 val key = (dataSnapshot.value as String?).toString()
                 doAsync {
                     val call = client.newCall(request).execute()
-                    val json = JSONObject(call.body!!.string())
+                    val json = JSONObject(call.body.string())
                     val puuid = json.getString("puuid")
 
                     val regionURL =
@@ -163,7 +165,7 @@ class RSOActivity : AppCompatActivity() {
                         .build()
 
                     val regionCall = client.newCall(regionRequest).execute()
-                    val regionJson = JSONObject(regionCall.body!!.string())
+                    val regionJson = JSONObject(regionCall.body.string())
                     val region = regionJson.getString("activeShard")
 
                     val gameName = json.getString("gameName")

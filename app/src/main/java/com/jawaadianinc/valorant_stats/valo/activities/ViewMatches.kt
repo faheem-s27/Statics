@@ -16,7 +16,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.valo.match_info.MatchAdapter
+import com.jawaadianinc.valorant_stats.valo.adapters.MatchAdapter
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import org.jetbrains.anko.doAsync
 import org.json.JSONObject
@@ -195,7 +195,8 @@ class ViewMatches : AppCompatActivity() {
                                     matchActivityStart(
                                         gameNamePlayer,
                                         tagLinePlayer,
-                                        matchIDs[position]
+                                        matchIDs[position],
+                                        won[position]
                                     )
                                 }
                             }
@@ -217,7 +218,12 @@ class ViewMatches : AppCompatActivity() {
                         progessBar.animate().alpha(0f).duration = 1000
                         matchText.animate().alpha(0f).duration = 1000
                         matchList.setOnItemClickListener { _, _, position, _ ->
-                            matchActivityStart(gameNamePlayer, tagLinePlayer, matchIDs[position])
+                            matchActivityStart(
+                                gameNamePlayer,
+                                tagLinePlayer,
+                                matchIDs[position],
+                                won[position]
+                            )
                         }
                     }
                 }
@@ -239,12 +245,13 @@ class ViewMatches : AppCompatActivity() {
         )
     }
 
-    private fun matchActivityStart(Name: String, ID: String, matchID: String) {
+    private fun matchActivityStart(Name: String, ID: String, matchID: String, winning: String) {
         val matchintent = Intent(this@ViewMatches, MatchHistoryActivity::class.java)
         matchintent.putExtra("RiotName", Name)
         matchintent.putExtra("RiotID", ID)
         matchintent.putExtra("MatchNumber", 0)
         matchintent.putExtra("MatchID", matchID)
+        matchintent.putExtra("Won", winning.toBoolean())
         startActivity(matchintent)
 
     }

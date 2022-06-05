@@ -33,12 +33,12 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
     private lateinit var agentJSON: JSONArray
 
     private val animation = 200L
-    private val mediaPlayer = MediaPlayer()
+    private val agentVoicePlayer = MediaPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cosmetics_agents)
-        mediaPlayer.start()
+        agentVoicePlayer.start()
 
         val progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Loading")
@@ -53,6 +53,7 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "No data for $data", Toast.LENGTH_SHORT).show()
         }
+
 
         progressDialog.dismiss()
     }
@@ -71,8 +72,8 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         val roleImage: ImageView = findViewById(R.id.roleImage)
         Picasso.get().load(roleIcon[position]).fit().into(roleImage)
         doAsync {
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
-            mediaPlayer.apply {
+            agentVoicePlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            agentVoicePlayer.apply {
                 setDataSource(voiceLines[position])
                 prepare()
                 start()
@@ -110,7 +111,7 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         imageSlider.setSliderAdapter(adapter)
         setAgentInfo(0)
         imageSlider.setCurrentPageListener {
-            mediaPlayer.reset()
+            agentVoicePlayer.reset()
             setAgentInfo(it)
         }
     }
@@ -121,7 +122,7 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         val imageSlider = findViewById<SliderView>(R.id.imageSlider)
         doAsync {
             agentJSON =
-                JSONObject(URL("https://valorant-api.com/v1/agents?isPlayableCharacter=true").readText()).getJSONArray(
+                JSONObject(URL("https://valorant-api.com/v1/agents").readText()).getJSONArray(
                     "data"
                 )
             for (i in 0 until agentJSON.length()) {

@@ -9,14 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
-import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.ZoomOutPageTransformer
+import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
 import com.jawaadianinc.valorant_stats.valo.adapters.MatchHistoryAdapter
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+
 
 class MatchHistoryActivity : AppCompatActivity() {
 
@@ -26,13 +26,15 @@ class MatchHistoryActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_match_history)
+        setContentView(com.jawaadianinc.valorant_stats.R.layout.activity_match_history)
 
-        val refresFab: FloatingActionButton = findViewById(R.id.refreshFab2)
+        val refresFab: FloatingActionButton =
+            findViewById(com.jawaadianinc.valorant_stats.R.id.refreshFab2)
         val Name = intent.extras!!.getString("RiotName")
         val ID = intent.extras!!.getString("RiotID")
         val MatchNumber = intent.extras!!.getInt("MatchNumber")
         val IDofMatch = intent.extras!!.getString("MatchID")
+        val hasWon = intent?.extras?.getBoolean("Won")
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
         // show progress bar while loading
@@ -46,6 +48,13 @@ class MatchHistoryActivity : AppCompatActivity() {
 //        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
 //        progressDialog.setCancelable(false)
 //        progressDialog.show()
+
+        if (hasWon == true) {
+            // insert winning sound here
+        } else {
+            // insert losing sound here
+        }
+
 
         doAsync {
             val matchID: String = if (IDofMatch == "none") {
@@ -75,43 +84,51 @@ class MatchHistoryActivity : AppCompatActivity() {
             uiThread {
                 //progressDialog.dismiss()
                 progressBar.visibility = View.GONE
-                tabLayout = findViewById<View>(R.id.tabsforMatch) as? TabLayout
-                viewPager = findViewById<View>(R.id.view_pager_matchHistory) as? ViewPager
+                tabLayout =
+                    findViewById<View>(com.jawaadianinc.valorant_stats.R.id.tabsforMatch) as? TabLayout
+                viewPager =
+                    findViewById<View>(com.jawaadianinc.valorant_stats.R.id.view_pager_matchHistory) as? ViewPager
                 tabLayout?.tabGravity = TabLayout.GRAVITY_CENTER
                 tabLayout?.tabMode = TabLayout.MODE_SCROLLABLE
-                tabLayout?.newTab()?.setText("Details")?.setIcon(R.drawable.details).let {
-                    if (it != null) {
-                        tabLayout?.addTab(it)
+                tabLayout?.newTab()?.setText("Details")
+                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.details).let {
+                        if (it != null) {
+                            tabLayout?.addTab(it)
+                        }
                     }
-                }
-                tabLayout?.newTab()?.setText("Players")?.setIcon(R.drawable.players_icon).let {
-                    if (it != null) {
-                        tabLayout?.addTab(it)
+                tabLayout?.newTab()?.setText("Players")
+                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.players_icon).let {
+                        if (it != null) {
+                            tabLayout?.addTab(it)
+                        }
                     }
-                }
-                tabLayout?.newTab()?.setText("Rounds")?.setIcon(R.drawable.rounds_icno).let {
-                    if (it != null) {
-                        tabLayout?.addTab(it)
+                tabLayout?.newTab()?.setText("Rounds")
+                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.rounds_icno).let {
+                        if (it != null) {
+                            tabLayout?.addTab(it)
+                        }
                     }
-                }
 
-                tabLayout?.newTab()?.setText("Spike Map")?.setIcon(R.drawable.spikeicon).let {
-                    if (it != null) {
-                        tabLayout?.addTab(it)
+                tabLayout?.newTab()?.setText("Spike Map")
+                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.spikeicon).let {
+                        if (it != null) {
+                            tabLayout?.addTab(it)
+                        }
                     }
-                }
 
-                tabLayout?.newTab()?.setText("Kill Map")?.setIcon(R.drawable.killmapicon).let {
-                    if (it != null) {
-                        tabLayout?.addTab(it)
+                tabLayout?.newTab()?.setText("Kill Map")
+                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.killmapicon).let {
+                        if (it != null) {
+                            tabLayout?.addTab(it)
+                        }
                     }
-                }
 
-                tabLayout?.newTab()?.setText("Kill Feed")?.setIcon(R.drawable.killicon).let {
-                    if (it != null) {
-                        tabLayout?.addTab(it)
+                tabLayout?.newTab()?.setText("Kill Feed")
+                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.killicon).let {
+                        if (it != null) {
+                            tabLayout?.addTab(it)
+                        }
                     }
-                }
 
                 val adapter =
                     tabLayout?.tabCount?.let { MatchHistoryAdapter(supportFragmentManager, it) }
@@ -138,9 +155,25 @@ class MatchHistoryActivity : AppCompatActivity() {
                     }
                 })
 
-                val title: TextView = findViewById(R.id.title)
-                title.text = "Match Information"
-
+                val title: TextView = findViewById(com.jawaadianinc.valorant_stats.R.id.title)
+                val matchData = matchJSON!!.get("data") as JSONObject
+                val teams = matchData.getJSONObject("teams")
+                val metadata = matchData.getJSONObject("metadata")
+                val map = metadata.getString("map")
+                var didredWin = false
+                try {
+                    didredWin = teams.getJSONObject("red").getBoolean("has_won")
+                } catch (e: Exception) {
+                }
+                if (didredWin) {
+                    val score = teams.getJSONObject("red").getString("rounds_won")
+                    val lost: String = teams.getJSONObject("red").getString("rounds_lost")
+                    title.text = "$map $score - $lost"
+                } else {
+                    val score = teams.getJSONObject("blue").getString("rounds_won")
+                    val lost = teams.getJSONObject("blue").getString("rounds_lost")
+                    title.text = "$map $score - $lost"
+                }
 
                 refresFab.setOnClickListener {
                     finish()

@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats
+package com.jawaadianinc.valorant_stats.main
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,9 +21,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.jawaadianinc.valorant_stats.valo.LoggingInActivityRSO
-import com.jawaadianinc.valorant_stats.valo.PlayerDatabase
-import com.jawaadianinc.valorant_stats.valo.ValorantMainMenu
+import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
+import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
+import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 
 
 class LoadingActivity : AppCompatActivity() {

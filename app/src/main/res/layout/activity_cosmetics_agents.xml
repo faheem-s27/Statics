@@ -7,11 +7,10 @@
     android:background="@color/ic_launcher_background"
     tools:context=".valo.cosmetics.CosmeticsAgentsActivity">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
-        android:layout_width="0dp"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -127,10 +126,9 @@
             <ListView
                 android:id="@+id/agentAbilityList"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="300dp"
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="true"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/agentDescription" />
@@ -155,6 +153,6 @@
             </com.smarteist.autoimageslider.SliderView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

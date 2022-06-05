@@ -1,17 +1,14 @@
 package com.jawaadianinc.valorant_stats.valo
 
 import android.app.ProgressDialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
@@ -48,8 +45,8 @@ class ValorantUpdatesActivity : AppCompatActivity() {
 
 
         val arrayList = ArrayList<String>()
-        val listview: ListView = findViewById(R.id.updateListView)
-        listview.isNestedScrollingEnabled = true
+        //val listview: ListView = findViewById(R.id.updateListView)
+        //listview.isNestedScrollingEnabled = true
         val mAdapter = object :
             ArrayAdapter<String?>(
                 applicationContext!!, android.R.layout.simple_list_item_1,
@@ -69,7 +66,7 @@ class ValorantUpdatesActivity : AppCompatActivity() {
             }
         }
 
-        listview.adapter = mAdapter
+        //listview.adapter = mAdapter
 
 
         val requestURL = "https://api.henrikdev.xyz/valorant/v1/website/en-us"
@@ -92,34 +89,33 @@ class ValorantUpdatesActivity : AppCompatActivity() {
                 progressDialog.dismiss()
 
 
-
-                uiThread {
-                    listview.setOnItemClickListener { _, _, position, _ ->
-                        val inflater =
-                            getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                        val popupView: View = inflater.inflate(R.layout.showupdates, null)
-                        val width = LinearLayout.LayoutParams.MATCH_PARENT
-                        val height = LinearLayout.LayoutParams.MATCH_PARENT
-                        val focusable = true
-                        val popupWindow = PopupWindow(popupView, width, height, focusable)
-                        popupWindow.showAtLocation(
-                            View(this@ValorantUpdatesActivity),
-                            Gravity.CENTER,
-                            0,
-                            0
-                        )
-
-                        val dismissButton = popupView.findViewById(R.id.dismiss) as Button
-                        dismissButton.setOnClickListener {
-                            popupWindow.dismiss()
-                        }
-                        val data = data[position] as JSONObject
-                        val URL = data.getString("url")
-                        val webpage = popupView.findViewById(R.id.updatePage) as WebView
-                        webpage.settings.javaScriptEnabled = true
-                        webpage.loadUrl(URL)
-                    }
-                }
+//                uiThread {
+//                    listview.setOnItemClickListener { _, _, position, _ ->
+//                        val inflater =
+//                            getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//                        val popupView: View = inflater.inflate(R.layout.showupdates, null)
+//                        val width = LinearLayout.LayoutParams.MATCH_PARENT
+//                        val height = LinearLayout.LayoutParams.MATCH_PARENT
+//                        val focusable = true
+//                        val popupWindow = PopupWindow(popupView, width, height, focusable)
+//                        popupWindow.showAtLocation(
+//                            View(this@ValorantUpdatesActivity),
+//                            Gravity.CENTER,
+//                            0,
+//                            0
+//                        )
+//
+//                        val dismissButton = popupView.findViewById(R.id.dismiss) as Button
+//                        dismissButton.setOnClickListener {
+//                            popupWindow.dismiss()
+//                        }
+//                        val data = data[position] as JSONObject
+//                        val URL = data.getString("url")
+//                        val webpage = popupView.findViewById(R.id.updatePage) as WebView
+//                        webpage.settings.javaScriptEnabled = true
+//                        webpage.loadUrl(URL)
+//                    }
+//                }
 
 
             } catch (e: Exception) {

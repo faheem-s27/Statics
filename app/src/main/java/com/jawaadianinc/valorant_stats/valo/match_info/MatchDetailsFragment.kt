@@ -16,7 +16,6 @@ import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
 import java.net.URL
 import java.time.Duration
@@ -128,12 +127,7 @@ class MatchDetailsFragment : Fragment() {
                     if (didredWin) {
                         mAdapter.add("Red won!")
                         val score = teams.getJSONObject("red").getString("rounds_won")
-                        val lost: String = try {
-                            teams.getJSONObject("red").getString("rounds_lost")
-                        } catch (e: JSONException) {
-                            teams.getJSONObject("red").getString("rounds_lots")
-                        }
-
+                        val lost: String = teams.getJSONObject("red").getString("rounds_lost")
                         mAdapter.add("Score: $score : $lost")
                     } else {
                         mAdapter.add("Blue won!")
@@ -143,7 +137,6 @@ class MatchDetailsFragment : Fragment() {
                             mAdapter.add("Score: $score : $lost")
                         } catch (e: Exception) {
                         }
-
                     }
 
                     try {

@@ -90,7 +90,7 @@
         android:id="@+id/gunName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/baloo_bhai"
+        android:fontFamily="@font/valorant"
         android:text="Killed using Ghost"
         android:textAlignment="center"
         android:textColor="#FFFFFF"

@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
     <application
@@ -41,10 +40,10 @@
             android:name=".valo.cosmetics.CosmeticsAgentsActivity"
             android:exported="false" />
         <activity
-            android:name=".valo.LoggingInActivityRSO"
+            android:name=".valo.activities.LoggingInActivityRSO"
             android:exported="false" />
         <activity
-            android:name=".LoadingActivity"
+            android:name=".main.LoadingActivity"
             android:exported="false" />
         <activity
             android:name=".fortnite.findFortniteAccount"
@@ -52,7 +51,7 @@
         <activity
             android:name=".valo.RSOActivity"
             android:exported="true">
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -65,7 +64,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".main.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity
@@ -106,12 +105,11 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".valo.ValorantMainMenu"
+            android:name=".valo.activities.ValorantMainMenu"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats" />
 

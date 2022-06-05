@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.activities
 
 import android.content.Intent
 import android.net.Uri
@@ -47,12 +47,13 @@ class LoggingInActivityRSO : AppCompatActivity() {
         runnable = Runnable {
             doTask(handler)
         }
-        handler.postDelayed(runnable, 500)
+        handler.postDelayed(runnable, 1000)
 
         findViewById<Button>(R.id.signIn).setOnClickListener {
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
+                    //Uri.parse(R.string.RSO_URL.toString())
                     Uri.parse("https://auth.riotgames.com/authorize?client_id=statics&redirect_uri=https://statics-fd699.web.app/authorize.html&response_type=code&scope=openid+offline_access&prompt=login")
                 )
             )

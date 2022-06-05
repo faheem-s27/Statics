@@ -2,7 +2,6 @@ package com.jawaadianinc.valorant_stats.brawlhalla
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -14,7 +13,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.ZoomOutPageTransformer
+import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
@@ -61,7 +60,7 @@ class brawlStatsActivity : AppCompatActivity() {
                         JSONObject(URL(playerStats).readText()).getJSONObject("clan")
                             .getString("clan_id")
                     val playerClan = "$URL/clan/$ClanID/?api_key=$APIcode"
-                    Log.d("brawl", playerClan)
+                    //Log.d("brawl", playerClan)
                     playerClanJSON = JSONObject(URL(playerClan).readText())
                 } catch (e: Exception) {
                     //player not in a existing clan

@@ -1,8 +1,9 @@
-package com.jawaadianinc.valorant_stats
+package com.jawaadianinc.valorant_stats.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
+import com.jawaadianinc.valorant_stats.R
 
 class SettingsActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats
+package com.jawaadianinc.valorant_stats.main
 
 import android.view.View
 import androidx.viewpager.widget.ViewPager

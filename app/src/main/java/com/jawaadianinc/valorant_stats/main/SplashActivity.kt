@@ -5,17 +5,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import com.jawaadianinc.valorant_stats.main.LoadingActivity
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
-
         startActivity(Intent(this, LoadingActivity::class.java))
         overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         finish()
-
-
     }
 }

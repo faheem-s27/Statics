@@ -272,7 +272,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                 //Draw Agent BitMaps
                 val playerName = location["player_display_name"] as String
                 val agentURL = mapofPlayerandAgent.getValue(playerName)
-                val newIcon = Bitmap.createScaledBitmap(SpikeIcon, 60, 60, false)
+                val newIcon = Bitmap.createScaledBitmap(SpikeIcon, 50, 50, false)
                 if (spikePlanter == location["player_display_name"]) {
                     if (playerTeam == "Red") {
                         paint.colorFilter = PorterDuffColorFilter(
@@ -286,7 +286,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                         )
                     }
                     bitmap?.let { Canvas(it) }
-                        ?.drawBitmap(newIcon, finalX.toFloat() - 30, finalY.toFloat() - 30, paint)
+                        ?.drawBitmap(newIcon, finalX.toFloat() - 25, finalY.toFloat() - 25, paint)
                 } else {
                     Picasso.get().load(agentURL).into(object : com.squareup.picasso.Target {
                         override fun onBitmapLoaded(
@@ -294,7 +294,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                             from: Picasso.LoadedFrom?
                         ) {
                             val resizedBitmap =
-                                Bitmap.createScaledBitmap(playerBitMap!!, 50, 50, false)
+                                Bitmap.createScaledBitmap(playerBitMap!!, 40, 40, false)
                             if (playerTeam == "Red") {
                                 paint.colorFilter = PorterDuffColorFilter(
                                     Color.parseColor("#f94555"),
@@ -309,8 +309,8 @@ class RoundsMoreDetailsFragment : Fragment() {
                             bitmap?.let { Canvas(it) }
                                 ?.drawBitmap(
                                     resizedBitmap!!,
-                                    finalX.toFloat() - 25,
-                                    finalY.toFloat() - 25,
+                                    finalX.toFloat() - 20,
+                                    finalY.toFloat() - 20,
                                     paint
                                 )
                         }

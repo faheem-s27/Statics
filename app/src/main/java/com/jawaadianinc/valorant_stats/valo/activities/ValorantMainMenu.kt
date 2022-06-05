@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.activities
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
@@ -23,9 +23,12 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.valo.activities.TrackerGGScraper
+import com.jawaadianinc.valorant_stats.valo.LiveMatchService
+import com.jawaadianinc.valorant_stats.valo.MMRActivity
+import com.jawaadianinc.valorant_stats.valo.ViewMatches
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
+import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
@@ -61,17 +64,6 @@ class ValorantMainMenu : AppCompatActivity() {
             playerName = name
         }
         val database = Firebase.database
-
-        if (playerName == "") {
-            startActivity(Intent(this, LoggingInActivityRSO::class.java))
-            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            Toast.makeText(this, "Sign in to continue!", Toast.LENGTH_SHORT).show()
-            finish()
-        }
-
-        Log.d("Player Name", playerName)
-
-
         val nameSplit = playerName.split("#")
         puuid = PlayerDatabase(this).getPUUID(nameSplit[0], nameSplit[1])!!
         region = PlayerDatabase(this).getRegion(puuid)!!
@@ -90,7 +82,7 @@ class ValorantMainMenu : AppCompatActivity() {
             })
         }
 
-        val playersRef = database.getReference("VALORANT/signedInPlayers")
+        val playersRef = database.getReference("VALORANT/players")
         playersRef.child(nameSplit[0]).child("Puuid").setValue(puuid)
         playersRef.child(nameSplit[0]).child("GameTag").setValue(nameSplit[1])
         playersRef.child(nameSplit[0]).child("Region").setValue(region)
@@ -107,7 +99,6 @@ class ValorantMainMenu : AppCompatActivity() {
         val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
         val trackerGGButton: Button = findViewById(R.id.buildTrackerGGProfile)
 
-
         val layer: ConstraintLayout = findViewById(R.id.constraintLayout)
         val listofViews = arrayListOf<View>()
         layer.childCount.let {
@@ -117,7 +108,18 @@ class ValorantMainMenu : AppCompatActivity() {
             }
         }
 
-        animateViews(listofViews, 500, 400F)
+        val animateNameText: TextView = findViewById(R.id.animateName)
+        animateNameText.text = "Welcome ${nameSplit[0]}"
+        dissapearViews(listofViews, 500, 500F)
+        val random = Random()
+        val shuffled = listofViews.shuffled(random)
+        doAsync {
+            Thread.sleep(2000)
+            uiThread {
+                animateNameText.animate().alpha(0F).start()
+                animateViews(shuffled, 500, 500F)
+            }
+        }
         imagebackground = findViewById(R.id.imagebackground)
 
         // ------------------------ Cosmetics ------------------------------------
@@ -148,7 +150,6 @@ class ValorantMainMenu : AppCompatActivity() {
             startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
-
         // ------------------------ End of cosmetics ------------------------------------
 
         trackerGGButton.setOnClickListener()
@@ -162,7 +163,7 @@ class ValorantMainMenu : AppCompatActivity() {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Match Notification Details")
                 builder.setMessage(
-                    "Your device will continuously check for any new matches played from now\nWhen a new match has been played, a notification will be sent to your device for you to view details of that match\n" +
+                    "When a new match has been played, a notification will be sent to your device for you to view details of that match\n" +
                             "Are you sure you want to enable this?"
                 )
                 builder.setPositiveButton("Yes") { _, _ ->
@@ -396,12 +397,12 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     private fun startTrackerGG(name: String, tag: String) {
-        Toast.makeText(this, "Building profile", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Profile is eligible! Coming in 2.2 update", Toast.LENGTH_LONG)
+            .show()
 //        val intent = Intent(this, TrackerGG::class.java)
 //        intent.putExtra("name", name)
 //        intent.putExtra("tag", tag)
 //        startActivity(intent)
-
     }
 
     private fun signIntoTrackerGG(name: String, tag: String) {
@@ -448,11 +449,11 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     override fun onResume() {
+        super.onResume()
         FirebaseApp.initializeApp(/*context=*/this)
         FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
             SafetyNetAppCheckProviderFactory.getInstance()
         )
-        super.onResume()
     }
 
     @SuppressLint("SetTextI18n")
@@ -509,87 +510,95 @@ class ValorantMainMenu : AppCompatActivity() {
         val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$RiotName/$RiotID?size=1"
         val agentImageMainMenu: ImageView = findViewById(R.id.agentImageMainMenu)
         doAsync {
-            val lastMatchData = JSONObject(URL(allmatches).readText())
-            val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
-            val mapData = jsonOfMap["data"] as JSONArray
-            val data = lastMatchData["data"] as JSONArray
-            val metadata = data.getJSONObject(0).getJSONObject("metadata")
-            val map = metadata.getString("map")
-            var actualtMapUlr = ""
+            try {
+                val lastMatchData = JSONObject(URL(allmatches).readText())
+                val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
+                val mapData = jsonOfMap["data"] as JSONArray
+                val data = lastMatchData["data"] as JSONArray
+                val metadata = data.getJSONObject(0).getJSONObject("metadata")
+                val map = metadata.getString("map")
+                var actualtMapUlr = ""
 
-            val unixTimeStart = metadata.getInt("game_start")
-            val date = Date(unixTimeStart.toLong() * 1000)
-            val d: Duration =
-                Duration.between(
-                    date.toInstant(),
-                    Instant.now()
-                )
+                val unixTimeStart = metadata.getInt("game_start")
+                val date = Date(unixTimeStart.toLong() * 1000)
+                val d: Duration =
+                    Duration.between(
+                        date.toInstant(),
+                        Instant.now()
+                    )
 
-            var KDA: String? = null
+                var KDA: String? = null
 
-            val gameModeMainMenu: TextView = findViewById(R.id.gameModeMainMenu)
-            val gameMode = metadata.getString("mode")
-            val matchID = metadata.getString("matchid")
+                val gameModeMainMenu: TextView = findViewById(R.id.gameModeMainMenu)
+                val gameMode = metadata.getString("mode")
+                val matchID = metadata.getString("matchid")
 
-            val timeinDays = d.toDays()
-            val timeInHours = d.toHours()
-            val gameStartMainMenu: TextView = findViewById(R.id.gameStartMainMenu)
+                val timeinDays = d.toDays()
+                val timeInHours = d.toHours()
+                val gameStartMainMenu: TextView = findViewById(R.id.gameStartMainMenu)
 
-            var agentURL: String? = null
-            val playersList = data.getJSONObject(0).getJSONObject("players")
-            val allPlayers = playersList.getJSONArray("all_players") as JSONArray
-            for (i in 0 until allPlayers.length()) {
-                val currentPlayer = allPlayers[i] as JSONObject
-                val currentPlayerName = currentPlayer.getString("name")
-                if (currentPlayerName == RiotName) {
-                    agentURL = currentPlayer.getJSONObject("assets").getJSONObject("agent")
-                        .getString("small")
-                    val stats = currentPlayer.getJSONObject("stats")
-                    KDA =
-                        stats.getString("kills") + "/" + stats.getString("deaths") + "/" + stats.getString(
-                            "assists"
-                        )
-                    break
-                }
-            }
-            val lastMatchStatsMainMenu: TextView = findViewById(R.id.lastMatchStatsMainMenu)
-            for (i in 0 until mapData.length()) {
-                val mapNamefromJSON = mapData[i] as JSONObject
-                val nameofMpa = mapNamefromJSON["displayName"]
-                if (nameofMpa == map) {
-                    actualtMapUlr = mapNamefromJSON["listViewIcon"].toString()
-                }
-            }
-            runOnUiThread {
-                lastMatchMapImage.setOnClickListener {
-                    matchActivityStart(RiotName, RiotID, matchID)
-                }
-
-                when {
-                    timeinDays > 0 -> {
-                        gameStartMainMenu.text = "$timeinDays days ago"
-                    }
-                    timeInHours > 0 -> {
-                        gameStartMainMenu.text = "$timeInHours hours ago"
-                    }
-                    else -> {
-                        gameStartMainMenu.text = "${d.toMinutes()} minutes ago"
+                var agentURL: String? = null
+                val playersList = data.getJSONObject(0).getJSONObject("players")
+                val allPlayers = playersList.getJSONArray("all_players") as JSONArray
+                for (i in 0 until allPlayers.length()) {
+                    val currentPlayer = allPlayers[i] as JSONObject
+                    val currentPlayerName = currentPlayer.getString("name")
+                    if (currentPlayerName == RiotName) {
+                        agentURL = currentPlayer.getJSONObject("assets").getJSONObject("agent")
+                            .getString("small")
+                        val stats = currentPlayer.getJSONObject("stats")
+                        KDA =
+                            stats.getString("kills") + "/" + stats.getString("deaths") + "/" + stats.getString(
+                                "assists"
+                            )
+                        break
                     }
                 }
-                lastMatchStatsMainMenu.text = KDA
-                Picasso.get().load(agentURL).fit().centerInside().into(agentImageMainMenu)
+                val lastMatchStatsMainMenu: TextView = findViewById(R.id.lastMatchStatsMainMenu)
+                for (i in 0 until mapData.length()) {
+                    val mapNamefromJSON = mapData[i] as JSONObject
+                    val nameofMpa = mapNamefromJSON["displayName"]
+                    if (nameofMpa == map) {
+                        actualtMapUlr = mapNamefromJSON["listViewIcon"].toString()
+                    }
+                }
+                runOnUiThread {
+                    lastMatchMapImage.setOnClickListener {
+                        matchActivityStart(RiotName, RiotID, matchID)
+                    }
 
-                gameModeMainMenu.text = gameMode
+                    when {
+                        timeinDays > 0 -> {
+                            gameStartMainMenu.text = "$timeinDays days ago"
+                        }
+                        timeInHours > 0 -> {
+                            gameStartMainMenu.text = "$timeInHours hours ago"
+                        }
+                        else -> {
+                            gameStartMainMenu.text = "${d.toMinutes()} minutes ago"
+                        }
+                    }
+                    lastMatchStatsMainMenu.text = KDA
+                    Picasso.get().load(agentURL).fit().centerInside().into(agentImageMainMenu)
 
-                lastMatchMapImage.visibility = View.VISIBLE
-                agentImageMainMenu.visibility = View.VISIBLE
-                Picasso
-                    .get()
-                    .load(actualtMapUlr)
-                    .transform(BlurTransformation(this@ValorantMainMenu, 2, 2))
-                    .fit()
-                    .centerInside()
-                    .into(lastMatchMapImage)
+                    gameModeMainMenu.text = gameMode
+
+                    lastMatchMapImage.visibility = View.VISIBLE
+                    agentImageMainMenu.visibility = View.VISIBLE
+                    Picasso
+                        .get()
+                        .load(actualtMapUlr)
+                        .transform(BlurTransformation(this@ValorantMainMenu, 2, 2))
+                        .fit()
+                        .centerInside()
+                        .into(lastMatchMapImage)
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    Log.d("Henrik", "Error: $e")
+                    val lastMatchStatsMainMenu: TextView = findViewById(R.id.lastMatchStatsMainMenu)
+                    lastMatchStatsMainMenu.text = "Error loading data"
+                }
             }
         }
     }
@@ -611,6 +620,14 @@ class ValorantMainMenu : AppCompatActivity() {
             v.translationY = -y
             v.animate().alpha(1f).setDuration(duration).translationYBy(y).startDelay = delay
             delay += 50L
+        }
+    }
+
+    private fun dissapearViews(view: List<View>, duration: Long, y: Float) {
+        var delay = 0L
+        for (i in view.indices) {
+            val v = view[i]
+            v.alpha = 0f
         }
     }
 }

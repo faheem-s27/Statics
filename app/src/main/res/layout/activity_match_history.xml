@@ -22,11 +22,15 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/valorant"
             android:gravity="center"
             android:minHeight="?actionBarSize"
             android:padding="@dimen/appbar_padding"
-            android:text="Match Information for {name}"
-            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+            android:text="Processing Match"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabsforMatch"

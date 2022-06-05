@@ -8,7 +8,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.ZoomOutPageTransformer
+import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
 
 class WeaponActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo.match_info
+package com.jawaadianinc.valorant_stats.valo.adapters
 
 import android.app.Activity
 import android.graphics.Color
@@ -37,8 +37,8 @@ class MatchAdapter(
         val mode_Text = row.findViewById<View>(R.id.ModeRow) as TextView
         val wonBar = row.findViewById(R.id.wonbar) as View
 
-        var listofViews =
-            arrayListOf<View>(agentImage, mapImage, timePlayed_Text, KDA_Text, mode_Text, wonBar)
+//        var listofViews =
+//            arrayListOf<View>(agentImage, mapImage, timePlayed_Text, KDA_Text, mode_Text, wonBar)
         //animateViews(listofViews, 500, 0F)
 
         when {
@@ -98,17 +98,10 @@ class MatchAdapter(
                 timePlayed_Text.text = "${d.toMinutes()} minutes ago"
             }
         }
+
+        //Log.d("MatchAdapter", "getView: $position")
+
         return row
     }
 
-    private fun animateViews(view: List<View>, duration: Long, y: Float) {
-        var delay = 0L
-        for (i in view.indices) {
-            val v = view[i]
-            v.alpha = 0f
-            v.animate().alpha(1f).setDuration(duration).startDelay = delay
-            delay += 50L
-        }
-
-    }
 }

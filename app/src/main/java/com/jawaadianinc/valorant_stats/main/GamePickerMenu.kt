@@ -27,9 +27,10 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.brawlhalla.brawlFindAccount
-import com.jawaadianinc.valorant_stats.valo.LoggingInActivityRSO
-import com.jawaadianinc.valorant_stats.valo.PlayerDatabase
-import com.jawaadianinc.valorant_stats.valo.ValorantMainMenu
+import com.jawaadianinc.valorant_stats.main.SettingsActivity
+import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
+import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
+import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
 
 
