@@ -218,7 +218,7 @@ class PlayerDetailsFragment : Fragment() {
             } catch (e: Exception) {
                 uiThread {
                     AlertDialog.Builder(requireActivity()).setTitle("Error!")
-                        .setMessage("Error Message: $e")
+                        .setMessage("Something unexpected occurred when loading players data!")
                         .setPositiveButton(android.R.string.ok) { _, _ -> }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }

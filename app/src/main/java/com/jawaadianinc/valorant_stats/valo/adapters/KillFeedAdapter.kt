@@ -32,11 +32,15 @@ class KillFeedAdapter(
         val killerColour = row.findViewById(R.id.killColour) as View
         val victimColour = row.findViewById(R.id.victimColour) as View
         val gunName = row.findViewById<View>(R.id.gunName) as TextView
+        val gradient = row.findViewById(R.id.gradient) as ImageView
 
         if (killerTeam[position] == "Red") {
             killerColour.setBackgroundColor(Color.parseColor("#f94555"))
+            // set drawable to imageview background
+            gradient.setBackgroundResource(R.drawable.red_to_blue)
         } else {
             killerColour.setBackgroundColor(Color.parseColor("#18e4b7"))
+            gradient.setBackgroundResource(R.drawable.blue_to_red)
         }
 
         if (victimTeam[position] == "Red") {

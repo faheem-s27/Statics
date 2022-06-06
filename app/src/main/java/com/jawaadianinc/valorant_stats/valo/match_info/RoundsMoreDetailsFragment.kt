@@ -192,7 +192,7 @@ class RoundsMoreDetailsFragment : Fragment() {
             } catch (e: Exception) {
                 uiThread {
                     AlertDialog.Builder(requireActivity()).setTitle("Error!")
-                        .setMessage("Error Message: $e")
+                        .setMessage("An error occurred while fetching the match details")
                         .setPositiveButton(android.R.string.ok) { _, _ -> }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }
