@@ -7,6 +7,7 @@
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.21875" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/drawable/blue_to_red.xml" value="0.3205" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/drawable/red_to_blue.xml" value="0.3205" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/drawable/round_outline.xml" value="0.3205" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_agents.xml" value="0.3625" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_brawl_find_account.xml" value="0.22" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_brawl_stats.xml" value="0.2326388888888889" />
@@ -15,7 +16,7 @@
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_cosmetics_agents.xml" value="0.2829059829059829" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_cosmetics_list.xml" value="0.2829059829059829" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_find_fortnite_account.xml" value="0.2298611111111111" />
-        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_findaccount.xml" value="0.2829059829059829" />
+        <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_findaccount.xml" value="0.33741080530071355" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_game_picker.xml" value="0.2" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_leader_board.xml" value="0.2326388888888889" />
         <entry key="..\:/Users/fahee/Desktop/Coding/Android Projects/VALORANT_stats/app/src/main/res/layout/activity_loading.xml" value="0.2298611111111111" />

@@ -57,6 +57,7 @@ class LoggingInActivityRSO : AppCompatActivity() {
                     Uri.parse("https://auth.riotgames.com/authorize?client_id=statics&redirect_uri=https://statics-fd699.web.app/authorize.html&response_type=code&scope=openid+offline_access&prompt=login")
                 )
             )
+            finish()
         }
     }
 

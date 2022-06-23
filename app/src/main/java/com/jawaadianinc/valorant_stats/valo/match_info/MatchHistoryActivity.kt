@@ -42,12 +42,6 @@ class MatchHistoryActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
         progressBar.isIndeterminate = true
 
-//        val progressDialog = ProgressDialog(this)
-//        progressDialog.setTitle("Getting information")
-//        progressDialog.setMessage("Collecting match details!")
-//        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-//        progressDialog.setCancelable(false)
-//        progressDialog.show()
 
         if (hasWon == true) {
             // insert winning sound here

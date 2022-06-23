@@ -97,7 +97,9 @@ class ValorantMainMenu : AppCompatActivity() {
         val FABplus: FloatingActionButton = findViewById(R.id.fabPlus)
         val seekBar: SeekBar = findViewById(R.id.howManyMatches)
         val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
-        val trackerGGButton: Button = findViewById(R.id.buildTrackerGGProfile)
+        val trackerGGButton: FloatingActionButton = findViewById(R.id.buildTrackerGGProfile)
+        val crosshairButton: FloatingActionButton = findViewById(R.id.crosshairBT)
+
 
         val layer: ConstraintLayout = findViewById(R.id.constraintLayout)
         val listofViews = arrayListOf<View>()
@@ -613,12 +615,25 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     private fun animateViews(view: List<View>, duration: Long, y: Float) {
+
+        var reverseDirection = false
+
         var delay = 0L
         for (i in view.indices) {
+            // make reverse direction every other time
+            if (i % 2 == 0) {
+                reverseDirection = !reverseDirection
+            }
             val v = view[i]
             v.alpha = 0f
-            v.translationY = -y
-            v.animate().alpha(1f).setDuration(duration).translationYBy(y).startDelay = delay
+            if (reverseDirection) {
+                v.translationX = y
+                v.animate().alpha(1f).setDuration(duration).translationXBy(-y).startDelay = delay
+            } else {
+                v.translationX = -y
+                v.animate().alpha(1f).setDuration(duration).translationXBy(y).startDelay = delay
+            }
+            //v.translationX = -y
             delay += 50L
         }
     }
@@ -631,6 +646,3 @@ class ValorantMainMenu : AppCompatActivity() {
         }
     }
 }
-
-
-

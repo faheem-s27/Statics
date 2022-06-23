@@ -18,6 +18,7 @@ class MatchAdapter(
     private val context: Activity,
     private val agentURL: ArrayList<String>,
     private val mapURL: ArrayList<String>,
+    private val mapName: ArrayList<String>,
     private val timePlayed: ArrayList<String>,
     private val KDA: ArrayList<String>,
     private val mode: ArrayList<String>,
@@ -36,6 +37,7 @@ class MatchAdapter(
         val KDA_Text = row.findViewById<View>(R.id.KDA_Row) as TextView
         val mode_Text = row.findViewById<View>(R.id.ModeRow) as TextView
         val wonBar = row.findViewById(R.id.wonbar) as View
+        //val map_Text = row.findViewById<View>(R.id.ModeRow) as TextView
 
 //        var listofViews =
 //            arrayListOf<View>(agentImage, mapImage, timePlayed_Text, KDA_Text, mode_Text, wonBar)
@@ -62,6 +64,9 @@ class MatchAdapter(
         Picasso.get().load(mapURL[position]).transform(BlurTransformation(context, 2, 2)).fit()
             .centerInside().into(mapImage)
 
+        // map_Text.text = mapName[position]
+        mapImage.clipToOutline = true
+
         when {
             mode[position] == "" -> {
                 mode_Text.text = "Custom Game"
@@ -84,14 +89,19 @@ class MatchAdapter(
                 Instant.now()
             )
 
+        // convert time to months
+        val weeks = d.toDays() / 7
         val timeinDays = d.toDays()
         val timeInHours = d.toHours()
 
         when {
-            timeinDays > 0 -> {
+            weeks > 1 -> {
+                timePlayed_Text.text = "$weeks weeks ago"
+            }
+            timeinDays > 1 -> {
                 timePlayed_Text.text = "$timeinDays days ago"
             }
-            timeInHours > 0 -> {
+            timeInHours > 1 -> {
                 timePlayed_Text.text = "$timeInHours hours ago"
             }
             else -> {

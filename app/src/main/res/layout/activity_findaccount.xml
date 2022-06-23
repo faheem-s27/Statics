@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/ic_launcher_background">
 
+
     <TextView
         android:id="@+id/animateName"
         android:layout_width="wrap_content"
@@ -118,7 +119,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:elevation="12dp"
                 app:cardCornerRadius="200dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -155,11 +156,186 @@
                 app:layout_constraintStart_toStartOf="@+id/circle"
                 app:layout_constraintTop_toBottomOf="@+id/circle" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/crosshairBT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/ic_launcher_background"
+                android:clickable="true"
+                app:backgroundTint="@color/ic_launcher_background"
+                app:fabSize="auto"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView14"
+                app:srcCompat="@drawable/crosshair"
+                app:tint="@color/white" />
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView8">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/agentsCozBT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="Agents"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/weaponsBT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="WeApons"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/playerCardsBT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="Cards"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/spraysBT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="Sprays"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/buddiesBT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="Buddies"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/mapsButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="Maps"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/ranksButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="Ranks"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/levelBordersBT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="Level Borders"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/titlesBT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="Titles"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/seasonsBT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="Seasons"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/bundlesBT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:text="Bundles"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="50dp"
+                        app:iconTint="#FFFFFF" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
             <TextView
                 android:id="@+id/playerNameMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:fontFamily="@font/valorant"
                 android:text="Getting name..."
                 android:textAlignment="center"
@@ -199,6 +375,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/rankPatchedMainMenu"
                 tools:visibility="visible" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buildTrackerGGProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:clickable="true"
+                app:backgroundTint="@color/ic_launcher_background"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView14"
+                app:srcCompat="@drawable/info"
+                app:tint="@color/white" />
+
             <TextView
                 android:id="@+id/rankNumberMainMenu"
                 android:layout_width="wrap_content"
@@ -225,7 +414,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider3" />
+                app:layout_constraintTop_toBottomOf="@+id/divider6" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -256,7 +445,7 @@
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
             <View
-                android:id="@+id/divider3"
+                android:id="@+id/divider6"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="16dp"
@@ -264,7 +453,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/buildTrackerGGProfile" />
+                app:layout_constraintTop_toBottomOf="@+id/playerNameMenu" />
 
             <View
                 android:id="@+id/divider4"
@@ -276,6 +465,32 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/liveMatch" />
+
+            <View
+                android:id="@+id/divider5"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/valorant"
+                android:text="--- Valorant Info ---"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider5" />
 
             <ImageView
                 android:id="@+id/rankImageMainMenu"
@@ -324,7 +539,7 @@
 
             <ImageView
                 android:id="@+id/agentImageMainMenu"
-                android:layout_width="80dp"
+                android:layout_width="70dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
@@ -337,29 +552,13 @@
                 tools:srcCompat="@tools:sample/avatars"
                 tools:visibility="visible" />
 
-            <Button
-                android:id="@+id/buildTrackerGGProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/baloo_bhai"
-                android:text="View profile stats"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                app:cornerRadius="50dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/playerNameMenu" />
-
             <TextView
                 android:id="@+id/gameStartMainMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/valorant"
+                android:fontFamily="@font/baloo_bhai"
                 android:shadowColor="#000000"
                 android:shadowDx="1.5"
                 android:shadowDy="1.3"
@@ -377,7 +576,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:fontFamily="@font/valorant"
+                android:fontFamily="@font/baloo_bhai"
                 android:shadowColor="#000000"
                 android:shadowDx="1.5"
                 android:shadowDy="1.3"
@@ -393,7 +592,7 @@
                 android:id="@+id/lastMatchStatsMainMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/valorant"
+                android:fontFamily="@font/baloo_bhai"
                 android:shadowColor="#000000"
                 android:shadowDx="1.5"
                 android:shadowDy="1.3"
@@ -461,70 +660,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/howManyMatches" />
-
-            <Button
-                android:id="@+id/agentsCozBT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/baloo_bhai"
-                android:text="Agents"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                app:cornerRadius="50dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintStart_toEndOf="@+id/weaponsBT"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-            <Button
-                android:id="@+id/weaponsBT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/baloo_bhai"
-                android:text="WeApons"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                app:cornerRadius="50dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-            <Button
-                android:id="@+id/playerCardsBT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/baloo_bhai"
-                android:text="Player Cards"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                app:cornerRadius="50dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/weaponsBT" />
-
-            <Button
-                android:id="@+id/spraysBT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/baloo_bhai"
-                android:text="Sprays"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                app:cornerRadius="50dp"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintStart_toEndOf="@+id/playerCardsBT"
-                app:layout_constraintTop_toBottomOf="@+id/weaponsBT" />
 
             <TextView
                 android:id="@+id/textView8"

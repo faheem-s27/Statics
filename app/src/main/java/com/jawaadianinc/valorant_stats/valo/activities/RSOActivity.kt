@@ -43,7 +43,7 @@ class RSOActivity : AppCompatActivity() {
         val data: Uri? = intent?.data
         val updateText: TextView = findViewById(R.id.infoText)
         code = data!!.getQueryParameter("code")
-        updateText.text = "Signing in"
+        updateText.text = "Hello, please wait while we are authenticating you..."
 
         val confirmUserText: TextView = findViewById(R.id.confirmUserText)
         val confirmButton: Button = findViewById(R.id.confirmUserButton)
@@ -80,7 +80,7 @@ class RSOActivity : AppCompatActivity() {
                 secret = dataSnapshot.value as String?
                 val toBeEncoded = "statics:$secret"
                 base64encode = Base64.encodeToString(toBeEncoded.toByteArray(), Base64.NO_WRAP)
-                updateText.text = "Signing in"
+                updateText.text = "Giving you gun buddies"
                 getToken()
             }
 
@@ -117,6 +117,7 @@ class RSOActivity : AppCompatActivity() {
                 val accessToken = json.getString("access_token")
                 progressBar.progress = 40
                 uiThread {
+                    updateText.text = "Setting your account to Iron"
                     getUserInfo(accessToken)
                 }
             }

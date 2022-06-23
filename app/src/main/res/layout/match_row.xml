@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="125dp"
         android:alpha="0.7"
+        android:background="@drawable/round_outline"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,12 +20,13 @@
 
     <ImageView
         android:id="@+id/killerIcon"
-        android:layout_width="100dp"
+        android:layout_width="70dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="@+id/mapImageRow"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@+id/wonbar"
         app:layout_constraintTop_toTopOf="@+id/mapImageRow"
         tools:srcCompat="@tools:sample/avatars" />

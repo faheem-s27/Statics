@@ -32,6 +32,7 @@ class ViewMatches : AppCompatActivity() {
     val gameMode = ArrayList<String>()
     val matchIDs = ArrayList<String>()
     val won = ArrayList<String>()
+    val mapNames = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +91,7 @@ class ViewMatches : AppCompatActivity() {
 
                             var agentImage = ""
                             var mapListViewIcon = ""
+                            var mapName = ""
 
                             for (i in 0 until players.length()) {
                                 val currentPlayer = players[i] as JSONObject
@@ -139,6 +141,7 @@ class ViewMatches : AppCompatActivity() {
                                         val currentMap = mapResponse[i] as JSONObject
                                         if (currentMap.getString("mapUrl") == map) {
                                             mapListViewIcon = currentMap.getString("listViewIcon")
+                                            mapName = currentMap.getString("displayName")
                                             RSODB.child(gameName).child("Matches").child(matchID)
                                                 .child("Map")
                                                 .setValue(currentMap.getString("displayName"))
@@ -173,6 +176,7 @@ class ViewMatches : AppCompatActivity() {
                                     gameMode += mode
                                     matchIDs += matchID
                                     won += winning
+                                    mapNames += mapName
                                 }
                             }
                             runOnUiThread {
@@ -184,6 +188,7 @@ class ViewMatches : AppCompatActivity() {
                                     this@ViewMatches,
                                     playerAgentImage,
                                     mapImage,
+                                    mapNames,
                                     timePlayed,
                                     KDA,
                                     gameMode,
