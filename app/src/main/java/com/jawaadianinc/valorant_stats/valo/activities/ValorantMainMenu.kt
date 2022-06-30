@@ -28,6 +28,7 @@ import com.jawaadianinc.valorant_stats.valo.MMRActivity
 import com.jawaadianinc.valorant_stats.valo.ViewMatches
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
+import com.jawaadianinc.valorant_stats.valo.crosshair.CrossHairActivity
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
@@ -98,8 +99,10 @@ class ValorantMainMenu : AppCompatActivity() {
         val seekBar: SeekBar = findViewById(R.id.howManyMatches)
         val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
         val trackerGGButton: FloatingActionButton = findViewById(R.id.buildTrackerGGProfile)
-        val crosshairButton: FloatingActionButton = findViewById(R.id.crosshairBT)
-
+        val crosshairButton: Button = findViewById(R.id.crosshairBT)
+        crosshairButton.setOnClickListener {
+            startActivity(Intent(this, CrossHairActivity::class.java))
+        }
 
         val layer: ConstraintLayout = findViewById(R.id.constraintLayout)
         val listofViews = arrayListOf<View>()
@@ -615,9 +618,7 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     private fun animateViews(view: List<View>, duration: Long, y: Float) {
-
         var reverseDirection = false
-
         var delay = 0L
         for (i in view.indices) {
             // make reverse direction every other time
