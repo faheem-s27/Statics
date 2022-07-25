@@ -33,6 +33,10 @@ import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -101,6 +105,7 @@ class ValorantMainMenu : AppCompatActivity() {
         val trackerGGButton: FloatingActionButton = findViewById(R.id.buildTrackerGGProfile)
         val crosshairButton: Button = findViewById(R.id.crosshairBT)
         crosshairButton.setOnClickListener {
+            //comingSoon()
             startActivity(Intent(this, CrossHairActivity::class.java))
         }
 
@@ -155,6 +160,35 @@ class ValorantMainMenu : AppCompatActivity() {
             startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
+
+        findViewById<Button>(R.id.buddiesBT).setOnClickListener {
+            comingSoon()
+        }
+
+        findViewById<Button>(R.id.mapsButton).setOnClickListener {
+            comingSoon()
+        }
+
+        findViewById<Button>(R.id.ranksButton).setOnClickListener {
+            comingSoon()
+        }
+
+        findViewById<Button>(R.id.levelBordersBT).setOnClickListener {
+            comingSoon()
+        }
+
+        findViewById<Button>(R.id.titlesBT).setOnClickListener {
+            comingSoon()
+        }
+
+        findViewById<Button>(R.id.seasonsBT).setOnClickListener {
+            comingSoon()
+        }
+
+        findViewById<Button>(R.id.bundlesBT).setOnClickListener {
+            comingSoon()
+        }
+
         // ------------------------ End of cosmetics ------------------------------------
 
         trackerGGButton.setOnClickListener()
@@ -309,7 +343,7 @@ class ValorantMainMenu : AppCompatActivity() {
         doAsync {
             try {
                 val data =
-                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true").readText())["data"] as JSONObject
+                    HenrikAPI("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true")["data"] as JSONObject
                 val largePic = data.getJSONObject("card").getString("large") as String
                 val smolPic = data.getJSONObject("card").getString("small") as String
                 val playerProfile: ImageView = findViewById(R.id.playerProfile)
@@ -345,6 +379,10 @@ class ValorantMainMenu : AppCompatActivity() {
             }
         })
 
+    }
+
+    private fun comingSoon() {
+        Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
     }
 
     private fun checkForTrackerGG(gameName: String, gameTag: String) {
@@ -429,7 +467,7 @@ class ValorantMainMenu : AppCompatActivity() {
         doAsync {
             try {
                 val data =
-                    JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true").readText())["data"] as JSONObject
+                    HenrikAPI("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true")["data"] as JSONObject
                 val largePic = data.getJSONObject("card").getString("large") as String
                 val smolPic = data.getJSONObject("card").getString("small") as String
                 val playerProfile: ImageView = findViewById(R.id.playerProfile)
@@ -473,7 +511,7 @@ class ValorantMainMenu : AppCompatActivity() {
 
         doAsync {
             try {
-                val currentTierData = JSONObject(URL(currentTier).readText())
+                val currentTierData = HenrikAPI(currentTier)
                 val dataofThis = currentTierData["data"] as JSONObject
                 val currentTierNumber = dataofThis["currenttier"] as Int
                 val progressNumber = dataofThis["ranking_in_tier"] as Int
@@ -516,7 +554,7 @@ class ValorantMainMenu : AppCompatActivity() {
         val agentImageMainMenu: ImageView = findViewById(R.id.agentImageMainMenu)
         doAsync {
             try {
-                val lastMatchData = JSONObject(URL(allmatches).readText())
+                val lastMatchData = HenrikAPI(allmatches)
                 val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
                 val mapData = jsonOfMap["data"] as JSONArray
                 val data = lastMatchData["data"] as JSONArray
@@ -645,5 +683,21 @@ class ValorantMainMenu : AppCompatActivity() {
             val v = view[i]
             v.alpha = 0f
         }
+    }
+
+    private fun HenrikAPI(playerURL: String): JSONObject {
+        val client = OkHttpClient()
+        val urlBuilder: HttpUrl.Builder =
+            playerURL.toHttpUrlOrNull()!!.newBuilder()
+        val url = urlBuilder.build().toString()
+
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Authorization", "lol")
+            .build()
+        val call = client.newCall(request).execute()
+        val response = call.body.string()
+        val json = JSONObject(response)
+        return json
     }
 }

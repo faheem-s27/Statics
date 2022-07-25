@@ -11,6 +11,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
 import com.jawaadianinc.valorant_stats.valo.adapters.MatchHistoryAdapter
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -52,8 +56,7 @@ class MatchHistoryActivity : AppCompatActivity() {
 
         doAsync {
             val matchID: String = if (IDofMatch == "none") {
-                val matchhistoryURL = URL(allmatches).readText()
-                val jsonMatches = JSONObject(matchhistoryURL)
+                val jsonMatches = HenrikAPI(allmatches)
                 val data = jsonMatches["data"] as JSONArray
                 val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
                 easier.getString("matchid")
@@ -61,7 +64,7 @@ class MatchHistoryActivity : AppCompatActivity() {
                 IDofMatch!!
             }
             val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-            matchJSON = JSONObject(URL(matchURl).readText())
+            matchJSON = HenrikAPI(matchURl)
             val metadata = matchJSON!!.getJSONObject("data").getJSONObject("metadata")
             val map = metadata.getString("map")
             val mapJSON =
@@ -179,5 +182,21 @@ class MatchHistoryActivity : AppCompatActivity() {
     companion object {
         var matchJSON: JSONObject? = null
         var mapURL: String? = null
+    }
+
+    private fun HenrikAPI(playerURL: String): JSONObject {
+        val client = OkHttpClient()
+        val urlBuilder: HttpUrl.Builder =
+            playerURL.toHttpUrlOrNull()!!.newBuilder()
+        val url = urlBuilder.build().toString()
+
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Authorization", "lol")
+            .build()
+        val call = client.newCall(request).execute()
+        val response = call.body.string()
+        val json = JSONObject(response)
+        return json
     }
 }

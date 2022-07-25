@@ -47,7 +47,7 @@ class MatchDetailsFragment : Fragment() {
         val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
 
 
-        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
+        //val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
         doAsync {
             try {

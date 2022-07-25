@@ -15,6 +15,10 @@ import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -49,15 +53,15 @@ class MMRActivity : AppCompatActivity() {
 
         val tierURL = "https://valorant-api.com/v1/competitivetiers"
         val PlayerURL =
-            "https://api.henrikdev.xyz/valorant/v1/account/${RiotName}/$RiotID"
+            "https://api.henrikdev.xyz/valorant/v1/account/${RiotName}/$RiotID" // modified
         val currentTier = "https://api.henrikdev.xyz/valorant/v1/mmr/eu/${RiotName}/$RiotID"
         val MMRHistory =
             "https://api.henrikdev.xyz/valorant/v1/mmr-history/eu/${RiotName}/${RiotID}"
 
         doAsync {
             try {
-                val text = URL(PlayerURL).readText()
-                var data = JSONObject(text)
+
+                var data = HenrikAPI(PlayerURL)
                 data = data["data"] as JSONObject
                 val cards = data["card"] as JSONObject
                 val playerCard = cards["wide"].toString()
@@ -79,7 +83,7 @@ class MMRActivity : AppCompatActivity() {
 
                 }
 
-                val currentTierData = JSONObject(URL(currentTier).readText())
+                val currentTierData = HenrikAPI(currentTier)
                 val dataofThis = currentTierData["data"] as JSONObject
                 val currentTierNumber = dataofThis["currenttier"] as Int
                 val progressNumber = dataofThis["ranking_in_tier"] as Int
@@ -119,7 +123,7 @@ class MMRActivity : AppCompatActivity() {
                     }
                 }
 
-                val MMRHistoryJSON = JSONObject(URL(MMRHistory).readText())
+                val MMRHistoryJSON = HenrikAPI(MMRHistory)
                 val MMRArray = MMRHistoryJSON["data"] as JSONArray
 
                 val dates = ArrayList<String>()
@@ -259,5 +263,21 @@ class MMRActivity : AppCompatActivity() {
             height = newHeight // in pixels
             layoutParams = this
         }
+    }
+
+    private fun HenrikAPI(playerURL: String): JSONObject {
+        val client = OkHttpClient()
+        val urlBuilder: HttpUrl.Builder =
+            playerURL.toHttpUrlOrNull()!!.newBuilder()
+        val url = urlBuilder.build().toString()
+
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Authorization", "lol")
+            .build()
+        val call = client.newCall(request).execute()
+        val response = call.body.string()
+        val json = JSONObject(response)
+        return json
     }
 }

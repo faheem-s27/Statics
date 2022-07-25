@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/baloo_bhai"
                 android:padding="8dp"
-                android:text="None"
+                android:text="0;P;c;1;o;1;f;0;0t;1;0l;2;0o;2;0a;1;0f;0;1b;0"
                 android:textAlignment="textStart"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
@@ -153,8 +153,9 @@
                 android:id="@+id/crossHairColour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/baloo_bhai"
                 android:padding="10dp"
                 android:text="Crosshair Colour:"
                 android:textAlignment="center"
@@ -163,6 +164,147 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/outLinesEnabled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:padding="18dp"
+                android:text="Outlines Enabled"
+                android:textColor="#FFFFFF"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/crossHairColour" />
+
+            <SeekBar
+                android:id="@+id/outLinesOpacity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/textView15"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/divider3"
+                app:layout_constraintTop_toTopOf="@+id/textView15" />
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="2dp"
+                android:layout_height="0dp"
+                android:background="@color/ic_launcher_background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:padding="10dp"
+                android:text="Outline opacity"
+                android:textAlignment="viewStart"
+                android:textColor="#FFFFFF"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/outLinesEnabled" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:padding="10dp"
+                android:text="Outline Thickness"
+                android:textAlignment="viewStart"
+                android:textColor="#FFFFFF"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+            <SeekBar
+                android:id="@+id/outlinesThickness"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/textView16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/divider3"
+                app:layout_constraintTop_toTopOf="@+id/textView16" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/centerDotSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:padding="18dp"
+                android:text="Center dot"
+                android:textColor="#FFFFFF"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/outlinesThickness" />
+
+            <SeekBar
+                android:id="@+id/centerDotOpacity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="17dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView17"
+                app:layout_constraintLeft_toLeftOf="@id/divider3"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textView17" />
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:padding="10dp"
+                android:text="Center dot opacity"
+                android:textAlignment="viewStart"
+                android:textColor="#FFFFFF"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/centerDotSwitch" />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:padding="10dp"
+                android:text="Center dot thickness"
+                android:textAlignment="viewStart"
+                android:textColor="#FFFFFF"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textView17" />
+
+            <SeekBar
+                android:id="@+id/centerDotThickness"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/textView18"
+                app:layout_constraintLeft_toLeftOf="@id/divider3"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textView18" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
