@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.Gravity
@@ -40,6 +39,10 @@ class PlayerDetailsFragment : Fragment() {
             try {
                 val jsonAgents: JSONArray =
                     JSONObject(URL("https://valorant-api.com/v1/agents").readText()).getJSONArray("data")
+                val jsonRanksURL: JSONArray =
+                    JSONObject(URL("https://valorant-api.com/v1/competitivetiers").readText()).getJSONArray(
+                        "data"
+                    )
 
                 val jsonDetails = MatchHistoryActivity.matchJSON
                 val matchData = jsonDetails?.get("data") as JSONObject
@@ -56,6 +59,7 @@ class PlayerDetailsFragment : Fragment() {
                 val playerDeaths = ArrayList<String>()
                 val playerAssists = ArrayList<String>()
                 val playerCharacters = ArrayList<String>()
+                val playerTier = ArrayList<String>()
 
                 for (i in 0 until red.length()) {
                     val currentPlayer = red[i] as JSONObject
@@ -72,6 +76,21 @@ class PlayerDetailsFragment : Fragment() {
                     playerAgentURL += agent["small"] as String
                     playerRanks += currentPlayer["currenttier_patched"] as String
                     playerCharacters += currentPlayer["character"] as String
+
+                    var RankURL = ""
+                    // Get the tier name from the API
+                    val tier = currentPlayer.getInt("currenttier")
+
+                    val rankIndex = jsonRanksURL.length() - 1
+                    val tiers = jsonRanksURL.getJSONObject(rankIndex).getJSONArray("tiers")
+                    for (j in 0 until tiers.length()) {
+                        val currentTier = tiers[j] as JSONObject
+                        if (currentTier.getInt("tier") == tier) {
+                            RankURL = currentTier.getString("largeIcon")
+                            break
+                        }
+                    }
+                    playerTier += RankURL
                 }
                 for (i in 0 until bloo.length()) {
                     val currentPlayer = bloo[i] as JSONObject
@@ -88,6 +107,21 @@ class PlayerDetailsFragment : Fragment() {
                     playerAgentURL += agent["small"] as String
                     playerRanks += currentPlayer["currenttier_patched"] as String
                     playerCharacters += currentPlayer["character"] as String
+
+                    var RankURL = ""
+                    // Get the tier name from the API
+                    val tier = currentPlayer.getInt("currenttier")
+
+                    val rankIndex = jsonRanksURL.length() - 1
+                    val tiers = jsonRanksURL.getJSONObject(rankIndex).getJSONArray("tiers")
+                    for (j in 0 until tiers.length()) {
+                        val currentTier = tiers[j] as JSONObject
+                        if (currentTier.getInt("tier") == tier) {
+                            RankURL = currentTier.getString("largeIcon")
+                            break
+                        }
+                    }
+                    playerTier += RankURL
                 }
 
                 val playerList: ListView = view.findViewById(R.id.playerList)
@@ -103,7 +137,8 @@ class PlayerDetailsFragment : Fragment() {
                         playerNames,
                         playerKills,
                         playerDeaths,
-                        playerAssists
+                        playerAssists,
+                        playerTier
                     )
                     playerList.adapter = players
                     playerList.setOnItemClickListener { _, _, position, _ ->
@@ -130,28 +165,28 @@ class PlayerDetailsFragment : Fragment() {
                         val deaths = playerDeaths[position]
                         val assists = playerAssists[position]
 
-                        for (i in 0 until jsonAgents.length()) {
-                            val currentAgent = jsonAgents[i] as JSONObject
-                            if (currentAgent.getString("displayName") == playerCharacters[position]) {
-                                val details = currentAgent.getJSONObject("voiceLine")
-                                    .getJSONArray("mediaList") as JSONArray
-                                val voiceLineURL = details[0] as JSONObject
-                                val url = voiceLineURL.getString("wave")
-                                doAsync {
-                                    mediaPlayer.apply {
-                                        setAudioAttributes(
-                                            AudioAttributes.Builder()
-                                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                                .setUsage(AudioAttributes.USAGE_MEDIA)
-                                                .build()
-                                        )
-                                        setDataSource(url)
-                                        prepare()
-                                        start()
-                                    }
-                                }
-                            }
-                        }
+//                        for (i in 0 until jsonAgents.length()) {
+//                            val currentAgent = jsonAgents[i] as JSONObject
+//                            if (currentAgent.getString("displayName") == playerCharacters[position]) {
+//                                val details = currentAgent.getJSONObject("voiceLine")
+//                                    .getJSONArray("mediaList") as JSONArray
+//                                val voiceLineURL = details[0] as JSONObject
+//                                val url = voiceLineURL.getString("wave")
+//                                doAsync {
+//                                    mediaPlayer.apply {
+//                                        setAudioAttributes(
+//                                            AudioAttributes.Builder()
+//                                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                                                .setUsage(AudioAttributes.USAGE_MEDIA)
+//                                                .build()
+//                                        )
+//                                        setDataSource(url)
+//                                        prepare()
+//                                        start()
+//                                    }
+//                                }
+//                            }
+//                        }
 
                         if (tier == "Unrated") {
                             playerstats.text = "Level: $level" +
@@ -218,7 +253,7 @@ class PlayerDetailsFragment : Fragment() {
             } catch (e: Exception) {
                 uiThread {
                     AlertDialog.Builder(requireActivity()).setTitle("Error!")
-                        .setMessage("Something unexpected occurred when loading players data!")
+                        .setMessage("Something unexpected occurred when loading players data! \nError: $e")
                         .setPositiveButton(android.R.string.ok) { _, _ -> }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }

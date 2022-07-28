@@ -2,6 +2,7 @@ package com.jawaadianinc.valorant_stats.valo.match_info
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -9,6 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
 import com.jawaadianinc.valorant_stats.valo.adapters.MatchHistoryAdapter
 import okhttp3.HttpUrl
@@ -185,18 +191,42 @@ class MatchHistoryActivity : AppCompatActivity() {
     }
 
     private fun HenrikAPI(playerURL: String): JSONObject {
-        val client = OkHttpClient()
-        val urlBuilder: HttpUrl.Builder =
-            playerURL.toHttpUrlOrNull()!!.newBuilder()
-        val url = urlBuilder.build().toString()
+        val database = Firebase.database
+        val keyRef = database.getReference("VALORANT/henrik")
+        val json: JSONObject
 
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "lol")
-            .build()
-        val call = client.newCall(request).execute()
-        val response = call.body.string()
-        val json = JSONObject(response)
+        var henrik = ""
+
+        try {
+            keyRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    henrik = (dataSnapshot.value as String?).toString()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        } catch (e: Exception) {
+            Log.d("Henrik", "Error: $e")
+            //return JSONObject()
+        } finally {
+            val client = OkHttpClient()
+            val urlBuilder: HttpUrl.Builder =
+                playerURL.toHttpUrlOrNull()!!.newBuilder()
+            val url = urlBuilder.build().toString()
+
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Authorization", henrik)
+                .build()
+            val call = client.newCall(request).execute()
+            val response = call.body.string()
+            json = JSONObject(response)
+        }
+
+        //Log.d("Henrik-Key", "Response: $henrik")
+
         return json
     }
 }

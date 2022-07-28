@@ -54,6 +54,7 @@ class ValorantMainMenu : AppCompatActivity() {
     private var region = ""
     private var puuid = ""
     private var gameStarted = ""
+    private var henrik = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -686,18 +687,40 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     private fun HenrikAPI(playerURL: String): JSONObject {
-        val client = OkHttpClient()
-        val urlBuilder: HttpUrl.Builder =
-            playerURL.toHttpUrlOrNull()!!.newBuilder()
-        val url = urlBuilder.build().toString()
+        val database = Firebase.database
+        val keyRef = database.getReference("VALORANT/henrik")
+        val json: JSONObject
 
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "lol")
-            .build()
-        val call = client.newCall(request).execute()
-        val response = call.body.string()
-        val json = JSONObject(response)
+        try {
+            keyRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    henrik = (dataSnapshot.value as String?).toString()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        } catch (e: Exception) {
+            Log.d("Henrik", "Error: $e")
+            //return JSONObject()
+        } finally {
+            val client = OkHttpClient()
+            val urlBuilder: HttpUrl.Builder =
+                playerURL.toHttpUrlOrNull()!!.newBuilder()
+            val url = urlBuilder.build().toString()
+
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Authorization", henrik)
+                .build()
+            val call = client.newCall(request).execute()
+            val response = call.body.string()
+            json = JSONObject(response)
+        }
+
+        //Log.d("Henrik-Key", "Response: $henrik")
+
         return json
     }
 }

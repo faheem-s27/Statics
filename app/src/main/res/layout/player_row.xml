@@ -1,41 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:id="@+id/gridLayout2"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/agentImage"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_row="0"
-        android:layout_column="0"
         android:cropToPadding="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/refreshicon" />
 
     <TextView
         android:id="@+id/NameOfPlayer"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:layout_row="0"
-        android:layout_column="1"
-        android:layout_gravity="clip_horizontal"
         android:fontFamily="@font/baloo_bhai"
         android:padding="15dp"
-        android:text="SprinkledRainbow"
         android:textSize="20dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/agentImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Duck" />
 
     <TextView
         android:id="@+id/KDA"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:layout_row="0"
-        android:layout_column="2"
-        android:layout_gravity="center_horizontal"
         android:fontFamily="@font/baloo_bhai"
         android:padding="15dp"
         android:text="27 / 13 / 7"
         android:textSize="20dp"
-        android:textStyle="bold" />
-</GridLayout>
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/NameOfPlayer"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/tierRankIcon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:srcCompat="@tools:sample/avatars" />
+</androidx.constraintlayout.widget.ConstraintLayout>
