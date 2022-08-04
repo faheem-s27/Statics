@@ -1,7 +1,6 @@
-package com.jawaadianinc.valorant_stats.valo.match_info
+package com.jawaadianinc.valorant_stats.valo.adapters
 
 import android.app.Activity
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -29,17 +28,10 @@ class PlayerAdapter(
         val agentImage = row!!.findViewById<View>(R.id.agentImage) as ImageView
         val playerNameText = row.findViewById<View>(R.id.NameOfPlayer) as TextView
         val tierRankIcon = row.findViewById<View>(R.id.tierRankIcon) as ImageView
-        //val playerScoreText = row.findViewById<View>(R.id.Score) as TextView
 
         val gridLayoutView = row.findViewById<View>(R.id.gridLayout2) as ViewGroup
 
         val KDA = row.findViewById<View>(R.id.KDA) as TextView
-        var color = ""
-        color = if (playerTeam[position] == "Blue") {
-            "#18e4b7"
-        } else {
-            "#f94555"
-        }
         Picasso
             .get()
             .load(agentURL[position])
@@ -49,7 +41,6 @@ class PlayerAdapter(
 
         val playerOnlyName = playerName[position].split("#")
         playerNameText.text = playerOnlyName[0]
-        //playerScoreText.text = playerScore[position]
         KDA.text =
             "${playerKills[position]} / ${playerDeaths[position]} / ${playerAssists[position]}"
 
@@ -68,10 +59,13 @@ class PlayerAdapter(
                 .centerCrop()
                 .into(tierRankIcon)
         }
-        //Setting colour
-//        playerNameText.setBackgroundColor(Color.parseColor(color))
-//        KDA.setBackgroundColor(Color.parseColor(color))
-        gridLayoutView.setBackgroundColor(Color.parseColor(color))
+
+        // if the player team is blue then the background color is blue else it is red
+        if (playerTeam[position] == "Blue") {
+            gridLayoutView.background = context.getDrawable(R.drawable.blue_to_black)
+        } else {
+            gridLayoutView.background = context.getDrawable(R.drawable.red_to_black)
+        }
 
         return row
     }

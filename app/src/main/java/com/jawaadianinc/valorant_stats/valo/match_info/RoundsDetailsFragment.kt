@@ -12,6 +12,7 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.adapters.RoundAdapter
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
@@ -37,7 +38,7 @@ class RoundsDetailsFragment : Fragment() {
         doAsync {
             try {
                 val jsonDetails = MatchHistoryActivity.matchJSON
-                val matchData = jsonDetails?.get("data") as JSONObject
+                val matchData = jsonDetails.get("data") as JSONObject
                 val rounds = matchData.getJSONArray("rounds")
                 uiThread {
                     val roundsListView: ListView = view.findViewById(R.id.RoundsList)

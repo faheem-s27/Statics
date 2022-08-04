@@ -41,20 +41,13 @@ class MatchDetailsFragment : Fragment() {
         progressDialog.setCancelable(false)
         //progressDialog.show()
 
-        val Name = requireActivity().intent.extras!!.getString("RiotName")
-        val ID = requireActivity().intent.extras!!.getString("RiotID")
-        val MatchNumber = requireActivity().intent.extras!!.getInt("MatchNumber")
-        val IDofMatch = requireActivity().intent.extras!!.getString("MatchID")
-
-
-        //val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
 
         doAsync {
             try {
                 val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
                 val mapData = jsonOfMap["data"] as JSONArray
                 val jsonDetails = MatchHistoryActivity.matchJSON
-                val matchData = jsonDetails?.get("data") as JSONObject
+                val matchData = jsonDetails.get("data") as JSONObject
                 val metadata = matchData.getJSONObject("metadata")
                 val map = metadata.getString("map")
 
@@ -90,7 +83,14 @@ class MatchDetailsFragment : Fragment() {
                         item.setTextColor(Color.parseColor("#FFFFFF"))
                         item.setTypeface(item.typeface, Typeface.BOLD)
                         item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
-                        item.setBackgroundColor(Color.parseColor(colour))
+
+                        // if the color is red, make the background red to black gradient
+                        if (colour == "#f94555") {
+                            item.background = context.getDrawable(R.drawable.red_to_black)
+                        } else {
+                            item.background = context.getDrawable(R.drawable.blue_to_black)
+                        }
+
                         return item
                     }
                 }

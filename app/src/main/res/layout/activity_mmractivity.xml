@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".valo.MMRActivity">
+    tools:context=".valo.activities.MMRActivity">
 
     <ImageView
         android:id="@+id/playerImageLong"
@@ -23,7 +23,7 @@
         android:id="@+id/playerCardWide"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:alpha="0.6"
+        android:alpha="0.3"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/view7"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,9 +58,9 @@
 
     <ImageView
         android:id="@+id/rankIcon"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view7"
@@ -77,8 +77,8 @@
         android:layout_marginEnd="32dp"
         android:indeterminate="false"
         android:max="100"
-        android:progress="0"
-        android:progressTint="#DD2C00"
+        android:progress="50"
+        android:progressTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rankIcon" />
@@ -87,7 +87,7 @@
         android:id="@+id/number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/baloo_bhai"
+        android:fontFamily="@font/valorant"
         android:text="/100"
         android:textColor="#FFFFFF"
         android:textSize="14dp"
@@ -98,7 +98,7 @@
         android:id="@+id/rankName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/baloo_bhai"
+        android:fontFamily="@font/valorant"
         android:text="Rank:"
         android:textColor="#FFFFFF"
         android:textSize="14dp"
@@ -120,12 +120,13 @@
         android:id="@+id/MMRname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autoSizeTextType="uniform"
         android:fontFamily="@font/baloo_bhai"
         android:gravity="center"
         android:text="Player Name: "
         android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="20dp"
+        android:textSize="24dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/playerCardWide"
         app:layout_constraintEnd_toEndOf="parent"

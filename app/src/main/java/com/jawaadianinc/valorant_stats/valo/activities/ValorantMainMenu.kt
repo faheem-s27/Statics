@@ -24,7 +24,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.LiveMatchService
-import com.jawaadianinc.valorant_stats.valo.MMRActivity
 import com.jawaadianinc.valorant_stats.valo.ViewMatches
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
@@ -295,10 +294,7 @@ class ValorantMainMenu : AppCompatActivity() {
             val region = PlayerDatabase(this).getRegion(puuid = puuid!!)
 
             AlertDialog.Builder(this).setTitle("Disclaimer!")
-                .setMessage(
-                    "Anyone with access to the link can view your matches and rank. " +
-                            "If you are not sure if you want to share your profile, please do not share it!"
-                )
+                .setMessage(R.string.Share_Profile_URL)
                 .setPositiveButton("Share") { _, _ ->
                     val url =
                         Uri.parse("https://statics-fd699.web.app/valorant/profile/$region/$puuid")
@@ -397,11 +393,14 @@ class ValorantMainMenu : AppCompatActivity() {
                 val json = TrackerGGScraper().getProfile(gameName, gameTag)
                 val privacy =
                     json.getJSONObject("data").getJSONObject("metadata").getString("privacy")
-                uiThread {
-                    progressDialog.dismiss()
-                    if (privacy == "public") {
+                if (privacy == "public") {
+                    uiThread {
+                        progressDialog.dismiss()
                         startTrackerGG(gameName, gameTag)
-                    } else {
+                    }
+                } else {
+                    uiThread {
+                        progressDialog.dismiss()
                         // show dialog saying player is not signed in at tracker.gg
                         val builder = AlertDialog.Builder(this@ValorantMainMenu)
                         builder.setTitle("Profile is private")
@@ -441,7 +440,7 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     private fun startTrackerGG(name: String, tag: String) {
-        Toast.makeText(this, "Profile is eligible! Coming in 2.2 update", Toast.LENGTH_LONG)
+        Toast.makeText(this, "Profile is eligible! Coming in 2.3 update", Toast.LENGTH_LONG)
             .show()
 //        val intent = Intent(this, TrackerGG::class.java)
 //        intent.putExtra("name", name)
@@ -687,40 +686,18 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     private fun HenrikAPI(playerURL: String): JSONObject {
-        val database = Firebase.database
-        val keyRef = database.getReference("VALORANT/henrik")
-        val json: JSONObject
+        return executeRequest(playerURL)
+    }
 
-        try {
-            keyRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    henrik = (dataSnapshot.value as String?).toString()
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-        } catch (e: Exception) {
-            Log.d("Henrik", "Error: $e")
-            //return JSONObject()
-        } finally {
-            val client = OkHttpClient()
-            val urlBuilder: HttpUrl.Builder =
-                playerURL.toHttpUrlOrNull()!!.newBuilder()
-            val url = urlBuilder.build().toString()
-
-            val request = Request.Builder()
-                .url(url)
-                .addHeader("Authorization", henrik)
-                .build()
-            val call = client.newCall(request).execute()
-            val response = call.body.string()
-            json = JSONObject(response)
-        }
-
-        //Log.d("Henrik-Key", "Response: $henrik")
-
-        return json
+    private fun executeRequest(playerURL: String): JSONObject {
+        val client = OkHttpClient()
+        val urlBuilder: HttpUrl.Builder =
+            playerURL.toHttpUrlOrNull()!!.newBuilder()
+        val url = urlBuilder.build().toString()
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
+            .build()
+        return JSONObject(client.newCall(request).execute().body.string())
     }
 }

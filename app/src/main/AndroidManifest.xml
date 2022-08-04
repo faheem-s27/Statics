@@ -78,7 +78,7 @@
             android:name=".valo.leaderBoardActivity"
             android:exported="false" />
         <activity
-            android:name=".valo.MMRActivity"
+            android:name=".valo.activities.MMRActivity"
             android:exported="false" />
         <activity
             android:name=".brawlhalla.brawlFindAccount"

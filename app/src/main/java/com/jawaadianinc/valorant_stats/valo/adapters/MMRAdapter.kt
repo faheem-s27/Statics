@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.adapters
 
 import android.app.Activity
 import android.content.res.ColorStateList
@@ -6,16 +6,19 @@ import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.jawaadianinc.valorant_stats.R
+import com.squareup.picasso.Picasso
 
 class MMRAdapter(
     private val context: Activity,
     private val date: ArrayList<String>,
     private val changeMMR: ArrayList<String>,
     private val currentNumber: ArrayList<String>,
-    private val rankNames: ArrayList<String>
+    private val rankNames: ArrayList<String>,
+    private val rankTriangleURL: ArrayList<String>,
 ) : ArrayAdapter<Any?>(
     context, R.layout.mmr_layout, date as List<Any?>
 ) {
@@ -28,8 +31,15 @@ class MMRAdapter(
         val number = row.findViewById<View>(R.id.progressMMR) as ProgressBar
         val rank = row.findViewById<View>(R.id.rankText) as TextView
         val rankNumber = row.findViewById<View>(R.id.rankNumberMMRLayout) as TextView
-        dateText.text = "On " + date[position]
-        changeText.text = "Rank Change: " + changeMMR[position]
+
+        val rankTirangleImage = row.findViewById<View>(R.id.rankTirangleImage) as ImageView
+
+        if (rankTriangleURL[position] != "") {
+            Picasso.get().load(rankTriangleURL[position]).into(rankTirangleImage)
+        }
+
+        dateText.text = date[position]
+        changeText.text = changeMMR[position]
         if (changeMMR[position].toInt() <= 0) {
             changeText.setTextColor(Color.parseColor("#f94555"))
             number.progressTintList = ColorStateList.valueOf(Color.parseColor("#f94555"))

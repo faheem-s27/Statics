@@ -36,6 +36,24 @@
         app:layout_constraintTop_toBottomOf="@+id/materialToolbar"
         app:srcCompat="@drawable/default_crosshair" />
 
+    <Button
+        android:id="@+id/generate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Generate"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:cornerRadius="50dp"
+        app:iconTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/white"
+        app:strokeWidth="1dp" />
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -68,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/baloo_bhai"
                 android:padding="8dp"
-                android:text="0;P;c;1;o;1;f;0;0t;1;0l;2;0o;2;0a;1;0f;0;1b;0"
+                android:text="0;P;c;0;o;1;f;0;0t;1;0l;2;0o;2;0a;1;0f;0;1b;0"
                 android:textAlignment="textStart"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
@@ -90,21 +108,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/generate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:fontFamily="@font/baloo_bhai"
-                        android:text="Generate Crosshair"
-                        android:textAlignment="center"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold"
-                        app:cornerRadius="50dp"
-                        app:iconTint="#FFFFFF"
-                        app:strokeColor="@color/white"
-                        app:strokeWidth="1dp" />
 
                     <Button
                         android:id="@+id/pasteClipboard"

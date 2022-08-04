@@ -2,7 +2,6 @@ package com.jawaadianinc.valorant_stats.valo.match_info
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -10,11 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
 import com.jawaadianinc.valorant_stats.valo.adapters.MatchHistoryAdapter
 import okhttp3.HttpUrl
@@ -71,7 +65,7 @@ class MatchHistoryActivity : AppCompatActivity() {
             }
             val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
             matchJSON = HenrikAPI(matchURl)
-            val metadata = matchJSON!!.getJSONObject("data").getJSONObject("metadata")
+            val metadata = matchJSON.getJSONObject("data").getJSONObject("metadata")
             val map = metadata.getString("map")
             val mapJSON =
                 JSONObject(URL("https://valorant-api.com/v1/maps").readText()).getJSONArray("data")
@@ -159,7 +153,7 @@ class MatchHistoryActivity : AppCompatActivity() {
                 })
 
                 val title: TextView = findViewById(com.jawaadianinc.valorant_stats.R.id.title)
-                val matchData = matchJSON!!.get("data") as JSONObject
+                val matchData = matchJSON.get("data") as JSONObject
                 val teams = matchData.getJSONObject("teams")
                 val metadata = matchData.getJSONObject("metadata")
                 val map = metadata.getString("map")
@@ -186,47 +180,23 @@ class MatchHistoryActivity : AppCompatActivity() {
     }
 
     companion object {
-        var matchJSON: JSONObject? = null
+        lateinit var matchJSON: JSONObject
         var mapURL: String? = null
     }
 
     private fun HenrikAPI(playerURL: String): JSONObject {
-        val database = Firebase.database
-        val keyRef = database.getReference("VALORANT/henrik")
-        val json: JSONObject
+        return executeRequest(playerURL)
+    }
 
-        var henrik = ""
-
-        try {
-            keyRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    henrik = (dataSnapshot.value as String?).toString()
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-        } catch (e: Exception) {
-            Log.d("Henrik", "Error: $e")
-            //return JSONObject()
-        } finally {
-            val client = OkHttpClient()
-            val urlBuilder: HttpUrl.Builder =
-                playerURL.toHttpUrlOrNull()!!.newBuilder()
-            val url = urlBuilder.build().toString()
-
-            val request = Request.Builder()
-                .url(url)
-                .addHeader("Authorization", henrik)
-                .build()
-            val call = client.newCall(request).execute()
-            val response = call.body.string()
-            json = JSONObject(response)
-        }
-
-        //Log.d("Henrik-Key", "Response: $henrik")
-
-        return json
+    private fun executeRequest(playerURL: String): JSONObject {
+        val client = OkHttpClient()
+        val urlBuilder: HttpUrl.Builder =
+            playerURL.toHttpUrlOrNull()!!.newBuilder()
+        val url = urlBuilder.build().toString()
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
+            .build()
+        return JSONObject(client.newCall(request).execute().body.string())
     }
 }

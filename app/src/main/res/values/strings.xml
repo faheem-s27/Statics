@@ -139,4 +139,6 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
 
+    <string name="Share_Profile_URL">Anyone with access to the link can view your matches and rank. If you are not sure if you want to share your profile, please do not share it!</string>
+
 </resources>

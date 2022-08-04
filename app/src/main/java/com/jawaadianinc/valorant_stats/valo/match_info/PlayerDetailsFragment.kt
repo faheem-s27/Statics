@@ -10,12 +10,12 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.valo.MMRActivity
+import com.jawaadianinc.valorant_stats.valo.activities.MMRActivity
+import com.jawaadianinc.valorant_stats.valo.adapters.PlayerAdapter
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -33,19 +33,16 @@ class PlayerDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val Name = requireActivity().intent.extras!!.getString("RiotName")
-        val ID = requireActivity().intent.extras!!.getString("RiotID")
         doAsync {
             try {
-                val jsonAgents: JSONArray =
-                    JSONObject(URL("https://valorant-api.com/v1/agents").readText()).getJSONArray("data")
                 val jsonRanksURL: JSONArray =
                     JSONObject(URL("https://valorant-api.com/v1/competitivetiers").readText()).getJSONArray(
                         "data"
                     )
+                val rankIndex = jsonRanksURL.length() - 1
 
                 val jsonDetails = MatchHistoryActivity.matchJSON
-                val matchData = jsonDetails?.get("data") as JSONObject
+                val matchData = jsonDetails.get("data") as JSONObject
                 val players = matchData.getJSONObject("players")
                 val bloo = players.getJSONArray("blue")
                 val red = players.getJSONArray("red")
@@ -81,7 +78,6 @@ class PlayerDetailsFragment : Fragment() {
                     // Get the tier name from the API
                     val tier = currentPlayer.getInt("currenttier")
 
-                    val rankIndex = jsonRanksURL.length() - 1
                     val tiers = jsonRanksURL.getJSONObject(rankIndex).getJSONArray("tiers")
                     for (j in 0 until tiers.length()) {
                         val currentTier = tiers[j] as JSONObject
@@ -90,6 +86,7 @@ class PlayerDetailsFragment : Fragment() {
                             break
                         }
                     }
+
                     playerTier += RankURL
                 }
                 for (i in 0 until bloo.length()) {
@@ -112,7 +109,6 @@ class PlayerDetailsFragment : Fragment() {
                     // Get the tier name from the API
                     val tier = currentPlayer.getInt("currenttier")
 
-                    val rankIndex = jsonRanksURL.length() - 1
                     val tiers = jsonRanksURL.getJSONObject(rankIndex).getJSONArray("tiers")
                     for (j in 0 until tiers.length()) {
                         val currentTier = tiers[j] as JSONObject
@@ -165,29 +161,6 @@ class PlayerDetailsFragment : Fragment() {
                         val deaths = playerDeaths[position]
                         val assists = playerAssists[position]
 
-//                        for (i in 0 until jsonAgents.length()) {
-//                            val currentAgent = jsonAgents[i] as JSONObject
-//                            if (currentAgent.getString("displayName") == playerCharacters[position]) {
-//                                val details = currentAgent.getJSONObject("voiceLine")
-//                                    .getJSONArray("mediaList") as JSONArray
-//                                val voiceLineURL = details[0] as JSONObject
-//                                val url = voiceLineURL.getString("wave")
-//                                doAsync {
-//                                    mediaPlayer.apply {
-//                                        setAudioAttributes(
-//                                            AudioAttributes.Builder()
-//                                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                                                .setUsage(AudioAttributes.USAGE_MEDIA)
-//                                                .build()
-//                                        )
-//                                        setDataSource(url)
-//                                        prepare()
-//                                        start()
-//                                    }
-//                                }
-//                            }
-//                        }
-
                         if (tier == "Unrated") {
                             playerstats.text = "Level: $level" +
                                     "\nScore: $score" +
@@ -224,30 +197,6 @@ class PlayerDetailsFragment : Fragment() {
                             startActivity(intent)
                         }
 
-                        val agentInfo: Button = popupView.findViewById(R.id.agentInfo)
-                        agentInfo.setOnClickListener {
-                            val inflater =
-                                requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                            val popupView: View = inflater.inflate(R.layout.showupdates, null)
-                            val width = LinearLayout.LayoutParams.MATCH_PARENT
-                            val height = LinearLayout.LayoutParams.MATCH_PARENT
-                            val focusable = true
-                            val popupWindow = PopupWindow(popupView, width, height, focusable)
-                            popupWindow.showAtLocation(
-                                View(requireActivity()),
-                                Gravity.CENTER,
-                                0,
-                                0
-                            )
-
-                            val dismissButton = popupView.findViewById(R.id.dismiss) as Button
-                            dismissButton.setOnClickListener {
-                                popupWindow.dismiss()
-                            }
-                            val webpage = popupView.findViewById(R.id.updatePage) as WebView
-                            webpage.settings.javaScriptEnabled = true
-                            webpage.loadUrl("https://playvalorant.com/en-us/agents/" + playerCharacters[position].lowercase() + "/")
-                        }
                     }
                 }
             } catch (e: Exception) {

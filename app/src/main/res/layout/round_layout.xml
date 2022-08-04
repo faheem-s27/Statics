@@ -6,8 +6,10 @@
     android:layout_height="match_parent">
 
     <GridLayout
+        android:id="@+id/round_gridlayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -31,6 +33,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:padding="15dp"
             android:text="Round 1"
+            android:textColor="#FFFFFF"
             android:textSize="20dp"
             android:textStyle="bold" />
 
@@ -44,6 +47,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:padding="15dp"
             android:text="Eliminated"
+            android:textColor="#FFFFFF"
             android:textSize="20dp"
             android:textStyle="bold" />
     </GridLayout>

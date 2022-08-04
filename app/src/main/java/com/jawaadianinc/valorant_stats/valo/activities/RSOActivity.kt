@@ -182,8 +182,6 @@ class RSOActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {
             }
         })
-
-
     }
 
     private fun confirmUser(

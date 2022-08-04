@@ -1,7 +1,6 @@
-package com.jawaadianinc.valorant_stats.valo.match_info
+package com.jawaadianinc.valorant_stats.valo.adapters
 
 import android.app.Activity
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -24,13 +23,7 @@ class RoundAdapter(
         val roundIcon = row!!.findViewById<View>(R.id.roundIcon) as ImageView
         val roundNumberText = row.findViewById<View>(R.id.RoundNumber) as TextView
         val ending = row.findViewById<View>(R.id.EndingType) as TextView
-
-        var colour = ""
-        colour = if (teamWon[position] == "Blue") {
-            "#18e4b7"
-        } else {
-            "#f94555"
-        }
+        val round_gridlayout = row.findViewById<View>(R.id.round_gridlayout) as ViewGroup
 
         roundNumberText.text = "Round ${roundNumber[position]}"
         ending.text = endingType[position]
@@ -49,9 +42,13 @@ class RoundAdapter(
                 roundIcon.setImageResource(R.drawable.spikeexplode)
             }
         }
-        roundNumberText.setBackgroundColor(Color.parseColor(colour))
-        ending.setBackgroundColor(Color.parseColor(colour))
-        roundIcon.setBackgroundColor(Color.parseColor(colour))
+
+        if (teamWon[position] == "Blue") {
+            round_gridlayout.background = context.getDrawable(R.drawable.blue_to_black)
+        } else {
+            round_gridlayout.background = context.getDrawable(R.drawable.red_to_black)
+        }
+
         return row
     }
 }

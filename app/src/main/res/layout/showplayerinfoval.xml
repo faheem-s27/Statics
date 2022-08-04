@@ -81,25 +81,6 @@
                 app:strokeWidth="4dp" />
 
             <Button
-                android:id="@+id/agentInfo"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
-                android:backgroundTint="@color/ic_launcher_background"
-                android:fontFamily="@font/valorant"
-                android:text="Agent info"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/copyPlayerName"
-                app:strokeColor="@color/light_blue_900"
-                app:strokeWidth="4dp" />
-
-            <Button
                 android:id="@+id/playerRankButon"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
@@ -114,7 +95,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/agentInfo"
+                app:layout_constraintTop_toBottomOf="@+id/copyPlayerName"
                 app:strokeColor="@color/light_blue_900"
                 app:strokeWidth="4dp" />
 

@@ -1,22 +1,16 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.activities
 
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
+import com.jawaadianinc.valorant_stats.valo.adapters.MMRAdapter
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
@@ -41,7 +35,7 @@ class MMRActivity : AppCompatActivity() {
         val RiotName = intent.extras!!.getString("RiotName")
         val RiotID = intent.extras!!.getString("RiotID")
         val nameText: TextView = findViewById(R.id.MMRname)
-        nameText.text = "$RiotName#$RiotID\nPrevious ranks"
+        nameText.text = "$RiotName#$RiotID"
 
         val playerWideImage: ImageView = findViewById(R.id.playerCardWide)
         val playerLongImage: ImageView = findViewById(R.id.playerImageLong)
@@ -51,8 +45,8 @@ class MMRActivity : AppCompatActivity() {
         val rankName: TextView = findViewById(R.id.rankName)
 
         val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Gathering rank info!")
-        progressDialog.setMessage("Compiling information.")
+        progressDialog.setTitle("Building your rank profile!")
+        progressDialog.setMessage("Please wait a moment.")
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressDialog.setCancelable(false)
         progressDialog.show()
@@ -66,7 +60,6 @@ class MMRActivity : AppCompatActivity() {
 
         doAsync {
             try {
-
                 var data = HenrikAPI(PlayerURL)
                 data = data["data"] as JSONObject
                 val cards = data["card"] as JSONObject
@@ -108,7 +101,7 @@ class MMRActivity : AppCompatActivity() {
                 }
                 val tiers = JSONObject(URL(tierURL).readText())
                 val tierArray = tiers["data"] as JSONArray
-                val tierData = tierArray[3] as JSONObject
+                val tierData = tierArray[tierArray.length() - 1] as JSONObject
                 val tiersagain = tierData["tiers"] as JSONArray
                 for (j in 0 until tiersagain.length()) {
                     val actualTier = tiersagain[j] as JSONObject
@@ -122,7 +115,6 @@ class MMRActivity : AppCompatActivity() {
                                 .fit()
                                 .centerInside()
                                 .into(rankIcon)
-
                             rankIcon.resize(200, 200)
                             rankIcon.scaleType = ImageView.ScaleType.FIT_XY
                         }
@@ -137,6 +129,7 @@ class MMRActivity : AppCompatActivity() {
                 val numberMMR = ArrayList<String>()
                 val rankname = ArrayList<String>()
                 val rawDates = ArrayList<String>()
+                val rankTriangles = ArrayList<String>()
 
                 for (i in 0 until MMRArray.length()) {
                     val currentMMR = MMRArray[i] as JSONObject
@@ -150,12 +143,33 @@ class MMRActivity : AppCompatActivity() {
                     numberMMR += number.toString()
                     rankname += currentTiername
                     rawDates += RAW.toString()
+
+                    for (j in 0 until tiersagain.length()) {
+                        val actualTier = tiersagain[j] as JSONObject
+                        val done = actualTier["tier"] as Int
+                        if (done == currentTierNumber) {
+                            // check if changes is positive or negative
+                            rankTriangles += if (change > 0) {
+                                actualTier["rankTriangleUpIcon"] as String
+                            } else {
+                                actualTier["rankTriangleDownIcon"] as String
+                            }
+                        }
+                    }
+
                 }
                 val scroll: ListView = findViewById(R.id.MMRList)
 
                 uiThread {
                     val MMRList =
-                        MMRAdapter(this@MMRActivity, dates, changes, numberMMR, rankname)
+                        MMRAdapter(
+                            this@MMRActivity,
+                            dates,
+                            changes,
+                            numberMMR,
+                            rankname,
+                            rankTriangles
+                        )
                     scroll.adapter = MMRList
                     progressDialog.dismiss()
 
@@ -245,7 +259,7 @@ class MMRActivity : AppCompatActivity() {
                     } else {
                         Toast.makeText(
                             this@MMRActivity,
-                            "Couldn't find match :(",
+                            "Match was not found.",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -272,41 +286,18 @@ class MMRActivity : AppCompatActivity() {
     }
 
     private fun HenrikAPI(playerURL: String): JSONObject {
-        val database = Firebase.database
-        val keyRef = database.getReference("VALORANT/henrik")
-        val json: JSONObject
-        var henrik = ""
+        return executeRequest(playerURL)
+    }
 
-        try {
-            keyRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    henrik = (dataSnapshot.value as String?).toString()
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-        } catch (e: Exception) {
-            Log.d("Henrik", "Error: $e")
-            //return JSONObject()
-        } finally {
-            val client = OkHttpClient()
-            val urlBuilder: HttpUrl.Builder =
-                playerURL.toHttpUrlOrNull()!!.newBuilder()
-            val url = urlBuilder.build().toString()
-
-            val request = Request.Builder()
-                .url(url)
-                .addHeader("Authorization", henrik)
-                .build()
-            val call = client.newCall(request).execute()
-            val response = call.body.string()
-            json = JSONObject(response)
-        }
-
-        //Log.d("Henrik-Key", "Response: $henrik")
-
-        return json
+    private fun executeRequest(playerURL: String): JSONObject {
+        val client = OkHttpClient()
+        val urlBuilder: HttpUrl.Builder =
+            playerURL.toHttpUrlOrNull()!!.newBuilder()
+        val url = urlBuilder.build().toString()
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
+            .build()
+        return JSONObject(client.newCall(request).execute().body.string())
     }
 }
