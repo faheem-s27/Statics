@@ -23,9 +23,7 @@ class CrossHairActivity : AppCompatActivity() {
         val crosshairCode: TextView = findViewById(R.id.crosshairCode)
         val crosshairImage: ImageView = findViewById(R.id.crosshairImage)
         val primaryColourSpinner: Spinner = findViewById(R.id.crosshairColourPrimarySpinner)
-
         generateCrosshair(crosshairCode.text.toString())
-
         populateSpinners()
 
         primaryColourSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
