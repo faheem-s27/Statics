@@ -8,11 +8,16 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
 
 class CrossHairActivity : AppCompatActivity() {
+
+    private val crossHair = CrosshairClass()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cross_hair)
@@ -22,7 +27,12 @@ class CrossHairActivity : AppCompatActivity() {
         val generate: Button = findViewById(R.id.generate)
         val crosshairCode: TextView = findViewById(R.id.crosshairCode)
         val crosshairImage: ImageView = findViewById(R.id.crosshairImage)
+
+        // ----- Crosshair stuff ----------
         val primaryColourSpinner: Spinner = findViewById(R.id.crosshairColourPrimarySpinner)
+        val outLinesEnabled: SwitchMaterial = findViewById(R.id.outLinesEnabled)
+        val outlinesOpacity: SeekBar = findViewById(R.id.outLinesOpacity)
+
         generateCrosshair(crosshairCode.text.toString())
         populateSpinners()
 
@@ -38,9 +48,30 @@ class CrossHairActivity : AppCompatActivity() {
                 id: Long
             ) {
                 // get selected item
-                updatePrimaryCrosshairColour(position)
+                updateCrosshairCode()
             }
         }
+
+        // listen for changes to the outLinesEnabled switch
+        outLinesEnabled.setOnCheckedChangeListener { _, isChecked ->
+            updateCrosshairCode()
+        }
+
+        // make the outlines seekbar have a range from 0 to 1 but it has 3 decimal places
+        outlinesOpacity.max = 100
+        outlinesOpacity.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                updateCrosshairCode()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // do nothing
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                // do nothing
+            }
+        })
 
         paste.setOnClickListener {
             val clipboard: ClipboardManager =
@@ -48,7 +79,8 @@ class CrossHairActivity : AppCompatActivity() {
             val text = clipboard.primaryClip?.getItemAt(0)?.text?.toString()
             if (verifyContents(text)) {
                 crosshairCode.text = text
-                generateCrosshair(text!!)
+                processPastedCode(text!!)
+                generateCrosshair(text)
             }
         }
 
@@ -64,9 +96,51 @@ class CrossHairActivity : AppCompatActivity() {
         generate.setOnClickListener {
             if (verifyContents(crosshairCode.text as String?)) {
                 generateCrosshair(crosshairCode.text as String)
-
             }
         }
+    }
+
+    private fun updateCrosshairCode() {
+        // get the code from the text field
+        val crosshairCode: TextView = findViewById(R.id.crosshairCode)
+
+        // get the current selection of the primary colour spinner
+        val primaryColourSpinner: Spinner = findViewById(R.id.crosshairColourPrimarySpinner)
+        val primaryColourIndex = primaryColourSpinner.selectedItemPosition
+        // get the outlines enabled switch
+        val outLinesEnabled: SwitchMaterial = findViewById(R.id.outLinesEnabled)
+
+        // get the opacity of the outlines
+        val outlinesOpacity: SeekBar = findViewById(R.id.outLinesOpacity)
+        val outlineAlpha = outlinesOpacity.progress / 100.0f
+
+        val code =
+            crossHair.updateCrosshair(primaryColourIndex, outLinesEnabled.isChecked, outlineAlpha)
+        crosshairCode.text = code
+    }
+
+    private fun processPastedCode(crossHairID: String) {
+        val primaryColourSpinner: Spinner = findViewById(R.id.crosshairColourPrimarySpinner)
+        val outLinesEnabled: SwitchMaterial = findViewById(R.id.outLinesEnabled)
+        val outLinesOpacity: SeekBar = findViewById(R.id.outLinesOpacity)
+
+        crossHair.generateCrosshairSettingsFromCode(crossHairID)
+        // show alert dialog
+        val dialog = AlertDialog.Builder(this)
+        dialog.setTitle("Crosshair Settings")
+        dialog.setMessage(crossHair.toString())
+        dialog.setPositiveButton("OK") { dialog, which ->
+            // do nothing
+        }
+        dialog.show()
+        val outline = crossHair.outlinesEnabled
+        // if the pasted code has the outLines enabled, set the switch to true
+        outLinesEnabled.isChecked = outline
+        // set the primary colour spinner to the pasted colour
+        primaryColourSpinner.setSelection(crossHair.colour)
+        // set the opacity of the outlines to the pasted opacity
+        outLinesOpacity.progress = (crossHair.outlineAlpha).toInt()
+
     }
 
     private fun generateCrosshair(crossHairID: String) {
@@ -107,6 +181,7 @@ class CrossHairActivity : AppCompatActivity() {
         // 0;p;0;s;1;P;c;1;h;0;0t;4;0l;1;0o;2;0a;1;0f;0;1b;0;A;c;1;o;1;d;1;0b;0;1b;0;S;c;1;s;1.078;o;1 <-- just a green dot
         // 0;P;c;1;o;1;f;0;0t;1;0l;2;0o;2;0a;1;0f;0;1b;0 <-- no center dot, green with inner lines
         // 0;s;1;P;c;4;t;2;o;1;0t;10;0o;0;0a;1;0f;0;1t;3;1l;3;1o;0;1a;0;1m;0;1f;0 <-- danny's smiley :)
+        // 0;P;c;0;o;1;f;0;0t;1;0l;2;0o;2;0a;1;0f;0;1b;0 <-- generic
         // -----------------END---------------------------
 
         // empty clipboard
