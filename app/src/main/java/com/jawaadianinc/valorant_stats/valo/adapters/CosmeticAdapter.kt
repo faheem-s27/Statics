@@ -18,10 +18,6 @@ class CosmeticAdapter(
     private val name: ArrayList<String>,
     private val image: ArrayList<String>,
 ) : ArrayAdapter<Any>(context, R.layout.cosmetic_layout, name as List<Any>) {
-
-    var isImageFitToScreen = false
-
-
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var row = convertView
         val inflater = context.layoutInflater
@@ -44,8 +40,8 @@ class CosmeticAdapter(
             ImageView!!.layoutParams.height = 200
             ImageView.layoutParams.width = 400
             NameText.textSize = 20f
-
             Picasso.get().load(image[position]).fit().centerInside().into(ImageView)
+
         } else if (cosmetic.lowercase(Locale.getDefault()) == "skins") {
             NameText!!.text = name[position]
             DescText!!.text = ""
@@ -95,4 +91,3 @@ class CosmeticAdapter(
 
 
 }
-

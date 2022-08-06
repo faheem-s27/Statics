@@ -16,10 +16,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.jawaadianinc.valorant_stats.GamePickerMenu
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.jawaadianinc.valorant_stats.valo.activities.MMRActivity
+import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
@@ -105,7 +105,7 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
             RSOLogOut.visibility = View.INVISIBLE
         } else {
             Toast.makeText(this, "Not valid link", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, GamePickerMenu::class.java))
+            startActivity(Intent(this, ValorantMainMenu::class.java))
             finish()
         }
 
@@ -232,7 +232,7 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
                     startActivity(
                         Intent(
                             this@RecieveSharedProfileActivity,
-                            GamePickerMenu::class.java
+                            ValorantMainMenu::class.java
                         )
                     )
                     finish()

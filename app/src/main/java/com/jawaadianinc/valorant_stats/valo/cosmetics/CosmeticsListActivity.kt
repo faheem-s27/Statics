@@ -60,6 +60,26 @@ class CosmeticsListActivity : AppCompatActivity() {
             getSprays()
         }
 
+        if (cosmetic == "buddies") {
+            title.text = "vAlorAnt buddies"
+            getBuddies()
+        }
+
+        if (cosmetic == "maps") {
+            title.text = "vAlorAnt maps"
+            getMaps()
+        }
+
+        if (cosmetic == "ranks") {
+            title.text = "vAlorAnt ranks"
+            getRanks()
+        }
+
+        if (cosmetic == "borders") {
+            title.text = "vAlorAnt borders"
+            getBorders()
+        }
+
         val largeCard = findViewById<Button>(R.id.largeCardBT)
         val smallCard = findViewById<Button>(R.id.smallCardBT)
         val wideCard = findViewById<Button>(R.id.wideCardBT)
@@ -113,6 +133,246 @@ class CosmeticsListActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    private fun getBorders() {
+        val progressDialog = ProgressDialog(this).apply {
+            setTitle("Loading")
+            setMessage("Collecting Data...")
+            setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            setCancelable(false)
+            show()
+        }
+
+        val URL = "https://valorant-api.com/v1/levelborders"
+        val names = ArrayList<String>()
+        val images = ArrayList<String>()
+        val listView: ListView = findViewById(R.id.cosmeticListView)
+
+        doAsync {
+            val result = URL(URL).readText()
+            val jsonObject = JSONObject(result)
+            val jsonArray = jsonObject.getJSONArray("data")
+            for (i in 0 until jsonArray.length()) {
+                val jsonInner = jsonArray.getJSONObject(i)
+                names.add(jsonInner.get("startingLevel").toString() + " - Level")
+                images.add(jsonInner.getString("levelNumberAppearance"))
+
+                names.add(jsonInner.get("startingLevel").toString() + " - Player Card")
+                images.add(jsonInner.getString("smallPlayerCardAppearance"))
+
+            }
+            uiThread {
+                progressDialog.dismiss()
+                val adapter = CosmeticAdapter(this@CosmeticsListActivity, "weapon", names, images)
+                listView.adapter = adapter
+                listView.setOnItemClickListener { parent, view, position, id ->
+                    // when clicked
+                    val imageURL = images[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Border",
+                            "Download Border"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), names[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+            }
+        }
+
+    }
+
+    private fun getRanks() {
+        val progressDialog = ProgressDialog(this).apply {
+            setTitle("Loading")
+            setMessage("Collecting Data...")
+            setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            setCancelable(false)
+            show()
+        }
+        val URL = "https://valorant-api.com/v1/competitivetiers"
+        val names = ArrayList<String>()
+        val images = ArrayList<String>()
+        val listView: ListView = findViewById(R.id.cosmeticListView)
+
+        doAsync {
+            val result = URL(URL).readText()
+            val jsonObject = JSONObject(result)
+            val jsonArray = jsonObject.getJSONArray("data")
+            // get the last index of the array
+            val lastIndex = jsonArray.length() - 1
+            val ranksArray = jsonArray.getJSONObject(lastIndex).getJSONArray("tiers")
+            for (i in 0 until ranksArray.length()) {
+                val jsonInner = ranksArray.getJSONObject(i)
+                if (jsonInner?.getString("largeIcon") != null && jsonInner.getString("rankTriangleDownIcon") != null) {
+                    names.add(jsonInner.getString("tierName"))
+                    images.add(jsonInner.getString("largeIcon"))
+
+                    names.add(jsonInner.getString("tierName") + " (down)")
+                    images.add(jsonInner.getString("rankTriangleDownIcon"))
+
+                    names.add(jsonInner.getString("tierName") + " (up)")
+                    images.add(jsonInner.getString("rankTriangleUpIcon"))
+                }
+            }
+            uiThread {
+                progressDialog.dismiss()
+                val adapter = CosmeticAdapter(this@CosmeticsListActivity, "weapon", names, images)
+                listView.adapter = adapter
+                listView.setOnItemClickListener { parent, view, position, id ->
+                    // when clicked
+                    val imageURL = images[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Rank icon",
+                            "Download Rank icon"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), names[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+            }
+        }
+
+
+    }
+
+    private fun getMaps() {
+        val progressDialog = ProgressDialog(this).apply {
+            setTitle("Loading")
+            setMessage("Collecting Data...")
+            setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            setCancelable(false)
+            show()
+        }
+
+        val URL = "https://valorant-api.com/v1/maps"
+        val names = ArrayList<String>()
+        val images = ArrayList<String>()
+        val listView: ListView = findViewById(R.id.cosmeticListView)
+
+        doAsync {
+            val result = URL(URL).readText()
+            val jsonObject = JSONObject(result)
+            val jsonArray = jsonObject.getJSONArray("data")
+            for (i in 0 until jsonArray.length()) {
+                val jsonInner = jsonArray.getJSONObject(i)
+                names.add(jsonInner.getString("displayName") + " - Minimap")
+                images.add(jsonInner.getString("displayIcon"))
+
+                names.add(jsonInner.getString("displayName") + " - List")
+                images.add(jsonInner.getString("listViewIcon"))
+
+                names.add(jsonInner.getString("displayName") + " - Full")
+                images.add(jsonInner.getString("splash"))
+            }
+            uiThread {
+                progressDialog.dismiss()
+                val adapter = CosmeticAdapter(this@CosmeticsListActivity, "weapon", names, images)
+                listView.adapter = adapter
+                listView.setOnItemClickListener { parent, view, position, id ->
+                    // when clicked
+                    val imageURL = images[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Map",
+                            "Download Map"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), names[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+            }
+        }
+
+    }
+
+    private fun getBuddies() {
+        val progressDialog = ProgressDialog(this).apply {
+            setTitle("Loading")
+            setMessage("Collecting Data...")
+            setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            setCancelable(false)
+            show()
+        }
+
+        val URL = "https://valorant-api.com/v1/buddies"
+        val names = ArrayList<String>()
+        val images = ArrayList<String>()
+        val listView: ListView = findViewById(R.id.cosmeticListView)
+        doAsync {
+            val result = URL(URL).readText()
+            val jsonObject = JSONObject(result)
+            val jsonArray = jsonObject.getJSONArray("data")
+            for (i in 0 until jsonArray.length()) {
+                val jsonInner = jsonArray.getJSONObject(i)
+                names.add(jsonInner.getString("displayName"))
+                images.add(jsonInner.getString("displayIcon"))
+            }
+            uiThread {
+                progressDialog.dismiss()
+                val adapter = CosmeticAdapter(this@CosmeticsListActivity, "weapon", names, images)
+                listView.adapter = adapter
+                listView.setOnItemClickListener { parent, view, position, id ->
+                    // when clicked
+                    val imageURL = images[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Buddy",
+                            "Download Buddy"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), names[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+            }
+        }
+
     }
 
     private fun getSprays() {

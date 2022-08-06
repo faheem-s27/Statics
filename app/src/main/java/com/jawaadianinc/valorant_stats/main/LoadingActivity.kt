@@ -56,11 +56,15 @@ class LoadingActivity : AppCompatActivity() {
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                 && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
             ) {
-                Toast.makeText(
+                // Request the update.
+                val MY_REQUEST_CODE = 0
+                appUpdateManager.startUpdateFlowForResult(
+                    appUpdateInfo,
+                    AppUpdateType.IMMEDIATE,
                     this,
-                    "There's an update available on the Play Store!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                    MY_REQUEST_CODE
+                )
+
             }
         }
 
@@ -118,7 +122,3 @@ class LoadingActivity : AppCompatActivity() {
     }
 
 }
-
-
-
-

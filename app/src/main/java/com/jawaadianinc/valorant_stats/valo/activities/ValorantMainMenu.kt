@@ -162,31 +162,31 @@ class ValorantMainMenu : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.buddiesBT).setOnClickListener {
-            comingSoon()
+            val intent = Intent(this, CosmeticsListActivity::class.java)
+            intent.putExtra("cosmetic", "buddies")
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
         findViewById<Button>(R.id.mapsButton).setOnClickListener {
-            comingSoon()
+            val intent = Intent(this, CosmeticsListActivity::class.java)
+            intent.putExtra("cosmetic", "maps")
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
         findViewById<Button>(R.id.ranksButton).setOnClickListener {
-            comingSoon()
+            val intent = Intent(this, CosmeticsListActivity::class.java)
+            intent.putExtra("cosmetic", "ranks")
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
         findViewById<Button>(R.id.levelBordersBT).setOnClickListener {
-            comingSoon()
-        }
-
-        findViewById<Button>(R.id.titlesBT).setOnClickListener {
-            comingSoon()
-        }
-
-        findViewById<Button>(R.id.seasonsBT).setOnClickListener {
-            comingSoon()
-        }
-
-        findViewById<Button>(R.id.bundlesBT).setOnClickListener {
-            comingSoon()
+            val intent = Intent(this, CosmeticsListActivity::class.java)
+            intent.putExtra("cosmetic", "borders")
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
         // ------------------------ End of cosmetics ------------------------------------
@@ -258,7 +258,7 @@ class ValorantMainMenu : AppCompatActivity() {
                 // show the other FAB options
                 RSOLogOut.visibility = View.VISIBLE
                 sharePlayerProfile.visibility = View.VISIBLE
-                FABplus.animate().rotationBy(405f).duration = 200
+                FABplus.animate().rotationBy(180f).duration = 200
                 RSOLogOut.animate().alpha(1f).translationYBy(-200f).duration = 200
                 sharePlayerProfile.animate().alpha(1f).translationYBy(-200f).duration = 200
                 show = false
@@ -266,7 +266,7 @@ class ValorantMainMenu : AppCompatActivity() {
                 sharePlayerProfile.isClickable = true
             } else {
                 // hide the FAB options
-                FABplus.animate().rotationBy(-405f).duration = 200
+                FABplus.animate().rotationBy(-180f).duration = 200
                 RSOLogOut.animate().alpha(0f).translationYBy(200f).duration = 200
                 sharePlayerProfile.animate().alpha(0f).translationYBy(200f).duration = 200
                 RSOLogOut.isClickable = false
@@ -700,7 +700,7 @@ class ValorantMainMenu : AppCompatActivity() {
             .build()
         val call = client.newCall(request).execute()
         // log the call headers
-        Log.d("Henrik", call.headers.toString())
+        // Log.d("Henrik", call.headers.toString())
         return JSONObject(call.body.string())
     }
 }
