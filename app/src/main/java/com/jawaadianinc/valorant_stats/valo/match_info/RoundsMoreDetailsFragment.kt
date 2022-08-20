@@ -58,7 +58,7 @@ class RoundsMoreDetailsFragment : Fragment() {
         doAsync {
             try {
                 val jsonDetails = MatchHistoryActivity.matchJSON
-                val matchData = jsonDetails?.get("data") as JSONObject
+                val matchData = jsonDetails.get("data") as JSONObject
                 val metadata = matchData.getJSONObject("metadata")
                 val map = metadata.getString("map")
                 val rounds = matchData.getJSONArray("rounds")
@@ -210,6 +210,13 @@ class RoundsMoreDetailsFragment : Fragment() {
     }
 
     private fun handleSpecificRoundDetails(specificRound: JSONObject): ArrayList<String> {
+
+        val display: Display = requireActivity().windowManager.defaultDisplay
+        val width = display.width
+
+        // Scales the coordinates to the screen size (should be highly accurate now)
+        val multiplier = (width.toFloat() / 1024f)
+
         val defuseBT: Button = requireView().findViewById(R.id.defuseBT)
         val allDetails = ArrayList<String>()
         allDetails.add(specificRound["winning_team"].toString()) // TEAM WON
@@ -238,8 +245,8 @@ class RoundsMoreDetailsFragment : Fragment() {
             val spikePlanter = playerPlant.optString("display_name")
             val playerPosition: ImageView? = view?.findViewById(R.id.playerPos)
             val bitmap: Bitmap? = Bitmap.createBitmap(
-                1024,
-                1024,
+                (1024 * multiplier).roundToInt(),
+                (1024 * multiplier).roundToInt(),
                 Bitmap.Config.ARGB_8888
             )
 
@@ -271,8 +278,10 @@ class RoundsMoreDetailsFragment : Fragment() {
                         paint.color = Color.parseColor("#18e4b7")
                     }
                 }
-                val finalX: Int = (((y * xMult) + xScalar) * 1024).roundToInt()
-                val finalY: Int = (((x * yMult) + yScalar) * 1024).roundToInt()
+
+
+                val finalX: Int = (((y * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+                val finalY: Int = (((x * yMult) + yScalar) * 1024 * multiplier).roundToInt()
                 val SpikeIcon = BitmapFactory.decodeResource(
                     requireContext().resources,
                     R.drawable.spikelogo

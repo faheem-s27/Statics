@@ -3,6 +3,7 @@ package com.jawaadianinc.valorant_stats.valo.match_info
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Display
 import android.view.LayoutInflater
@@ -20,12 +21,12 @@ import java.net.URL
 import kotlin.math.roundToInt
 
 class kill_map_Fragment : Fragment() {
-
     private var xMult: Double = 0.0
     private var yMult: Double = 0.0
     private var xScalar: Double = 0.0
     private var yScalar: Double = 0.0
     private var mapofPlayerandAgent: MutableMap<String, String> = mutableMapOf("player" to "agent")
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,8 +37,6 @@ class kill_map_Fragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val name = requireActivity().intent.extras!!.getString("RiotName")
-        val id = requireActivity().intent.extras!!.getString("RiotID")
         val minimapImage: ImageView = requireActivity().findViewById(R.id.killMapImage)
         val display: Display = requireActivity().windowManager.defaultDisplay
         val width = display.width
@@ -47,11 +46,13 @@ class kill_map_Fragment : Fragment() {
         minimapImage.requestLayout()
         minimapImage.scaleType = ImageView.ScaleType.FIT_XY
 
+        Log.d("MiniMap", "Width: $width, Height: $width")
+
         val checkBox: CheckBox = view.findViewById(R.id.imageCheckbox)
 
         try {
             val jsonDetails = MatchHistoryActivity.matchJSON
-            val matchData = jsonDetails?.get("data") as JSONObject
+            val matchData = jsonDetails.get("data") as JSONObject
             val metadata = matchData.getJSONObject("metadata")
             val map = metadata.getString("map")
             var mapUUID = ""
@@ -156,7 +157,6 @@ class kill_map_Fragment : Fragment() {
                     }
 
                     spinner.adapter = arrayAdapter
-
                     spinner.onItemSelectedListener =
                         object : AdapterView.OnItemSelectedListener {
                             override fun onItemSelected(
@@ -206,15 +206,22 @@ class kill_map_Fragment : Fragment() {
     }
 
     private fun handlePlayerImages(roundNumber: Int) {
+
+        val display: Display = requireActivity().windowManager.defaultDisplay
+        val width = display.width
+
+        // Scales the coordinates to the screen size (should be highly accurate now)
+        val multiplier = (width.toFloat() / 1024f)
+
         val jsonDetails = MatchHistoryActivity.matchJSON
         val playerPosition: ImageView? = view?.findViewById(R.id.playerPos2)
         val bitmap: Bitmap? = Bitmap.createBitmap(
-            1024,
-            1024,
+            (1024 * multiplier).toInt(),
+            (1024 * multiplier).toInt(),
             Bitmap.Config.ARGB_8888
         )
         val rounds: JSONArray =
-            jsonDetails?.getJSONObject("data")!!.getJSONArray("rounds")
+            jsonDetails.getJSONObject("data").getJSONArray("rounds")
         var total = 0
         val currentRound: JSONObject = rounds[roundNumber] as JSONObject
         val player_stats: JSONArray = currentRound.getJSONArray("player_stats")
@@ -247,10 +254,15 @@ class kill_map_Fragment : Fragment() {
                     }
                 }
 
-                val finalVictimX: Int = (((victimY.toInt() * xMult) + xScalar) * 1024).roundToInt()
-                val finalVictimY: Int = (((victimX.toInt() * yMult) + yScalar) * 1024).roundToInt()
-                val finalKillerX: Int = (((killerY * xMult) + xScalar) * 1024).roundToInt()
-                val finalKillerY: Int = (((killerX * yMult) + yScalar) * 1024).roundToInt()
+
+                val finalVictimX: Int =
+                    (((victimY.toInt() * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+                val finalVictimY: Int =
+                    (((victimX.toInt() * yMult) + yScalar) * 1024 * multiplier).roundToInt()
+                val finalKillerX: Int =
+                    (((killerY * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+                val finalKillerY: Int =
+                    (((killerX * yMult) + yScalar) * 1024 * multiplier).roundToInt()
 
                 val killerAgentURL = mapofPlayerandAgent.getValue(killerName as String)
                 val victimAgentURL = mapofPlayerandAgent.getValue(victimName as String)
@@ -348,15 +360,22 @@ class kill_map_Fragment : Fragment() {
     }
 
     private fun handlePlayerDots(roundNumber: Int) {
+
+        val display: Display = requireActivity().windowManager.defaultDisplay
+        val width = display.width
+
+        // Scales the coordinates to the screen size (should be highly accurate now)
+        val multiplier = (width.toFloat() / 1024f)
+
         val jsonDetails = MatchHistoryActivity.matchJSON
         val playerPosition: ImageView? = view?.findViewById(R.id.playerPos2)
         val bitmap: Bitmap? = Bitmap.createBitmap(
-            1024,
-            1024,
+            (1024 * multiplier).toInt(),
+            (1024 * multiplier).toInt(),
             Bitmap.Config.ARGB_8888
         )
         val rounds: JSONArray =
-            jsonDetails?.getJSONObject("data")!!.getJSONArray("rounds")
+            jsonDetails.getJSONObject("data").getJSONArray("rounds")
         var total = 0
         val currentRound: JSONObject = rounds[roundNumber] as JSONObject
         val player_stats: JSONArray = currentRound.getJSONArray("player_stats")
@@ -389,10 +408,14 @@ class kill_map_Fragment : Fragment() {
                     }
                 }
 
-                val finalVictimX: Int = (((victimY.toInt() * xMult) + xScalar) * 1024).roundToInt()
-                val finalVictimY: Int = (((victimX.toInt() * yMult) + yScalar) * 1024).roundToInt()
-                val finalKillerX: Int = (((killerY * xMult) + xScalar) * 1024).roundToInt()
-                val finalKillerY: Int = (((killerX * yMult) + yScalar) * 1024).roundToInt()
+                val finalVictimX: Int =
+                    (((victimY.toInt() * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+                val finalVictimY: Int =
+                    (((victimX.toInt() * yMult) + yScalar) * 1024 * multiplier).roundToInt()
+                val finalKillerX: Int =
+                    (((killerY * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+                val finalKillerY: Int =
+                    (((killerX * yMult) + yScalar) * 1024 * multiplier).roundToInt()
 
                 //Paint properties
                 val paint = Paint()
@@ -446,15 +469,24 @@ class kill_map_Fragment : Fragment() {
     }
 
     private fun handleAllRounds(imagesEnabled: Boolean) {
+
+        val display: Display = requireActivity().windowManager.defaultDisplay
+        val width = display.width
+
+        // Scales the 3coordinates to the screen size (should be highly accurate now)
+        val multiplier = (width.toFloat() / 1024f)
+
         val jsonDetails = MatchHistoryActivity.matchJSON
         val playerPosition: ImageView? = view?.findViewById(R.id.playerPos2)
         val bitmap: Bitmap? = Bitmap.createBitmap(
-            1024,
-            1024,
+            (1024 * multiplier).roundToInt(),
+            (1024 * multiplier).roundToInt(),
             Bitmap.Config.ARGB_8888
         )
+
+
         val rounds: JSONArray =
-            jsonDetails?.getJSONObject("data")!!.getJSONArray("rounds")
+            jsonDetails.getJSONObject("data").getJSONArray("rounds")
 
         for (i in 0 until rounds.length()) {
             val player_stats: JSONArray = rounds.getJSONObject(i).getJSONArray("player_stats")
@@ -487,12 +519,16 @@ class kill_map_Fragment : Fragment() {
                         }
                     }
 
+
                     val finalVictimX: Int =
-                        (((victimY.toInt() * xMult) + xScalar) * 1024).roundToInt()
+                        (((victimY.toInt() * xMult) + xScalar) * 1024 * multiplier).roundToInt()
                     val finalVictimY: Int =
-                        (((victimX.toInt() * yMult) + yScalar) * 1024).roundToInt()
-                    val finalKillerX: Int = (((killerY * xMult) + xScalar) * 1024).roundToInt()
-                    val finalKillerY: Int = (((killerX * yMult) + yScalar) * 1024).roundToInt()
+                        (((victimX.toInt() * yMult) + yScalar) * 1024 * multiplier).roundToInt()
+                    val finalKillerX: Int =
+                        (((killerY * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+                    val finalKillerY: Int =
+                        (((killerX * yMult) + yScalar) * 1024 * multiplier).roundToInt()
+
                     if (imagesEnabled) {
                         // doing all kills with images
                         val killerAgentURL = mapofPlayerandAgent.getValue(killerName as String)

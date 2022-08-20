@@ -12,23 +12,27 @@ class MatchHistoryAdapter(fm: FragmentManager?, private var totalTabs: Int) :
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
-                MatchDetailsFragment()
+                round_overview()
             }
             1 -> {
-                PlayerDetailsFragment()
+                MatchDetailsFragment()
             }
             2 -> {
-                RoundsDetailsFragment()
+                PlayerDetailsFragment()
             }
             3 -> {
-                RoundsMoreDetailsFragment()
+                RoundsDetailsFragment()
             }
             4 -> {
-                kill_map_Fragment()
+                RoundsMoreDetailsFragment()
             }
             5 -> {
+                kill_map_Fragment()
+            }
+            6 -> {
                 kill_feed_Fragment()
             }
+
             else -> throw IllegalStateException("position $position is invalid for this viewpager")
         }
     }

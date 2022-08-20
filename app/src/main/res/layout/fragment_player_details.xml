@@ -5,7 +5,33 @@
     android:id="@+id/frameLayout5"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ic_launcher_background"
     tools:context=".valo.match_info.PlayerDetailsFragment">
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Processing player stats"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar5" />
+
+    <ProgressBar
+        android:id="@+id/progressBar5"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/playerList"
@@ -14,7 +40,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+    </ListView>
 
     <LinearLayout
         android:id="@+id/dim_layout"
@@ -26,6 +54,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

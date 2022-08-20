@@ -79,14 +79,21 @@ class MatchHistoryActivity : AppCompatActivity() {
             }
 
             uiThread {
-                //progressDialog.dismiss()
                 progressBar.visibility = View.GONE
                 tabLayout =
                     findViewById<View>(com.jawaadianinc.valorant_stats.R.id.tabsforMatch) as? TabLayout
                 viewPager =
                     findViewById<View>(com.jawaadianinc.valorant_stats.R.id.view_pager_matchHistory) as? ViewPager
-                tabLayout?.tabGravity = TabLayout.GRAVITY_CENTER
-                tabLayout?.tabMode = TabLayout.MODE_SCROLLABLE
+                tabLayout?.tabGravity = TabLayout.GRAVITY_FILL
+                tabLayout?.tabMode = TabLayout.MODE_AUTO
+
+                tabLayout?.newTab()?.setText("Overview")
+                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.live).let {
+                        if (it != null) {
+                            tabLayout?.addTab(it)
+                        }
+                    }
+
                 tabLayout?.newTab()?.setText("Details")
                     ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.details).let {
                         if (it != null) {
@@ -130,13 +137,13 @@ class MatchHistoryActivity : AppCompatActivity() {
                 val adapter =
                     tabLayout?.tabCount?.let { MatchHistoryAdapter(supportFragmentManager, it) }
                 viewPager?.adapter = adapter
-                viewPager?.offscreenPageLimit = 5
+                viewPager?.offscreenPageLimit = 10
                 viewPager?.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
                 viewPager?.setPageTransformer(true, ZoomOutPageTransformer())
                 tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab) {
                         viewPager?.currentItem = tab.position
-                        if (tab.position == 5) {
+                        if (tab.position == 6 || tab.position == 2) {
                             refresFab.hide()
                         } else {
                             refresFab.show()

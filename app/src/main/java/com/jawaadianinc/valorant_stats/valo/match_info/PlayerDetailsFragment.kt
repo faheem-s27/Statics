@@ -4,8 +4,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +17,15 @@ import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.activities.MMRActivity
 import com.jawaadianinc.valorant_stats.valo.adapters.PlayerAdapter
 import com.squareup.picasso.Picasso
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
-
 
 class PlayerDetailsFragment : Fragment() {
     override fun onCreateView(
@@ -32,14 +35,16 @@ class PlayerDetailsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_player_details, container, false)
     }
 
+    var jsonRanksArray = JSONArray()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         doAsync {
             try {
-                val jsonRanksURL: JSONArray =
+                jsonRanksArray =
                     JSONObject(URL("https://valorant-api.com/v1/competitivetiers").readText()).getJSONArray(
                         "data"
                     )
-                val rankIndex = jsonRanksURL.length() - 1
+                val rankIndex = jsonRanksArray.length() - 1
 
                 val jsonDetails = MatchHistoryActivity.matchJSON
                 val matchData = jsonDetails.get("data") as JSONObject
@@ -57,6 +62,9 @@ class PlayerDetailsFragment : Fragment() {
                 val playerAssists = ArrayList<String>()
                 val playerCharacters = ArrayList<String>()
                 val playerTier = ArrayList<String>()
+
+                var number = 0
+
 
                 for (i in 0 until red.length()) {
                     val currentPlayer = red[i] as JSONObject
@@ -77,9 +85,8 @@ class PlayerDetailsFragment : Fragment() {
                     var RankURL = ""
                     // Get the tier name from the API
                     val tier = currentPlayer.getInt("currenttier")
-
-                    val tiers = jsonRanksURL.getJSONObject(rankIndex).getJSONArray("tiers")
-                    for (j in 0 until tiers.length()) {
+                    val tiers = jsonRanksArray.getJSONObject(rankIndex).getJSONArray("tiers")
+                    for (j in 1 until tiers.length()) {
                         val currentTier = tiers[j] as JSONObject
                         if (currentTier.getInt("tier") == tier) {
                             RankURL = currentTier.getString("largeIcon")
@@ -87,6 +94,19 @@ class PlayerDetailsFragment : Fragment() {
                         }
                     }
 
+                    // if the rankURL is empty, then try to get the tier name from the API using the getRank()
+                    if (RankURL == "") {
+                        RankURL = getRankURL(
+                            currentPlayer["name"] as String,
+                            currentPlayer["tag"] as String
+                        )
+                    }
+
+                    number += 1
+                    uiThread {
+                        view.findViewById<TextView>(R.id.textView20).text =
+                            "Processed $number players"
+                    }
                     playerTier += RankURL
                 }
                 for (i in 0 until bloo.length()) {
@@ -109,14 +129,29 @@ class PlayerDetailsFragment : Fragment() {
                     // Get the tier name from the API
                     val tier = currentPlayer.getInt("currenttier")
 
-                    val tiers = jsonRanksURL.getJSONObject(rankIndex).getJSONArray("tiers")
-                    for (j in 0 until tiers.length()) {
+                    val tiers = jsonRanksArray.getJSONObject(rankIndex).getJSONArray("tiers")
+                    for (j in 1 until tiers.length()) {
                         val currentTier = tiers[j] as JSONObject
                         if (currentTier.getInt("tier") == tier) {
                             RankURL = currentTier.getString("largeIcon")
                             break
                         }
                     }
+
+                    // if the rankURL is empty, then try to get the tier name from the API using the getRank()
+                    if (RankURL == "") {
+                        RankURL = getRankURL(
+                            currentPlayer["name"] as String,
+                            currentPlayer["tag"] as String
+                        )
+                    }
+
+                    number += 1
+                    uiThread {
+                        view.findViewById<TextView>(R.id.textView20).text =
+                            "Processed $number players"
+                    }
+
                     playerTier += RankURL
                 }
 
@@ -124,8 +159,11 @@ class PlayerDetailsFragment : Fragment() {
 
 
                 uiThread {
-                    val mediaPlayer = MediaPlayer()
-                    mediaPlayer.start()
+
+                    // find textview 20 and progressbar 5 and set the visibility to gone
+                    view.findViewById<TextView>(R.id.textView20).visibility = View.GONE
+                    view.findViewById<ProgressBar>(R.id.progressBar5).visibility = View.GONE
+
                     val players = PlayerAdapter(
                         requireActivity(),
                         playerAgentURL,
@@ -176,7 +214,6 @@ class PlayerDetailsFragment : Fragment() {
                         }
                         val dismissbutton: Button = popupView.findViewById(R.id.dismiss)
                         dismissbutton.setOnClickListener {
-                            mediaPlayer.reset()
                             popupWindow.dismiss()
                             dim_layout.visibility = View.INVISIBLE
                         }
@@ -210,9 +247,52 @@ class PlayerDetailsFragment : Fragment() {
         }
     }
 
+
+    private fun getRankURL(name: String, tag: String): String {
+        try {
+            var rankURL = ""
+            // attempt to get all of the players rank in unrated or other modes
+            val tierRanking =
+                HenrikAPI("https://api.henrikdev.xyz/valorant/v1/mmr/eu/$name/$tag").getJSONObject("data")
+                    .getInt("currenttier")
+            val rankIndex = jsonRanksArray.length() - 1
+            val tiers = jsonRanksArray.getJSONObject(rankIndex).getJSONArray("tiers")
+            for (j in 0 until tiers.length()) {
+                val currentTier = tiers[j] as JSONObject
+                if (currentTier.getInt("tier") == tierRanking) {
+                    rankURL = currentTier.getString("largeIcon")
+                    break
+                }
+            }
+            Log.d("Henrik", "RankURL for $name#$tag: $rankURL")
+            return rankURL
+        } catch (e: Exception) {
+            Log.d("Henrik", "Error getting rankURL for $name#$tag")
+            return ""
+        }
+
+    }
+
     private fun copyText(text: String) {
         val myClipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val myClip: ClipData = ClipData.newPlainText("Label", text)
         myClipboard.setPrimaryClip(myClip)
     }
+
+    private fun HenrikAPI(playerURL: String): JSONObject {
+        return executeRequest(playerURL)
+    }
+
+    private fun executeRequest(playerURL: String): JSONObject {
+        val client = OkHttpClient()
+        val urlBuilder: HttpUrl.Builder =
+            playerURL.toHttpUrlOrNull()!!.newBuilder()
+        val url = urlBuilder.build().toString()
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
+            .build()
+        return JSONObject(client.newCall(request).execute().body.string())
+    }
+
 }

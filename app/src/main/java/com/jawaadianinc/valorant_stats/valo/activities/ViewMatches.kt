@@ -210,7 +210,7 @@ class ViewMatches : AppCompatActivity() {
                         runOnUiThread {
                             Toast.makeText(
                                 this@ViewMatches,
-                                "Too many requests!\nPlease wait before requesting again",
+                                "Request Limit has been reached, please try again in a few minutes",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -258,6 +258,5 @@ class ViewMatches : AppCompatActivity() {
         matchintent.putExtra("MatchID", matchID)
         matchintent.putExtra("Won", winning.toBoolean())
         startActivity(matchintent)
-
     }
 }

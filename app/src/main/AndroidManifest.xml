@@ -29,10 +29,8 @@
             android:exported="true">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="statics-fd699.web.app"
                     android:pathPrefix="/valorant/profile"
@@ -49,17 +47,12 @@
             android:name=".main.LoadingActivity"
             android:exported="false" />
         <activity
-            android:name=".fortnite.findFortniteAccount"
-            android:exported="false" />
-        <activity
             android:name=".valo.RSOActivity"
             android:exported="true">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="statics-fd699.web.app"
                     android:pathPrefix="/authorize.html"
@@ -71,21 +64,10 @@
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".brawlhalla.brawlStatsActivity"
-            android:exported="false"
-            android:theme="@style/Theme.VALORANT_stats" />
-        <activity
             android:name=".valo.leaderBoardActivity"
             android:exported="false" />
         <activity
             android:name=".valo.activities.MMRActivity"
-            android:exported="false" />
-        <activity
-            android:name=".brawlhalla.brawlFindAccount"
-            android:exported="false"
-            android:theme="@style/Theme.VALORANT_stats" />
-        <activity
-            android:name=".GamePickerMenu"
             android:exported="false" />
         <activity
             android:name=".valo.ViewMatches"
@@ -108,7 +90,6 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

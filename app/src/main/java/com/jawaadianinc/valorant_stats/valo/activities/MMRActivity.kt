@@ -45,7 +45,7 @@ class MMRActivity : AppCompatActivity() {
         val rankName: TextView = findViewById(R.id.rankName)
 
         val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Building your rank profile!")
+        progressDialog.setTitle("Collecting rank details!")
         progressDialog.setMessage("Please wait a moment.")
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressDialog.setCancelable(false)

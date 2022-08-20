@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout14"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ic_launcher_background"
+    tools:context=".valo.match_info.round_overview">
+
+    <ImageView
+        android:id="@+id/mapImageRoundOverview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitCenter"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/haven_minimap" />
+
+    <ImageView
+        android:id="@+id/agentImageOV"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars"
+        tools:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/playerNameOV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/agentImageOV"
+        tools:text="Duck#2004" />
+
+    <TextView
+        android:id="@+id/roundDetailsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:alpha="0"
+        android:fontFamily="@font/baloo_bhai"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/mapImageRoundOverview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mapImageRoundOverview"
+        tools:text="Round 1" />
+
+    <ImageView
+        android:id="@+id/playerPos3"
+        android:layout_width="1dp"
+        android:layout_height="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/mapImageRoundOverview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mapImageRoundOverview"
+        tools:src="@tools:sample/avatars"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/player1"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/player6"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/player7"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/player6"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/player8"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/player7"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/player9"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/player8"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/player10"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/player9"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/player2"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/player1"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/player3"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/player2"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/player4"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/player3"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/player5"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/player4"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0.9"
+        android:background="@color/ic_launcher_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Coming soon\nIn the making"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

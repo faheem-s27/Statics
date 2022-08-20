@@ -25,7 +25,7 @@ class WeaponActivity : AppCompatActivity() {
         tabLayout = findViewById<View>(R.id.tabsforMatch) as? TabLayout
         viewPager = findViewById<View>(R.id.view_pager_matchHistory) as? ViewPager
         tabLayout?.tabGravity = TabLayout.GRAVITY_CENTER
-        tabLayout?.tabMode = TabLayout.MODE_SCROLLABLE
+        tabLayout?.tabMode = TabLayout.MODE_FIXED
 
         tabLayout?.newTab()?.setText("Stats")?.setIcon(R.drawable.stats).let {
             if (it != null) {

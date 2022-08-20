@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.VALORANT_stats" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -10,8 +10,13 @@
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/ic_launcher_background</item>
         <item name="android:navigationBarColor">@color/ic_launcher_background</item>
+
+        <!-- completely transparent -->
+        <!-- <item name="android:windowTranslucentNavigation">true</item> -->
+
+
         <!-- Customize your theme here. -->
     </style>
 
