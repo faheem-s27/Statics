@@ -2,7 +2,6 @@ package com.jawaadianinc.valorant_stats.valo.cosmetics
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.app.WallpaperManager
 import android.content.ContentValues
 import android.content.Intent
@@ -17,6 +16,7 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
 import com.jawaadianinc.valorant_stats.valo.adapters.CosmeticAdapter
@@ -136,21 +136,16 @@ class CosmeticsListActivity : AppCompatActivity() {
     }
 
     private fun getBorders() {
-        val progressDialog = ProgressDialog(this).apply {
-            setTitle("Loading")
-            setMessage("Collecting Data...")
-            setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            setCancelable(false)
-            show()
-        }
+        val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
+        progressDialog.show()
 
-        val URL = "https://valorant-api.com/v1/levelborders"
+        val url = "https://valorant-api.com/v1/levelborders"
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
 
         doAsync {
-            val result = URL(URL).readText()
+            val result = URL(url).readText()
             val jsonObject = JSONObject(result)
             val jsonArray = jsonObject.getJSONArray("data")
             for (i in 0 until jsonArray.length()) {
@@ -166,7 +161,7 @@ class CosmeticsListActivity : AppCompatActivity() {
                 progressDialog.dismiss()
                 val adapter = CosmeticAdapter(this@CosmeticsListActivity, "weapon", names, images)
                 listView.adapter = adapter
-                listView.setOnItemClickListener { parent, view, position, id ->
+                listView.setOnItemClickListener { _, _, position, _ ->
                     // when clicked
                     val imageURL = images[position]
                     val builder = AlertDialog.Builder(this@CosmeticsListActivity)
@@ -195,20 +190,15 @@ class CosmeticsListActivity : AppCompatActivity() {
     }
 
     private fun getRanks() {
-        val progressDialog = ProgressDialog(this).apply {
-            setTitle("Loading")
-            setMessage("Collecting Data...")
-            setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            setCancelable(false)
-            show()
-        }
-        val URL = "https://valorant-api.com/v1/competitivetiers"
+        val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
+        progressDialog.show()
+        val url = "https://valorant-api.com/v1/competitivetiers"
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
 
         doAsync {
-            val result = URL(URL).readText()
+            val result = URL(url).readText()
             val jsonObject = JSONObject(result)
             val jsonArray = jsonObject.getJSONArray("data")
             // get the last index of the array
@@ -216,7 +206,7 @@ class CosmeticsListActivity : AppCompatActivity() {
             val ranksArray = jsonArray.getJSONObject(lastIndex).getJSONArray("tiers")
             for (i in 0 until ranksArray.length()) {
                 val jsonInner = ranksArray.getJSONObject(i)
-                if (jsonInner?.getString("largeIcon") != null && jsonInner.getString("rankTriangleDownIcon") != null) {
+                if (jsonInner?.getString("largeIcon") != null) {
                     names.add(jsonInner.getString("tierName"))
                     images.add(jsonInner.getString("largeIcon"))
 
@@ -231,7 +221,7 @@ class CosmeticsListActivity : AppCompatActivity() {
                 progressDialog.dismiss()
                 val adapter = CosmeticAdapter(this@CosmeticsListActivity, "weapon", names, images)
                 listView.adapter = adapter
-                listView.setOnItemClickListener { parent, view, position, id ->
+                listView.setOnItemClickListener { _, _, position, _ ->
                     // when clicked
                     val imageURL = images[position]
                     val builder = AlertDialog.Builder(this@CosmeticsListActivity)
@@ -261,21 +251,16 @@ class CosmeticsListActivity : AppCompatActivity() {
     }
 
     private fun getMaps() {
-        val progressDialog = ProgressDialog(this).apply {
-            setTitle("Loading")
-            setMessage("Collecting Data...")
-            setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            setCancelable(false)
-            show()
-        }
+        val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
+        progressDialog.show()
 
-        val URL = "https://valorant-api.com/v1/maps"
+        val url = "https://valorant-api.com/v1/maps"
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
 
         doAsync {
-            val result = URL(URL).readText()
+            val result = URL(url).readText()
             val jsonObject = JSONObject(result)
             val jsonArray = jsonObject.getJSONArray("data")
             for (i in 0 until jsonArray.length()) {
@@ -293,7 +278,7 @@ class CosmeticsListActivity : AppCompatActivity() {
                 progressDialog.dismiss()
                 val adapter = CosmeticAdapter(this@CosmeticsListActivity, "weapon", names, images)
                 listView.adapter = adapter
-                listView.setOnItemClickListener { parent, view, position, id ->
+                listView.setOnItemClickListener { _, _, position, _ ->
                     // when clicked
                     val imageURL = images[position]
                     val builder = AlertDialog.Builder(this@CosmeticsListActivity)
@@ -322,20 +307,15 @@ class CosmeticsListActivity : AppCompatActivity() {
     }
 
     private fun getBuddies() {
-        val progressDialog = ProgressDialog(this).apply {
-            setTitle("Loading")
-            setMessage("Collecting Data...")
-            setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            setCancelable(false)
-            show()
-        }
+        val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
+        progressDialog.show()
 
-        val URL = "https://valorant-api.com/v1/buddies"
+        val url = "https://valorant-api.com/v1/buddies"
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
         doAsync {
-            val result = URL(URL).readText()
+            val result = URL(url).readText()
             val jsonObject = JSONObject(result)
             val jsonArray = jsonObject.getJSONArray("data")
             for (i in 0 until jsonArray.length()) {
@@ -347,7 +327,7 @@ class CosmeticsListActivity : AppCompatActivity() {
                 progressDialog.dismiss()
                 val adapter = CosmeticAdapter(this@CosmeticsListActivity, "weapon", names, images)
                 listView.adapter = adapter
-                listView.setOnItemClickListener { parent, view, position, id ->
+                listView.setOnItemClickListener { _, _, position, _ ->
                     // when clicked
                     val imageURL = images[position]
                     val builder = AlertDialog.Builder(this@CosmeticsListActivity)
@@ -376,38 +356,27 @@ class CosmeticsListActivity : AppCompatActivity() {
     }
 
     private fun getSprays() {
-        val progressDialog = ProgressDialog(this).apply {
-            setTitle("Loading")
-            setMessage("Collecting Data...")
-            setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            setCancelable(false)
-            show()
-        }
+        val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
+        progressDialog.show()
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
 
-        val URL = "https://valorant-api.com/v1/sprays"
+        val url = "https://valorant-api.com/v1/sprays"
         doAsync {
-            val result = URL(URL).readText()
+            val result = URL(url).readText()
             val jsonObject = JSONObject(result)
             val jsonArray = jsonObject.getJSONArray("data")
             for (i in 0 until jsonArray.length()) {
                 val jsonInner = jsonArray.getJSONObject(i)
                 names.add(jsonInner.getString("displayName"))
                 images.add(jsonInner.getString("fullTransparentIcon"))
-
-//                if (jsonInner.getString("animationPng") != "null") {
-//                    images.add(jsonInner.getString("animationGif"))
-//                    names.add(jsonInner.getString("displayName") + " (animation)")
-//                }
-
             }
             uiThread {
                 progressDialog.dismiss()
                 val adapter = CosmeticAdapter(this@CosmeticsListActivity, "weapon", names, images)
                 listView.adapter = adapter
-                listView.setOnItemClickListener { parent, view, position, id ->
+                listView.setOnItemClickListener { _, _, position, _ ->
                     // when clicked
                     val imageURL = images[position]
                     val builder = AlertDialog.Builder(this@CosmeticsListActivity)
@@ -435,19 +404,15 @@ class CosmeticsListActivity : AppCompatActivity() {
     }
 
     private fun getWeapons() {
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Loading")
-        progressDialog.setMessage("Collecting Data...")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog.setCancelable(false)
+        val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
         progressDialog.show()
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
 
-        val URL = "https://valorant-api.com/v1/weapons"
+        val url = "https://valorant-api.com/v1/weapons"
         doAsync {
-            val result = JSONObject(URL(URL).readText())
+            val result = JSONObject(URL(url).readText())
             val weapons = result.getJSONArray("data")
             weaponJSON = result
             for (i in 0 until weapons.length()) {
@@ -479,11 +444,7 @@ class CosmeticsListActivity : AppCompatActivity() {
 
     private fun getCards() {
         val url = "https://valorant-api.com/v1/playercards"
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Loading")
-        progressDialog.setMessage("Collecting Data...")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog.setCancelable(false)
+        val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
         progressDialog.show()
         val names = ArrayList<String>()
         val images = ArrayList<String>()

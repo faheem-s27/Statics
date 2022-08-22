@@ -56,7 +56,7 @@ class MatchHistoryActivity : AppCompatActivity() {
 
         doAsync {
             val matchID: String = if (IDofMatch == "none") {
-                val jsonMatches = HenrikAPI(allmatches)
+                val jsonMatches = henrikAPI(allmatches)
                 val data = jsonMatches["data"] as JSONArray
                 val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
                 easier.getString("matchid")
@@ -64,7 +64,7 @@ class MatchHistoryActivity : AppCompatActivity() {
                 IDofMatch!!
             }
             val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-            matchJSON = HenrikAPI(matchURl)
+            matchJSON = henrikAPI(matchURl)
             val metadata = matchJSON.getJSONObject("data").getJSONObject("metadata")
             val map = metadata.getString("map")
             val mapJSON =
@@ -162,8 +162,6 @@ class MatchHistoryActivity : AppCompatActivity() {
                 val title: TextView = findViewById(com.jawaadianinc.valorant_stats.R.id.title)
                 val matchData = matchJSON.get("data") as JSONObject
                 val teams = matchData.getJSONObject("teams")
-                val metadata = matchData.getJSONObject("metadata")
-                val map = metadata.getString("map")
                 var didredWin = false
                 try {
                     didredWin = teams.getJSONObject("red").getBoolean("has_won")
@@ -191,7 +189,7 @@ class MatchHistoryActivity : AppCompatActivity() {
         var mapURL: String? = null
     }
 
-    private fun HenrikAPI(playerURL: String): JSONObject {
+    private fun henrikAPI(playerURL: String): JSONObject {
         return executeRequest(playerURL)
     }
 

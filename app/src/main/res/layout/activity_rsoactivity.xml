@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ic_launcher_background"
-    tools:context=".valo.RSOActivity">
+    tools:context=".valo.activities.RSOActivity">
 
     <ImageView
         android:id="@+id/imageView5"

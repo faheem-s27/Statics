@@ -11,6 +11,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.activities.ViewMatches
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
@@ -34,10 +35,10 @@ class LiveMatchService : Service() {
                 Thread.sleep(3000)
                 doAsync {
                     try {
-                        val URL =
+                        val url =
                             "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
                         val response =
-                            JSONObject(URL(URL).readText()).getJSONArray("history")
+                            JSONObject(URL(url).readText()).getJSONArray("history")
                                 .get(0) as JSONObject
                         val timeStarted = response.getString("gameStartTimeMillis")
                         val matchID = response.getString("matchId")
@@ -61,7 +62,6 @@ class LiveMatchService : Service() {
                             uiThread {
                                 sendNotification(
                                     "Finished a $mode match?",
-                                    "Tap to see details",
                                     notificationID
                                 )
                                 gameStart = timeStarted
@@ -103,7 +103,7 @@ class LiveMatchService : Service() {
         return null
     }
 
-    private fun sendNotification(title: String, message: String, id: Int) {
+    private fun sendNotification(title: String, id: Int) {
         val intent = Intent(this, ViewMatches::class.java)
         intent.putExtra("Region", region)
         intent.putExtra("PUUID", puuid)
@@ -123,7 +123,7 @@ class LiveMatchService : Service() {
         notificationManager.createNotificationChannel(notificationChannel)
         val notification = NotificationCompat.Builder(this, "live_matches_details")
             .setContentTitle(title)
-            .setContentText(message)
+            .setContentText("Tap to see details")
             .setSmallIcon(R.drawable.just_statics)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)

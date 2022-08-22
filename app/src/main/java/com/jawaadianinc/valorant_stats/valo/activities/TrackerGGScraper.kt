@@ -4,7 +4,7 @@ import org.json.JSONObject
 import java.net.URL
 
 class TrackerGGScraper {
-    var profileURL = "https://api.tracker.gg/api/v2/valorant/standard/profile/riot/"
+    private var profileURL = "https://api.tracker.gg/api/v2/valorant/standard/profile/riot/"
     var json: JSONObject? = null
 
     private fun buildPlayerURL(name: String, tag: String): String {

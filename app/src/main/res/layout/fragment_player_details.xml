@@ -8,6 +8,114 @@
     android:background="@color/ic_launcher_background"
     tools:context=".valo.match_info.PlayerDetailsFragment">
 
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dim_layout">
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ic_launcher_background"
+            android:checkedButton="@id/teamsRadio"
+            android:orientation="horizontal"
+            android:overScrollMode="ifContentScrolls"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_wrapBehaviorInParent="included">
+
+            <RadioButton
+                android:id="@+id/teamsRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/Valorant_Blue"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Team"
+                android:textColor="#FFFFFF" />
+
+            <RadioButton
+                android:id="@+id/scoreRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/Valorant_Red"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Score"
+                android:textColor="#FFFFFF" />
+
+            <RadioButton
+                android:id="@+id/killsRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/Valorant_Blue"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Kills"
+                android:textColor="#FFFFFF" />
+
+            <RadioButton
+                android:id="@+id/deathsRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/Valorant_Red"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Deaths"
+                android:textColor="#FFFFFF" />
+
+            <RadioButton
+                android:id="@+id/assistsRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/Valorant_Blue"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Assists"
+                android:textColor="#FFFFFF" />
+
+            <RadioButton
+                android:id="@+id/namesRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/Valorant_Red"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Names"
+                android:textColor="#FFFFFF" />
+
+            <RadioButton
+                android:id="@+id/levelsRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/Valorant_Blue"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Levels"
+                android:textColor="#FFFFFF" />
+
+            <RadioButton
+                android:id="@+id/ranksRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/Valorant_Red"
+                android:fontFamily="@font/baloo_bhai"
+                android:text="Rank"
+                android:textColor="#FFFFFF" />
+
+        </RadioGroup>
+
+    </HorizontalScrollView>
+
+    <ListView
+        android:id="@+id/playerList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2">
+
+    </ListView>
+
     <TextView
         android:id="@+id/textView20"
         android:layout_width="wrap_content"
@@ -32,17 +140,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ListView
-        android:id="@+id/playerList"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </ListView>
 
     <LinearLayout
         android:id="@+id/dim_layout"

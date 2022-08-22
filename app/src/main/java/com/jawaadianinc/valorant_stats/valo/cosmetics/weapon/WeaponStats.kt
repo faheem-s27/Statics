@@ -32,8 +32,8 @@ class WeaponStats : Fragment() {
         val index = CosmeticsListActivity.weaponIndex
 
         val weaponImage = view.findViewById<ImageView>(R.id.imageWeapon)
-        val URL = json!!.getJSONArray("data").getJSONObject(index!!).getString("killStreamIcon")
-        Picasso.get().load(URL).into(weaponImage)
+        val url = json!!.getJSONArray("data").getJSONObject(index!!).getString("killStreamIcon")
+        Picasso.get().load(url).into(weaponImage)
         val arrayList = ArrayList<String>()
         val mAdapter = object :
             ArrayAdapter<String?>(
@@ -56,10 +56,10 @@ class WeaponStats : Fragment() {
             val weaponStatsJson =
                 json.getJSONArray("data").getJSONObject(index)?.getJSONObject("weaponStats")
 
-            val ListView: ListView = view.findViewById(R.id.weaponStatsLV)
+            val listView: ListView = view.findViewById(R.id.weaponStatsLV)
 
 
-            ListView.adapter = mAdapter
+            listView.adapter = mAdapter
             mAdapter.add("Fire Rate: " + (weaponStatsJson?.getString("fireRate") ?: "N/A"))
             mAdapter.add("Magazine Size : " + (weaponStatsJson?.getString("magazineSize") ?: "N/A"))
             mAdapter.add(

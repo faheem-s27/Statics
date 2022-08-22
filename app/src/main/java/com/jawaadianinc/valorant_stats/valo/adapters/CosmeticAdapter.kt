@@ -29,31 +29,31 @@ class CosmeticAdapter(
             }
         }
 
-        val NameText = row?.findViewById(R.id.agentAbilityTitle) as TextView?
-        val DescText = row?.findViewById(R.id.agentAbilityDescription) as TextView?
-        val ImageView = row?.findViewById(R.id.agentAbilityIcon) as ImageView?
+        val nameText = row?.findViewById(R.id.agentAbilityTitle) as TextView?
+        val descText = row?.findViewById(R.id.agentAbilityDescription) as TextView?
+        val imageView = row?.findViewById(R.id.agentAbilityIcon) as ImageView?
 
         if (cosmetic.lowercase(Locale.getDefault()) == "weapon") {
-            NameText!!.text = name[position]
-            DescText!!.text = ""
+            nameText!!.text = name[position]
+            descText!!.text = ""
 
-            ImageView!!.layoutParams.height = 200
-            ImageView.layoutParams.width = 400
-            NameText.textSize = 20f
-            Picasso.get().load(image[position]).fit().centerInside().into(ImageView)
+            imageView!!.layoutParams.height = 200
+            imageView.layoutParams.width = 400
+            nameText.textSize = 20f
+            Picasso.get().load(this.image[position]).fit().centerInside().into(imageView)
 
         } else if (cosmetic.lowercase(Locale.getDefault()) == "skins") {
-            NameText!!.text = name[position]
-            DescText!!.text = ""
-            ImageView!!.layoutParams.height = 100
-            ImageView.layoutParams.width = 500
-            NameText.textSize = 10f
-            NameText.gravity = Gravity.CENTER
-            Picasso.get().load(image[position]).fit().centerInside().into(ImageView)
+            nameText!!.text = name[position]
+            descText!!.text = ""
+            imageView!!.layoutParams.height = 100
+            imageView.layoutParams.width = 500
+            nameText.textSize = 10f
+            nameText.gravity = Gravity.CENTER
+            Picasso.get().load(this.image[position]).fit().centerInside().into(imageView)
         } else if (cosmetic.lowercase(Locale.getDefault()) == "videos") {
             // make the video layout
             val videoView = row!!.findViewById(R.id.videoView2) as VideoView
-            videoView.setVideoURI(Uri.parse(image[position]))
+            videoView.setVideoURI(Uri.parse(this.image[position]))
             val playFAB = row.findViewById(R.id.playFAB) as FloatingActionButton
             val loading = row.findViewById(R.id.loadingVid) as ProgressBar
             val title = row.findViewById(R.id.videoTitle) as TextView
@@ -77,14 +77,14 @@ class CosmeticAdapter(
         }
 
         // animate the image from 0 alpha to 1 alpha
-        ImageView?.alpha = 0f
+        imageView?.alpha = 0f
         // move them 200 pixels to the right
-        ImageView?.translationX = -200f
-        ImageView?.animate()?.alpha(1f)?.translationXBy(200f)?.setDuration(1000)?.start()
+        imageView?.translationX = -200f
+        imageView?.animate()?.alpha(1f)?.translationXBy(200f)?.setDuration(1000)?.start()
 
-        NameText?.alpha = 0f
-        NameText?.translationX = 200f
-        NameText?.animate()?.alpha(1f)?.translationXBy(-200f)?.setDuration(1000)?.start()
+        nameText?.alpha = 0f
+        nameText?.translationX = 200f
+        nameText?.animate()?.alpha(1f)?.translationXBy(-200f)?.setDuration(1000)?.start()
 
         return row!!
     }

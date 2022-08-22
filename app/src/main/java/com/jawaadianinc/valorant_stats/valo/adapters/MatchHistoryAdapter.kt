@@ -6,13 +6,12 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.jawaadianinc.valorant_stats.valo.match_info.*
 
 class MatchHistoryAdapter(fm: FragmentManager?, private var totalTabs: Int) :
-
-    FragmentPagerAdapter(fm!!) {
+    FragmentPagerAdapter(fm!!, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
-                round_overview()
+                RoundOverview()
             }
             1 -> {
                 MatchDetailsFragment()
@@ -27,10 +26,10 @@ class MatchHistoryAdapter(fm: FragmentManager?, private var totalTabs: Int) :
                 RoundsMoreDetailsFragment()
             }
             5 -> {
-                kill_map_Fragment()
+                KillMapFragment()
             }
             6 -> {
-                kill_feed_Fragment()
+                KillFeedFragment()
             }
 
             else -> throw IllegalStateException("position $position is invalid for this viewpager")

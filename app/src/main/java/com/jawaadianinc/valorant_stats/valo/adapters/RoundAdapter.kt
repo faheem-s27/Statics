@@ -23,7 +23,7 @@ class RoundAdapter(
         val roundIcon = row!!.findViewById<View>(R.id.roundIcon) as ImageView
         val roundNumberText = row.findViewById<View>(R.id.RoundNumber) as TextView
         val ending = row.findViewById<View>(R.id.EndingType) as TextView
-        val round_gridlayout = row.findViewById<View>(R.id.round_gridlayout) as ViewGroup
+        val roundGridlayout = row.findViewById<View>(R.id.round_gridlayout) as ViewGroup
 
         roundNumberText.text = "Round ${roundNumber[position]}"
         ending.text = endingType[position]
@@ -44,9 +44,9 @@ class RoundAdapter(
         }
 
         if (teamWon[position] == "Blue") {
-            round_gridlayout.background = context.getDrawable(R.drawable.blue_to_black)
+            roundGridlayout.background = context.getDrawable(R.drawable.blue_to_black)
         } else {
-            round_gridlayout.background = context.getDrawable(R.drawable.red_to_black)
+            roundGridlayout.background = context.getDrawable(R.drawable.red_to_black)
         }
 
         return row

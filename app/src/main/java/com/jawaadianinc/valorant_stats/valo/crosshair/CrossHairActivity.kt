@@ -22,11 +22,10 @@ class CrossHairActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cross_hair)
 
-        val paste: Button = findViewById<Button>(R.id.pasteClipboard)
+        val paste: Button = findViewById(R.id.pasteClipboard)
         val copy: Button = findViewById(R.id.copyCliboard)
         val generate: Button = findViewById(R.id.generate)
         val crosshairCode: TextView = findViewById(R.id.crosshairCode)
-        val crosshairImage: ImageView = findViewById(R.id.crosshairImage)
 
         // ----- Crosshair stuff ----------
         val primaryColourSpinner: Spinner = findViewById(R.id.crosshairColourPrimarySpinner)
@@ -53,7 +52,7 @@ class CrossHairActivity : AppCompatActivity() {
         }
 
         // listen for changes to the outLinesEnabled switch
-        outLinesEnabled.setOnCheckedChangeListener { _, isChecked ->
+        outLinesEnabled.setOnCheckedChangeListener { _, _ ->
             updateCrosshairCode()
         }
 
@@ -129,7 +128,7 @@ class CrossHairActivity : AppCompatActivity() {
         val dialog = AlertDialog.Builder(this)
         dialog.setTitle("Crosshair Settings")
         dialog.setMessage(crossHair.toString())
-        dialog.setPositiveButton("OK") { dialog, which ->
+        dialog.setPositiveButton("OK") { _, _ ->
             // do nothing
         }
         dialog.show()
@@ -160,20 +159,6 @@ class CrossHairActivity : AppCompatActivity() {
         //msg("Generated crosshair!")
         crosshairCode.text = crossHairID
 
-    }
-
-    private fun updatePrimaryCrosshairColour(colour: Int) {
-        val crosshairCode: String = findViewById<TextView>(R.id.crosshairCode).text.toString()
-        // find index of the letter "P" in the string
-        var index = crosshairCode.indexOf("P")
-        index = index.plus(4) // add 4 to the index to get the start of the colour code
-        // update index with the colour
-        findViewById<TextView>(R.id.crosshairCode).text =
-            crosshairCode.substring(0, index) + colour.toString() + crosshairCode.substring(
-                index + 1
-            )
-        generateCrosshair(findViewById<TextView>(R.id.crosshairCode).text.toString())
-        //showGenerateButton()
     }
 
     private fun verifyContents(clipboard: String?): Boolean {
@@ -243,28 +228,28 @@ class CrossHairActivity : AppCompatActivity() {
         primaryColourSpinner.adapter = primaryAdapter
     }
 
-    private fun showGenerateButton() {
-        val generate: Button = findViewById(R.id.generate)
-        // check if the button is already at full opacity
-        if (generate.alpha == 1f) {
-            return
-        }
-        // animate the button by setting opacity to 0 and fading in with moving animation going upwards from the bottom of the screen
-        generate.animate().alpha(0f).translationY(100f).setDuration(0)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    generate.animate().alpha(1f).translationY(0f).setDuration(500)
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator?) {
-                                super.onAnimationEnd(animation)
-                                generate.animate().alpha(1f).translationY(0f).setDuration(0)
-                                    .setListener(null)
-                            }
-                        })
-                }
-            })
-    }
+//    private fun showGenerateButton() {
+//        val generate: Button = findViewById(R.id.generate)
+//        // check if the button is already at full opacity
+//        if (generate.alpha == 1f) {
+//            return
+//        }
+//        // animate the button by setting opacity to 0 and fading in with moving animation going upwards from the bottom of the screen
+//        generate.animate().alpha(0f).translationY(100f).setDuration(0)
+//            .setListener(object : AnimatorListenerAdapter() {
+//                override fun onAnimationEnd(animation: Animator?) {
+//                    super.onAnimationEnd(animation)
+//                    generate.animate().alpha(1f).translationY(0f).setDuration(500)
+//                        .setListener(object : AnimatorListenerAdapter() {
+//                            override fun onAnimationEnd(animation: Animator?) {
+//                                super.onAnimationEnd(animation)
+//                                generate.animate().alpha(1f).translationY(0f).setDuration(0)
+//                                    .setListener(null)
+//                            }
+//                        })
+//                }
+//            })
+//    }
 
     private fun hideGenerateButton() {
         val generate: Button = findViewById(R.id.generate)

@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo.cosmetics
+package com.jawaadianinc.valorant_stats.valo.adapters
 
 import android.app.Activity
 import android.net.Uri
@@ -11,7 +11,6 @@ import com.jawaadianinc.valorant_stats.R
 
 class WeaponVideoAdapter(
     private val context: Activity,
-    private val cosmetic: String,
     private val name: ArrayList<String>,
     private val image: ArrayList<String>,
 ) : ArrayAdapter<Any>(context, R.layout.cosmetic_layout, name as List<Any>) {
@@ -66,4 +65,3 @@ class WeaponVideoAdapter(
 
 
 }
-

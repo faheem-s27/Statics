@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats.valo.match_info
 
-import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -11,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
@@ -34,12 +34,9 @@ class MatchDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val progressDialog = ProgressDialog(activity)
-        progressDialog.setTitle("Fetching Match data")
-        progressDialog.setMessage("Please wait a moment")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER) // There are 3 styles, You'll figure it out :)
-        progressDialog.setCancelable(false)
-        //progressDialog.show()
+        val progressDialog =
+            ProgressDialogStatics().setProgressDialog(activity!!, "Loading Match Details")
+        progressDialog.show()
 
 
         doAsync {
@@ -97,13 +94,12 @@ class MatchDetailsFragment : Fragment() {
 
                 uiThread {
                     listviewComp.adapter = mAdapter
-                    val metadata = matchData.getJSONObject("metadata")
-                    val map = metadata.getString("map")
-                    val game_started = metadata.getString("game_start_patched")
-                    val roundsPlayed = metadata.getString("rounds_played")
-                    val mode = metadata.getString("mode")
-                    val timePlayed = metadata.getInt("game_length")
-                    val server = metadata.getString("cluster")
+                    val matchMetadata = matchData.getJSONObject("metadata")
+                    val gameStarted = matchMetadata.getString("game_start_patched")
+                    val roundsPlayed = matchMetadata.getString("rounds_played")
+                    val mode = matchMetadata.getString("mode")
+                    val timePlayed = matchMetadata.getInt("game_length")
+                    val server = matchMetadata.getString("cluster")
                     val inMinutes = timePlayed / 60000
                     var didredWin = false
 
@@ -117,7 +113,7 @@ class MatchDetailsFragment : Fragment() {
                         ).show()
                     }
 
-                    val unixTimeStart = metadata.getInt("game_start")
+                    val unixTimeStart = matchMetadata.getInt("game_start")
                     val date = Date(unixTimeStart * 1000L)
                     val d: Duration =
                         Duration.between(
@@ -160,7 +156,7 @@ class MatchDetailsFragment : Fragment() {
                     mAdapter.add("Map: $map")
                     mAdapter.add("Mode: $mode")
                     mAdapter.add("Server: $server")
-                    mAdapter.add("Started: $game_started")
+                    mAdapter.add("Started: $gameStarted")
                     mAdapter.add("Duration: $inMinutes minutes")
 
 
@@ -169,7 +165,7 @@ class MatchDetailsFragment : Fragment() {
                         Picasso.get().load(actualtMapUlr).into(mapImage)
                     }
 
-                    //progressDialog.dismiss()
+                    progressDialog.dismiss()
                     val progress: ProgressBar = view.findViewById(R.id.progress)
                     progress.visibility = View.INVISIBLE
                 }
@@ -177,6 +173,7 @@ class MatchDetailsFragment : Fragment() {
 
             } catch (e: Exception) {
                 uiThread {
+                    progressDialog.dismiss()
                     val progress: ProgressBar = view.findViewById(R.id.progress)
                     progress.visibility = View.INVISIBLE
                     AlertDialog.Builder(requireActivity()).setTitle("Error!")

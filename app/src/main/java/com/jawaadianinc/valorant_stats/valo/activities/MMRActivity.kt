@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats.valo.activities
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.*
@@ -9,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
+import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.adapters.MMRAdapter
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
@@ -32,10 +32,10 @@ class MMRActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mmractivity)
 
-        val RiotName = intent.extras!!.getString("RiotName")
-        val RiotID = intent.extras!!.getString("RiotID")
+        val riotName = intent.extras!!.getString("RiotName")
+        val riotID = intent.extras!!.getString("RiotID")
         val nameText: TextView = findViewById(R.id.MMRname)
-        nameText.text = "$RiotName#$RiotID"
+        nameText.text = "$riotName#$riotID"
 
         val playerWideImage: ImageView = findViewById(R.id.playerCardWide)
         val playerLongImage: ImageView = findViewById(R.id.playerImageLong)
@@ -44,23 +44,21 @@ class MMRActivity : AppCompatActivity() {
         val number: TextView = findViewById(R.id.number)
         val rankName: TextView = findViewById(R.id.rankName)
 
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Collecting rank details!")
-        progressDialog.setMessage("Please wait a moment.")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog.setCancelable(false)
+        // show loading dialog
+        val progressDialog =
+            ProgressDialogStatics().setProgressDialog(this, "Loading rank history...")
         progressDialog.show()
 
         val tierURL = "https://valorant-api.com/v1/competitivetiers"
-        val PlayerURL =
-            "https://api.henrikdev.xyz/valorant/v1/account/${RiotName}/$RiotID" // modified
-        val currentTier = "https://api.henrikdev.xyz/valorant/v1/mmr/eu/${RiotName}/$RiotID"
-        val MMRHistory =
-            "https://api.henrikdev.xyz/valorant/v1/mmr-history/eu/${RiotName}/${RiotID}"
+        val playerURL =
+            "https://api.henrikdev.xyz/valorant/v1/account/${riotName}/$riotID" // modified
+        val currentTier = "https://api.henrikdev.xyz/valorant/v1/mmr/eu/${riotName}/$riotID"
+        val mmrHistory =
+            "https://api.henrikdev.xyz/valorant/v1/mmr-history/eu/${riotName}/${riotID}"
 
         doAsync {
             try {
-                var data = HenrikAPI(PlayerURL)
+                var data = henrikAPI(playerURL)
                 data = data["data"] as JSONObject
                 val cards = data["card"] as JSONObject
                 val playerCard = cards["wide"].toString()
@@ -82,7 +80,7 @@ class MMRActivity : AppCompatActivity() {
 
                 }
 
-                val currentTierData = HenrikAPI(currentTier)
+                val currentTierData = henrikAPI(currentTier)
                 val dataofThis = currentTierData["data"] as JSONObject
                 val currentTierNumber = dataofThis["currenttier"] as Int
                 val progressNumber = dataofThis["ranking_in_tier"] as Int
@@ -121,8 +119,7 @@ class MMRActivity : AppCompatActivity() {
                     }
                 }
 
-                val MMRHistoryJSON = HenrikAPI(MMRHistory)
-                val MMRArray = MMRHistoryJSON["data"] as JSONArray
+                val mmrArray = henrikAPI(mmrHistory)["data"] as JSONArray
 
                 val dates = ArrayList<String>()
                 val changes = ArrayList<String>()
@@ -131,18 +128,18 @@ class MMRActivity : AppCompatActivity() {
                 val rawDates = ArrayList<String>()
                 val rankTriangles = ArrayList<String>()
 
-                for (i in 0 until MMRArray.length()) {
-                    val currentMMR = MMRArray[i] as JSONObject
-                    val number = currentMMR["ranking_in_tier"] as Int
+                for (i in 0 until mmrArray.length()) {
+                    val currentMMR = mmrArray[i] as JSONObject
+                    val currentNumber = currentMMR["ranking_in_tier"] as Int
                     val date = currentMMR["date"] as String
                     val currentTiername = currentMMR["currenttierpatched"] as String
                     val change = currentMMR["mmr_change_to_last_game"] as Int
-                    val RAW = currentMMR["date_raw"] as Int
+                    val rawDate = currentMMR["date_raw"] as Int
                     dates += date
                     changes += change.toString()
-                    numberMMR += number.toString()
+                    numberMMR += currentNumber.toString()
                     rankname += currentTiername
-                    rawDates += RAW.toString()
+                    rawDates += rawDate.toString()
 
                     for (j in 0 until tiersagain.length()) {
                         val actualTier = tiersagain[j] as JSONObject
@@ -161,7 +158,7 @@ class MMRActivity : AppCompatActivity() {
                 val scroll: ListView = findViewById(R.id.MMRList)
 
                 uiThread {
-                    val MMRList =
+                    val mmrAdapter =
                         MMRAdapter(
                             this@MMRActivity,
                             dates,
@@ -170,7 +167,7 @@ class MMRActivity : AppCompatActivity() {
                             rankname,
                             rankTriangles
                         )
-                    scroll.adapter = MMRList
+                    scroll.adapter = mmrAdapter
                     progressDialog.dismiss()
 
                     scroll.setOnItemClickListener { _, _, position, _ ->
@@ -213,17 +210,14 @@ class MMRActivity : AppCompatActivity() {
     }
 
     private fun trytoFindMatch(gameStarting: Int) {
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Finding match!")
-        progressDialog.setMessage("Please wait...")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog.setCancelable(false)
+        val progressDialog =
+            ProgressDialogStatics().setProgressDialog(this, "Searching for match...")
         progressDialog.show()
 
         try {
-            val RiotName = intent.extras!!.getString("RiotName")
-            val RiotID = intent.extras!!.getString("RiotID")
-            val puuid = PlayerDatabase(this).getPUUID(RiotName!!, RiotID!!)
+            val riotName = intent.extras!!.getString("RiotName")
+            val riotID = intent.extras!!.getString("RiotID")
+            val puuid = PlayerDatabase(this).getPUUID(riotName!!, riotID!!)
             val region = PlayerDatabase(this).getRegion(puuid!!)
             val key = intent.extras!!.getString("key")
             val matchHistoryURL =
@@ -231,7 +225,7 @@ class MMRActivity : AppCompatActivity() {
             doAsync {
                 val jsonMatches = JSONObject(URL(matchHistoryURL).readText())
                 val dataforMatch = jsonMatches["history"] as JSONArray
-                var matchID: String = ""
+                var matchID = ""
 
                 for (i in 0 until dataforMatch.length()) {
                     val specificMatch = dataforMatch[i] as JSONObject
@@ -251,8 +245,8 @@ class MMRActivity : AppCompatActivity() {
                     if (matchID != "") {
                         val matchintent =
                             Intent(this@MMRActivity, MatchHistoryActivity::class.java)
-                        matchintent.putExtra("RiotName", RiotName)
-                        matchintent.putExtra("RiotID", RiotID)
+                        matchintent.putExtra("RiotName", riotName)
+                        matchintent.putExtra("RiotID", riotID)
                         matchintent.putExtra("MatchNumber", 0)
                         matchintent.putExtra("MatchID", matchID)
                         startActivity(matchintent)
@@ -285,7 +279,7 @@ class MMRActivity : AppCompatActivity() {
         }
     }
 
-    private fun HenrikAPI(playerURL: String): JSONObject {
+    private fun henrikAPI(playerURL: String): JSONObject {
         return executeRequest(playerURL)
     }
 

@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.databases
 
 import android.content.ContentValues
 import android.content.Context

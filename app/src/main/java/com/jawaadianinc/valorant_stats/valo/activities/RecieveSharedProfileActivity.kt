@@ -20,7 +20,9 @@ import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.jawaadianinc.valorant_stats.valo.activities.MMRActivity
 import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
+import com.jawaadianinc.valorant_stats.valo.activities.ViewMatches
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
+import com.jawaadianinc.valorant_stats.valo.databases.RecentPlayersDB
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation

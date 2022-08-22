@@ -18,7 +18,6 @@ class MatchAdapter(
     private val context: Activity,
     private val agentURL: ArrayList<String>,
     private val mapURL: ArrayList<String>,
-    private val mapName: ArrayList<String>,
     private val timePlayed: ArrayList<String>,
     private val KDA: ArrayList<String>,
     private val mode: ArrayList<String>,
@@ -33,15 +32,10 @@ class MatchAdapter(
 
         val agentImage = row!!.findViewById<View>(R.id.killerIcon) as ImageView
         val mapImage = row.findViewById<View>(R.id.mapImageRow) as ImageView
-        val timePlayed_Text = row.findViewById<View>(R.id.TimeAgoRow) as TextView
-        val KDA_Text = row.findViewById<View>(R.id.KDA_Row) as TextView
-        val mode_Text = row.findViewById<View>(R.id.ModeRow) as TextView
+        val timeplayedText = row.findViewById<View>(R.id.TimeAgoRow) as TextView
+        val kdaText = row.findViewById<View>(R.id.KDA_Row) as TextView
+        val modeText = row.findViewById<View>(R.id.ModeRow) as TextView
         val wonBar = row.findViewById(R.id.wonbar) as View
-        //val map_Text = row.findViewById<View>(R.id.ModeRow) as TextView
-
-//        var listofViews =
-//            arrayListOf<View>(agentImage, mapImage, timePlayed_Text, KDA_Text, mode_Text, wonBar)
-        //animateViews(listofViews, 500, 0F)
 
         when {
             won[position] == "true" -> {
@@ -64,15 +58,14 @@ class MatchAdapter(
         Picasso.get().load(mapURL[position]).transform(BlurTransformation(context, 2, 2)).fit()
             .centerInside().into(mapImage)
 
-        // map_Text.text = mapName[position]
         mapImage.clipToOutline = true
 
         when {
             mode[position] == "" -> {
-                mode_Text.text = "Custom Game"
+                modeText.text = "Custom Game"
             }
             else -> {
-                mode_Text.text = mode[position].replaceFirstChar {
+                modeText.text = mode[position].replaceFirstChar {
                     if (it.isLowerCase()) it.titlecase(
                         Locale.getDefault()
                     ) else it.toString()
@@ -80,7 +73,7 @@ class MatchAdapter(
             }
         }
 
-        KDA_Text.text = KDA[position]
+        kdaText.text = KDA[position]
 
         val date = Date(timePlayed[position].toLong())
         val d: Duration =
@@ -96,20 +89,18 @@ class MatchAdapter(
 
         when {
             weeks > 1 -> {
-                timePlayed_Text.text = "$weeks weeks ago"
+                timeplayedText.text = "$weeks weeks ago"
             }
             timeinDays > 1 -> {
-                timePlayed_Text.text = "$timeinDays days ago"
+                timeplayedText.text = "$timeinDays days ago"
             }
             timeInHours > 1 -> {
-                timePlayed_Text.text = "$timeInHours hours ago"
+                timeplayedText.text = "$timeInHours hours ago"
             }
             else -> {
-                timePlayed_Text.text = "${d.toMinutes()} minutes ago"
+                timeplayedText.text = "${d.toMinutes()} minutes ago"
             }
         }
-
-        //Log.d("MatchAdapter", "getView: $position")
 
         return row
     }

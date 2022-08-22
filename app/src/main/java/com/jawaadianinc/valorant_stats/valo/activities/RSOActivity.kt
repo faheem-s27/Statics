@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.activities
 
 import android.content.Intent
 import android.net.Uri
@@ -14,7 +14,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
 import okhttp3.*
@@ -24,7 +23,6 @@ import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
-
 
 class RSOActivity : AppCompatActivity() {
     private var code: String? = null

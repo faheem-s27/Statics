@@ -47,7 +47,7 @@
             android:name=".main.LoadingActivity"
             android:exported="false" />
         <activity
-            android:name=".valo.RSOActivity"
+            android:name=".valo.activities.RSOActivity"
             android:exported="true">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -70,7 +70,7 @@
             android:name=".valo.activities.MMRActivity"
             android:exported="false" />
         <activity
-            android:name=".valo.ViewMatches"
+            android:name=".valo.activities.ViewMatches"
             android:exported="false" />
         <activity
             android:name=".valo.ValorantUpdatesActivity"

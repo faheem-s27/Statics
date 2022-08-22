@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats.valo.cosmetics
 
-import android.app.ProgressDialog
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -11,7 +10,10 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.adapters.AgentAbilityAdapter
+import com.jawaadianinc.valorant_stats.valo.adapters.MySliderImageAdapter
 import com.smarteist.autoimageslider.SliderView
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
@@ -40,11 +42,7 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_cosmetics_agents)
         agentVoicePlayer.start()
 
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Loading")
-        progressDialog.setMessage("Collecting Data...")
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressDialog.setCancelable(false)
+        val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
         progressDialog.show()
 
         val data = intent.getStringExtra("data")

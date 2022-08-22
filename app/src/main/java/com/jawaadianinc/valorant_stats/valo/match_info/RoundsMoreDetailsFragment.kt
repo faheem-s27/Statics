@@ -1,11 +1,11 @@
 package com.jawaadianinc.valorant_stats.valo.match_info
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,16 +39,11 @@ class RoundsMoreDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val name = requireActivity().intent.extras!!.getString("RiotName")
-        val id = requireActivity().intent.extras!!.getString("RiotID")
-        val matchnumber = requireActivity().intent.extras!!.getInt("MatchNumber")
-
         val defuseBT: Button = requireView().findViewById(R.id.defuseBT)
         val spinnerRounds: Spinner = view.findViewById(R.id.roundsSpinner)
         val minimapImage: ImageView = view.findViewById(R.id.mapImage)
         val mapName: TextView = view.findViewById(R.id.mapName)
-        val display: Display = requireActivity().windowManager.defaultDisplay
-        val width = display.width
+        val width = Resources.getSystem().displayMetrics.widthPixels
 
         minimapImage.layoutParams?.height = width
         minimapImage.layoutParams?.width = width
@@ -189,11 +184,11 @@ class RoundsMoreDetailsFragment : Fragment() {
                         }
 
                     defuseBT.setOnClickListener {
-                        val getRoundName =
-                            spinnerRounds.selectedItem.toString()
-                        val numberinRound = getRoundName.split(" ")
-                        val actualRound: Int = numberinRound[1].toInt() - 1
-                        handleDefusedMap(rounds[actualRound] as JSONObject)
+//                        val getRoundName =
+//                            spinnerRounds.selectedItem.toString()
+//                        val numberinRound = getRoundName.split(" ")
+                        //val actualRound: Int = numberinRound[1].toInt() - 1
+                        handleDefusedMap()
                     }
 
                 }
@@ -211,8 +206,7 @@ class RoundsMoreDetailsFragment : Fragment() {
 
     private fun handleSpecificRoundDetails(specificRound: JSONObject): ArrayList<String> {
 
-        val display: Display = requireActivity().windowManager.defaultDisplay
-        val width = display.width
+        val width = Resources.getSystem().displayMetrics.widthPixels
 
         // Scales the coordinates to the screen size (should be highly accurate now)
         val multiplier = (width.toFloat() / 1024f)
@@ -282,7 +276,7 @@ class RoundsMoreDetailsFragment : Fragment() {
 
                 val finalX: Int = (((y * xMult) + xScalar) * 1024 * multiplier).roundToInt()
                 val finalY: Int = (((x * yMult) + yScalar) * 1024 * multiplier).roundToInt()
-                val SpikeIcon = BitmapFactory.decodeResource(
+                val spikeIcon = BitmapFactory.decodeResource(
                     requireContext().resources,
                     R.drawable.spikelogo
                 )
@@ -290,7 +284,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                 //Draw Agent BitMaps
                 val playerName = location["player_display_name"] as String
                 val agentURL = mapofPlayerandAgent.getValue(playerName)
-                val newIcon = Bitmap.createScaledBitmap(SpikeIcon, 50, 50, false)
+                val newIcon = Bitmap.createScaledBitmap(spikeIcon, 50, 50, false)
                 if (spikePlanter == location["player_display_name"]) {
                     if (playerTeam == "Red") {
                         paint.colorFilter = PorterDuffColorFilter(
@@ -349,7 +343,7 @@ class RoundsMoreDetailsFragment : Fragment() {
         return allDetails
     }
 
-    private fun handleDefusedMap(specificRound: JSONObject) {
+    private fun handleDefusedMap() {
         Toast.makeText(requireActivity(), "Coming soon!", Toast.LENGTH_SHORT).show()
     }
 }

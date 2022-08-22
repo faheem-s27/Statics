@@ -47,9 +47,9 @@ class RoundsDetailsFragment : Fragment() {
 
                     for (i in 0 until rounds.length()) {
                         val roundDetails = rounds[i] as JSONObject
-                        val winning_team = roundDetails.getString("winning_team")
+                        val winningTeam = roundDetails.getString("winning_team")
                         val button = Button(activity?.applicationContext!!)
-                        if (winning_team == "Blue") {
+                        if (winningTeam == "Blue") {
                             button.setBackgroundColor(Color.parseColor("#18e4b7"))
                         } else {
                             button.setBackgroundColor(Color.parseColor("#f94555"))
@@ -84,7 +84,7 @@ class RoundsDetailsFragment : Fragment() {
                         timelineView.addView(transparentButton)
                         val ending = roundDetails.getString("end_type")
                         val number = i + 1
-                        teamWon += winning_team
+                        teamWon += winningTeam
                         endingType += ending
                         roundNumber += number.toString()
                     }

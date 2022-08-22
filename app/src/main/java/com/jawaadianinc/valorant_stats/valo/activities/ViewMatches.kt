@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo
+package com.jawaadianinc.valorant_stats.valo.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -28,7 +28,7 @@ class ViewMatches : AppCompatActivity() {
     val playerAgentImage = ArrayList<String>()
     val mapImage = ArrayList<String>()
     val timePlayed = ArrayList<String>()
-    val KDA = ArrayList<String>()
+    val kda = ArrayList<String>()
     val gameMode = ArrayList<String>()
     val matchIDs = ArrayList<String>()
     val won = ArrayList<String>()
@@ -50,12 +50,12 @@ class ViewMatches : AppCompatActivity() {
                 val key = dataSnapshot.value as String?
                 val progessBar: ProgressBar = findViewById(R.id.progressBar6)
                 val matchText: TextView = findViewById(R.id.textView10)
-                val URL =
+                val url =
                     "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
                 doAsync {
-                    val response = JSONObject(URL(URL).readText())
-                    val url = "https://valorant-api.com/v1/agents"
-                    val Agentresponse = JSONObject(URL(url).readText()).getJSONArray("data")
+                    val response = JSONObject(URL(url).readText())
+                    val agentURL = "https://valorant-api.com/v1/agents"
+                    val agentResponse = JSONObject(URL(agentURL).readText()).getJSONArray("data")
                     val mapURL = "https://valorant-api.com/v1/maps"
                     val mapResponse =
                         JSONObject(URL(mapURL).readText()).getJSONArray("data")
@@ -73,29 +73,26 @@ class ViewMatches : AppCompatActivity() {
                             }
                             val currentMatch = history[i] as JSONObject
                             val matchID = currentMatch.getString("matchId")
-                            val database = Firebase.database
-                            val RSODB = database.getReference("VALORANT/RSO")
-                            val URL =
+                            val firebaseDatabase = Firebase.database
+                            val rsoDB = firebaseDatabase.getReference("VALORANT/RSO")
+                            val matchURL =
                                 "https://$region.api.riotgames.com/val/match/v1/matches/$matchID?api_key=$key"
-                            //Log.d("Riot", URL)
-                            val response = JSONObject(URL(URL).readText())
-                            //Log.d("Riot", response.toString())
-                            val matchInfo = response.getJSONObject("matchInfo")
+                            val responseRiot = JSONObject(URL(matchURL).readText())
+                            val matchInfo = responseRiot.getJSONObject("matchInfo")
                             val matchStart = matchInfo.getLong("gameStartMillis")
                             val gameDuration = matchInfo.getLong("gameLengthMillis")
                             val map = matchInfo.getString("mapId")
                             var mode = matchInfo.getString("queueId")
-                            val players = response.getJSONArray("players")
-
-                            val teams = response.getJSONArray("teams")
+                            val players = responseRiot.getJSONArray("players")
+                            val teams = responseRiot.getJSONArray("teams")
 
                             var agentImage = ""
                             var mapListViewIcon = ""
                             var mapName = ""
 
-                            for (i in 0 until players.length()) {
-                                val currentPlayer = players[i] as JSONObject
-                                val puuid = currentPlayer.getString("puuid")
+                            for (j in 0 until players.length()) {
+                                val currentPlayer = players[j] as JSONObject
+                                val playerPUUID = currentPlayer.getString("puuid")
                                 val gameName = currentPlayer.getString("gameName")
                                 val gameTag = currentPlayer.getString("tagLine")
                                 val playerTeam = currentPlayer.getString("teamId")
@@ -114,10 +111,10 @@ class ViewMatches : AppCompatActivity() {
                                 }
 
                                 if (gameName == gameNamePlayer) {
-                                    RSODB.child(gameName).child("Puuid").setValue(puuid)
-                                    RSODB.child(gameName).child("GameTag").setValue(gameTag)
-                                    RSODB.child(gameName).child("Region").setValue(region)
-                                    RSODB.child(gameName).child("Matches").child(matchID)
+                                    rsoDB.child(gameName).child("Puuid").setValue(playerPUUID)
+                                    rsoDB.child(gameName).child("GameTag").setValue(gameTag)
+                                    rsoDB.child(gameName).child("Region").setValue(region)
+                                    rsoDB.child(gameName).child("Matches").child(matchID)
                                         .child("Mode")
                                         .setValue(mode)
                                     val kills = currentPlayer.getJSONObject("stats").getInt("kills")
@@ -126,23 +123,23 @@ class ViewMatches : AppCompatActivity() {
                                     val assists =
                                         currentPlayer.getJSONObject("stats").getInt("assists")
                                     val agentID = currentPlayer.getString("characterId")
-                                    for (i in 0 until Agentresponse.length()) {
-                                        val currentAgent = Agentresponse[i] as JSONObject
+                                    for (k in 0 until agentResponse.length()) {
+                                        val currentAgent = agentResponse[k] as JSONObject
                                         if (currentAgent.getString("uuid") == agentID) {
                                             agentImage = currentAgent.getString("displayIconSmall")
-                                            RSODB.child(gameName).child("Matches").child(matchID)
+                                            rsoDB.child(gameName).child("Matches").child(matchID)
                                                 .child("Agent")
                                                 .setValue(currentAgent.getString("displayName"))
                                             break
                                         }
                                     }
 
-                                    for (i in 0 until mapResponse.length()) {
-                                        val currentMap = mapResponse[i] as JSONObject
+                                    for (k in 0 until mapResponse.length()) {
+                                        val currentMap = mapResponse[k] as JSONObject
                                         if (currentMap.getString("mapUrl") == map) {
                                             mapListViewIcon = currentMap.getString("listViewIcon")
                                             mapName = currentMap.getString("displayName")
-                                            RSODB.child(gameName).child("Matches").child(matchID)
+                                            rsoDB.child(gameName).child("Matches").child(matchID)
                                                 .child("Map")
                                                 .setValue(currentMap.getString("displayName"))
                                             break
@@ -152,8 +149,6 @@ class ViewMatches : AppCompatActivity() {
                                     val obj = teams[0] as JSONObject
 
                                     // talking about red team
-
-
                                     var winning: String
                                     val redWon = obj.getString("won")
 
@@ -172,7 +167,7 @@ class ViewMatches : AppCompatActivity() {
                                     playerAgentImage += agentImage
                                     mapImage += mapListViewIcon
                                     timePlayed += (matchStart + gameDuration).toString()
-                                    KDA += "$kills/$deaths/$assists"
+                                    kda += "$kills/$deaths/$assists"
                                     gameMode += mode
                                     matchIDs += matchID
                                     won += winning
@@ -188,9 +183,8 @@ class ViewMatches : AppCompatActivity() {
                                     this@ViewMatches,
                                     playerAgentImage,
                                     mapImage,
-                                    mapNames,
                                     timePlayed,
-                                    KDA,
+                                    kda,
                                     gameMode,
                                     won
                                 )
@@ -216,12 +210,12 @@ class ViewMatches : AppCompatActivity() {
                         }
                     }
                     runOnUiThread {
-                        val progessBar: ProgressBar = findViewById(R.id.progressBar6)
-                        val matchText: TextView = findViewById(R.id.textView10)
+                        val progressBar: ProgressBar = findViewById(R.id.progressBar6)
+                        val matchText1: TextView = findViewById(R.id.textView10)
                         val matchList: ListView = findViewById(R.id.matchList)
                         matchList.animate().alpha(1f).duration = 1000
-                        progessBar.animate().alpha(0f).duration = 1000
-                        matchText.animate().alpha(0f).duration = 1000
+                        progressBar.animate().alpha(0f).duration = 1000
+                        matchText1.animate().alpha(0f).duration = 1000
                         matchList.setOnItemClickListener { _, _, position, _ ->
                             matchActivityStart(
                                 gameNamePlayer,

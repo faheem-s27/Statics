@@ -1,4 +1,4 @@
-package com.jawaadianinc.valorant_stats.valo.cosmetics
+package com.jawaadianinc.valorant_stats.valo.adapters
 
 import android.view.LayoutInflater
 import android.view.View
