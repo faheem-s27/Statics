@@ -60,6 +60,7 @@ class ProgressDialogStatics {
             layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
             dialog.window?.attributes = layoutParams
         }
+
         return dialog
     }
 }

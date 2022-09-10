@@ -7,100 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/ic_launcher_background">
 
-    <TextView
-        android:id="@+id/animateName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/valorant"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Loading Duck#2004 stats..."
-        tools:visibility="gone" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/sharePlayerProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:alpha="0"
-        android:backgroundTint="#eb0029"
-        android:clickable="true"
-        app:backgroundTint="#EB0029"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toTopOf="@+id/fabPlus"
-        app:layout_constraintEnd_toEndOf="@+id/fabPlus"
-        app:layout_constraintStart_toStartOf="@+id/fabPlus"
-        app:srcCompat="?attr/actionModeShareDrawable"
-        app:tint="@color/white" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/RSOLogOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:alpha="0"
-        android:backgroundTint="#eb0029"
-        android:clickable="true"
-        app:backgroundTint="#EB0029"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toTopOf="@+id/sharePlayerProfile"
-        app:layout_constraintEnd_toEndOf="@+id/fabPlus"
-        app:layout_constraintStart_toStartOf="@+id/fabPlus"
-        app:srcCompat="@drawable/rsologout"
-        app:tint="@color/white" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabPlus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#eb0029"
-        android:clickable="true"
-        android:foregroundGravity="center"
-        android:rotation="45"
-        android:visibility="visible"
-        app:backgroundTint="@color/ic_launcher_background"
-        app:fabSize="auto"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
-        app:tint="@color/white" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/goBackFromLink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:alpha="1"
-        android:backgroundTint="#eb0029"
-        android:clickable="true"
-        android:foregroundGravity="center"
-        android:visibility="invisible"
-        app:backgroundTint="@color/ic_launcher_background"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="?attr/actionModeCloseDrawable"
-        app:tint="@color/white" />
-
-    <ImageView
-        android:id="@+id/imagebackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.2"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
@@ -164,7 +70,7 @@
                 android:clickable="true"
                 android:fontFamily="@font/baloo_bhai"
                 android:gravity="center"
-                android:text="Crosshair"
+                android:text="Crosshair (disabled)"
                 android:textColor="#FFFFFF"
                 app:backgroundTint="@color/ic_launcher_background"
                 app:cornerRadius="50dp"
@@ -174,6 +80,7 @@
                 app:iconSize="30dp"
                 app:iconTint="#FFFFFF"
                 app:iconTintMode="src_in"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView14"
                 app:srcCompat="@drawable/crosshair"
@@ -203,12 +110,12 @@
                         android:fontFamily="@font/baloo_bhai"
                         android:text="Agents"
                         android:textAlignment="center"
-                        app:strokeColor="@color/Valorant_Blue"
-                        app:strokeWidth="1dp"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
                         app:cornerRadius="50dp"
-                        app:iconTint="#FFFFFF" />
+                        app:iconTint="#FFFFFF"
+                        app:strokeColor="@color/Valorant_Blue"
+                        app:strokeWidth="1dp" />
 
                     <Button
                         android:id="@+id/weaponsBT"
@@ -216,14 +123,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/baloo_bhai"
-                        app:strokeColor="@color/Valorant_Red"
-                        app:strokeWidth="1dp"
                         android:text="WeApons"
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
                         app:cornerRadius="50dp"
-                        app:iconTint="#FFFFFF" />
+                        app:iconTint="#FFFFFF"
+                        app:strokeColor="@color/Valorant_Red"
+                        app:strokeWidth="1dp" />
 
                     <Button
                         android:id="@+id/playerCardsBT"
@@ -233,12 +140,12 @@
                         android:fontFamily="@font/baloo_bhai"
                         android:text="Cards"
                         android:textAlignment="center"
-                        app:strokeColor="@color/Valorant_Blue"
-                        app:strokeWidth="1dp"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
                         app:cornerRadius="50dp"
-                        app:iconTint="#FFFFFF" />
+                        app:iconTint="#FFFFFF"
+                        app:strokeColor="@color/Valorant_Blue"
+                        app:strokeWidth="1dp" />
 
                     <Button
                         android:id="@+id/spraysBT"
@@ -250,10 +157,10 @@
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
-                        app:strokeColor="@color/Valorant_Red"
-                        app:strokeWidth="1dp"
                         app:cornerRadius="50dp"
-                        app:iconTint="#FFFFFF" />
+                        app:iconTint="#FFFFFF"
+                        app:strokeColor="@color/Valorant_Red"
+                        app:strokeWidth="1dp" />
 
                     <Button
                         android:id="@+id/buddiesBT"
@@ -262,13 +169,13 @@
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/baloo_bhai"
                         android:text="Buddies"
-                        app:strokeColor="@color/Valorant_Blue"
-                        app:strokeWidth="1dp"
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
                         app:cornerRadius="50dp"
-                        app:iconTint="#FFFFFF" />
+                        app:iconTint="#FFFFFF"
+                        app:strokeColor="@color/Valorant_Blue"
+                        app:strokeWidth="1dp" />
 
                     <Button
                         android:id="@+id/mapsButton"
@@ -277,13 +184,13 @@
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/baloo_bhai"
                         android:text="Maps"
-                        app:strokeColor="@color/Valorant_Red"
-                        app:strokeWidth="1dp"
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
                         app:cornerRadius="50dp"
-                        app:iconTint="#FFFFFF" />
+                        app:iconTint="#FFFFFF"
+                        app:strokeColor="@color/Valorant_Red"
+                        app:strokeWidth="1dp" />
 
                     <Button
                         android:id="@+id/ranksButton"
@@ -291,14 +198,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/baloo_bhai"
-                        app:strokeColor="@color/Valorant_Blue"
-                        app:strokeWidth="1dp"
                         android:text="Ranks"
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
                         app:cornerRadius="50dp"
-                        app:iconTint="#FFFFFF" />
+                        app:iconTint="#FFFFFF"
+                        app:strokeColor="@color/Valorant_Blue"
+                        app:strokeWidth="1dp" />
 
                     <Button
                         android:id="@+id/levelBordersBT"
@@ -306,14 +213,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/baloo_bhai"
-                        app:strokeColor="@color/Valorant_Red"
-                        app:strokeWidth="1dp"
                         android:text="Level Borders"
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
                         app:cornerRadius="50dp"
-                        app:iconTint="#FFFFFF" />
+                        app:iconTint="#FFFFFF"
+                        app:strokeColor="@color/Valorant_Red"
+                        app:strokeWidth="1dp" />
                 </LinearLayout>
 
             </HorizontalScrollView>
@@ -366,12 +273,11 @@
                 android:id="@+id/buildTrackerGGProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
                 android:clickable="true"
                 app:backgroundTint="@color/ic_launcher_background"
-                app:layout_constraintStart_toEndOf="@+id/crosshairBT"
-                app:layout_constraintTop_toBottomOf="@+id/textView14"
+                app:layout_constraintEnd_toEndOf="@+id/crosshairBT"
+                app:layout_constraintStart_toStartOf="@+id/crosshairBT"
+                app:layout_constraintTop_toBottomOf="@+id/crosshairBT"
                 app:srcCompat="@drawable/info"
                 app:tint="@color/white"
                 app:useCompatPadding="true" />
@@ -642,9 +548,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/valorant"
-                android:text="Match Notifications"
+                android:text="Enable Widget and Notification"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
+                android:textSize="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/howManyMatches" />
@@ -667,5 +574,130 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <TextView
+        android:id="@+id/animateName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/valorant"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Loading Duck#2004 stats..."
+        tools:visibility="gone" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/sharePlayerProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:alpha="0"
+        android:backgroundTint="#eb0029"
+        android:clickable="false"
+        app:backgroundTint="#EB0029"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/refreshFAB"
+        app:layout_constraintEnd_toEndOf="@+id/fabPlus"
+        app:layout_constraintStart_toStartOf="@+id/fabPlus"
+        app:srcCompat="?attr/actionModeShareDrawable"
+        app:tint="@color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/refreshFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:alpha="0"
+        android:backgroundTint="#eb0029"
+        android:clickable="false"
+        app:backgroundTint="#EB0029"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/fabPlus"
+        app:layout_constraintEnd_toEndOf="@+id/fabPlus"
+        app:layout_constraintStart_toStartOf="@+id/fabPlus"
+        app:srcCompat="@android:drawable/stat_notify_sync"
+        app:tint="@color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/RSOLogOut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:alpha="0"
+        android:backgroundTint="#eb0029"
+        android:clickable="false"
+        app:backgroundTint="#EB0029"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/sharePlayerProfile"
+        app:layout_constraintEnd_toEndOf="@+id/fabPlus"
+        app:layout_constraintStart_toStartOf="@+id/fabPlus"
+        app:srcCompat="@drawable/rsologout"
+        app:tint="@color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabPlus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#eb0029"
+        android:clickable="true"
+        android:foregroundGravity="center"
+        android:rotation="45"
+        android:visibility="visible"
+        app:backgroundTint="@color/ic_launcher_background"
+        app:fabSize="auto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+        app:tint="@color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/goBackFromLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:alpha="1"
+        android:backgroundTint="#eb0029"
+        android:clickable="true"
+        android:foregroundGravity="center"
+        android:visibility="invisible"
+        app:backgroundTint="@color/ic_launcher_background"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="@color/white" />
+
+    <ImageView
+        android:id="@+id/imagebackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/dim_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="#70000000"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

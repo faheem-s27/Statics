@@ -1,5 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.activities
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +12,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
@@ -23,12 +26,19 @@ class LoggingInActivityRSO : AppCompatActivity() {
     private lateinit var handler: Handler
     private lateinit var runnable: Runnable
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_logging_in_rso)
         val hyperLink: TextView = findViewById(R.id.textView11)
         hyperLink.movementMethod = LinkMovementMethod.getInstance()
+
+        val widgetIntent = Intent(this, LastMatchWidget::class.java)
+        widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
+            ComponentName(applicationContext, LastMatchWidget::class.java)
+        )
+        widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        sendBroadcast(widgetIntent)
 
         imagesURL.add("https://media.valorant-api.com/playercards/3432dc3d-47da-4675-67ae-53adb1fdad5e/largeart.png")
         doAsync {

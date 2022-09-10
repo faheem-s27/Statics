@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.classes.Player
+import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
 
 class PlayersAdapter(
@@ -55,11 +56,16 @@ class PlayersAdapter(
                 .into(tierRankIcon)
         }
 
-        // if the player team is blue then the background color is blue else it is red
-        if (player.team == "Blue") {
-            gridLayoutView.background = context.getDrawable(R.drawable.blue_to_black)
+        val playerName = PlayerDatabase(context).getPlayerName()
+        if (playerName == player.name) {
+            gridLayoutView.background = context.getDrawable(R.drawable.yellow_to_black)
         } else {
-            gridLayoutView.background = context.getDrawable(R.drawable.red_to_black)
+            // if the player team is blue then the background color is blue else it is red
+            if (player.team == "Blue") {
+                gridLayoutView.background = context.getDrawable(R.drawable.blue_to_black)
+            } else {
+                gridLayoutView.background = context.getDrawable(R.drawable.red_to_black)
+            }
         }
 
         return row

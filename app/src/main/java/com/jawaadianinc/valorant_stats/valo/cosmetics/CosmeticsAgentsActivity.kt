@@ -1,5 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.cosmetics
 
+import android.graphics.Color.parseColor
+import android.graphics.drawable.GradientDrawable
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -31,6 +33,7 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
     private val agentDesc = arrayListOf<String>()
     private val voiceLines = arrayListOf<String>()
     private val agentBackground = arrayListOf<String>()
+    private val backgroundGradientColors = arrayListOf<String>()
 
     private lateinit var agentJSON: JSONArray
 
@@ -51,7 +54,6 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "No data for $data", Toast.LENGTH_SHORT).show()
         }
-
 
         progressDialog.dismiss()
     }
@@ -81,18 +83,40 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         val abilityDesc = ArrayList<String>()
         val abilityIcons = ArrayList<String>()
 
-        var numba = position
-        if (position >= 7) {
-            numba += 1
+        //        if (position >= 7) {
+//            numba += 1
+//        }
+
+
+        try {
+            val gradBg = findViewById<View>(R.id.gradientView)
+            val backgroundColours = backgroundGradientColors[position].split(",")
+            val gdView = GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(
+                    parseColor(backgroundColours[0]),
+                    parseColor(backgroundColours[1]),
+                    parseColor(backgroundColours[2]),
+                    parseColor(backgroundColours[3])
+                )
+            )
+            gdView.cornerRadius = 0f
+            gradBg.background = gdView
+        } catch (e: Exception) {
+            // set background to null
+            val gradBg = findViewById<View>(R.id.gradientView)
+            gradBg.background = null
+            Log.e("Gradient", "Error: ${e.message}")
         }
 
-        for (i in 0 until agentJSON.getJSONObject(numba).getJSONArray("abilities").length()) {
-            abilityNames += agentJSON.getJSONObject(numba).getJSONArray("abilities")
+        for (i in 0 until agentJSON.getJSONObject(position).getJSONArray("abilities").length()) {
+            abilityNames += agentJSON.getJSONObject(position).getJSONArray("abilities")
                 .getJSONObject(i)
                 .getString("displayName")
-            abilityDesc += agentJSON.getJSONObject(numba).getJSONArray("abilities").getJSONObject(i)
+            abilityDesc += agentJSON.getJSONObject(position).getJSONArray("abilities")
+                .getJSONObject(i)
                 .getString("description")
-            abilityIcons += agentJSON.getJSONObject(numba).getJSONArray("abilities")
+            abilityIcons += agentJSON.getJSONObject(position).getJSONArray("abilities")
                 .getJSONObject(i)
                 .getString("displayIcon")
         }
@@ -115,12 +139,10 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
     }
 
     private fun loadAgentImage() {
-        findViewById<TextView>(R.id.cosmeticTitle).setTextAnimation("vALORANT Agents", animation)
-
         val imageSlider = findViewById<SliderView>(R.id.imageSlider)
         doAsync {
             agentJSON =
-                JSONObject(URL("https://valorant-api.com/v1/agents").readText()).getJSONArray(
+                JSONObject(URL("https://valorant-api.com/v1/agents?isPlayableCharacter=true").readText()).getJSONArray(
                     "data"
                 )
             for (i in 0 until agentJSON.length()) {
@@ -142,9 +164,34 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
                         agentJSON.getJSONObject(i).getJSONObject("voiceLine")
                             .getJSONArray("mediaList").getJSONObject(0).getString("wave")
                     )
-                    bustPortrait.add(agentJSON.getJSONObject(i).getString("fullPortraitV2"))
+                    bustPortrait.add(agentJSON.getJSONObject(i).getString("fullPortrait"))
                     agentBackground.add(agentJSON.getJSONObject(i).getString("bustPortrait"))
                     agentName.add(agentJSON.getJSONObject(i).getString("displayName"))
+
+                    // the background gradient colors are an array of hex colours for each agent
+                    // the first colour is the top colour and the second colour is the bottom colour
+                    val backgroundGradientColorsJSONArray =
+                        agentJSON.getJSONObject(i).getJSONArray("backgroundGradientColors")
+                    // iterate through the array and add each colour to the arraylist
+                    var backgroundColourGradientString = ""
+                    for (j in 0 until backgroundGradientColorsJSONArray.length()) {
+                        val currentColour = backgroundGradientColorsJSONArray.getString(j)
+                        // remove the 2 "ff" from the end of the colour
+                        val colour = currentColour.substring(0, currentColour.length - 2)
+                        // add a hash at the start
+                        val colourWithHash = "#$colour"
+                        // add the colour to the string
+                        backgroundColourGradientString += "$colourWithHash,"
+                    }
+                    // remove the last comma
+                    backgroundColourGradientString = backgroundColourGradientString.substring(
+                        0,
+                        backgroundColourGradientString.length - 1
+                    )
+                    // add the string to the arraylist
+                    backgroundGradientColors.add(backgroundColourGradientString)
+                    Log.d("backgroundGradientColors", backgroundGradientColors.toString())
+
                 } catch (e: Exception) {
                     Log.d("AgentCosmetics", e.toString())
                 }

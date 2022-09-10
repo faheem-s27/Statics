@@ -11,7 +11,7 @@ class Player(
     val agent: Agent,
     val rank: Rank
 ) {
-    // get player name and tag from name by delimeter #
+    // get player name and tag from name by delimiter #
     fun getNameAndTag(): Pair<String, String> {
         val nameAndTag = name.split("#")
         return Pair(nameAndTag[0], nameAndTag[1])

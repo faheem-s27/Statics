@@ -47,11 +47,11 @@ class MatchHistoryActivity : AppCompatActivity() {
         progressBar.isIndeterminate = true
 
 
-        if (hasWon == true) {
-            // insert winning sound here
-        } else {
-            // insert losing sound here
-        }
+//        if (hasWon == true) {
+//            // insert winning sound here
+//        } else {
+//            // insert losing sound here
+//        }
 
 
         doAsync {

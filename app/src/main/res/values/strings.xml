@@ -140,5 +140,9 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="Share_Profile_URL">Anyone with access to the link can view your matches and rank. If you are not sure if you want to share your profile, please do not share it!</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
 
 </resources>

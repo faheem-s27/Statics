@@ -1,0 +1,93 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.VALORANT_stats.AppWidget.Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.VALORANT_stats.AppWidgetContainer">
+
+    <ImageView
+        android:id="@+id/appwidget_mapImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:alpha="0.6"
+        android:scaleType="centerCrop"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:id="@+id/appwidget_timePlayed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appwidget_agentImage"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/valorant"
+        android:gravity="center"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        android:typeface="sans"
+        tools:text="4 hours ago" />
+
+    <TextView
+        android:id="@+id/appwidget_widgetUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appwidget_agentImage"
+        android:layout_alignStart="@id/appwidget_agentImage"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/valorant"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:typeface="sans"
+        tools:text="Last update: 14:27" />
+
+    <TextView
+        android:id="@+id/appwidget_gameMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/appwidget_agentImage"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/valorant"
+        android:gravity="center"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:typeface="sans"
+        tools:text="Unrated" />
+
+    <TextView
+        android:id="@+id/appwidget_KDA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/valorant"
+        android:gravity="center"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:typeface="serif"
+        tools:text="44/23/19" />
+
+    <ImageView
+        android:id="@+id/appwidget_agentImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:scaleType="fitCenter"
+        tools:srcCompat="@tools:sample/avatars" />
+
+
+</RelativeLayout>

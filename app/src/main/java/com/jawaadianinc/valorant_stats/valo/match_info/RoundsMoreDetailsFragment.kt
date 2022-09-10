@@ -111,40 +111,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     mapName.text = map
 
-
-                    if (MatchHistoryActivity.mapURL == null) {
-                        when (map) {
-                            "Bind" -> {
-                                minimapImage.setImageResource(R.drawable.bind_minimap)
-                            }
-                            "Ascent" -> {
-                                minimapImage.setImageResource(R.drawable.ascent_minimap)
-                            }
-                            "Split" -> {
-                                minimapImage.setImageResource(R.drawable.split_minimap)
-                            }
-                            "Fracture" -> {
-                                minimapImage.setImageResource(R.drawable.fracture_minimap)
-                            }
-                            "Breeze" -> {
-                                minimapImage.setImageResource(R.drawable.breeze_minimap)
-                            }
-                            "Haven" -> {
-                                minimapImage.setImageResource(R.drawable.haven_minimap)
-                            }
-                            "Icebox" -> {
-                                minimapImage.setImageResource(R.drawable.icebox_minimap)
-                            }
-                        }
-                    } else {
-//                        minimapImage.setImageBitmap(
-//                            BitmapFactory.decodeStream(
-//                                URL(MatchHistoryActivity.mapURL).openConnection().getInputStream()
-//                            )
-//                        )
-                        Picasso.get().load(MatchHistoryActivity.mapURL).into(minimapImage)
-                    }
-
+                    Picasso.get().load(MatchHistoryActivity.mapURL).into(minimapImage)
                     spinnerRounds.adapter = arrayAdapter
                     for (i in 0 until rounds.length()) {
                         val number = i + 1

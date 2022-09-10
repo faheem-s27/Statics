@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats.valo.crosshair
 
-import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -260,17 +259,17 @@ class CrossHairActivity : AppCompatActivity() {
         // hide the button by fading out opacity and sliding it down to the bottom of the screen
         generate.animate().alpha(1f).translationY(0f).setDuration(0)
             .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    generate.animate().alpha(0f).translationY(0f).setDuration(500)
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator?) {
-                                super.onAnimationEnd(animation)
-                                generate.animate().alpha(0f).translationY(0f).setDuration(0)
-                                    .setListener(null)
-                            }
-                        })
-                }
+//                override fun onAnimationEnd(animation: Animator?) {
+//                    super.onAnimationEnd(animation)
+//                    generate.animate().alpha(0f).translationY(0f).setDuration(500)
+//                        .setListener(object : AnimatorListenerAdapter() {
+//                            override fun onAnimationEnd(animation: Animator?) {
+//                                super.onAnimationEnd(animation)
+//                                generate.animate().alpha(0f).translationY(0f).setDuration(0)
+//                                    .setListener(null)
+//                            }
+//                        })
+//                }
             })
     }
 

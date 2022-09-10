@@ -13,7 +13,7 @@ class AgentAbilityAdapter(
     private val context: Activity,
     private val abilityName: ArrayList<String>,
     private val abilityDesc: ArrayList<String>,
-    private val abilityImage: ArrayList<String>
+    private val abilityImage: ArrayList<String>,
 ) : ArrayAdapter<Any>(
     context, R.layout.cosmetic_layout, abilityDesc as List<Any?>
 ) {

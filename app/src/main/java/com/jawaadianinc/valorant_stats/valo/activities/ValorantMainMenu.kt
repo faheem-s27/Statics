@@ -1,6 +1,10 @@
 package com.jawaadianinc.valorant_stats.valo.activities
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -21,12 +25,13 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.LiveMatchService
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
-import com.jawaadianinc.valorant_stats.valo.crosshair.CrossHairActivity
+import com.jawaadianinc.valorant_stats.valo.databases.MatchDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
@@ -44,7 +49,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 
-
+@SuppressLint("SetTextI18n")
 class ValorantMainMenu : AppCompatActivity() {
     private lateinit var imagebackground: ImageView
     private var playerName = ""
@@ -106,8 +111,27 @@ class ValorantMainMenu : AppCompatActivity() {
         val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
         val trackerGGButton: FloatingActionButton = findViewById(R.id.buildTrackerGGProfile)
         val crosshairButton: Button = findViewById(R.id.crosshairBT)
+
+        val dimmed = findViewById<LinearLayout>(R.id.dim_layout)
+
+        val fabRefresh: FloatingActionButton = findViewById(R.id.refreshFAB)
+
+        fabRefresh.setOnClickListener {
+            // this will restart the activity
+            finish()
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
+
+
         crosshairButton.setOnClickListener {
-            startActivity(Intent(this, CrossHairActivity::class.java))
+            // show alert dialog sayng that crosshair is not available due to changes in the game
+            val dialog = AlertDialog.Builder(this)
+            dialog.setTitle("Crosshair not available")
+            dialog.setMessage("Crosshair is not available due to the new crosshair functions in Valorant 5.04.\n\nThis will need to be remade in Statics.")
+            dialog.setPositiveButton("OK") { _, _ -> }
+            dialog.show()
+            //startActivity(Intent(this, CrossHairActivity::class.java))
         }
 
         val layer: ConstraintLayout = findViewById(R.id.constraintLayout)
@@ -119,15 +143,17 @@ class ValorantMainMenu : AppCompatActivity() {
             }
         }
 
-        val animateNameText: TextView = findViewById(R.id.animateName)
-        animateNameText.text = "Welcome ${nameSplit[0]}"
-        disappearViews(listofViews)
         val random = Random()
         val shuffled = listofViews.shuffled(random)
+
+        val animateNameText: TextView = findViewById(R.id.animateName)
+        animateNameText.text = "Welcome ${nameSplit[0]}\nWe are Valorant"
+        disappearViews(listofViews)
         doAsync {
             Thread.sleep(2000)
             uiThread {
-                animateNameText.animate().alpha(0F).start()
+                // aniamte textview alpha to 0 with end action to animateviews
+                animateNameText.animate().alpha(0f).setDuration(1000).start()
                 animateViews(shuffled)
             }
         }
@@ -197,19 +223,24 @@ class ValorantMainMenu : AppCompatActivity() {
             checkForTrackerGG(nameSplit[0], nameSplit[1])
         }
 
+        // check if the LiveMatchService is running
+        val serviceRunning = isServiceRunning(LiveMatchService::class.java)
+        liveMatchSwitch.isChecked = serviceRunning
+
         liveMatchSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // show alert dialog to ask for confirmation
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Match Notification Details")
+                builder.setTitle("Widget & Notification Details")
                 builder.setMessage(
-                    "When a new match has been played, a notification will be sent to your device for you to view details of that match\n" +
-                            "Are you sure you want to enable this?"
+                    "This will start the Live Match Service, that will run every minute to check for recently played matches.\n" +
+                            "A notification will be displayed for each new match played.\nAny active widgets will update every 30 mins\n\n" +
+                            "You can disable this service anytime."
                 )
                 builder.setPositiveButton("Yes") { _, _ ->
                     // continue with Live Match
                     val progressDialog =
-                        ProgressDialogStatics().setProgressDialog(this, "Setting notification...")
+                        ProgressDialogStatics().setProgressDialog(this, "Fetching last match...")
                     progressDialog.show()
                     val url =
                         "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
@@ -217,9 +248,25 @@ class ValorantMainMenu : AppCompatActivity() {
                         val response = JSONObject(URL(url).readText()).getJSONArray("history")
                             .get(0) as JSONObject
                         gameStarted = response.getString("gameStartTimeMillis")
+                        val matchID = response.getString("matchId")
+                        val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
+                        val matchJSON = henrikAPI(matchURl)
+                        val matchDB = MatchDatabase(applicationContext)
+                        if (!matchDB.insertMatch(matchID, matchJSON.toString())) {
+                            Log.d("MatchDatabase", "Match Database Insert Error")
+                        }
+
                         Thread.sleep(1000)
                         uiThread {
-                            startLiveMatches(gameStarted)
+                            val intent = Intent(this@ValorantMainMenu, LastMatchWidget::class.java)
+                            intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                            val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
+                                ComponentName(applicationContext, LastMatchWidget::class.java)
+                            )
+                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+                            sendBroadcast(intent)
+
+                            startLiveMatches(gameStarted, matchID)
                             progressDialog.dismiss()
                         }
                     }
@@ -227,6 +274,16 @@ class ValorantMainMenu : AppCompatActivity() {
                 builder.setNegativeButton("No") { _, _ ->
                     liveMatchSwitch.isChecked = false
                     try {
+                        MatchDatabase(applicationContext).deleteMatch()
+                        val widgetIntent =
+                            Intent(this@ValorantMainMenu, LastMatchWidget::class.java)
+                        widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                        val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
+                            ComponentName(applicationContext, LastMatchWidget::class.java)
+                        )
+                        widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+                        sendBroadcast(widgetIntent)
+
                         val intent = Intent(this, LiveMatchService::class.java)
                         stopService(intent)
                     } catch (e: Exception) {
@@ -236,6 +293,15 @@ class ValorantMainMenu : AppCompatActivity() {
                 builder.show()
             } else {
                 try {
+                    MatchDatabase(applicationContext).deleteMatch()
+                    val widgetIntent = Intent(this@ValorantMainMenu, LastMatchWidget::class.java)
+                    widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                    val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
+                        ComponentName(applicationContext, LastMatchWidget::class.java)
+                    )
+                    widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+                    sendBroadcast(widgetIntent)
+
                     val intent = Intent(this, LiveMatchService::class.java)
                     stopService(intent)
                 } catch (e: Exception) {
@@ -246,30 +312,41 @@ class ValorantMainMenu : AppCompatActivity() {
 
         var show = true
 
-        logOutFAB.translationY = 200f
-        sharePlayerProfile.translationY = 200f
+        logOutFAB.translationY = 600f
+        sharePlayerProfile.translationY = 400f
+        fabRefresh.translationY = 200f
         logOutFAB.visibility = View.INVISIBLE
         sharePlayerProfile.visibility = View.INVISIBLE
+        fabRefresh.visibility = View.INVISIBLE
 
         optionsFAB.setOnClickListener {
             if (show) {
                 // show the other FAB options
                 logOutFAB.visibility = View.VISIBLE
                 sharePlayerProfile.visibility = View.VISIBLE
-                optionsFAB.animate().rotationBy(180f).duration = 200
-                logOutFAB.animate().alpha(1f).translationYBy(-200f).duration = 200
-                sharePlayerProfile.animate().alpha(1f).translationYBy(-200f).duration = 200
+                fabRefresh.visibility = View.VISIBLE
+                optionsFAB.animate().rotationBy(45f).duration = 200
+                logOutFAB.animate().alpha(1f).translationYBy(-600f).duration = 400
+                sharePlayerProfile.animate().alpha(1f).translationYBy(-400f).duration = 300
+                fabRefresh.animate().alpha(1f).translationYBy(-200f).duration = 200
                 show = false
                 logOutFAB.isClickable = true
                 sharePlayerProfile.isClickable = true
+                fabRefresh.isClickable = true
+                //aniamte dimmed from 0 to 1 alpha in 200ms
+                dimmed.animate().alpha(1f).duration = 200
             } else {
                 // hide the FAB options
-                optionsFAB.animate().rotationBy(-180f).duration = 200
-                logOutFAB.animate().alpha(0f).translationYBy(200f).duration = 200
-                sharePlayerProfile.animate().alpha(0f).translationYBy(200f).duration = 200
+                optionsFAB.animate().rotationBy(-45f).duration = 200
+                logOutFAB.animate().alpha(0f).translationYBy(600f).duration = 400
+                sharePlayerProfile.animate().alpha(0f).translationYBy(400f).duration = 300
+                fabRefresh.animate().alpha(0f).translationYBy(200f).duration = 200
                 logOutFAB.isClickable = false
                 sharePlayerProfile.isClickable = false
+                fabRefresh.isClickable = false
                 show = true
+                //aniamte dimmed from 1 to 0 alpha in 200ms
+                dimmed.animate().alpha(0f).duration = 200
             }
         }
 
@@ -278,6 +355,14 @@ class ValorantMainMenu : AppCompatActivity() {
         logOutFAB.setOnClickListener {
             val playerDB = PlayerDatabase(this)
             if (playerDB.logOutPlayer(nameSplit[0])) {
+                val widgetIntent = Intent(this, LastMatchWidget::class.java)
+                widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
+                    ComponentName(applicationContext, LastMatchWidget::class.java)
+                )
+                widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+                sendBroadcast(widgetIntent)
+
                 startActivity(Intent(this, LoggingInActivityRSO::class.java))
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout)
                 finish()
@@ -334,32 +419,13 @@ class ValorantMainMenu : AppCompatActivity() {
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
-        doAsync {
-            try {
-                val data =
-                    henrikAPI("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true")["data"] as JSONObject
-                val largePic = data.getJSONObject("card").getString("large") as String
-                val smolPic = data.getJSONObject("card").getString("small") as String
-                val playerProfile: ImageView = findViewById(R.id.playerProfile)
-                val playerLevel: TextView = findViewById(R.id.playerLevel)
-                uiThread {
-                    Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
-                    Picasso.get().load(largePic)
-                        .transform(BlurTransformation(this@ValorantMainMenu)).fit().centerInside()
-                        .into(imagebackground)
-                    playerLevel.text = data.getInt("account_level").toString()
-                }
-            } catch (e: Exception) {
-                Log.d("Pic", "Error: $e")
-            }
-        }
 
-
+        getPlayerCards(nameSplit[0], nameSplit[1])
         getRank(nameSplit[0], nameSplit[1])
         getLastMatch(nameSplit[0], nameSplit[1])
         seekBarMatches(key)
-        val howManyMatches: TextView = findViewById(R.id.textView7)
 
+        val howManyMatches: TextView = findViewById(R.id.textView7)
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -373,8 +439,18 @@ class ValorantMainMenu : AppCompatActivity() {
             }
         })
 
+
     }
 
+    private fun isServiceRunning(java: Class<LiveMatchService>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (java.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
 
     private fun checkForTrackerGG(gameName: String, gameTag: String) {
         // show loading dialog
@@ -423,12 +499,13 @@ class ValorantMainMenu : AppCompatActivity() {
 
     }
 
-    private fun startLiveMatches(gameStart: String) {
+    private fun startLiveMatches(gameStart: String, matchID: String) {
         val intent = Intent(this, LiveMatchService::class.java)
         intent.putExtra("gameStart", gameStart)
         intent.putExtra("key", key)
         intent.putExtra("puuid", puuid)
         intent.putExtra("region", region)
+        intent.putExtra("matchID", matchID)
         startForegroundService(intent)
     }
 
@@ -448,42 +525,6 @@ class ValorantMainMenu : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun seekBarMatches(key: String) {
-        val nameSplit = playerName.split("#")
-        val puuid = PlayerDatabase(this).getPUUID(nameSplit[0], nameSplit[1])
-        val region = PlayerDatabase(this).getRegion(puuid!!)
-
-        val seekBar: SeekBar = findViewById(R.id.howManyMatches)
-        val url =
-            "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
-
-        doAsync {
-            try {
-                val data =
-                    henrikAPI("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true")["data"] as JSONObject
-                val largePic = data.getJSONObject("card").getString("large") as String
-                val smolPic = data.getJSONObject("card").getString("small") as String
-                val playerProfile: ImageView = findViewById(R.id.playerProfile)
-                val playerLevel: TextView = findViewById(R.id.playerLevel)
-                uiThread {
-                    Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
-                    Picasso.get().load(largePic)
-                        .transform(BlurTransformation(this@ValorantMainMenu)).fit().centerInside()
-                        .into(imagebackground)
-                    playerLevel.text = data.getInt("account_level").toString()
-                }
-            } catch (e: Exception) {
-                Log.d("Pic", "Error: $e")
-            }
-
-            val number = JSONObject(URL(url).readText()).getJSONArray("history").length()
-            uiThread {
-                seekBar.max = number
-                seekBar.progress = 5
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         FirebaseApp.initializeApp(/*context=*/this)
@@ -492,7 +533,25 @@ class ValorantMainMenu : AppCompatActivity() {
         )
     }
 
-    @SuppressLint("SetTextI18n")
+    private fun getPlayerCards(RiotName: String, RiotID: String) {
+        val playerProfile: ImageView = findViewById(R.id.playerProfile)
+        val playerLevel: TextView = findViewById(R.id.playerLevel)
+        doAsync {
+            val data =
+                henrikAPI("https://api.henrikdev.xyz/valorant/v1/account/${RiotName}/${RiotID}?force=true")["data"] as JSONObject
+            val largePic = data.getJSONObject("card").getString("large") as String
+            val smolPic = data.getJSONObject("card").getString("small") as String
+            uiThread {
+                Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
+                Picasso.get().load(largePic)
+                    .transform(BlurTransformation(this@ValorantMainMenu)).fit().centerInside()
+                    .into(imagebackground)
+                playerLevel.text = data.getInt("account_level").toString()
+            }
+        }
+    }
+
+
     private fun getRank(RiotName: String, RiotID: String) {
         val rankImageMainMenu: ImageView = findViewById(R.id.rankImageMainMenu)
         val rankPatchedMainMenu: TextView = findViewById(R.id.rankPatchedMainMenu)
@@ -518,7 +577,7 @@ class ValorantMainMenu : AppCompatActivity() {
                     val done = actualTier["tier"] as Int
                     if (done == currentTierNumber) {
                         val tierIcon = actualTier["largeIcon"] as String
-                        runOnUiThread {
+                        uiThread {
                             rankImageMainMenu.visibility = View.VISIBLE
                             Picasso
                                 .get()
@@ -526,16 +585,23 @@ class ValorantMainMenu : AppCompatActivity() {
                                 .fit()
                                 .centerInside()
                                 .into(rankImageMainMenu)
-                            //rankImageMainMenu.scaleType = ImageView.ScaleType.FIT_XY
                             rankPatchedMainMenu.text = patched
                             rankProgressMainMenu.progress = progressNumber
                             rankProgressMainMenu.visibility = View.VISIBLE
                             rankNumberMainMenu.text = "$progressNumber/100"
                             rankNumberMainMenu.visibility = View.VISIBLE
                         }
+                        break
                     }
                 }
             } catch (e: Exception) {
+                uiThread {
+                    rankImageMainMenu.visibility = View.GONE
+                    rankPatchedMainMenu.text = "Error in getting rank"
+                    rankProgressMainMenu.visibility = View.GONE
+                    rankNumberMainMenu.visibility = View.GONE
+                }
+
                 Log.d("Henrik", "Error: $e")
             }
         }
@@ -550,10 +616,10 @@ class ValorantMainMenu : AppCompatActivity() {
                 val lastMatchData = henrikAPI(allmatches)
                 val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
                 val mapData = jsonOfMap["data"] as JSONArray
+                var actualtMapUlr = ""
                 val data = lastMatchData["data"] as JSONArray
                 val metadata = data.getJSONObject(0).getJSONObject("metadata")
                 val map = metadata.getString("map")
-                var actualtMapUlr = ""
 
                 val unixTimeStart = metadata.getInt("game_start")
                 val date = Date(unixTimeStart.toLong() * 1000)
@@ -596,13 +662,13 @@ class ValorantMainMenu : AppCompatActivity() {
                     val nameofMpa = mapNamefromJSON["displayName"]
                     if (nameofMpa == map) {
                         actualtMapUlr = mapNamefromJSON["listViewIcon"].toString()
+                        break
                     }
                 }
-                runOnUiThread {
+                uiThread {
                     lastMatchMapImage.setOnClickListener {
                         matchActivityStart(RiotName, RiotID, matchID)
                     }
-
                     when {
                         timeinDays > 0 -> {
                             gameStartMainMenu.text = "$timeinDays days ago"
@@ -628,13 +694,32 @@ class ValorantMainMenu : AppCompatActivity() {
                         .fit()
                         .centerInside()
                         .into(lastMatchMapImage)
+
                 }
             } catch (e: Exception) {
-                runOnUiThread {
+                uiThread {
                     Log.d("Henrik", "Error: $e")
                     val lastMatchStatsMainMenu: TextView = findViewById(R.id.lastMatchStatsMainMenu)
                     lastMatchStatsMainMenu.text = "Error loading data"
                 }
+            }
+        }
+    }
+
+    private fun seekBarMatches(key: String) {
+        val nameSplit = playerName.split("#")
+        val puuid = PlayerDatabase(this@ValorantMainMenu).getPUUID(nameSplit[0], nameSplit[1])
+        val region = PlayerDatabase(this@ValorantMainMenu).getRegion(puuid!!)
+        val seekBar: SeekBar = findViewById(R.id.howManyMatches)
+        val url =
+            "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
+
+        doAsync {
+            val number = JSONObject(URL(url).readText()).getJSONArray("history").length()
+            uiThread {
+                // the limit of seekbar is 60, if user has played less than 60 matches, the limit is the number of matches played
+                seekBar.max = if (number < 60) number else 60
+                seekBar.progress = 5
             }
         }
     }

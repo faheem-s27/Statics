@@ -9,12 +9,10 @@
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
+        <item name="android:windowContentTransitions">true</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/ic_launcher_background</item>
         <item name="android:navigationBarColor">@color/ic_launcher_background</item>
-
-        <!-- completely transparent -->
-        <!-- <item name="android:windowTranslucentNavigation">true</item> -->
 
 
         <!-- Customize your theme here. -->
@@ -23,6 +21,7 @@
     <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="colorPrimary">@color/purple_500</item>
+        <item name="android:windowContentTransitions">true</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorAccent">@color/ic_launcher_background</item>

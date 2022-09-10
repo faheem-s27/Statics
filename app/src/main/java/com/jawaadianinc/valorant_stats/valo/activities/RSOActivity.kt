@@ -1,5 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.activities
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,6 +15,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
@@ -41,7 +44,7 @@ class RSOActivity : AppCompatActivity() {
         val data: Uri? = intent?.data
         val updateText: TextView = findViewById(R.id.infoText)
         code = data!!.getQueryParameter("code")
-        updateText.text = "Hello, please wait while we are authenticating you..."
+        updateText.text = "Time to steal your data"
 
         val confirmUserText: TextView = findViewById(R.id.confirmUserText)
         val confirmButton: Button = findViewById(R.id.confirmUserButton)
@@ -171,7 +174,7 @@ class RSOActivity : AppCompatActivity() {
                     val gameTag = json.getString("tagLine")
                     uiThread {
                         progressBar.progress = 90
-                        updateText.text = "Finalise sign in"
+                        updateText.text = "Click the button to prove your alive"
                         confirmUser(puuid, gameName, gameTag, region, key)
                     }
                 }
@@ -197,7 +200,7 @@ class RSOActivity : AppCompatActivity() {
         confirmButton.setOnClickListener {
             //save data to firebase
             val database = Firebase.database
-            val playersRef = database.getReference("VALORANT/signedInPlayers")
+            val playersRef = database.getReference("VALORANT/newSignedInPlayers")
             playersRef.child(gameName).child("Puuid").setValue(puuid)
             playersRef.child(gameName).child("GameTag").setValue(gameTag)
             playersRef.child(gameName).child("Region").setValue(region)
@@ -206,9 +209,18 @@ class RSOActivity : AppCompatActivity() {
             val playerdb = PlayerDatabase(this)
             if (playerdb.addPlayer(gameName, gameTag, puuid, region)) {
                 progressBar.progress = 100
-                updateText.text = "Success!"
+                updateText.text = "You did it $gameName!"
                 //take user to main valorant screen
                 Toast.makeText(this, "Welcome $gameName!", Toast.LENGTH_LONG).show()
+
+                val widgetIntent = Intent(this, LastMatchWidget::class.java)
+                widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
+                    ComponentName(applicationContext, LastMatchWidget::class.java)
+                )
+                widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+                sendBroadcast(widgetIntent)
+
                 val intent = Intent(this, ValorantMainMenu::class.java)
                 intent.putExtra("key", key)
                 startActivity(intent)

@@ -15,6 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
+        <receiver
+            android:name=".LastMatchWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/last_match_widget_info" />
+        </receiver>
+
         <activity
             android:name=".valo.crosshair.CrossHairActivity"
             android:exported="false" />
@@ -29,8 +41,10 @@
             android:exported="true">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="statics-fd699.web.app"
                     android:pathPrefix="/valorant/profile"
@@ -51,8 +65,10 @@
             android:exported="true">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="statics-fd699.web.app"
                     android:pathPrefix="/authorize.html"
@@ -83,13 +99,14 @@
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".main.SplashActivity"
             android:exported="true"
             android:label="Statics"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
