@@ -1,7 +1,10 @@
 package com.jawaadianinc.valorant_stats.valo.activities
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -17,6 +20,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.adapters.MatchAdapter
+import com.jawaadianinc.valorant_stats.valo.databases.StoredMatchesDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import org.jetbrains.anko.doAsync
 import org.json.JSONObject
@@ -42,14 +46,31 @@ class ViewMatches : AppCompatActivity() {
         val puuid = intent.extras?.getString("PUUID")
         val numberOfMatches = intent.extras?.getString("NumberOfMatches")
 
+        val matches = MatchAdapter(
+            this,
+            playerAgentImage,
+            mapImage,
+            timePlayed,
+            kda,
+            gameMode,
+            won
+        )
+
+        val matchList: ListView = findViewById(R.id.matchList)
+        matchList.adapter = matches
+        val progessBar: ProgressBar = findViewById(R.id.progressBar6)
+        val matchText: TextView = findViewById(R.id.textView10)
+        progessBar.max = numberOfMatches!!.toInt()
+
+        val matchesDB = StoredMatchesDatabase(this)
+
         // this is about to get sticky
         val database = Firebase.database
         val myRef = database.getReference("VALORANT/key")
         myRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val key = dataSnapshot.value as String?
-                val progessBar: ProgressBar = findViewById(R.id.progressBar6)
-                val matchText: TextView = findViewById(R.id.textView10)
+
                 val url =
                     "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
                 doAsync {
@@ -64,20 +85,35 @@ class ViewMatches : AppCompatActivity() {
                     val responseFromRiot = JSONObject(URL(urlName).readText())
                     val gameNamePlayer = responseFromRiot.getString("gameName")
                     val tagLinePlayer = responseFromRiot.getString("tagLine")
-
                     val history = response.getJSONArray("history")
                     try {
                         for (i in 0 until history.length()) {
-                            if (i >= numberOfMatches!!.toInt()) {
+                            if (i >= numberOfMatches.toInt()) {
                                 break
                             }
                             val currentMatch = history[i] as JSONObject
                             val matchID = currentMatch.getString("matchId")
-                            val firebaseDatabase = Firebase.database
-                            val rsoDB = firebaseDatabase.getReference("VALORANT/RSO")
+                            val timeStarted = currentMatch.getString("gameStartTimeMillis")
                             val matchURL =
                                 "https://$region.api.riotgames.com/val/match/v1/matches/$matchID?api_key=$key"
-                            val responseRiot = JSONObject(URL(matchURL).readText())
+
+                            var responseRiot: JSONObject
+                            if (matchesDB.isinDatabase(timeStarted, matchID)) {
+                                responseRiot = JSONObject(matchesDB.getJSON(timeStarted, matchID)!!)
+                            } else {
+                                responseRiot = JSONObject(URL(matchURL).readText())
+                                if (!matchesDB.addMatch(
+                                        timeStarted,
+                                        matchID,
+                                        responseRiot.toString()
+                                    )
+                                ) {
+                                    Log.d("MatchLoadingError", "Failed to add match to database")
+                                }
+                            }
+
+                            val firebaseDatabase = Firebase.database
+                            val rsoDB = firebaseDatabase.getReference("VALORANT/RSO")
                             val matchInfo = responseRiot.getJSONObject("matchInfo")
                             val matchStart = matchInfo.getLong("gameStartMillis")
                             val gameDuration = matchInfo.getLong("gameLengthMillis")
@@ -89,6 +125,10 @@ class ViewMatches : AppCompatActivity() {
                             var agentImage = ""
                             var mapListViewIcon = ""
                             var mapName = ""
+                            var kills = 0
+                            var deaths = 0
+                            var assists = 0
+                            var winning: String = ""
 
                             for (j in 0 until players.length()) {
                                 val currentPlayer = players[j] as JSONObject
@@ -117,10 +157,10 @@ class ViewMatches : AppCompatActivity() {
                                     rsoDB.child(gameName).child("Matches").child(matchID)
                                         .child("Mode")
                                         .setValue(mode)
-                                    val kills = currentPlayer.getJSONObject("stats").getInt("kills")
-                                    val deaths =
+                                    kills = currentPlayer.getJSONObject("stats").getInt("kills")
+                                    deaths =
                                         currentPlayer.getJSONObject("stats").getInt("deaths")
-                                    val assists =
+                                    assists =
                                         currentPlayer.getJSONObject("stats").getInt("assists")
                                     val agentID = currentPlayer.getString("characterId")
                                     for (k in 0 until agentResponse.length()) {
@@ -149,7 +189,6 @@ class ViewMatches : AppCompatActivity() {
                                     val obj = teams[0] as JSONObject
 
                                     // talking about red team
-                                    var winning: String
                                     val redWon = obj.getString("won")
 
                                     winning = try {
@@ -163,33 +202,23 @@ class ViewMatches : AppCompatActivity() {
                                     } catch (e: Exception) {
                                         "unknown"
                                     }
-
-                                    playerAgentImage += agentImage
-                                    mapImage += mapListViewIcon
-                                    timePlayed += (matchStart + gameDuration).toString()
-                                    kda += "$kills/$deaths/$assists"
-                                    gameMode += mode
-                                    matchIDs += matchID
-                                    won += winning
-                                    mapNames += mapName
                                 }
                             }
+
                             runOnUiThread {
                                 matchText.text = "Processed ${i + 1}/$numberOfMatches matches"
-                                progessBar.max = numberOfMatches.toInt()
                                 progessBar.progress = i + 1
-                                val matchList: ListView = findViewById(R.id.matchList)
-                                val matches = MatchAdapter(
-                                    this@ViewMatches,
-                                    playerAgentImage,
-                                    mapImage,
-                                    timePlayed,
-                                    kda,
-                                    gameMode,
-                                    won
-                                )
+
+                                playerAgentImage += agentImage
+                                mapImage += mapListViewIcon
+                                timePlayed += (matchStart + gameDuration).toString()
+                                kda += "$kills/$deaths/$assists"
+                                gameMode += mode
+                                matchIDs += matchID
+                                won += winning
+                                mapNames += mapName
+
                                 matches.notifyDataSetChanged()
-                                matchList.adapter = matches
                                 matchList.setOnItemClickListener { _, _, position, _ ->
                                     matchActivityStart(
                                         gameNamePlayer,
@@ -207,12 +236,74 @@ class ViewMatches : AppCompatActivity() {
                                 "Request Limit has been reached, please try again in a few minutes",
                                 Toast.LENGTH_LONG
                             ).show()
+
+                            // Log the error
+                            Log.e("MatchLoadingError", e.toString())
                         }
                     }
                     runOnUiThread {
                         val progressBar: ProgressBar = findViewById(R.id.progressBar6)
                         val matchText1: TextView = findViewById(R.id.textView10)
-                        val matchList: ListView = findViewById(R.id.matchList)
+
+                        // get shared preferences to check if the user has cached matches before
+                        val sharedPref = getSharedPreferences("cache", Context.MODE_PRIVATE)
+                        val cached = sharedPref.getBoolean("cached", false)
+
+                        // if the user hasn't cached matches before, show the toast message
+                        if (!cached) {
+                            Toast.makeText(
+                                this@ViewMatches,
+                                "Your matches have been saved! They will load faster next time",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            // set the shared preference to true so that the user doesn't get the toast message again
+                            with(sharedPref.edit()) {
+                                putBoolean("cached", true)
+                                apply()
+                            }
+                        }
+
+                        // check if matchesDB has exceeded 100MB
+                        var size = matchesDB.getStorageSize()
+                        val numberDb = matchesDB.numberOfMatches()
+                        if (size > 50000000 && numberOfMatches.toInt() < numberDb) {
+                            // show alert dialog
+                            // get shared preferences to check if the user has been alerted before
+                            val sharedPref = getSharedPreferences("cache", Context.MODE_PRIVATE)
+                            val alerted = sharedPref.getBoolean("alerted", false)
+                            if (!alerted) {
+                                val builder = AlertDialog.Builder(this@ViewMatches)
+                                builder.setTitle("Matches Database Size")
+                                builder.setMessage("Your matches has exceeded 50MB.\n\nIf you would like to free up space, Statics can delete the oldest matches automatically!")
+                                builder.setPositiveButton("OK") { _, _ ->
+                                    // if it has, delete the database until it goes to 40MB
+
+                                    // set the shared preference to true so that the user doesn't get the alert message again
+                                    with(sharedPref.edit()) {
+                                        putBoolean("alerted", true)
+                                        apply()
+                                    }
+
+                                    while (size > 40000000) {
+                                        matchesDB.deleteOldestMatch()
+                                        size = matchesDB.getStorageSize()
+                                    }
+                                    // show the toast message
+                                    Toast.makeText(
+                                        this@ViewMatches,
+                                        "Storage has been freed up! Your newest matches are still saved",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                builder.setNegativeButton("No") { _, _ -> }
+                                builder.show()
+                            } else {
+                                while (size > 40000000) {
+                                    matchesDB.deleteOldestMatch()
+                                    size = matchesDB.getStorageSize()
+                                }
+                            }
+                        }
                         matchList.animate().alpha(1f).duration = 1000
                         progressBar.animate().alpha(0f).duration = 1000
                         matchText1.animate().alpha(0f).duration = 1000

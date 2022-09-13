@@ -10,15 +10,12 @@ import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.adapters.MMRAdapter
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -32,8 +29,30 @@ class MMRActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mmractivity)
 
-        val riotName = intent.extras!!.getString("RiotName")
-        val riotID = intent.extras!!.getString("RiotID")
+        var riotName = intent.extras?.getString("RiotName")
+        var riotID = intent.extras?.getString("RiotID")
+        var region: String?
+
+        // check if null
+        if (riotName == null || riotID == null) {
+            val playerName = PlayerDatabase(this).getPlayerName()
+            if (playerName != null) {
+                riotName = playerName.split("#")[0]
+            }
+            if (playerName != null) {
+                riotID = playerName.split("#")[1]
+            }
+        }
+
+        // get region
+        val puuid = PlayerDatabase(this).getPUUID(riotName!!, riotID!!)
+        region = PlayerDatabase(this).getRegion(puuid)
+
+        // if region is null, then set region to eu
+        if (region == null) {
+            region = "eu"
+        }
+
         val nameText: TextView = findViewById(R.id.MMRname)
         nameText.text = "$riotName#$riotID"
 
@@ -52,13 +71,13 @@ class MMRActivity : AppCompatActivity() {
         val tierURL = "https://valorant-api.com/v1/competitivetiers"
         val playerURL =
             "https://api.henrikdev.xyz/valorant/v1/account/${riotName}/$riotID" // modified
-        val currentTier = "https://api.henrikdev.xyz/valorant/v1/mmr/eu/${riotName}/$riotID"
+        val currentTier = "https://api.henrikdev.xyz/valorant/v1/mmr/$region/${riotName}/$riotID"
         val mmrHistory =
-            "https://api.henrikdev.xyz/valorant/v1/mmr-history/eu/${riotName}/${riotID}"
+            "https://api.henrikdev.xyz/valorant/v1/mmr-history/$region/${riotName}/${riotID}"
 
         doAsync {
             try {
-                var data = henrikAPI(playerURL)
+                var data = Henrik(this@MMRActivity).henrikAPI(playerURL)
                 data = data["data"] as JSONObject
                 val cards = data["card"] as JSONObject
                 val playerCard = cards["wide"].toString()
@@ -67,6 +86,7 @@ class MMRActivity : AppCompatActivity() {
                     Picasso
                         .get()
                         .load(playerCard)
+                        .transform(BlurTransformation(this@MMRActivity))
                         .fit()
                         .centerInside()
                         .into(playerWideImage)
@@ -80,7 +100,7 @@ class MMRActivity : AppCompatActivity() {
 
                 }
 
-                val currentTierData = henrikAPI(currentTier)
+                val currentTierData = Henrik(this@MMRActivity).henrikAPI(currentTier)
                 val dataofThis = currentTierData["data"] as JSONObject
                 val currentTierNumber = dataofThis["currenttier"] as Int
                 val progressNumber = dataofThis["ranking_in_tier"] as Int
@@ -119,7 +139,7 @@ class MMRActivity : AppCompatActivity() {
                     }
                 }
 
-                val mmrArray = henrikAPI(mmrHistory)["data"] as JSONArray
+                val mmrArray = Henrik(this@MMRActivity).henrikAPI(mmrHistory)["data"] as JSONArray
 
                 val dates = ArrayList<String>()
                 val changes = ArrayList<String>()
@@ -135,25 +155,18 @@ class MMRActivity : AppCompatActivity() {
                     val currentTiername = currentMMR["currenttierpatched"] as String
                     val change = currentMMR["mmr_change_to_last_game"] as Int
                     val rawDate = currentMMR["date_raw"] as Int
+
+                    rankTriangles += if (change > 0) {
+                        currentMMR.getJSONObject("images").getString("triangle_up")
+                    } else {
+                        currentMMR.getJSONObject("images").getString("triangle_down")
+                    }
+
                     dates += date
                     changes += change.toString()
                     numberMMR += currentNumber.toString()
                     rankname += currentTiername
                     rawDates += rawDate.toString()
-
-                    for (j in 0 until tiersagain.length()) {
-                        val actualTier = tiersagain[j] as JSONObject
-                        val done = actualTier["tier"] as Int
-                        if (done == currentTierNumber) {
-                            // check if changes is positive or negative
-                            rankTriangles += if (change > 0) {
-                                actualTier["rankTriangleUpIcon"] as String
-                            } else {
-                                actualTier["rankTriangleDownIcon"] as String
-                            }
-                        }
-                    }
-
                 }
                 val scroll: ListView = findViewById(R.id.MMRList)
 
@@ -182,7 +195,7 @@ class MMRActivity : AppCompatActivity() {
                     AlertDialog.Builder(this@MMRActivity).setTitle("Unranked!")
                         .setMessage("This user is either unranked or hasn't played competitive in a long time.")
                         .setPositiveButton(android.R.string.ok) { _, _ ->
-                            startActivity(Intent(this@MMRActivity, ValorantMainMenu::class.java))
+                            finish()
                         }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }
@@ -192,12 +205,11 @@ class MMRActivity : AppCompatActivity() {
                     AlertDialog.Builder(this@MMRActivity).setTitle("Error!")
                         .setMessage("There was an issue getting the ranking :/ Error details have been sent to the developer")
                         .setPositiveButton(android.R.string.ok) { _, _ ->
-                            startActivity(Intent(this@MMRActivity, ValorantMainMenu::class.java))
+                            finish()
                         }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }
             }
-
         }
     }
 
@@ -277,21 +289,5 @@ class MMRActivity : AppCompatActivity() {
             height = newHeight // in pixels
             layoutParams = this
         }
-    }
-
-    private fun henrikAPI(playerURL: String): JSONObject {
-        return executeRequest(playerURL)
-    }
-
-    private fun executeRequest(playerURL: String): JSONObject {
-        val client = OkHttpClient()
-        val urlBuilder: HttpUrl.Builder =
-            playerURL.toHttpUrlOrNull()!!.newBuilder()
-        val url = urlBuilder.build().toString()
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
-            .build()
-        return JSONObject(client.newCall(request).execute().body.string())
     }
 }

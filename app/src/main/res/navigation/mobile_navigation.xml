@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_maps">
+
+    <fragment
+        android:id="@+id/navigation_maps"
+        android:name="com.jawaadianinc.valorant_stats.valo.activities.ui.maps.MapsFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragments_trackergg_maps" />
+
+    <fragment
+        android:id="@+id/navigation_agents"
+        android:name="com.jawaadianinc.valorant_stats.valo.activities.ui.agents.AgentsFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragments_trackergg_agents" />
+
+    <fragment
+        android:id="@+id/navigation_weapons"
+        android:name="com.jawaadianinc.valorant_stats.valo.activities.ui.weapons.WeaponsFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragments_trackergg_weapons" />
+</navigation>

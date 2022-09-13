@@ -145,4 +145,12 @@
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
 
+
+    <string name="long_shortcut">See your rank history!</string>
+    <string name="short_shortcut">Past ranks</string>
+    <string name="title_activity_tracker_gg">TrackerGG_Activity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
 </resources>

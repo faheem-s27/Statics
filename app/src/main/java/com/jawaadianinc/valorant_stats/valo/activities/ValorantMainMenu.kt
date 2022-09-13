@@ -28,18 +28,16 @@ import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.LiveMatchService
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
 import com.jawaadianinc.valorant_stats.valo.databases.MatchDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
+import com.jawaadianinc.valorant_stats.valo.databases.TrackerDB
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -57,6 +55,8 @@ class ValorantMainMenu : AppCompatActivity() {
     private var region = ""
     private var puuid = ""
     private var gameStarted = ""
+
+    private val scraper = TrackerGGScraper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,11 +109,9 @@ class ValorantMainMenu : AppCompatActivity() {
         val optionsFAB: FloatingActionButton = findViewById(R.id.fabPlus)
         val seekBar: SeekBar = findViewById(R.id.howManyMatches)
         val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
-        val trackerGGButton: FloatingActionButton = findViewById(R.id.buildTrackerGGProfile)
+        val trackerGGButton: Button = findViewById(R.id.buildTrackerGGProfile)
         val crosshairButton: Button = findViewById(R.id.crosshairBT)
-
         val dimmed = findViewById<LinearLayout>(R.id.dim_layout)
-
         val fabRefresh: FloatingActionButton = findViewById(R.id.refreshFAB)
 
         fabRefresh.setOnClickListener {
@@ -123,12 +121,76 @@ class ValorantMainMenu : AppCompatActivity() {
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
+        // show an alert dialog that says thank you for using the app
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("Thank you ${playerName.split("#")[0]} for using Statics!")
+        alertDialog.setMessage("If you have any suggestions or feedback, you can join the Statics discord server and send a message to the developer.\n\nOr you can share the app with your friends!")
+        alertDialog.setPositiveButton("Join") { dialog, which ->
+            // start an intent to open the discord server
+            val browserIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/hgacc2kVMa"))
+            startActivity(browserIntent)
+            dialog.dismiss()
+        }
+        alertDialog.setNegativeButton("Share") { dialog, which ->
+            // share the app
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Statics")
+            var shareMessage = "This app shows you your Valorant stats!\n"
+            shareMessage = """
+                $shareMessage
+                https://play.google.com/store/apps/details?id=com.jawaadianinc.valorant_stats
+                """.trimIndent()
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+            startActivity(Intent.createChooser(shareIntent, "Choose one"))
+            dialog.dismiss()
+        }
+
+        alertDialog.setNeutralButton("Dismiss") { dialog, which ->
+            // show the alert dialog again in 2 days
+            val sharedPref = getSharedPreferences("alertDialog", Context.MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            editor.putLong("lastTime", System.currentTimeMillis())
+            editor.apply()
+            // toast to say that the dialog will show again in 2 days
+            Toast.makeText(this, "See you in 2 days! ;)", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+
+        // show the alert dialog if the user hasn't seen it in 2 days
+        val sharedPref = getSharedPreferences("alertDialog", Context.MODE_PRIVATE)
+        val firstTime = sharedPref.getBoolean("firstTime", true)
+
+        if (firstTime) {
+            // show the alert dialog
+            alertDialog.show()
+            // set the first time to false
+            val editor = sharedPref.edit()
+            editor.putBoolean("firstTime", false)
+            editor.apply()
+        } else {
+            // check if it has been 2 days
+            val lastTime = sharedPref.getLong("lastTime", 0)
+            val currentTime = System.currentTimeMillis()
+            val difference = currentTime - lastTime
+
+            val twoDays = 172800000
+            if (difference > twoDays) {
+                // show the alert dialog
+                alertDialog.show()
+                // set the last time to the current time
+                val editor = sharedPref.edit()
+                editor.putLong("lastTime", System.currentTimeMillis())
+                editor.apply()
+            }
+        }
 
         crosshairButton.setOnClickListener {
             // show alert dialog sayng that crosshair is not available due to changes in the game
             val dialog = AlertDialog.Builder(this)
-            dialog.setTitle("Crosshair not available")
-            dialog.setMessage("Crosshair is not available due to the new crosshair functions in Valorant 5.04.\n\nThis will need to be remade in Statics.")
+            dialog.setTitle("Crosshair unavailable")
+            dialog.setMessage("Crosshair is currently disabled in the app due to the new crosshair functions in Valorant 5.04.\n\nThis will need to be remade in Statics.")
             dialog.setPositiveButton("OK") { _, _ -> }
             dialog.show()
             //startActivity(Intent(this, CrossHairActivity::class.java))
@@ -218,14 +280,20 @@ class ValorantMainMenu : AppCompatActivity() {
 
         // ------------------------ End of cosmetics ------------------------------------
 
-        trackerGGButton.setOnClickListener()
-        {
-            checkForTrackerGG(nameSplit[0], nameSplit[1])
-        }
 
         // check if the LiveMatchService is running
         val serviceRunning = isServiceRunning(LiveMatchService::class.java)
         liveMatchSwitch.isChecked = serviceRunning
+
+        // update the widget
+        val intent =
+            Intent(this, LastMatchWidget::class.java)
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
+            ComponentName(applicationContext, LastMatchWidget::class.java)
+        )
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        sendBroadcast(intent)
 
         liveMatchSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -250,7 +318,7 @@ class ValorantMainMenu : AppCompatActivity() {
                         gameStarted = response.getString("gameStartTimeMillis")
                         val matchID = response.getString("matchId")
                         val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-                        val matchJSON = henrikAPI(matchURl)
+                        val matchJSON = Henrik(this@ValorantMainMenu).henrikAPI(matchURl)
                         val matchDB = MatchDatabase(applicationContext)
                         if (!matchDB.insertMatch(matchID, matchJSON.toString())) {
                             Log.d("MatchDatabase", "Match Database Insert Error")
@@ -419,6 +487,11 @@ class ValorantMainMenu : AppCompatActivity() {
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
+        trackerGGButton.setOnClickListener()
+        {
+            checkForTrackerGG(nameSplit[0], nameSplit[1])
+        }
+
 
         getPlayerCards(nameSplit[0], nameSplit[1])
         getRank(nameSplit[0], nameSplit[1])
@@ -439,7 +512,6 @@ class ValorantMainMenu : AppCompatActivity() {
             }
         })
 
-
     }
 
     private fun isServiceRunning(java: Class<LiveMatchService>): Boolean {
@@ -452,17 +524,20 @@ class ValorantMainMenu : AppCompatActivity() {
         return false
     }
 
-    private fun checkForTrackerGG(gameName: String, gameTag: String) {
-        // show loading dialog
+    private fun loadTrackerGG(gameName: String, gameTag: String, mode: String) {
         val progressDialog =
-            ProgressDialogStatics().setProgressDialog(this, "Checking for eligibility...")
+            ProgressDialogStatics().setProgressDialog(this, "Compiling stats...")
         progressDialog.show()
         doAsync {
             try {
-                val json = TrackerGGScraper().getProfile(gameName, gameTag)
+                val json = scraper.getProfile(gameName, gameTag)
                 val privacy =
                     json.getJSONObject("data").getJSONObject("metadata").getString("privacy")
                 if (privacy == "public") {
+                    scraper.getMaps(mode)
+                    scraper.getAgents(mode)
+                    scraper.getWeapons(mode)
+
                     uiThread {
                         progressDialog.dismiss()
                         startTrackerGG(gameName, gameTag)
@@ -496,7 +571,35 @@ class ValorantMainMenu : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    private fun checkForTrackerGG(gameName: String, gameTag: String) {
+        // show loading dialog
+        // show an alert dialog with options to choose which game mode to view stats on
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Choose a game mode")
+        val gameModes = arrayOf("Competitive", "Unrated", "Spike Rush")
+        var mode = ""
+        builder.setItems(gameModes) { _, which ->
+            when (which) {
+                0 -> {
+                    // ranked
+                    mode = "competitive"
+                    loadTrackerGG(gameName, gameTag, mode)
+                }
+                1 -> {
+                    // unrated
+                    mode = "unrated"
+                    loadTrackerGG(gameName, gameTag, mode)
+                }
+                2 -> {
+                    // competitive
+                    mode = "spikerush"
+                    loadTrackerGG(gameName, gameTag, mode)
+                }
+            }
+        }
+        builder.show()
     }
 
     private fun startLiveMatches(gameStart: String, matchID: String) {
@@ -510,12 +613,27 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     private fun startTrackerGG(name: String, tag: String) {
-        Toast.makeText(this, "$name#$tag is eligible! Coming in 2.3 update", Toast.LENGTH_LONG)
-            .show()
-//        val intent = Intent(this, TrackerGG::class.java)
-//        intent.putExtra("name", name)
-//        intent.putExtra("tag", tag)
-//        startActivity(intent)
+        val agentJSON = scraper.getAgentJSON()
+        val mapJSON = scraper.getMapJSON()
+        val weaponJSON = scraper.getWeaponJSON()
+        //val dataInsert = scraper.databaseInsert(this, playerName, agentJSON.toString(), mapJSON.toString(), weaponJSON.toString())
+
+        val db = TrackerDB(this)
+        db.deleteDetails(playerName)
+        val success = db.insertDetails(
+            playerName,
+            agentJSON.toString(),
+            mapJSON.toString(),
+            weaponJSON.toString()
+        )
+
+        if (success) {
+            val intent = Intent(this, TrackerGG_Activity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        } else {
+            Toast.makeText(this, "Null error. Please try again later", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun signIntoTrackerGG(name: String, tag: String) {
@@ -538,7 +656,7 @@ class ValorantMainMenu : AppCompatActivity() {
         val playerLevel: TextView = findViewById(R.id.playerLevel)
         doAsync {
             val data =
-                henrikAPI("https://api.henrikdev.xyz/valorant/v1/account/${RiotName}/${RiotID}?force=true")["data"] as JSONObject
+                Henrik(this@ValorantMainMenu).henrikAPI("https://api.henrikdev.xyz/valorant/v1/account/${RiotName}/${RiotID}?force=true")["data"] as JSONObject
             val largePic = data.getJSONObject("card").getString("large") as String
             val smolPic = data.getJSONObject("card").getString("small") as String
             uiThread {
@@ -563,7 +681,7 @@ class ValorantMainMenu : AppCompatActivity() {
 
         doAsync {
             try {
-                val currentTierData = henrikAPI(currentTier)
+                val currentTierData = Henrik(this@ValorantMainMenu).henrikAPI(currentTier)
                 val dataofThis = currentTierData["data"] as JSONObject
                 val currentTierNumber = dataofThis["currenttier"] as Int
                 val progressNumber = dataofThis["ranking_in_tier"] as Int
@@ -613,7 +731,7 @@ class ValorantMainMenu : AppCompatActivity() {
         val agentImageMainMenu: ImageView = findViewById(R.id.agentImageMainMenu)
         doAsync {
             try {
-                val lastMatchData = henrikAPI(allmatches)
+                val lastMatchData = Henrik(this@ValorantMainMenu).henrikAPI(allmatches)
                 val jsonOfMap = JSONObject(URL("https://valorant-api.com/v1/maps").readText())
                 val mapData = jsonOfMap["data"] as JSONArray
                 var actualtMapUlr = ""
@@ -718,7 +836,7 @@ class ValorantMainMenu : AppCompatActivity() {
             val number = JSONObject(URL(url).readText()).getJSONArray("history").length()
             uiThread {
                 // the limit of seekbar is 60, if user has played less than 60 matches, the limit is the number of matches played
-                seekBar.max = if (number < 60) number else 60
+                seekBar.max = number
                 seekBar.progress = 5
             }
         }
@@ -760,24 +878,5 @@ class ValorantMainMenu : AppCompatActivity() {
             val v = view[i]
             v.alpha = 0f
         }
-    }
-
-    private fun henrikAPI(playerURL: String): JSONObject {
-        return executeRequest(playerURL)
-    }
-
-    private fun executeRequest(playerURL: String): JSONObject {
-        val client = OkHttpClient()
-        val urlBuilder: HttpUrl.Builder =
-            playerURL.toHttpUrlOrNull()!!.newBuilder()
-        val url = urlBuilder.build().toString()
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
-            .build()
-        val call = client.newCall(request).execute()
-        // log the call headers
-        // Log.d("Henrik", call.headers.toString())
-        return JSONObject(call.body.string())
     }
 }

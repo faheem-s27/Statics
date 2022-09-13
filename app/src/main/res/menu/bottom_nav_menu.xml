@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_maps"
+        android:icon="@drawable/map"
+        android:title="Maps" />
+
+    <item
+        android:id="@+id/navigation_agents"
+        android:icon="@drawable/buddiesicon"
+        android:title="Agents" />
+
+    <item
+        android:id="@+id/navigation_weapons"
+        android:icon="@drawable/gunicon"
+        android:title="Weapons" />
+
+</menu>

@@ -13,16 +13,13 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.MMRActivity
 import com.jawaadianinc.valorant_stats.valo.adapters.PlayersAdapter
 import com.jawaadianinc.valorant_stats.valo.classes.Agent
 import com.jawaadianinc.valorant_stats.valo.classes.Player
 import com.jawaadianinc.valorant_stats.valo.classes.Rank
 import com.squareup.picasso.Picasso
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -154,7 +151,7 @@ class PlayerDetailsFragment : Fragment() {
 
 
     private fun displayPlayers(type: String) {
-        val playerList: ListView = view!!.findViewById(R.id.playerList)
+        val playerList: ListView = requireView().findViewById(R.id.playerList)
         playerList.alpha = 1f
 
         // check what type is in the parameter and sort the players out accordingly
@@ -192,19 +189,19 @@ class PlayerDetailsFragment : Fragment() {
         playersAdapter.notifyDataSetChanged()
 
         // find textview 20 and progressbar 5 and set the visibility to gone
-        view!!.findViewById<TextView>(R.id.textView20).visibility = View.GONE
-        view!!.findViewById<ProgressBar>(R.id.progressBar5).visibility = View.GONE
+        requireView().findViewById<TextView>(R.id.textView20).visibility = View.GONE
+        requireView().findViewById<ProgressBar>(R.id.progressBar5).visibility = View.GONE
 
         playerList.setOnItemClickListener { _, _, position, _ ->
             val inflater =
-                view!!.context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                requireView().context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val popupView: View = inflater.inflate(R.layout.showplayerinfoval, null)
             val width = LinearLayout.LayoutParams.MATCH_PARENT
             val height = LinearLayout.LayoutParams.MATCH_PARENT
             val focusable = true
             val popupWindow = PopupWindow(popupView, width, height, focusable)
             popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
-            val dimLayout = view!!.findViewById(R.id.dim_layout) as LinearLayout
+            val dimLayout = requireView().findViewById(R.id.dim_layout) as LinearLayout
             dimLayout.visibility = View.VISIBLE
 
             // get current Player from the list
@@ -266,7 +263,8 @@ class PlayerDetailsFragment : Fragment() {
             var rankName = ""
             // attempt to get all of the players rank in unrated or other modes
             val tierRanking =
-                henrikAPI("https://api.henrikdev.xyz/valorant/v1/mmr/eu/$name/$tag").getJSONObject("data")
+                Henrik(requireActivity()).henrikAPI("https://api.henrikdev.xyz/valorant/v1/mmr/eu/$name/$tag")
+                    .getJSONObject("data")
                     .getInt("currenttier")
             val rankIndex = jsonRanksArray.length() - 1
             val tiers = jsonRanksArray.getJSONObject(rankIndex).getJSONArray("tiers")
@@ -290,22 +288,6 @@ class PlayerDetailsFragment : Fragment() {
         val myClipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val myClip: ClipData = ClipData.newPlainText("Label", text)
         myClipboard.setPrimaryClip(myClip)
-    }
-
-    private fun henrikAPI(playerURL: String): JSONObject {
-        return executeRequest(playerURL)
-    }
-
-    private fun executeRequest(playerURL: String): JSONObject {
-        val client = OkHttpClient()
-        val urlBuilder: HttpUrl.Builder =
-            playerURL.toHttpUrlOrNull()!!.newBuilder()
-        val url = urlBuilder.build().toString()
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
-            .build()
-        return JSONObject(client.newCall(request).execute().body.string())
     }
 
 }

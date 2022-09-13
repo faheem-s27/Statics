@@ -1,0 +1,16 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/rankicon"
+        android:shortcutId="rankHistory"
+        android:shortcutLongLabel="@string/long_shortcut"
+        android:shortcutShortLabel="@string/short_shortcut">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.jawaadianinc.valorant_stats.valo.activities.MMRActivity"
+            android:targetPackage="com.jawaadianinc.valorant_stats" />
+        <categories android:name="android.shortcut.conversation" />
+        <capability-binding android:key="actions.intent.CREATE_MESSAGE" />
+    </shortcut>
+    <!-- Specify more shortcuts here. -->
+</shortcuts>

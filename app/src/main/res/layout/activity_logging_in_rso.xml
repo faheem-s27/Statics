@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Valorant_SplashColourBackground"
     tools:context=".valo.activities.LoggingInActivityRSO">
 
     <Button
@@ -12,11 +13,13 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#d32f2f"
         android:clickable="false"
-        android:fontFamily="@font/baloo_bhai"
+        android:fontFamily="@font/lalezar"
         android:text="Sign in with Riot"
+        android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textSize="18dp"
+        android:textStyle="bold"
         app:cornerRadius="50dp"
         app:icon="@drawable/icons8_riot_games_48"
         app:iconSize="40dp"
@@ -29,8 +32,8 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:alpha="0.5"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -38,24 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic"
-        tools:visibility="invisible" />
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="48dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="By signing into Statics you will be making your profile public to all other users using this app"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textSize="12dp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signIn" />
+        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/textView11"
@@ -72,32 +58,92 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="16dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/textView12"
+        app:layout_constraintEnd_toStartOf="@+id/textView9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView9"
+        app:srcCompat="@drawable/just_statics_smaller" />
+
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="Welcome to Statics!"
-        android:textAlignment="center"
-        android:textSize="28dp"
+        android:layout_marginStart="48dp"
+        android:fontFamily="@font/lalezar"
+        android:text="Statics"
+        android:textColor="#FFFFFF"
+        android:textSize="40dp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/signIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/textView12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="To continue, sign into your Valorant account"
+        android:fontFamily="@font/lalezar"
+        android:text="The first app with a minimap"
         android:textAlignment="center"
-        android:textSize="14dp"
+        android:textColor="#EAEAEA"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:typeface="normal"
+        app:layout_constraintStart_toStartOf="@+id/textView9"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:checked="false"
+        android:fontFamily="@font/lalezar"
+        android:text="I have read and agree to the T&amp;C's linked below"
+        android:textAlignment="textStart"
+        android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+        app:layout_constraintTop_toBottomOf="@+id/signIn" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/howitworksBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/Valorant_SplashColourBackground"
+        android:clickable="true"
+        app:backgroundTint="@color/Valorant_SplashColourBackground"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/signIn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/signIn"
+        app:layout_constraintTop_toTopOf="@+id/signIn"
+        app:srcCompat="@android:drawable/ic_menu_info_details"
+        app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/lalezar"
+        android:text="Statics isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc."
+        android:textAlignment="textStart"
+        android:textColor="#B5B5B5"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textView11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

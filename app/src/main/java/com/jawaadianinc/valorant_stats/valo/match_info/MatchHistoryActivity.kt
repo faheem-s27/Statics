@@ -9,12 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
+import com.jawaadianinc.valorant_stats.R.*
 import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
+import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.adapters.MatchHistoryAdapter
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -30,10 +28,10 @@ class MatchHistoryActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.jawaadianinc.valorant_stats.R.layout.activity_match_history)
+        setContentView(layout.activity_match_history)
 
         val refresFab: FloatingActionButton =
-            findViewById(com.jawaadianinc.valorant_stats.R.id.refreshFab2)
+            findViewById(id.refreshFab2)
         val Name = intent.extras!!.getString("RiotName")
         val ID = intent.extras!!.getString("RiotID")
         val MatchNumber = intent.extras!!.getInt("MatchNumber")
@@ -56,7 +54,7 @@ class MatchHistoryActivity : AppCompatActivity() {
 
         doAsync {
             val matchID: String = if (IDofMatch == "none") {
-                val jsonMatches = henrikAPI(allmatches)
+                val jsonMatches = Henrik(this@MatchHistoryActivity).henrikAPI(allmatches)
                 val data = jsonMatches["data"] as JSONArray
                 val easier = data.getJSONObject(MatchNumber).getJSONObject("metadata")
                 easier.getString("matchid")
@@ -64,7 +62,7 @@ class MatchHistoryActivity : AppCompatActivity() {
                 IDofMatch!!
             }
             val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-            matchJSON = henrikAPI(matchURl)
+            matchJSON = Henrik(this@MatchHistoryActivity).henrikAPI(matchURl)
             val metadata = matchJSON.getJSONObject("data").getJSONObject("metadata")
             val map = metadata.getString("map")
             val mapJSON =
@@ -81,54 +79,54 @@ class MatchHistoryActivity : AppCompatActivity() {
             uiThread {
                 progressBar.visibility = View.GONE
                 tabLayout =
-                    findViewById<View>(com.jawaadianinc.valorant_stats.R.id.tabsforMatch) as? TabLayout
+                    findViewById<View>(id.tabsforMatch) as? TabLayout
                 viewPager =
-                    findViewById<View>(com.jawaadianinc.valorant_stats.R.id.view_pager_matchHistory) as? ViewPager
+                    findViewById<View>(id.view_pager_matchHistory) as? ViewPager
                 tabLayout?.tabGravity = TabLayout.GRAVITY_FILL
                 tabLayout?.tabMode = TabLayout.MODE_AUTO
 
                 tabLayout?.newTab()?.setText("Overview")
-                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.live).let {
+                    ?.setIcon(drawable.live).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
 
                 tabLayout?.newTab()?.setText("Details")
-                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.details).let {
+                    ?.setIcon(drawable.details).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
                 tabLayout?.newTab()?.setText("Players")
-                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.players_icon).let {
+                    ?.setIcon(drawable.players_icon).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
                 tabLayout?.newTab()?.setText("Rounds")
-                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.rounds_icno).let {
+                    ?.setIcon(drawable.rounds_icno).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
 
                 tabLayout?.newTab()?.setText("Spike Map")
-                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.spikeicon).let {
+                    ?.setIcon(drawable.spikeicon).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
 
                 tabLayout?.newTab()?.setText("Kill Map")
-                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.killmapicon).let {
+                    ?.setIcon(drawable.killmapicon).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
 
                 tabLayout?.newTab()?.setText("Kill Feed")
-                    ?.setIcon(com.jawaadianinc.valorant_stats.R.drawable.killicon).let {
+                    ?.setIcon(drawable.killicon).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
@@ -159,7 +157,7 @@ class MatchHistoryActivity : AppCompatActivity() {
                     }
                 })
 
-                val title: TextView = findViewById(com.jawaadianinc.valorant_stats.R.id.title)
+                val title: TextView = findViewById(id.title)
                 val matchData = matchJSON.get("data") as JSONObject
                 val teams = matchData.getJSONObject("teams")
                 var didredWin = false
@@ -187,21 +185,5 @@ class MatchHistoryActivity : AppCompatActivity() {
     companion object {
         lateinit var matchJSON: JSONObject
         var mapURL: String? = null
-    }
-
-    private fun henrikAPI(playerURL: String): JSONObject {
-        return executeRequest(playerURL)
-    }
-
-    private fun executeRequest(playerURL: String): JSONObject {
-        val client = OkHttpClient()
-        val urlBuilder: HttpUrl.Builder =
-            playerURL.toHttpUrlOrNull()!!.newBuilder()
-        val url = urlBuilder.build().toString()
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
-            .build()
-        return JSONObject(client.newCall(request).execute().body.string())
     }
 }

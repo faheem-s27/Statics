@@ -1,9 +1,6 @@
 package com.jawaadianinc.valorant_stats.valo
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -17,10 +14,6 @@ import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.databases.MatchDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
@@ -60,7 +53,7 @@ class LiveMatchService : Service() {
                                 JSONObject(URL("https://$region.api.riotgames.com/val/match/v1/matches/$matchID?api_key=$key").readText())
                             Log.d("LiveMatchService", "Found New Game")
                             val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-                            val matchJSON = henrikAPI(matchURl)
+                            val matchJSON = Henrik(this@LiveMatchService).henrikAPI(matchURl)
                             val matchDB = MatchDatabase(this@LiveMatchService)
                             if (!matchDB.insertMatch(matchID, matchJSON.toString())) {
                                 Log.d("MatchDatabase", "Match Database Insert Error")
@@ -164,23 +157,13 @@ class LiveMatchService : Service() {
         notificationManager.notify(id, notification)
     }
 
-    private fun henrikAPI(playerURL: String): JSONObject {
-        return executeRequest(playerURL)
+    fun isServiceRunning(context: Context): Boolean {
+        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (LiveMatchService::class.java.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
-
-    private fun executeRequest(playerURL: String): JSONObject {
-        val client = OkHttpClient()
-        val urlBuilder: HttpUrl.Builder =
-            playerURL.toHttpUrlOrNull()!!.newBuilder()
-        val url = urlBuilder.build().toString()
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
-            .build()
-        val call = client.newCall(request).execute()
-        // log the call headers
-        // Log.d("Henrik", call.headers.toString())
-        return JSONObject(call.body.string())
-    }
-
 }

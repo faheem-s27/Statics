@@ -234,6 +234,25 @@ class KillMapFragment : Fragment() {
                 val victimAgentURL = mapofPlayerandAgent.getValue(victimName as String)
 
                 val paint = Paint()
+
+
+                if (killerTeam == "Red") {
+                    paint.color = Color.parseColor("#f94555")
+                } else {
+                    paint.color = Color.parseColor("#18e4b7")
+                }
+
+                paint.style = Paint.Style.STROKE
+                paint.strokeWidth = 3F
+                bitmap?.let { Canvas(it) }
+                    ?.drawLine(
+                        finalKillerX.toFloat(),
+                        finalKillerY.toFloat(),
+                        finalVictimX.toFloat(),
+                        finalVictimY.toFloat(),
+                        paint
+                    )
+
                 paint.style = Paint.Style.FILL
                 paint.strokeWidth = 8F
                 paint.color = Color.BLACK
@@ -300,22 +319,7 @@ class KillMapFragment : Fragment() {
                     override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
                 })
 
-                if (killerTeam == "Red") {
-                    paint.color = Color.parseColor("#f94555")
-                } else {
-                    paint.color = Color.parseColor("#18e4b7")
-                }
 
-                paint.style = Paint.Style.STROKE
-                paint.strokeWidth = 3F
-                bitmap?.let { Canvas(it) }
-                    ?.drawLine(
-                        finalKillerX.toFloat(),
-                        finalKillerY.toFloat(),
-                        finalVictimX.toFloat(),
-                        finalVictimY.toFloat(),
-                        paint
-                    )
                 total += 1
 
             }
@@ -388,19 +392,6 @@ class KillMapFragment : Fragment() {
                 val radius = 6F
                 paint.color = Color.BLACK
 
-                if (victimColour == "Red") {
-                    paint.color = Color.parseColor("#f94555")
-                } else {
-                    paint.color = Color.parseColor("#18e4b7")
-                }
-
-                bitmap?.let { Canvas(it) }
-                    ?.drawCircle(
-                        finalVictimX.toFloat(),
-                        finalVictimY.toFloat(),
-                        radius, paint
-                    )
-
                 if (killerTeam == "Red") {
                     paint.color = Color.parseColor("#f94555")
                 } else {
@@ -424,6 +415,24 @@ class KillMapFragment : Fragment() {
                         finalVictimY.toFloat(),
                         paint
                     )
+
+                paint.style = Paint.Style.FILL_AND_STROKE
+                paint.strokeWidth = 8F
+                paint.color = Color.BLACK
+                if (victimColour == "Red") {
+                    paint.color = Color.parseColor("#f94555")
+                } else {
+                    paint.color = Color.parseColor("#18e4b7")
+                }
+
+                bitmap?.let { Canvas(it) }
+                    ?.drawCircle(
+                        finalVictimX.toFloat(),
+                        finalVictimY.toFloat(),
+                        radius, paint
+                    )
+
+
                 total += 1
 
             }
@@ -496,6 +505,25 @@ class KillMapFragment : Fragment() {
                         val victimAgentURL = mapofPlayerandAgent.getValue(victimName as String)
 
                         val paint = Paint()
+
+
+                        if (killerTeam == "Red") {
+                            paint.color = Color.parseColor("#f94555")
+                        } else {
+                            paint.color = Color.parseColor("#18e4b7")
+                        }
+
+                        paint.style = Paint.Style.STROKE
+                        paint.strokeWidth = 2F
+                        bitmap?.let { Canvas(it) }
+                            ?.drawLine(
+                                finalKillerX.toFloat(),
+                                finalKillerY.toFloat(),
+                                finalVictimX.toFloat(),
+                                finalVictimY.toFloat(),
+                                paint
+                            )
+
                         paint.style = Paint.Style.FILL
                         paint.strokeWidth = 6F
                         paint.color = Color.BLACK
@@ -572,11 +600,20 @@ class KillMapFragment : Fragment() {
                                 }
                             })
 
+
+                    } else {
+                        // doing all kills without images
+                        //Paint properties
+                        val paint = Paint()
+
+
+
                         if (killerTeam == "Red") {
                             paint.color = Color.parseColor("#f94555")
                         } else {
                             paint.color = Color.parseColor("#18e4b7")
                         }
+
 
                         paint.style = Paint.Style.STROKE
                         paint.strokeWidth = 2F
@@ -589,14 +626,18 @@ class KillMapFragment : Fragment() {
                                 paint
                             )
 
-                    } else {
-                        // doing all kills without images
-                        //Paint properties
-                        val paint = Paint()
                         paint.style = Paint.Style.FILL_AND_STROKE
                         paint.strokeWidth = 6F
                         val radius = 4F
-                        paint.color = Color.BLACK
+                        //paint.color = Color.BLACK
+
+                        bitmap?.let { Canvas(it) }
+                            ?.drawCircle(
+                                finalKillerX.toFloat(),
+                                finalKillerY.toFloat(),
+                                radius, paint
+                            )
+
 
                         if (victimColour == "Red") {
                             paint.color = Color.parseColor("#f94555")
@@ -610,37 +651,11 @@ class KillMapFragment : Fragment() {
                                 finalVictimY.toFloat(),
                                 radius, paint
                             )
-
-                        if (killerTeam == "Red") {
-                            paint.color = Color.parseColor("#f94555")
-                        } else {
-                            paint.color = Color.parseColor("#18e4b7")
-                        }
-
-                        bitmap?.let { Canvas(it) }
-                            ?.drawCircle(
-                                finalKillerX.toFloat(),
-                                finalKillerY.toFloat(),
-                                radius, paint
-                            )
-
-                        paint.style = Paint.Style.STROKE
-                        paint.strokeWidth = 2F
-                        bitmap?.let { Canvas(it) }
-                            ?.drawLine(
-                                finalKillerX.toFloat(),
-                                finalKillerY.toFloat(),
-                                finalVictimX.toFloat(),
-                                finalVictimY.toFloat(),
-                                paint
-                            )
                     }
                 }
             }
         }
-
         playerPosition?.setImageBitmap(bitmap)
-
     }
 
 }

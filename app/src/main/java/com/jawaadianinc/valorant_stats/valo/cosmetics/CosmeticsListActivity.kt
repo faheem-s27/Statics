@@ -11,10 +11,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.util.Log
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
@@ -34,6 +32,7 @@ import java.net.URL
 
 class CosmeticsListActivity : AppCompatActivity() {
     private var cosmetic: String? = null
+    private lateinit var searchView: SearchView
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +40,7 @@ class CosmeticsListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_cosmetics_list)
 
         val title: TextView = findViewById(R.id.titleCosmetic)
+        searchView = findViewById(R.id.searchViewCosmetics)
 
         cosmetic = intent?.getStringExtra("cosmetic")
         if (cosmetic == null) {
@@ -144,6 +144,100 @@ class CosmeticsListActivity : AppCompatActivity() {
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
 
+        // listen to search view on text change
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(query.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Border",
+                            "Download Border"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // make a new name array that contains the newText and set the adapter to that and filtered images
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(newText.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                Log.d("filteredNames", filteredNames.toString())
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Border",
+                            "Download Border"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+        })
+
         doAsync {
             val result = URL(url).readText()
             val jsonObject = JSONObject(result)
@@ -196,6 +290,100 @@ class CosmeticsListActivity : AppCompatActivity() {
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
+
+        // listen to search view on text change
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(query.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Rank icon",
+                            "Download Rank icon"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // make a new name array that contains the newText and set the adapter to that and filtered images
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(newText.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                Log.d("filteredNames", filteredNames.toString())
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Rank icon",
+                            "Download Rank icon"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+        })
 
         doAsync {
             val result = URL(url).readText()
@@ -259,6 +447,100 @@ class CosmeticsListActivity : AppCompatActivity() {
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
 
+        // listen to search view on text change
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(query.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Map",
+                            "Download Map"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // make a new name array that contains the newText and set the adapter to that and filtered images
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(newText.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                Log.d("filteredNames", filteredNames.toString())
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Map",
+                            "Download Map"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+        })
+
         doAsync {
             val result = URL(url).readText()
             val jsonObject = JSONObject(result)
@@ -314,6 +596,101 @@ class CosmeticsListActivity : AppCompatActivity() {
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
+
+        // listen to search view on text change
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(query.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Buddy",
+                            "Download Buddy"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // make a new name array that contains the newText and set the adapter to that and filtered images
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(newText.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                Log.d("filteredNames", filteredNames.toString())
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Buddy",
+                            "Download Buddy"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+        })
+
         doAsync {
             val result = URL(url).readText()
             val jsonObject = JSONObject(result)
@@ -361,6 +738,100 @@ class CosmeticsListActivity : AppCompatActivity() {
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
+
+        // listen to search view on text change
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(query.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Spray",
+                            "Download Spray"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // make a new name array that contains the newText and set the adapter to that and filtered images
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(newText.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                Log.d("filteredNames", filteredNames.toString())
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Spray",
+                            "Download Spray"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+        })
 
         val url = "https://valorant-api.com/v1/sprays"
         doAsync {
@@ -410,6 +881,65 @@ class CosmeticsListActivity : AppCompatActivity() {
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
 
+        // listen to search view on text change
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(query.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    val name = filteredNames[position]
+                    // make weaponIndex the index of the weapon in the list
+                    weaponIndex = names.indexOf(name)
+                    gotoWeaponStats(name)
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // make a new name array that contains the newText and set the adapter to that and filtered images
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(newText.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                Log.d("filteredNames", filteredNames.toString())
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    val name = filteredNames[position]
+                    weaponIndex = names.indexOf(name)
+                    gotoWeaponStats(name)
+                }
+                return false
+            }
+        })
+
         val url = "https://valorant-api.com/v1/weapons"
         doAsync {
             val result = JSONObject(URL(url).readText())
@@ -449,6 +979,108 @@ class CosmeticsListActivity : AppCompatActivity() {
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
+
+        // listen to search view on text change
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(query.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    val imageURL = filteredImages[position]
+                    // show alert dialog with options being "show image" and "download image" and "set wallpaper"
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Card",
+                            "Download Card",
+                            "Set card as wallpaper"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                            2 -> {
+                                setWallpaper(imageURL)
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // make a new name array that contains the newText and set the adapter to that and filtered images
+                val filteredImages = ArrayList<String>()
+                val filteredNames = ArrayList<String>()
+                for (name in names) {
+                    if (name.contains(newText.toString(), true)) {
+                        filteredNames.add(name)
+                        filteredImages.add(images[names.indexOf(name)])
+                    }
+                }
+
+                Log.d("filteredNames", filteredNames.toString())
+
+                val filteredAdapter = CosmeticAdapter(
+                    this@CosmeticsListActivity,
+                    "weapon",
+                    filteredNames,
+                    filteredImages
+                )
+                filteredAdapter.notifyDataSetChanged()
+                listView.adapter = filteredAdapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    val imageURL = filteredImages[position]
+                    // show alert dialog with options being "show image" and "download image" and "set wallpaper"
+                    val builder = AlertDialog.Builder(this@CosmeticsListActivity)
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Card",
+                            "Download Card",
+                            "Set card as wallpaper"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(getBitMap(imageURL), filteredNames[position])
+                            }
+                            2 -> {
+                                setWallpaper(imageURL)
+                            }
+                        }
+                    }
+                    builder.show()
+                }
+                return false
+            }
+        })
 
         val size = intent.extras?.get("size")
 

@@ -7,6 +7,18 @@
     android:layout_height="match_parent"
     android:background="@color/ic_launcher_background">
 
+    <ImageView
+        android:id="@+id/imagebackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.6"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/agent_background_generic" />
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
@@ -269,19 +281,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/rankPatchedMainMenu"
                 tools:visibility="visible" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/buildTrackerGGProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                app:backgroundTint="@color/ic_launcher_background"
-                app:layout_constraintEnd_toEndOf="@+id/crosshairBT"
-                app:layout_constraintStart_toStartOf="@+id/crosshairBT"
-                app:layout_constraintTop_toBottomOf="@+id/crosshairBT"
-                app:srcCompat="@drawable/info"
-                app:tint="@color/white"
-                app:useCompatPadding="true" />
-
             <TextView
                 android:id="@+id/rankNumberMainMenu"
                 android:layout_width="wrap_content"
@@ -347,7 +346,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/playerNameMenu" />
+                app:layout_constraintTop_toBottomOf="@+id/buildTrackerGGProfile" />
 
             <View
                 android:id="@+id/divider4"
@@ -571,6 +570,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
+            <Button
+                android:id="@+id/buildTrackerGGProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/lalezar"
+                android:text="View profile stats"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                app:cornerRadius="50dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/playerNameMenu" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -673,17 +687,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="?attr/actionModeCloseDrawable"
         app:tint="@color/white" />
-
-    <ImageView
-        android:id="@+id/imagebackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.2"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/dim_layout"

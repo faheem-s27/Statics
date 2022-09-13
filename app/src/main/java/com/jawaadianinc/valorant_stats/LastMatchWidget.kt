@@ -6,13 +6,18 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.jawaadianinc.valorant_stats.main.SplashActivity
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.MatchDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import org.json.JSONObject
+import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
 import java.util.*
@@ -55,16 +60,27 @@ fun updateAppWidget(
     val time = currentTime.toString().split(" ")[3].split(":")
     val hour = time[0]
     val minute = time[1]
-    val second = time[2]
     val currentTimeString = "$hour:$minute"
 
     // set the textview to the current time
     views.setTextViewText(R.id.appwidget_widgetUpdate, "Last update: $currentTimeString")
 
     val playerName: String? = PlayerDatabase(context).getPlayerName()
+    // split the player name into first and last name from #
+
     // check if null
     if (playerName == null) {
         views.setTextViewText(R.id.appwidget_KDA, "Tap to sign in")
+
+        val intent = Intent(context, SplashActivity::class.java)
+
+        val pendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE)
+        } else {
+            PendingIntent.getActivity(context, 0, intent, 0)
+        }
+
+        views.setOnClickPendingIntent(R.id.appwidget_mapImage, pendingIntent)
 
         views.setImageViewBitmap(R.id.appwidget_mapImage, null)
         views.setViewVisibility(R.id.appwidget_timePlayed, View.GONE)
@@ -72,11 +88,21 @@ fun updateAppWidget(
         views.setViewVisibility(R.id.appwidget_gameMode, View.GONE)
     } else {
         val matchJSON = MatchDatabase(context).checkForAnyMatches()
+
+        val name = playerName.split("#")
+
         // check if any matches are present
         if (matchJSON == null) { // user hasnt enabled widgets
             views.setViewVisibility(R.id.appwidget_KDA, View.VISIBLE)
             views.setTextViewText(R.id.appwidget_KDA, "Tap to enable widget")
 
+            val intent = Intent(context, SplashActivity::class.java)
+            val pendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE)
+            } else {
+                PendingIntent.getActivity(context, 0, intent, 0)
+            }
+            views.setOnClickPendingIntent(R.id.appwidget_mapImage, pendingIntent)
             views.setImageViewBitmap(R.id.appwidget_mapImage, null)
             views.setViewVisibility(R.id.appwidget_timePlayed, View.GONE)
             views.setImageViewBitmap(R.id.appwidget_agentImage, null)
@@ -120,7 +146,6 @@ fun updateAppWidget(
                                 "$timeinDays days ago"
                             )
                         }
-
                     }
                     timeInHours > 0 -> {
 
@@ -198,18 +223,42 @@ fun updateAppWidget(
                 views.setTextViewText(R.id.appwidget_KDA, kda)
 
                 val intent = Intent(context, MatchHistoryActivity::class.java)
-                intent.putExtra("RiotName", playerName.split("#")[0])
-                intent.putExtra("RiotTag", playerName.split("#")[1])
+                intent.putExtra("RiotName", name[0])
+                intent.putExtra("RiotTag", name[0])
                 intent.putExtra("MatchNumber", 0)
                 intent.putExtra("MatchID", matchID)
-                val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+                val pendingIntent: PendingIntent =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE)
+                    } else {
+                        PendingIntent.getActivity(context, 0, intent, 0)
+                    }
                 views.setOnClickPendingIntent(R.id.appwidget_mapImage, pendingIntent)
+
+                val database = Firebase.database
+                val statusRef = database.getReference("VALORANT/widgetStatus")
+
+                // get the name of the user and the last time the widget was updated, and update the database
+                val dateFormat = SimpleDateFormat("dd MM yyyy", Locale.getDefault())
+                statusRef.child(name[0]).child("Last updated")
+                    .setValue(currentTimeString + " " + dateFormat.format(Date()))
 
             } catch (e: Exception) {
                 views.setTextViewText(
                     R.id.appwidget_KDA,
-                    "Error: Missing data!\nPlease restart the app"
+                    "Error: Invalid data!\nPlease restart the app or widget."
                 )
+
+                val database = Firebase.database
+                val errorsRef = database.getReference("VALORANT/widgetErrors")
+
+                val error = hashMapOf(
+                    "error" to e.toString(),
+                    "player" to name[0]
+                )
+
+                errorsRef.push().setValue(error)
+
                 views.setImageViewBitmap(R.id.appwidget_mapImage, null)
                 views.setViewVisibility(R.id.appwidget_timePlayed, View.GONE)
                 views.setImageViewBitmap(R.id.appwidget_agentImage, null)

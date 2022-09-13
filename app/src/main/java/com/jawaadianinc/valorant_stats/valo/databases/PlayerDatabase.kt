@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class PlayerDatabase(context: Context) :
-    SQLiteOpenHelper(context, "ValorantPlayersTest.db", null, 1) {
+    SQLiteOpenHelper(context, "ValorantPlayersWidgetUpdate.db", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {
         val createTable =
             "CREATE TABLE $VALOPLAYERS ($PUUID TEXT PRIMARY KEY, $USERNAME TEXT, $USERTAG TEXT, $REGION TEXT)"
@@ -42,7 +42,6 @@ class PlayerDatabase(context: Context) :
 
 
     fun addPlayer(gameName: String, gameTag: String, puuid: String, region: String): Boolean {
-        //TODO add method for adding players to database after RSO authentication
         val db = this.writableDatabase
         val cv = ContentValues()
         cv.put(PUUID, puuid)
@@ -69,7 +68,7 @@ class PlayerDatabase(context: Context) :
         return puuid
     }
 
-    fun getRegion(puuid: String): String? {
+    fun getRegion(puuid: String?): String? {
         var region: String? = null
         val sqlString = "SELECT $REGION FROM $VALOPLAYERS WHERE $PUUID = '$puuid'"
         val db = this.readableDatabase
