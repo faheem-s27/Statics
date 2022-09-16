@@ -29,6 +29,10 @@
         <item name="android:navigationBarColor">@color/ic_launcher_background</item>
     </style>
 
+    <style name="Theme.App.About" parent="Theme.AppCompat">
+        <item name="aboutStyle">@style/about_About</item>
+        <item name="android:background">@color/ic_launcher_background</item>
+    </style>
 
 
 </resources>

@@ -3,13 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.jawaadianinc.valorant_stats.valo.ValorantUpdatesActivity">
     <item
-        android:id="@+id/About"
-        android:icon="@drawable/info"
-        android:title="About"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/spikeicon"
-        android:orderInCategory="100"
-        android:title="@string/action_settings" />
+        android:id="@+id/app_bar_search"
+        android:icon="?android:attr/actionModeWebSearchDrawable"
+        android:title="Search"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always" />
 </menu>

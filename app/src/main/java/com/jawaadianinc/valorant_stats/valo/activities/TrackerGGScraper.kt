@@ -1,5 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.activities
 
+import android.app.Activity
+import com.jawaadianinc.valorant_stats.valo.databases.TrackerDB
 import org.json.JSONObject
 import java.net.URL
 
@@ -35,6 +37,25 @@ class TrackerGGScraper {
         val url = profileURL + buildPlayerURL(name, tag) + "/segments/agent?playlist=${mode}"
         agentJSON = JSONObject(URL(url).readText())
 
+    }
+
+    fun putToDatabase(mode: String, context: Activity, playerName: String) {
+        val agentJSON = agentJSON.toString().replace("'", "")
+        val mapJSON = mapJSON.toString().replace("'", "")
+        val weaponJSON = weaponJSON.toString().replace("'", "")
+
+        val db = TrackerDB(context)
+        if (db.checkIfDataExists(mode, playerName)) {
+            db.updateDetails(playerName, agentJSON, weaponJSON, mapJSON, mode)
+        } else {
+            db.insertDetails(
+                playerName,
+                agentJSON.toString(),
+                weaponJSON.toString(),
+                mapJSON.toString(),
+                mode
+            )
+        }
     }
 
     fun getMapJSON(): JSONObject {

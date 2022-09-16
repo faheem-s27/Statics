@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import java.io.File
 
 class StoredMatchesDatabase(context: Context) :
     SQLiteOpenHelper(context, "PlayerMatches.db", null, 1) {
@@ -126,13 +125,6 @@ class StoredMatchesDatabase(context: Context) :
         db.delete(PlayerMatches, "$TimeStarted = ? AND $MatchID = ?", arrayOf(timeStarted, matchID))
         cursor.close()
         db.close()
-    }
-
-
-    fun getStorageSize(): Long {
-        val db = this.readableDatabase
-        val dbFile = File(db.path)
-        return dbFile.length()
     }
 
     companion object {

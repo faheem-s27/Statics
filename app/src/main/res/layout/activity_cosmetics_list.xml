@@ -7,34 +7,31 @@
     android:background="@color/ic_launcher_background"
     tools:context=".valo.cosmetics.CosmeticsListActivity">
 
-    <TextView
-        android:id="@+id/titleCosmetic"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar3"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/valorant"
-        android:textAlignment="center"
-        android:textColor="#FF4654"
-        android:textSize="25dp"
-        android:textStyle="bold"
+        android:background="#0A0F15"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="vAlorAnt weApons" />
+        app:title="Valorant Weapons"
+        app:titleTextColor="#FFFFFF" />
 
     <SearchView
         android:id="@+id/searchViewCosmetics"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@color/ic_launcher_background"
         android:orientation="horizontal"
         android:queryHint="Search cosmetics"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleCosmetic" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar3" />
 
     <Button
         android:id="@+id/wideCardBT"

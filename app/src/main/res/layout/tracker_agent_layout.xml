@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Valorant_SplashColourBackground">
+
+    <ImageView
+        android:id="@+id/trackerAgent_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/trackerAgent_Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/lalezar"
+        android:text="Reyna"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/trackerAgent_image"
+        app:layout_constraintTop_toTopOf="@+id/trackerAgent_image" />
+
+    <TextView
+        android:id="@+id/trackerAgent_Matches"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/lalezar"
+        android:text="231 Matches"
+        android:textColor="#FFFFFF"
+        android:textSize="12dp"
+        app:layout_constraintStart_toEndOf="@+id/trackerAgent_image"
+        app:layout_constraintTop_toBottomOf="@+id/trackerAgent_Name" />
+
+    <TextView
+        android:id="@+id/trackerAgent_KDA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lalezar"
+        android:text="1.23"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/trackerAgent_image" />
+
+    <TextView
+        android:id="@+id/trackerAgent_WinRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/lalezar"
+        android:text="58%"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/trackerAgent_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/trackerAgent_image" />
+
+    <TextView
+        android:id="@+id/trackerAgent_KDAdetailed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lalezar"
+        android:text="17.1/18.2/3.2"
+        android:textColor="#FFFFFF"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trackerAgent_KDA" />
+</androidx.constraintlayout.widget.ConstraintLayout>

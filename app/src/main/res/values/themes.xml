@@ -46,4 +46,10 @@
         <!-- Apply padding to avoid the content of the widget colliding with the rounded corners -->
         <item name="appWidgetPadding">0dp</item>
     </style>
+
+    <style name="Theme.App.About" parent="Theme.AppCompat">
+        <item name="aboutStyle">@style/about_About</item>
+        <item name="android:background">@color/ic_launcher_background</item>
+    </style>
+
 </resources>

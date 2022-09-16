@@ -1,14 +1,19 @@
 package com.jawaadianinc.valorant_stats.valo.match_info
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
@@ -172,20 +177,53 @@ class KillMapFragment : Fragment() {
         }
     }
 
+    private fun showBitMapFullScreen(bitmap: Bitmap) {
+        val builder = AlertDialog.Builder(activity)
+        val imageView = ImageView(activity)
+        imageView.setImageBitmap(bitmap)
+        builder.setView(imageView)
+        builder.setNegativeButton("Close") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
+    private fun showBitMap(bitmap: Bitmap) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        val uri = Uri.parse(
+            MediaStore.Images.Media.insertImage(
+                activity?.contentResolver,
+                bitmap,
+                null,
+                null
+            )
+        )
+        intent.setDataAndType(uri, "image/*")
+        startActivity(intent)
+    }
+
     private fun handlePlayerImages(roundNumber: Int) {
-
         val width = Resources.getSystem().displayMetrics.widthPixels
-
         // Scales the coordinates to the screen size (should be highly accurate now)
         val multiplier = (width.toFloat() / 1024f)
 
         val jsonDetails = MatchHistoryActivity.matchJSON
         val playerPosition: ImageView? = view?.findViewById(R.id.playerPos2)
-        val bitmap: Bitmap? = Bitmap.createBitmap(
-            (1024 * multiplier).toInt(),
-            (1024 * multiplier).toInt(),
-            Bitmap.Config.ARGB_8888
-        )
+
+        //
+
+//        val bitmap: Bitmap? = Bitmap.createBitmap(
+//            (1024 * multiplier).toInt(),
+//            (1024 * multiplier).toInt(),
+//            Bitmap.Config.ARGB_8888
+//        )
+
+        val minimapImage: ImageView = requireActivity().findViewById(R.id.killMapImage)
+        minimapImage.visibility = View.INVISIBLE
+        val minitMapBitmap = minimapImage.drawable.toBitmap()
+        // make bitmap mutable
+        val bitmap = minitMapBitmap.copy(Bitmap.Config.ARGB_8888, true)
+
         val rounds: JSONArray =
             jsonDetails.getJSONObject("data").getJSONArray("rounds")
         var total = 0
@@ -221,14 +259,23 @@ class KillMapFragment : Fragment() {
                 }
 
 
+//                val finalVictimX: Int =
+//                    (((victimY.toInt() * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+//                val finalVictimY: Int =
+//                    (((victimX.toInt() * yMult) + yScalar) * 1024 * multiplier).roundToInt()
+//                val finalKillerX: Int =
+//                    (((killerY * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+//                val finalKillerY: Int =
+//                    (((killerX * yMult) + yScalar) * 1024 * multiplier).roundToInt()
+
                 val finalVictimX: Int =
-                    (((victimY.toInt() * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+                    (((victimY.toInt() * xMult) + xScalar) * 1024).roundToInt()
                 val finalVictimY: Int =
-                    (((victimX.toInt() * yMult) + yScalar) * 1024 * multiplier).roundToInt()
+                    (((victimX.toInt() * yMult) + yScalar) * 1024).roundToInt()
                 val finalKillerX: Int =
-                    (((killerY * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+                    (((killerY * xMult) + xScalar) * 1024).roundToInt()
                 val finalKillerY: Int =
-                    (((killerX * yMult) + yScalar) * 1024 * multiplier).roundToInt()
+                    (((killerX * yMult) + yScalar) * 1024).roundToInt()
 
                 val killerAgentURL = mapofPlayerandAgent.getValue(killerName as String)
                 val victimAgentURL = mapofPlayerandAgent.getValue(victimName as String)
@@ -337,11 +384,16 @@ class KillMapFragment : Fragment() {
 
         val jsonDetails = MatchHistoryActivity.matchJSON
         val playerPosition: ImageView? = view?.findViewById(R.id.playerPos2)
-        val bitmap: Bitmap? = Bitmap.createBitmap(
-            (1024 * multiplier).toInt(),
-            (1024 * multiplier).toInt(),
-            Bitmap.Config.ARGB_8888
-        )
+        val minimapImage: ImageView = requireActivity().findViewById(R.id.killMapImage)
+        minimapImage.visibility = View.INVISIBLE
+        val minitMapBitmap = minimapImage.drawable.toBitmap()
+        // make bitmap mutable
+        val bitmap = minitMapBitmap.copy(Bitmap.Config.ARGB_8888, true)
+
+        playerPosition!!.setOnClickListener {
+            showBitMap(bitmap)
+        }
+
         val rounds: JSONArray =
             jsonDetails.getJSONObject("data").getJSONArray("rounds")
         var total = 0
@@ -377,13 +429,13 @@ class KillMapFragment : Fragment() {
                 }
 
                 val finalVictimX: Int =
-                    (((victimY.toInt() * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+                    (((victimY.toInt() * xMult) + xScalar) * 1024).roundToInt()
                 val finalVictimY: Int =
-                    (((victimX.toInt() * yMult) + yScalar) * 1024 * multiplier).roundToInt()
+                    (((victimX.toInt() * yMult) + yScalar) * 1024).roundToInt()
                 val finalKillerX: Int =
-                    (((killerY * xMult) + xScalar) * 1024 * multiplier).roundToInt()
+                    (((killerY * xMult) + xScalar) * 1024).roundToInt()
                 val finalKillerY: Int =
-                    (((killerX * yMult) + yScalar) * 1024 * multiplier).roundToInt()
+                    (((killerX * yMult) + yScalar) * 1024).roundToInt()
 
                 //Paint properties
                 val paint = Paint()
@@ -432,18 +484,19 @@ class KillMapFragment : Fragment() {
                         radius, paint
                     )
 
-
                 total += 1
 
             }
         }
 
-        playerPosition?.setImageBitmap(bitmap)
+        playerPosition.setImageBitmap(bitmap)
     }
 
     private fun handleAllRounds(imagesEnabled: Boolean) {
 
         val width = Resources.getSystem().displayMetrics.widthPixels
+        val minimapImage: ImageView = requireActivity().findViewById(R.id.killMapImage)
+        minimapImage.visibility = View.VISIBLE
 
         // Scales the 3coordinates to the screen size (should be highly accurate now)
         val multiplier = (width.toFloat() / 1024f)

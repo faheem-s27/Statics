@@ -9,17 +9,29 @@
         android:id="@+id/navigation_maps"
         android:name="com.jawaadianinc.valorant_stats.valo.activities.ui.maps.MapsFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragments_trackergg_maps" />
+        tools:layout="@layout/fragments_trackergg_maps">
+        <action
+            android:id="@+id/action_navigation_maps_to_navigation_agents"
+            app:destination="@id/navigation_agents" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_agents"
         android:name="com.jawaadianinc.valorant_stats.valo.activities.ui.agents.AgentsFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragments_trackergg_agents" />
+        tools:layout="@layout/fragments_trackergg_agents">
+        <action
+            android:id="@+id/action_navigation_agents_to_navigation_weapons"
+            app:destination="@id/navigation_weapons" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_weapons"
         android:name="com.jawaadianinc.valorant_stats.valo.activities.ui.weapons.WeaponsFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragments_trackergg_weapons" />
+        tools:layout="@layout/fragments_trackergg_weapons">
+        <action
+            android:id="@+id/action_navigation_weapons_to_navigation_maps"
+            app:destination="@id/navigation_maps" />
+    </fragment>
 </navigation>

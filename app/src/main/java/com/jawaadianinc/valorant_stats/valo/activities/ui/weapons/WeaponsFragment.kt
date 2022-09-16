@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.TrackerDB
 import org.json.JSONObject
 
@@ -24,9 +23,10 @@ class WeaponsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val db = TrackerDB(requireActivity())
-        val playerName = PlayerDatabase(requireActivity()).getPlayerName()
+        val playerName = requireActivity().intent.getStringExtra("playerName")
+        val mode = requireActivity().intent.getStringExtra("mode")
 
-        val weapons = JSONObject(db.getWeaponsJSON(playerName!!)!!)
+        val weapons = JSONObject(db.getWeaponsJSON(playerName!!, mode!!)!!)
 
     }
 }

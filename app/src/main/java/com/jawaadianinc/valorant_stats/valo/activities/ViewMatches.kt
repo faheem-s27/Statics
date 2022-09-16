@@ -233,7 +233,7 @@ class ViewMatches : AppCompatActivity() {
                         runOnUiThread {
                             Toast.makeText(
                                 this@ViewMatches,
-                                "Request Limit has been reached, please try again in a few minutes",
+                                "Request limit has been reached, please try again in a few minutes",
                                 Toast.LENGTH_LONG
                             ).show()
 
@@ -264,9 +264,8 @@ class ViewMatches : AppCompatActivity() {
                         }
 
                         // check if matchesDB has exceeded 100MB
-                        var size = matchesDB.getStorageSize()
-                        val numberDb = matchesDB.numberOfMatches()
-                        if (size > 50000000 && numberOfMatches.toInt() < numberDb) {
+                        var size = matchesDB.numberOfMatches()
+                        if (size > 100) {
                             // show alert dialog
                             // get shared preferences to check if the user has been alerted before
                             val sharedPref = getSharedPreferences("cache", Context.MODE_PRIVATE)
@@ -274,19 +273,18 @@ class ViewMatches : AppCompatActivity() {
                             if (!alerted) {
                                 val builder = AlertDialog.Builder(this@ViewMatches)
                                 builder.setTitle("Matches Database Size")
-                                builder.setMessage("Your matches has exceeded 50MB.\n\nIf you would like to free up space, Statics can delete the oldest matches automatically!")
+                                builder.setMessage("Your matches cache has exceeded 100 matches.\n\nStatics will delete the oldest matches to save space!")
                                 builder.setPositiveButton("OK") { _, _ ->
                                     // if it has, delete the database until it goes to 40MB
-
                                     // set the shared preference to true so that the user doesn't get the alert message again
                                     with(sharedPref.edit()) {
                                         putBoolean("alerted", true)
                                         apply()
                                     }
 
-                                    while (size > 40000000) {
+                                    while (size > 90) {
                                         matchesDB.deleteOldestMatch()
-                                        size = matchesDB.getStorageSize()
+                                        size = matchesDB.numberOfMatches()
                                     }
                                     // show the toast message
                                     Toast.makeText(
@@ -298,9 +296,9 @@ class ViewMatches : AppCompatActivity() {
                                 builder.setNegativeButton("No") { _, _ -> }
                                 builder.show()
                             } else {
-                                while (size > 40000000) {
+                                while (size > 90) {
                                     matchesDB.deleteOldestMatch()
-                                    size = matchesDB.getStorageSize()
+                                    size = matchesDB.numberOfMatches()
                                 }
                             }
                         }

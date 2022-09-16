@@ -6,6 +6,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.graphics.drawable.toDrawable
+import androidx.palette.graphics.Palette
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
@@ -40,7 +42,35 @@ class CosmeticAdapter(
             imageView!!.layoutParams.height = 200
             imageView.layoutParams.width = 400
             nameText.textSize = 20f
-            Picasso.get().load(this.image[position]).fit().centerInside().into(imageView)
+
+            Picasso.get().load(this.image[position]).into(object : com.squareup.picasso.Target {
+                override fun onBitmapLoaded(
+                    bitmap: android.graphics.Bitmap?,
+                    from: Picasso.LoadedFrom?
+                ) {
+                    // get the average colour of the bitmap
+                    val palette = Palette.from(bitmap!!).generate()
+                    val color =
+                        palette.getDominantColor(context.resources.getColor(R.color.Valorant_SplashColourBackground))
+
+                    // if the colour is too light, set the text to black
+                    if (color > -1) {
+                        nameText.setTextColor(android.graphics.Color.BLACK)
+                    }
+
+                    imageView.setImageBitmap(bitmap)
+                    row!!.background = color.toDrawable()
+                }
+
+                override fun onBitmapFailed(
+                    e: java.lang.Exception?,
+                    errorDrawable: android.graphics.drawable.Drawable?
+                ) {
+                }
+
+                override fun onPrepareLoad(placeHolderDrawable: android.graphics.drawable.Drawable?) {
+                }
+            })
 
         } else if (cosmetic.lowercase(Locale.getDefault()) == "skins") {
             nameText!!.text = name[position]
@@ -49,7 +79,31 @@ class CosmeticAdapter(
             imageView.layoutParams.width = 500
             nameText.textSize = 10f
             nameText.gravity = Gravity.CENTER
-            Picasso.get().load(this.image[position]).fit().centerInside().into(imageView)
+            Picasso.get().load(this.image[position]).into(object : com.squareup.picasso.Target {
+                override fun onBitmapLoaded(
+                    bitmap: android.graphics.Bitmap?,
+                    from: Picasso.LoadedFrom?
+                ) {
+                    // get the average colour of the bitmap
+                    val palette = Palette.from(bitmap!!).generate()
+                    val color =
+                        palette.getDominantColor(context.resources.getColor(R.color.Valorant_SplashColourBackground))
+                    if (color > -1) {
+                        nameText.setTextColor(android.graphics.Color.BLACK)
+                    }
+                    imageView.setImageBitmap(bitmap)
+                    row!!.background = color.toDrawable()
+                }
+
+                override fun onBitmapFailed(
+                    e: java.lang.Exception?,
+                    errorDrawable: android.graphics.drawable.Drawable?
+                ) {
+                }
+
+                override fun onPrepareLoad(placeHolderDrawable: android.graphics.drawable.Drawable?) {
+                }
+            })
         } else if (cosmetic.lowercase(Locale.getDefault()) == "videos") {
             // make the video layout
             val videoView = row!!.findViewById(R.id.videoView2) as VideoView

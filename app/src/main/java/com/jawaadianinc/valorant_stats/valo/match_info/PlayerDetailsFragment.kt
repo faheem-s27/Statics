@@ -111,13 +111,17 @@ class PlayerDetailsFragment : Fragment() {
                     players.add(player)
 
                     uiThread {
-                        val playerList: ListView = view.findViewById(R.id.playerList)
-                        playerList.alpha = 0.3f
-                        view.findViewById<TextView>(R.id.textView20).text =
-                            "Processed ${players.size} players"
-                        val playersAdapter = PlayersAdapter(requireActivity(), players)
-                        playerList.adapter = playersAdapter
-                        playersAdapter.notifyDataSetChanged()
+                        try {
+                            val playerList: ListView = view.findViewById(R.id.playerList)
+                            playerList.alpha = 0.3f
+                            view.findViewById<TextView>(R.id.textView20).text =
+                                "Processed ${players.size} players"
+                            val playersAdapter = PlayersAdapter(requireActivity(), players)
+                            playerList.adapter = playersAdapter
+                            playersAdapter.notifyDataSetChanged()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
 
@@ -289,5 +293,4 @@ class PlayerDetailsFragment : Fragment() {
         val myClip: ClipData = ClipData.newPlainText("Label", text)
         myClipboard.setPrimaryClip(myClip)
     }
-
 }

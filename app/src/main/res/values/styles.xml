@@ -26,5 +26,18 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
+    <!-- Define a global style for AboutPage in your 'styles.xml' -->
+    <style name="Widget.App.AboutPage" parent="about_About">
+        <item name="aboutElementIconTint">#333333</item>
+        <item name="android:background">#111822</item>
+        <item name="aboutDescriptionTextAppearance">
+            @style/TextAppearance.App.AboutPage.Description
+        </item>
+    </style>
+
+    <style name="TextAppearance.App.AboutPage.Description" parent="about_descriptionTextAppearance.Dark">
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
 
 </resources>

@@ -1,19 +1,25 @@
 package com.jawaadianinc.valorant_stats.valo.cosmetics.weapon
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.adapters.CosmeticAdapter
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
+import com.squareup.picasso.Picasso
 import org.json.JSONObject
 
 class WeaponSkins : Fragment() {
@@ -62,7 +68,27 @@ class WeaponSkins : Fragment() {
                 filteredAdapter.notifyDataSetChanged()
                 listView.adapter = filteredAdapter
                 listView.setOnItemClickListener { _, _, position, _ ->
-                    showPhotoURL(filteredImages[position])
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Skin",
+                            "Download Skin"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(imageURL, filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
                 }
                 return false
             }
@@ -85,7 +111,27 @@ class WeaponSkins : Fragment() {
                 filteredAdapter.notifyDataSetChanged()
                 listView.adapter = filteredAdapter
                 listView.setOnItemClickListener { _, _, position, _ ->
-                    showPhotoURL(filteredImages[position])
+                    // when clicked
+                    val imageURL = filteredImages[position]
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setTitle("Choose an option")
+                    builder.setItems(
+                        arrayOf(
+                            "View Skin",
+                            "Download Skin"
+                        )
+                    ) { _, which ->
+                        when (which) {
+                            0 -> {
+                                showPhotoURL(imageURL)
+                            }
+                            1 -> {
+                                // download image from url
+                                mSaveMediaToStorage(imageURL, filteredNames[position])
+                            }
+                        }
+                    }
+                    builder.show()
                 }
                 return false
             }
@@ -95,8 +141,27 @@ class WeaponSkins : Fragment() {
         listView.adapter = adapter
         // get item clicked
         listView.setOnItemClickListener { _, _, position, _ ->
-            //Toast.makeText(requireContext(), "You clicked on ${names[position]}", Toast.LENGTH_SHORT).show()
-            showPhotoURL(images[position])
+            // when clicked
+            val imageURL = images[position]
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Choose an option")
+            builder.setItems(
+                arrayOf(
+                    "View Skin",
+                    "Download Skin"
+                )
+            ) { _, which ->
+                when (which) {
+                    0 -> {
+                        showPhotoURL(imageURL)
+                    }
+                    1 -> {
+                        // download image from url
+                        mSaveMediaToStorage(imageURL, names[position])
+                    }
+                }
+            }
+            builder.show()
         }
     }
 
@@ -104,5 +169,31 @@ class WeaponSkins : Fragment() {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(Uri.parse(url), "image/*")
         context?.startActivity(intent)
+    }
+
+    private fun mSaveMediaToStorage(url: String, photoName: String) {
+        Picasso.get().load(url).into(object : com.squareup.picasso.Target {
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                val mediaStore = MediaStore.Images.Media.insertImage(
+                    requireActivity().contentResolver,
+                    bitmap,
+                    photoName,
+                    "Downloaded from Statics for Valorant"
+                )
+                mediaStore?.let {
+                    Toast.makeText(
+                        requireContext(),
+                        "Image downloaded successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+            }
+
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+            }
+        })
     }
 }

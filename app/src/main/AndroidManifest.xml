@@ -30,22 +30,23 @@
 
         <activity
             android:name=".valo.crosshair.CrossHairActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".valo.cosmetics.weapon.WeaponActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".valo.cosmetics.CosmeticsListActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".valo.RecieveSharedProfileActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -57,22 +58,23 @@
         </activity>
         <activity
             android:name=".valo.cosmetics.CosmeticsAgentsActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".valo.activities.LoggingInActivityRSO"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".main.LoadingActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".valo.activities.RSOActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -91,12 +93,12 @@
             android:exported="false" />
         <activity
             android:name=".valo.activities.MMRActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".valo.activities.ViewMatches"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".valo.ValorantUpdatesActivity"
             android:exported="true"
@@ -127,18 +129,24 @@
             android:name=".valo.activities.ValorantMainMenu"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.VALORANT_stats" />
-
         <activity
             android:name=".valo.activities.TrackerGG_Activity"
             android:exported="false"
             android:label="@string/title_activity_tracker_gg"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".main.AboutActivity"
+            android:exported="false"
+            android:label="About Statics"
+            android:theme="@style/Theme.App.About" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
         <service android:name=".valo.LiveMatchService" />
+
     </application>
 
 </manifest>

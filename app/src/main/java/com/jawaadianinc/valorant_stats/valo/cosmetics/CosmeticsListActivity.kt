@@ -3,17 +3,19 @@ package com.jawaadianinc.valorant_stats.valo.cosmetics
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.WallpaperManager
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.*
+import android.widget.Button
+import android.widget.ListView
+import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
@@ -23,10 +25,7 @@ import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.io.OutputStream
 import java.net.URL
 
 
@@ -38,8 +37,6 @@ class CosmeticsListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cosmetics_list)
-
-        val title: TextView = findViewById(R.id.titleCosmetic)
         searchView = findViewById(R.id.searchViewCosmetics)
 
         cosmetic = intent?.getStringExtra("cosmetic")
@@ -47,36 +44,38 @@ class CosmeticsListActivity : AppCompatActivity() {
             startActivity(Intent(this, ValorantMainMenu::class.java))
         }
 
-        if (cosmetic?.lowercase() == "weapon") {
-            title.text = "vAlorAnt weApons"
+        val toolbar = findViewById<Toolbar>(R.id.toolbar3)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        toolbar.title = "Valorant $cosmetic"
+
+        if (cosmetic?.lowercase() == "weapons") {
             getWeapons()
         }
         if (cosmetic == "cards") {
-            title.text = "vAlorAnt cards"
             getCards()
         }
         if (cosmetic == "sprays") {
-            title.text = "vAlorAnt sprays"
             getSprays()
         }
 
         if (cosmetic == "buddies") {
-            title.text = "vAlorAnt buddies"
             getBuddies()
         }
 
         if (cosmetic == "maps") {
-            title.text = "vAlorAnt maps"
             getMaps()
         }
 
         if (cosmetic == "ranks") {
-            title.text = "vAlorAnt ranks"
             getRanks()
         }
 
         if (cosmetic == "borders") {
-            title.text = "vAlorAnt borders"
             getBorders()
         }
 
@@ -1114,7 +1113,6 @@ class CosmeticsListActivity : AppCompatActivity() {
                                 showPhotoURL(imageURL)
                             }
                             1 -> {
-                                // download image from url
                                 mSaveMediaToStorage(getBitMap(imageURL), names[position])
                             }
                             2 -> {
@@ -1123,7 +1121,6 @@ class CosmeticsListActivity : AppCompatActivity() {
                         }
                     }
                     builder.show()
-
                 }
             }
         }
@@ -1140,65 +1137,63 @@ class CosmeticsListActivity : AppCompatActivity() {
         this.startActivity(intent)
     }
 
-    private fun getBitMap(url: String): Bitmap {
-        var bitmap: Bitmap? = null
-        while (bitmap == null) {
-            doAsync {
-                bitmap = Picasso.get().load(url).get()
-            }
-        }
-        return bitmap!!
+    private fun getBitMap(url: String): String {
+        return url
     }
 
     private fun setWallpaper(url: String) {
-        val bitmap = getBitMap(url)
-        val wallpaperManager =
-            WallpaperManager.getInstance(this@CosmeticsListActivity)
-        try {
-            wallpaperManager.setBitmap(bitmap)
-            Toast.makeText(
-                this@CosmeticsListActivity,
-                "Wallpaper set successfully",
-                Toast.LENGTH_SHORT
-            ).show()
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-            Toast.makeText(
-                this@CosmeticsListActivity,
-                "Error setting wallpaper",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        Picasso.get().load(url).into(object : com.squareup.picasso.Target {
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                val wallpaperManager =
+                    WallpaperManager.getInstance(this@CosmeticsListActivity)
+                try {
+                    wallpaperManager.setBitmap(bitmap)
+                    Toast.makeText(
+                        this@CosmeticsListActivity,
+                        "Wallpaper set successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } catch (ex: IOException) {
+                    ex.printStackTrace()
+                    Toast.makeText(
+                        this@CosmeticsListActivity,
+                        "Error setting wallpaper",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+            }
+
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+            }
+        })
     }
 
-    private fun mSaveMediaToStorage(bitmap: Bitmap?, photoName: String) {
-        val filename = "$photoName - ${System.currentTimeMillis()}.jpg"
-        var fos: OutputStream? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            this.contentResolver?.also { resolver ->
-                val contentValues = ContentValues().apply {
-                    put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
-                    put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+    private fun mSaveMediaToStorage(url: String, photoName: String) {
+        Picasso.get().load(url).into(object : com.squareup.picasso.Target {
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                val mediaStore = MediaStore.Images.Media.insertImage(
+                    contentResolver,
+                    bitmap,
+                    photoName,
+                    "Downloaded from Statics for Valorant"
+                )
+                mediaStore?.let {
+                    Toast.makeText(
+                        this@CosmeticsListActivity,
+                        "Image downloaded successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                val imageUri: Uri? =
-                    resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                fos = imageUri?.let { resolver.openOutputStream(it) }
             }
-        } else {
-            val imagesDir =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val image = File(imagesDir, filename)
-            fos = FileOutputStream(image)
-        }
-        fos?.use {
-            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, it)
-            Toast.makeText(
-                this@CosmeticsListActivity,
-                "Saved to Gallery",
-                Toast.LENGTH_SHORT
-            ).show()
 
-        }
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+            }
+
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+            }
+        })
     }
 }

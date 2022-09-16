@@ -37,7 +37,8 @@ class MatchHistoryActivity : AppCompatActivity() {
         val MatchNumber = intent.extras!!.getInt("MatchNumber")
         val IDofMatch = intent.extras!!.getString("MatchID")
         val hasWon = intent?.extras?.getBoolean("Won")
-        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/eu/$Name/$ID?size=10"
+        val region = intent.extras!!.getString("Region")
+        val allmatches = "https://api.henrikdev.xyz/valorant/v3/matches/$region/$Name/$ID?size=10"
 
         // show progress bar while loading
         val progressBar = ProgressBar(this)
@@ -163,7 +164,7 @@ class MatchHistoryActivity : AppCompatActivity() {
                 var didredWin = false
                 try {
                     didredWin = teams.getJSONObject("red").getBoolean("has_won")
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                 }
                 if (didredWin) {
                     val score = teams.getJSONObject("red").getString("rounds_won")

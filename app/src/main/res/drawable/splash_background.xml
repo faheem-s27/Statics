@@ -15,6 +15,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/fulllogo" />
+            android:src="@drawable/just_statics_alot_smaller" />
     </item>
 </layer-list>
