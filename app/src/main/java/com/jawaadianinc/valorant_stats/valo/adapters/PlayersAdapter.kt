@@ -22,7 +22,7 @@ class PlayersAdapter(
         val inflater = context.layoutInflater
         if (convertView == null) row = inflater.inflate(R.layout.player_row, null, true)
         val agentImage = row!!.findViewById<View>(R.id.agentImage) as ImageView
-        val playerNameText = row.findViewById<View>(R.id.NameOfPlayer) as TextView
+        val playerNameText = row.findViewById<View>(R.id.voiceLinesName) as TextView
         val tierRankIcon = row.findViewById<View>(R.id.tierRankIcon) as ImageView
         val gridLayoutView = row.findViewById<View>(R.id.gridLayout2) as ViewGroup
         val kdaText = row.findViewById<View>(R.id.KDA) as TextView
@@ -66,6 +66,16 @@ class PlayersAdapter(
             } else {
                 gridLayoutView.background = context.getDrawable(R.drawable.red_to_black)
             }
+        }
+
+        // only animate the newest player
+        if (position == Players.size - 1) {
+            // animate them coming in from the side
+            row.translationX = -1000f
+            row.animate().translationXBy(1000f).setDuration(500).setInterpolator {
+                val t = it - 1.0f
+                t * t * t * t * t + 1.0f
+            }.start()
         }
 
         return row

@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -42,6 +43,7 @@ import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
 import com.jawaadianinc.valorant_stats.valo.databases.MatchDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.TrackerDB
+import com.jawaadianinc.valorant_stats.valo.live_match.LiveMatchesActivity
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
@@ -126,12 +128,40 @@ class ValorantMainMenu : AppCompatActivity() {
         val playerNameText: TextView = findViewById(R.id.playerNameMenu)
         val optionsFAB: FloatingActionButton = findViewById(R.id.fabPlus)
         val seekBar: SeekBar = findViewById(R.id.howManyMatches)
-        val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
+        val notificationsSwitch: SwitchMaterial = findViewById(R.id.notifications)
         val trackerGGButton: Button = findViewById(R.id.buildTrackerGGProfile)
         val crosshairButton: Button = findViewById(R.id.crosshairBT)
         val dimmed = findViewById<LinearLayout>(R.id.dim_layout)
         val fabRefresh: FloatingActionButton = findViewById(R.id.refreshFAB)
         val aboutPage: Button = findViewById(R.id.AboutBT)
+        val liveMatches = findViewById<Button>(R.id.LiveMatchBT)
+
+        liveMatches.setOnClickListener {
+            // ask the user if they have the client installed on their PC/Laptop
+            val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
+            builder.setTitle("Live Match")
+            builder.setMessage("This feature requires the Statics client to be installed on your PC/Laptop. \n\nDo you have the Statics Client installed?")
+            // set the colour of the buttons
+
+            builder.setPositiveButton("Yes") { dialog, _ ->
+                dialog.dismiss()
+                startActivity(Intent(this, LiveMatchesActivity::class.java))
+                overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            }
+            builder.setNegativeButton("No") { dialog, _ ->
+                // open the website to download the client
+                val browserIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.mediafire.com/file/hwfsrig47x015n6/Statics_Client.exe/file")
+                )
+                startActivity(browserIntent)
+                dialog.dismiss()
+            }
+            builder.setNeutralButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.show()
+        }
 
         aboutPage.setOnClickListener {
             startActivity(Intent(this, AboutActivity::class.java))
@@ -146,7 +176,7 @@ class ValorantMainMenu : AppCompatActivity() {
         }
 
         // show an alert dialog that says thank you for using the app
-        val alertDialog = AlertDialog.Builder(this)
+        val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
         alertDialog.setTitle("Thank you ${playerName.split("#")[0]} for using Statics!")
         alertDialog.setMessage("If you have any suggestions or feedback, you can join the Statics discord server and send a message to the developer.\n\nOr you can share the app with your friends!")
         alertDialog.setPositiveButton("Join") { dialog, which ->
@@ -178,7 +208,6 @@ class ValorantMainMenu : AppCompatActivity() {
 
             dialog.dismiss()
         }
-
         alertDialog.setNeutralButton("Dismiss") { dialog, which ->
             // show the alert dialog again in 2 days
             val sharedPref = getSharedPreferences("alertDialog", Context.MODE_PRIVATE)
@@ -194,37 +223,52 @@ class ValorantMainMenu : AppCompatActivity() {
             dialog.dismiss()
         }
 
-        // show the alert dialog if the user hasn't seen it in 2 days
+        // add a Do not show again button view to the alert dialog
+        val dontShowAgain = CheckBox(this)
+        dontShowAgain.text = "Do not show again"
+        dontShowAgain.setTextColor(Color.WHITE)
+        alertDialog.setView(dontShowAgain)
+
         val sharedPref = getSharedPreferences("alertDialog", Context.MODE_PRIVATE)
         val firstTime = sharedPref.getBoolean("firstTime", true)
-
-        if (firstTime) {
-            // show the alert dialog
-            alertDialog.show()
-            // set the first time to false
+        val doNotShowAgain = sharedPref.getBoolean("doNotShowAgain", false)
+        // if the user clicks the do not show again button, then add the value to shared preferences
+        dontShowAgain.setOnCheckedChangeListener { _, isChecked ->
             val editor = sharedPref.edit()
-            editor.putBoolean("firstTime", false)
+            editor.putBoolean("doNotShowAgain", isChecked)
             editor.apply()
-        } else {
-            // check if it has been 2 days
-            val lastTime = sharedPref.getLong("lastTime", 0)
-            val currentTime = System.currentTimeMillis()
-            val difference = currentTime - lastTime
+        }
 
-            val twoDays = 172800000
-            if (difference > twoDays) {
+        // get the value of doNotShowAgain and check if it is true or false
+        if (!doNotShowAgain) {
+            if (firstTime) {
                 // show the alert dialog
                 alertDialog.show()
-                // set the last time to the current time
+                // set the first time to false
                 val editor = sharedPref.edit()
-                editor.putLong("lastTime", System.currentTimeMillis())
+                editor.putBoolean("firstTime", false)
                 editor.apply()
+            } else {
+                // check if it has been 2 days
+                val lastTime = sharedPref.getLong("lastTime", 0)
+                val currentTime = System.currentTimeMillis()
+                val difference = currentTime - lastTime
+
+                val twoDays = 172800000
+                if (difference > twoDays) {
+                    // show the alert dialog
+                    alertDialog.show()
+                    // set the last time to the current time
+                    val editor = sharedPref.edit()
+                    editor.putLong("lastTime", System.currentTimeMillis())
+                    editor.apply()
+                }
             }
         }
 
         crosshairButton.setOnClickListener {
             // show alert dialog sayng that crosshair is not available due to changes in the game
-            val dialog = AlertDialog.Builder(this)
+            val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
             dialog.setTitle("Crosshair unavailable")
             dialog.setMessage("Crosshair is currently disabled in the app due to the new crosshair functions in Valorant 5.04.\n\nThis will need to be remade in Statics.")
             dialog.setPositiveButton("OK") { _, _ -> }
@@ -319,7 +363,7 @@ class ValorantMainMenu : AppCompatActivity() {
 
         // check if the LiveMatchService is running
         val serviceRunning = isServiceRunning(LiveMatchService::class.java)
-        liveMatchSwitch.isChecked = serviceRunning
+        notificationsSwitch.isChecked = serviceRunning
 
         // update the widget
         val intent =
@@ -331,10 +375,10 @@ class ValorantMainMenu : AppCompatActivity() {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         sendBroadcast(intent)
 
-        liveMatchSwitch.setOnCheckedChangeListener { _, isChecked ->
+        notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // show alert dialog to ask for confirmation
-                val builder = AlertDialog.Builder(this)
+                val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
                 builder.setTitle("Notification Details")
                 builder.setMessage(
                     "This will start the Match Service, that will run every minute to check for recently played matches.\n" +
@@ -376,7 +420,7 @@ class ValorantMainMenu : AppCompatActivity() {
                     }
                 }
                 builder.setNegativeButton("No") { _, _ ->
-                    liveMatchSwitch.isChecked = false
+                    notificationsSwitch.isChecked = false
                     try {
                         val widgetIntent =
                             Intent(this@ValorantMainMenu, LastMatchWidget::class.java)
@@ -394,6 +438,7 @@ class ValorantMainMenu : AppCompatActivity() {
                     }
                 }
                 builder.show()
+
             } else {
                 try {
                     val widgetIntent = Intent(this@ValorantMainMenu, LastMatchWidget::class.java)
@@ -427,28 +472,58 @@ class ValorantMainMenu : AppCompatActivity() {
                 logOutFAB.visibility = View.VISIBLE
                 sharePlayerProfile.visibility = View.VISIBLE
                 fabRefresh.visibility = View.VISIBLE
-                optionsFAB.animate().rotationBy(45f).duration = 200
-                logOutFAB.animate().alpha(1f).translationYBy(-600f).duration = 400
-                sharePlayerProfile.animate().alpha(1f).translationYBy(-400f).duration = 300
-                fabRefresh.animate().alpha(1f).translationYBy(-200f).duration = 200
+                optionsFAB.animate().rotationBy(45f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.duration = 200
+                logOutFAB.animate().alpha(1f).translationYBy(-600f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.duration = 400
+                sharePlayerProfile.animate().alpha(1f).translationYBy(-400f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.duration = 300
+                fabRefresh.animate().alpha(1f).translationYBy(-200f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.duration = 200
                 show = false
                 logOutFAB.isClickable = true
                 sharePlayerProfile.isClickable = true
                 fabRefresh.isClickable = true
                 //aniamte dimmed from 0 to 1 alpha in 200ms
-                dimmed.animate().alpha(1f).duration = 200
+                dimmed.animate().alpha(1f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.duration = 200
             } else {
                 // hide the FAB options
-                optionsFAB.animate().rotationBy(-45f).duration = 200
-                logOutFAB.animate().alpha(0f).translationYBy(600f).duration = 400
-                sharePlayerProfile.animate().alpha(0f).translationYBy(400f).duration = 300
-                fabRefresh.animate().alpha(0f).translationYBy(200f).duration = 200
+                optionsFAB.animate().rotationBy(-45f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.duration = 200
+                logOutFAB.animate().alpha(0f).translationYBy(600f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.duration = 400
+                sharePlayerProfile.animate().alpha(0f).translationYBy(400f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.duration = 300
+                fabRefresh.animate().alpha(0f).translationYBy(200f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.duration = 200
                 logOutFAB.isClickable = false
                 sharePlayerProfile.isClickable = false
                 fabRefresh.isClickable = false
                 show = true
                 //aniamte dimmed from 1 to 0 alpha in 200ms
-                dimmed.animate().alpha(0f).duration = 200
+                dimmed.animate().alpha(0f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.duration = 200
             }
         }
 
@@ -478,7 +553,7 @@ class ValorantMainMenu : AppCompatActivity() {
             val puuid = PlayerDatabase(this).getPUUID(nameSplit[0], nameSplit[1])
             val region = PlayerDatabase(this).getRegion(puuid = puuid!!)
 
-            AlertDialog.Builder(this).setTitle("Disclaimer!")
+            AlertDialog.Builder(this, R.style.AlertDialogTheme).setTitle("Disclaimer!")
                 .setMessage(R.string.Share_Profile_URL)
                 .setPositiveButton("Share") { _, _ ->
                     val url =
@@ -528,7 +603,7 @@ class ValorantMainMenu : AppCompatActivity() {
             val prefs = getSharedPreferences("trackerGGDialog", Context.MODE_PRIVATE)
             val editor = prefs.edit()
             if (!prefs.getBoolean("shown", false)) {
-                AlertDialog.Builder(this).setTitle("Disclaimer!")
+                AlertDialog.Builder(this, R.style.AlertDialogTheme).setTitle("Disclaimer!")
                     .setMessage("These stats are updated only once a day, so they may not be accurate.")
                     .setPositiveButton("Ok") { _, _ ->
                         editor.putBoolean("shown", true)
@@ -580,10 +655,8 @@ class ValorantMainMenu : AppCompatActivity() {
                     this,
                     MY_REQUEST_CODE
                 )
-
             }
         }
-
     }
 
     private fun isServiceRunning(java: Class<LiveMatchService>): Boolean {
@@ -670,7 +743,8 @@ class ValorantMainMenu : AppCompatActivity() {
                     uiThread {
                         progressDoalog.dismiss()
                         // show dialog saying player is not signed in at tracker.gg
-                        val builder = AlertDialog.Builder(this@ValorantMainMenu)
+                        val builder =
+                            AlertDialog.Builder(this@ValorantMainMenu, R.style.AlertDialogTheme)
                         builder.setTitle("Profile is private")
                         builder.setMessage("To continue, you need to be signed in at tracker.gg and have your profile set to public.")
                         builder.setPositiveButton("Sign in") { _, _ ->
@@ -700,7 +774,7 @@ class ValorantMainMenu : AppCompatActivity() {
     private fun checkForTrackerGG(gameName: String, gameTag: String) {
         // show loading dialog
         // show an alert dialog with options to choose which game mode to view stats on
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
         builder.setTitle("Choose a game mode for $gameName#$gameTag")
         val gameModes = arrayOf("Competitive", "Unrated", "Spike Rush")
         var mode = ""
@@ -989,10 +1063,16 @@ class ValorantMainMenu : AppCompatActivity() {
             v.alpha = 0f
             if (reverseDirection) {
                 v.translationX = 500f
-                v.animate().alpha(1f).setDuration(500).translationXBy(-500f).startDelay = delay
+                v.animate().alpha(1f).setDuration(500).translationXBy(-500f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.startDelay = delay
             } else {
                 v.translationX = -500f
-                v.animate().alpha(1f).setDuration(500).translationXBy(500f).startDelay = delay
+                v.animate().alpha(1f).setDuration(500).translationXBy(500f).setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.startDelay = delay
             }
             //v.translationX = -y
             delay += 50L

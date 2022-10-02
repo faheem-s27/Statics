@@ -5,10 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.ListView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
@@ -20,6 +18,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.adapters.MatchAdapter
+import com.jawaadianinc.valorant_stats.valo.classes.Match
 import com.jawaadianinc.valorant_stats.valo.databases.StoredMatchesDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import org.jetbrains.anko.doAsync
@@ -35,8 +34,10 @@ class ViewMatches : AppCompatActivity() {
     val kda = ArrayList<String>()
     val gameMode = ArrayList<String>()
     val matchIDs = ArrayList<String>()
-    val won = ArrayList<String>()
+    val won = ArrayList<Boolean>()
     val mapNames = ArrayList<String>()
+
+    private val matchLists = ArrayList<Match>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,14 +47,22 @@ class ViewMatches : AppCompatActivity() {
         val puuid = intent.extras?.getString("PUUID")
         val numberOfMatches = intent.extras?.getString("NumberOfMatches")
 
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar6)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.title = "Match History"
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
+        val rg = findViewById<RadioGroup>(R.id.radioGroup)
+        // invisible until everything is loaded
+        rg.visibility = View.INVISIBLE
+
         val matches = MatchAdapter(
             this,
-            playerAgentImage,
-            mapImage,
-            timePlayed,
-            kda,
-            gameMode,
-            won
+            matchLists
         )
 
         val matchList: ListView = findViewById(R.id.matchList)
@@ -128,7 +137,7 @@ class ViewMatches : AppCompatActivity() {
                             var kills = 0
                             var deaths = 0
                             var assists = 0
-                            var winning: String = ""
+                            var winning: Boolean = false
 
                             for (j in 0 until players.length()) {
                                 val currentPlayer = players[j] as JSONObject
@@ -193,14 +202,10 @@ class ViewMatches : AppCompatActivity() {
 
                                     winning = try {
                                         if (redWon == "true" && playerTeam == "Red") {
-                                            "true"
-                                        } else if (redWon == "false" && playerTeam == "Blue") {
-                                            "true"
-                                        } else {
-                                            "false"
-                                        }
+                                            true
+                                        } else redWon == "false" && playerTeam == "Blue"
                                     } catch (e: Exception) {
-                                        "unknown"
+                                        false
                                     }
                                 }
                             }
@@ -218,6 +223,19 @@ class ViewMatches : AppCompatActivity() {
                                 won += winning
                                 mapNames += mapName
 
+                                val match = Match(
+                                    (matchStart + gameDuration).toString(),
+                                    mode,
+                                    kills,
+                                    deaths,
+                                    assists,
+                                    mapListViewIcon,
+                                    agentImage,
+                                    winning,
+                                    matchID,
+                                )
+
+                                matchLists.add(match)
                                 matches.notifyDataSetChanged()
                                 matchList.setOnItemClickListener { _, _, position, _ ->
                                     matchActivityStart(
@@ -305,6 +323,147 @@ class ViewMatches : AppCompatActivity() {
                         matchList.animate().alpha(1f).duration = 1000
                         progressBar.animate().alpha(0f).duration = 1000
                         matchText1.animate().alpha(0f).duration = 1000
+
+                        // store the current matchList in another list
+                        val matchListAll = matchLists
+
+                        rg.visibility = View.VISIBLE
+                        // check the first radio button
+                        rg.check(R.id.latestRadio)
+
+                        rg.setOnCheckedChangeListener { _, checkedId ->
+                            when (checkedId) {
+                                R.id.latestRadio -> {
+                                    val adapter = MatchAdapter(this@ViewMatches, matchListAll)
+                                    matchList.adapter = adapter
+                                    // sort by newest time started
+                                    matchListAll.sortByDescending { it.timeStarted.toLong() }
+                                    matches.notifyDataSetChanged()
+                                    matchList.setOnItemClickListener { _, _, position, _ ->
+                                        matchActivityStart(
+                                            gameNamePlayer,
+                                            tagLinePlayer,
+                                            matchListAll[position].matchID,
+                                            matchListAll[position].won
+                                        )
+                                    }
+                                }
+                                R.id.oldestRadio -> {
+                                    val adapter = MatchAdapter(this@ViewMatches, matchListAll)
+                                    matchList.adapter = adapter
+                                    // sort by oldest time started
+                                    matchListAll.sortBy { it.timeStarted.toLong() }
+                                    matches.notifyDataSetChanged()
+                                    matchList.setOnItemClickListener { _, _, position, _ ->
+                                        matchActivityStart(
+                                            gameNamePlayer,
+                                            tagLinePlayer,
+                                            matchListAll[position].matchID,
+                                            matchListAll[position].won
+                                        )
+                                    }
+                                }
+                                R.id.compRadio -> {
+                                    // only show competitive matches
+                                    val compAdapter = MatchAdapter(this@ViewMatches,
+                                        matchListAll.filter { it.gameMode == "Competitive" } as ArrayList<Match>)
+                                    val compList =
+                                        matchListAll.filter { it.gameMode == "Competitive" } as ArrayList<Match>
+                                    matchList.adapter = compAdapter
+                                    matches.notifyDataSetChanged()
+                                    matchList.setOnItemClickListener { _, _, position, _ ->
+                                        matchActivityStart(
+                                            gameNamePlayer,
+                                            tagLinePlayer,
+                                            compList[position].matchID,
+                                            compList[position].won
+                                        )
+                                    }
+                                }
+                                R.id.unratedRadio -> {
+                                    // only show unrated matches
+                                    val unratedAdapter = MatchAdapter(this@ViewMatches,
+                                        matchListAll.filter { it.gameMode == "Unrated" } as ArrayList<Match>)
+                                    val matchListUnrated =
+                                        matchListAll.filter { it.gameMode == "Unrated" } as ArrayList<Match>
+                                    matchList.adapter = unratedAdapter
+                                    matches.notifyDataSetChanged()
+                                    matchList.setOnItemClickListener { _, _, position, _ ->
+                                        matchActivityStart(
+                                            gameNamePlayer,
+                                            tagLinePlayer,
+                                            matchListUnrated[position].matchID,
+                                            matchListUnrated[position].won
+                                        )
+                                    }
+                                }
+                                R.id.spikeRushRadio -> {
+                                    // only show spike rush matches
+                                    val spikeRushAdapter = MatchAdapter(this@ViewMatches,
+                                        matchListAll.filter { it.gameMode == "Spikerush" } as ArrayList<Match>)
+                                    val matchListSpikeRush =
+                                        matchListAll.filter { it.gameMode == "Spikerush" } as ArrayList<Match>
+                                    matchList.adapter = spikeRushAdapter
+                                    matches.notifyDataSetChanged()
+                                    matchList.setOnItemClickListener { _, _, position, _ ->
+                                        matchActivityStart(
+                                            gameNamePlayer,
+                                            tagLinePlayer,
+                                            matchListSpikeRush[position].matchID,
+                                            matchListSpikeRush[position].won
+                                        )
+                                    }
+                                }
+                                R.id.killsRadio -> {
+                                    val adapter = MatchAdapter(this@ViewMatches, matchListAll)
+                                    matchList.adapter = adapter
+                                    // sort by most kills
+                                    matchListAll.sortByDescending { it.kills }
+                                    matches.notifyDataSetChanged()
+                                    matchList.setOnItemClickListener { _, _, position, _ ->
+                                        matchActivityStart(
+                                            gameNamePlayer,
+                                            tagLinePlayer,
+                                            matchListAll[position].matchID,
+                                            matchListAll[position].won
+                                        )
+                                    }
+                                }
+                                R.id.deathsRadio -> {
+                                    val adapter = MatchAdapter(this@ViewMatches, matchListAll)
+                                    matchList.adapter = adapter
+                                    // show the highest deaths first
+                                    matchLists.sortByDescending { it.deaths }
+                                    // show all the matches
+                                    matches.notifyDataSetChanged()
+                                    matchList.setOnItemClickListener { _, _, position, _ ->
+                                        matchActivityStart(
+                                            gameNamePlayer,
+                                            tagLinePlayer,
+                                            matchListAll[position].matchID,
+                                            matchListAll[position].won
+                                        )
+                                    }
+                                }
+                                R.id.assistsRadio -> {
+                                    val adapter = MatchAdapter(this@ViewMatches, matchListAll)
+                                    matchList.adapter = adapter
+                                    // show the highest assists first
+                                    matchLists.sortByDescending { it.assists }
+                                    // show all the matches
+                                    matches.notifyDataSetChanged()
+                                    matchList.setOnItemClickListener { _, _, position, _ ->
+                                        matchActivityStart(
+                                            gameNamePlayer,
+                                            tagLinePlayer,
+                                            matchListAll[position].matchID,
+                                            matchListAll[position].won
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
                         matchList.setOnItemClickListener { _, _, position, _ ->
                             matchActivityStart(
                                 gameNamePlayer,
@@ -333,13 +492,13 @@ class ViewMatches : AppCompatActivity() {
         )
     }
 
-    private fun matchActivityStart(Name: String, ID: String, matchID: String, winning: String) {
+    private fun matchActivityStart(Name: String, ID: String, matchID: String, winning: Boolean) {
         val matchintent = Intent(this@ViewMatches, MatchHistoryActivity::class.java)
         matchintent.putExtra("RiotName", Name)
         matchintent.putExtra("RiotID", ID)
         matchintent.putExtra("MatchNumber", 0)
         matchintent.putExtra("MatchID", matchID)
-        matchintent.putExtra("Won", winning.toBoolean())
+        matchintent.putExtra("Won", winning)
         startActivity(matchintent)
     }
 }

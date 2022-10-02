@@ -46,6 +46,32 @@ class AssetsDatabase(context: Context) : SQLiteOpenHelper(context, "ValoAssets.d
         return BitmapFactory.decodeByteArray(imgByte, 0, imgByte.size)
     }
 
+    fun retrieveImageUUID(UUID: String): Bitmap {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT $Image FROM $ValoAssets WHERE ${Companion.UUID} = '$UUID'",
+            null
+        )
+        cursor.moveToFirst()
+        val imgByte = cursor.getBlob(0)
+        cursor.close()
+        db.close()
+        return BitmapFactory.decodeByteArray(imgByte, 0, imgByte.size)
+    }
+
+    fun retrieveName(UUID: String): String {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT $Name FROM $ValoAssets WHERE ${Companion.UUID} = '$UUID'",
+            null
+        )
+        cursor.moveToFirst()
+        val name = cursor.getString(0)
+        cursor.close()
+        db.close()
+        return name
+    }
+
     fun getNumberOfRows(): Int {
         val db: SQLiteDatabase = this.readableDatabase
         val count = DatabaseUtils.queryNumEntries(db, ValoAssets)

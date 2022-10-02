@@ -56,7 +56,7 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
         val RecentMatchFAB: FloatingActionButton = findViewById(R.id.RecentMatchFAB)
         val sharePlayerProfile: FloatingActionButton = findViewById(R.id.sharePlayerProfile)
         val goBackFromLink: FloatingActionButton = findViewById(R.id.goBackFromLink)
-        val liveMatchSwitch: SwitchMaterial = findViewById(R.id.liveMatch)
+        val liveMatchSwitch: SwitchMaterial = findViewById(R.id.notifications)
         liveMatchSwitch.visibility = View.INVISIBLE
         val seekBar: SeekBar = findViewById(R.id.howManyMatches)
 

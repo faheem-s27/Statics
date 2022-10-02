@@ -43,6 +43,11 @@ class PlayerDetailsFragment : Fragment() {
         // invisible until everything is loaded
         rg.visibility = View.INVISIBLE
 
+        val playerList: ListView = view.findViewById(R.id.playerList)
+        val playersAdapter = PlayersAdapter(requireActivity(), players)
+        playerList.adapter = playersAdapter
+        playerList.alpha = 0.3f
+
         doAsync {
             try {
                 jsonRanksArray =
@@ -111,17 +116,9 @@ class PlayerDetailsFragment : Fragment() {
                     players.add(player)
 
                     uiThread {
-                        try {
-                            val playerList: ListView = view.findViewById(R.id.playerList)
-                            playerList.alpha = 0.3f
-                            view.findViewById<TextView>(R.id.textView20).text =
-                                "Processed ${players.size} players"
-                            val playersAdapter = PlayersAdapter(requireActivity(), players)
-                            playerList.adapter = playersAdapter
-                            playersAdapter.notifyDataSetChanged()
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                        view.findViewById<TextView>(R.id.textView20).text =
+                            "Processed ${players.size} players"
+                        playersAdapter.notifyDataSetChanged()
                     }
                 }
 
@@ -132,12 +129,12 @@ class PlayerDetailsFragment : Fragment() {
                         when (checkedId) {
                             R.id.teamsRadio -> displayPlayers("team")
                             R.id.namesRadio -> displayPlayers("name")
-                            R.id.scoreRadio -> displayPlayers("score")
+                            R.id.latestRadio -> displayPlayers("score")
                             R.id.killsRadio -> displayPlayers("kills")
                             R.id.deathsRadio -> displayPlayers("deaths")
                             R.id.assistsRadio -> displayPlayers("assists")
                             R.id.levelsRadio -> displayPlayers("level")
-                            R.id.ranksRadio -> displayPlayers("rank")
+                            R.id.compRadio -> displayPlayers("rank")
                         }
                     }
                 }
@@ -188,7 +185,6 @@ class PlayerDetailsFragment : Fragment() {
         }
 
         val playersAdapter = PlayersAdapter(requireActivity(), players)
-
         playerList.adapter = playersAdapter
         playersAdapter.notifyDataSetChanged()
 
@@ -206,7 +202,22 @@ class PlayerDetailsFragment : Fragment() {
             val popupWindow = PopupWindow(popupView, width, height, focusable)
             popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
             val dimLayout = requireView().findViewById(R.id.dim_layout) as LinearLayout
-            dimLayout.visibility = View.VISIBLE
+
+            // set the dim layout to alpha 1f in 500ms
+            dimLayout.animate().alpha(1f).setDuration(500).start()
+
+
+            // set the popup window to dismiss when the back button is pressed
+            popupWindow.setOnDismissListener {
+                dimLayout.animate().alpha(0f).setDuration(500).start()
+                popupView.animate().alpha(0f).setDuration(500).withEndAction {
+                    popupWindow.dismiss()
+                }.start()
+            }
+
+            popupView.alpha = 0f
+            popupView.animate().alpha(1f).setDuration(500).start()
+
 
             // get current Player from the list
             val currentPlayer = playersAdapter.getItem(position) as Player
@@ -214,6 +225,59 @@ class PlayerDetailsFragment : Fragment() {
             val playernameTitle = popupView.findViewById<TextView>(R.id.playerName)
             val playerImage: ImageView = popupView.findViewById(R.id.playerImage)
             val playerstats = popupView.findViewById<TextView>(R.id.playerstatsText)
+            val dismissbutton: Button = popupView.findViewById(R.id.dismiss)
+            val copyButton: Button = popupView.findViewById(R.id.copyPlayerName)
+            val rankButton: Button = popupView.findViewById(R.id.playerRankButon)
+
+            val animationLength = 500L
+
+            // move the player image to the top of the screen and then animate it back to the center
+            playerImage.animate().translationY(-1000f).setDuration(0).alpha(0f).start()
+            playerImage.animate().translationY(0f).setDuration(animationLength).alpha(1f)
+                .setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.start()
+
+            // move the player name to the left of the screen and then animate it back to the center
+            playernameTitle.animate().translationX(-1000f).setDuration(0).alpha(0f).start()
+            playernameTitle.animate().translationX(0f).setDuration(animationLength).alpha(1f)
+                .setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.startDelay = 100
+
+            // move the player stats to the right of the screen and then animate it back to the center
+            playerstats.animate().translationX(1000f).setDuration(0).alpha(0f).start()
+            playerstats.animate().translationX(0f).setDuration(animationLength).alpha(1f)
+                .setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.startDelay = 300
+
+            // move the dismiss button to the bottom of the screen and then animate it back to the center
+            dismissbutton.animate().translationY(1000f).setDuration(0).alpha(0f).start()
+            dismissbutton.animate().translationY(0f).setDuration(animationLength).alpha(1f)
+                .setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.startDelay = 500
+
+            // move the copy button to the bottom of the screen and then animate it back to the center
+            copyButton.animate().translationY(1000f).setDuration(0).alpha(0f).start()
+            copyButton.animate().translationY(0f).setDuration(animationLength).alpha(1f)
+                .setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.startDelay = 300
+
+            // move the rank button to the bottom of the screen and then animate it back to the center
+            rankButton.animate().translationY(1000f).setDuration(0).alpha(0f).start()
+            rankButton.animate().translationY(0f).setDuration(animationLength).alpha(1f)
+                .setInterpolator {
+                    val t = it - 1.0f
+                    t * t * t * t * t + 1.0f
+                }.startDelay = 400
 
             playernameTitle.text = currentPlayer.name
             Picasso.get().load(currentPlayer.agent.url).into(playerImage)
@@ -237,20 +301,21 @@ class PlayerDetailsFragment : Fragment() {
                         "\nDeaths: $deaths" +
                         "\nAssists: $assists"
             }
-            val dismissbutton: Button = popupView.findViewById(R.id.dismiss)
+
             dismissbutton.setOnClickListener {
-                popupWindow.dismiss()
-                dimLayout.visibility = View.INVISIBLE
+                popupView.animate().alpha(0f).setDuration(500).withEndAction {
+                    popupWindow.dismiss()
+                }.start()
+                dimLayout.animate().alpha(0f).setDuration(500).start()
             }
 
-            val copyButton: Button = popupView.findViewById(R.id.copyPlayerName)
+
             copyButton.setOnClickListener {
                 copyText(currentPlayer.name)
                 Toast.makeText(requireActivity(), "Copied Name!", Toast.LENGTH_SHORT)
                     .show()
             }
 
-            val rankButton: Button = popupView.findViewById(R.id.playerRankButon)
             rankButton.setOnClickListener {
                 val name = currentPlayer.getNameAndTag()
                 val intent = Intent(requireActivity(), MMRActivity::class.java)
@@ -266,22 +331,27 @@ class PlayerDetailsFragment : Fragment() {
             var rankURL = ""
             var rankName = ""
             // attempt to get all of the players rank in unrated or other modes
-            val tierRanking =
-                Henrik(requireActivity()).henrikAPI("https://api.henrikdev.xyz/valorant/v1/mmr/eu/$name/$tag")
-                    .getJSONObject("data")
-                    .getInt("currenttier")
-            val rankIndex = jsonRanksArray.length() - 1
-            val tiers = jsonRanksArray.getJSONObject(rankIndex).getJSONArray("tiers")
-            for (j in 0 until tiers.length()) {
-                val currentTier = tiers[j] as JSONObject
-                if (currentTier.getInt("tier") == tierRanking) {
-                    rankURL = currentTier.getString("largeIcon")
-                    rankName = currentTier.getString("tierName")
-                    break
+            // check if activity is not null
+            if (activity != null) {
+                val tierRanking =
+                    Henrik(requireActivity()).henrikAPI("https://api.henrikdev.xyz/valorant/v1/mmr/eu/$name/$tag")
+                        .getJSONObject("data")
+                        .getInt("currenttier")
+                val rankIndex = jsonRanksArray.length() - 1
+                val tiers = jsonRanksArray.getJSONObject(rankIndex).getJSONArray("tiers")
+                for (j in 0 until tiers.length()) {
+                    val currentTier = tiers[j] as JSONObject
+                    if (currentTier.getInt("tier") == tierRanking) {
+                        rankURL = currentTier.getString("largeIcon")
+                        rankName = currentTier.getString("tierName")
+                        break
+                    }
                 }
+                //Log.d("Henrik", "RankURL for $name#$tag: $rankURL")
+                return "$rankURL#$rankName"
+            } else {
+                return ""
             }
-            //Log.d("Henrik", "RankURL for $name#$tag: $rankURL")
-            return "$rankURL#$rankName"
         } catch (e: Exception) {
             //Log.d("Henrik", "Error for $name#$tag - $e")
             return ""

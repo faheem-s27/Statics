@@ -44,8 +44,6 @@ class Henrik(val context: Context) {
             .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
             .build()
         val call = client.newCall(request).execute()
-        // Log the headers
-        //Log.d("Henrik", "Headers: ${call.headers}")
         return JSONObject(call.body.string())
     }
 }

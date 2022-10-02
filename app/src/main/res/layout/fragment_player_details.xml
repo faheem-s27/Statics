@@ -39,7 +39,7 @@
                 android:textColor="#FFFFFF" />
 
             <RadioButton
-                android:id="@+id/scoreRadio"
+                android:id="@+id/latestRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Red"
@@ -93,7 +93,7 @@
                 android:textColor="#FFFFFF" />
 
             <RadioButton
-                android:id="@+id/ranksRadio"
+                android:id="@+id/compRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Red"
@@ -145,9 +145,10 @@
         android:id="@+id/dim_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#70000000"
+        android:alpha="0"
+        android:background="#B4000000"
         android:orientation="horizontal"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

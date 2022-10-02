@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:fontFamily="@font/valorant"
+                android:fontFamily="@font/lalezar"
                 android:padding="10dp"
                 android:text="{Player Name}"
                 android:textSize="20sp"
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/valorant"
+                android:fontFamily="@font/lalezar"
                 android:gravity="center"
                 android:text="Kills:\nDeaths:\nAssists"
                 android:textSize="24sp"
@@ -70,14 +70,14 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
                 android:backgroundTint="@color/ic_launcher_background"
-                android:fontFamily="@font/valorant"
+                android:fontFamily="@font/lalezar"
                 android:text="Copy Name"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/playerstatsText"
-                app:strokeColor="@color/light_blue_900"
+                app:strokeColor="#FFFFFF"
                 app:strokeWidth="4dp" />
 
             <Button
@@ -88,7 +88,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:backgroundTint="@color/ic_launcher_background"
-                android:fontFamily="@font/valorant"
+                android:fontFamily="@font/lalezar"
                 android:text="Rank Details"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="15dp"
@@ -96,7 +96,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/copyPlayerName"
-                app:strokeColor="@color/light_blue_900"
+                app:strokeColor="#FFFFFF"
                 app:strokeWidth="4dp" />
 
             <Button
@@ -108,7 +108,7 @@
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/ic_launcher_background"
-                android:fontFamily="@font/valorant"
+                android:fontFamily="@font/lalezar"
                 android:text="Dismiss"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="15dp"
@@ -117,7 +117,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/playerRankButon"
-                app:strokeColor="@color/light_blue_900"
+                app:strokeColor="#FFFFFF"
                 app:strokeWidth="4dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

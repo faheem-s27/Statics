@@ -17,10 +17,10 @@
         tools:srcCompat="@drawable/refreshicon" />
 
     <TextView
-        android:id="@+id/NameOfPlayer"
+        android:id="@+id/voiceLinesName"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:fontFamily="@font/baloo_bhai"
+        android:fontFamily="@font/lalezar"
         android:padding="15dp"
         android:textSize="20dp"
         android:textStyle="bold"
@@ -32,13 +32,13 @@
         android:id="@+id/KDA"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:fontFamily="@font/baloo_bhai"
+        android:fontFamily="@font/lalezar"
         android:padding="15dp"
-        android:text="27 / 13 / 7"
         android:textSize="20dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/NameOfPlayer"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/voiceLinesName"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="27 / 13 / 7" />
 
     <ImageView
         android:id="@+id/tierRankIcon"

@@ -12,10 +12,12 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.storage.FirebaseStorage
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.adapters.AgentAbilityAdapter
 import com.jawaadianinc.valorant_stats.valo.adapters.MySliderImageAdapter
+import com.jawaadianinc.valorant_stats.valo.adapters.VoiceLineAdapter
 import com.smarteist.autoimageslider.SliderView
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
@@ -39,11 +41,14 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
 
     private val animation = 200L
     private val agentVoicePlayer = MediaPlayer()
+    private val voiceLinePlayer = MediaPlayer()
+    private val storageRef = FirebaseStorage.getInstance().reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cosmetics_agents)
         agentVoicePlayer.start()
+        voiceLinePlayer.start()
 
         val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
         progressDialog.show()
@@ -54,6 +59,7 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "No data for $data", Toast.LENGTH_SHORT).show()
         }
+
 
         progressDialog.dismiss()
     }
@@ -82,11 +88,6 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         val abilityNames = ArrayList<String>()
         val abilityDesc = ArrayList<String>()
         val abilityIcons = ArrayList<String>()
-
-        //        if (position >= 7) {
-//            numba += 1
-//        }
-
 
         try {
             val gradBg = findViewById<View>(R.id.gradientView)
@@ -125,6 +126,27 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         val agentAbilityList = findViewById<ListView>(R.id.agentAbilityList)
         agentAbilityList.adapter = abilityList
 
+        val voiceLinesListView = findViewById<ListView>(R.id.voiceLines)
+        val listRef = storageRef.child("Valorant VoiceLines/${agentName[position]}/")
+        // text adapter list/
+        val voiceLinesArray = ArrayList<String>()
+        val voiceLinesLinks = ArrayList<String>()
+
+        val voiceLineAdapter = VoiceLineAdapter(
+            this,
+            voiceLinesArray,
+            storageRef,
+            agentName[position],
+            voiceLinePlayer
+        )
+        voiceLinesListView.adapter = voiceLineAdapter
+
+        listRef.listAll().addOnSuccessListener { listResult ->
+            listResult.items.forEach { item ->
+                voiceLinesArray.add(item.name)
+                voiceLineAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     private fun setImageInSlider(images: ArrayList<String>, imageSlider: SliderView) {
@@ -134,6 +156,7 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         setAgentInfo(0)
         imageSlider.setCurrentPageListener {
             agentVoicePlayer.reset()
+            voiceLinePlayer.reset()
             setAgentInfo(it)
         }
     }
@@ -166,7 +189,10 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
                     )
                     bustPortrait.add(agentJSON.getJSONObject(i).getString("fullPortrait"))
                     agentBackground.add(agentJSON.getJSONObject(i).getString("bustPortrait"))
-                    agentName.add(agentJSON.getJSONObject(i).getString("displayName"))
+
+                    val name = agentJSON.getJSONObject(i).getString("displayName")
+                    // replace any / with -
+                    agentName.add(name.replace("/", "-"))
 
                     // the background gradient colors are an array of hex colours for each agent
                     // the first colour is the top colour and the second colour is the bottom colour

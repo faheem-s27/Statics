@@ -23,8 +23,8 @@
         android:textColor="#FFFFFF"
         android:textSize="14dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/agentAbilityIcon"
+        app:layout_constraintEnd_toEndOf="@+id/agentAbilityDescription"
+        app:layout_constraintStart_toStartOf="@+id/agentAbilityDescription"
         app:layout_constraintTop_toTopOf="@+id/agentAbilityIcon"
         tools:text="Seize" />
 

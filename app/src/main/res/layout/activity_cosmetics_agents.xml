@@ -76,6 +76,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/view"
                 tools:srcCompat="@tools:sample/avatars" />
 
+            <ListView
+                android:id="@+id/voiceLines"
+                android:layout_width="0dp"
+                android:layout_height="500dp"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView25" />
+
             <TextView
                 android:id="@+id/roleName"
                 android:layout_width="wrap_content"
@@ -144,6 +154,21 @@
                 app:sliderScrollTimeInSec="1">
 
             </com.smarteist.autoimageslider.SliderView>
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/lalezar"
+                android:text="Voice Lines"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/agentAbilityList" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

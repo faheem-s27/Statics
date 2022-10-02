@@ -100,7 +100,7 @@ class MatchHistoryActivity : AppCompatActivity() {
                         }
                     }
                 tabLayout?.newTab()?.setText("Players")
-                    ?.setIcon(drawable.players_icon).let {
+                    ?.setIcon(drawable.buddiesicon).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }

@@ -22,6 +22,7 @@ import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
 import com.jawaadianinc.valorant_stats.valo.adapters.CosmeticAdapter
 import com.jawaadianinc.valorant_stats.valo.cosmetics.weapon.WeaponActivity
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.BlurTransformation
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
@@ -1142,17 +1143,18 @@ class CosmeticsListActivity : AppCompatActivity() {
     }
 
     private fun setWallpaper(url: String) {
-        Picasso.get().load(url).into(object : com.squareup.picasso.Target {
-            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                val wallpaperManager =
-                    WallpaperManager.getInstance(this@CosmeticsListActivity)
-                try {
-                    wallpaperManager.setBitmap(bitmap)
-                    Toast.makeText(
-                        this@CosmeticsListActivity,
-                        "Wallpaper set successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
+        Picasso.get().load(url).transform(BlurTransformation(this, 1))
+            .into(object : com.squareup.picasso.Target {
+                override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                    val wallpaperManager =
+                        WallpaperManager.getInstance(this@CosmeticsListActivity)
+                    try {
+                        wallpaperManager.setBitmap(bitmap)
+                        Toast.makeText(
+                            this@CosmeticsListActivity,
+                            "Wallpaper set successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
                 } catch (ex: IOException) {
                     ex.printStackTrace()
                     Toast.makeText(

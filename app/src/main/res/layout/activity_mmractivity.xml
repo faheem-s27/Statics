@@ -33,6 +33,15 @@
         app:layout_constraintVertical_bias="1.0"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/rankGraph"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/middle" />
+
     <View
         android:id="@+id/view7"
         style="@style/Divider.Horizontal"
@@ -49,7 +58,7 @@
         style="@style/Divider.Horizontal"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view7"
-        tools:srcCompat="@drawable/valologo"
+        tools:srcCompat="@drawable/spikeicon"
         tools:visibility="visible" />
 
     <ProgressBar
@@ -87,7 +96,7 @@
         android:id="@+id/number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/valorant"
+        android:fontFamily="@font/lalezar"
         android:text="/100"
         android:textColor="#FFFFFF"
         android:textSize="14dp"
@@ -98,7 +107,7 @@
         android:id="@+id/rankName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/valorant"
+        android:fontFamily="@font/lalezar"
         android:text="Rank:"
         android:textColor="#FFFFFF"
         android:textSize="14dp"
@@ -114,7 +123,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/middle" />
+        app:layout_constraintTop_toBottomOf="@+id/viewDatesMMRSwitch" />
 
     <TextView
         android:id="@+id/MMRname"
@@ -132,5 +141,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/viewDatesMMRSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/lalezar"
+        android:minHeight="48dp"
+        android:text="Enable dates"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rankGraph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

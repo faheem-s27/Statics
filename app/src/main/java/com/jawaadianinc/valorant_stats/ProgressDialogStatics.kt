@@ -48,7 +48,7 @@ class ProgressDialogStatics {
         // change ll background color programmatically
         ll.setBackgroundColor(Color.parseColor("#111822"))
         val builder = AlertDialog.Builder(context)
-        builder.setCancelable(true)
+        builder.setCancelable(false)
         builder.setView(ll)
 
         val dialog = builder.create()

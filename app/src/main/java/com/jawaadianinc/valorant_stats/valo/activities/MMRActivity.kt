@@ -6,6 +6,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.FirebaseApp
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
@@ -14,6 +15,12 @@ import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.adapters.MMRAdapter
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
+import com.jjoe64.graphview.DefaultLabelFormatter
+import com.jjoe64.graphview.GraphView
+import com.jjoe64.graphview.GridLabelRenderer
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
+import com.jjoe64.graphview.series.DataPoint
+import com.jjoe64.graphview.series.LineGraphSeries
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import org.jetbrains.anko.doAsync
@@ -74,6 +81,10 @@ class MMRActivity : AppCompatActivity() {
         val currentTier = "https://api.henrikdev.xyz/valorant/v1/mmr/$region/${riotName}/$riotID"
         val mmrHistory =
             "https://api.henrikdev.xyz/valorant/v1/mmr-history/$region/${riotName}/${riotID}"
+
+        val graphView: GraphView = findViewById(R.id.rankGraph)
+        val listOfMMRs = ArrayList<Int>()
+        val listOfDates = ArrayList<Long>()
 
         doAsync {
             try {
@@ -162,6 +173,9 @@ class MMRActivity : AppCompatActivity() {
                         currentMMR.getJSONObject("images").getString("triangle_down")
                     }
 
+                    listOfMMRs += currentNumber
+                    listOfDates += rawDate.toLong()
+
                     dates += date
                     changes += change.toString()
                     numberMMR += currentNumber.toString()
@@ -183,6 +197,114 @@ class MMRActivity : AppCompatActivity() {
                     scroll.adapter = mmrAdapter
                     progressDialog.dismiss()
 
+                    // loop through the list of mmrs and add them to the graph
+                    // reverse the list so that the graph is in order
+                    listOfMMRs.reverse()
+                    listOfDates.reverse()
+                    val dataPoints = ArrayList<DataPoint>()
+                    var series: LineGraphSeries<DataPoint> =
+                        LineGraphSeries(dataPoints.toTypedArray())
+
+                    graphView.viewport.isYAxisBoundsManual = true
+                    graphView.viewport.setMaxY(100.0)
+                    graphView.viewport.setMinY(0.0)
+
+                    graphView.viewport.isScrollable = true
+                    graphView.viewport.isScalable = true
+                    graphView.titleTextSize = 50f
+                    graphView.gridLabelRenderer.gridColor = getColor(R.color.white)
+                    graphView.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.BOTH
+                    graphView.gridLabelRenderer.labelVerticalWidth = 50
+                    graphView.gridLabelRenderer.labelHorizontalHeight = 50
+
+                    val datesSwtich = findViewById<Switch>(R.id.viewDatesMMRSwitch)
+
+                    datesSwtich.setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) {
+                            // dates are enabled
+                            graphView.removeAllSeries()
+                            dataPoints.clear()
+                            for (i in 0 until listOfMMRs.size) {
+                                dataPoints.add(
+                                    DataPoint(
+                                        listOfDates[i].toDouble() * 1000,
+                                        listOfMMRs[i].toDouble()
+                                    )
+                                )
+                            }
+
+                            series = LineGraphSeries(dataPoints.toTypedArray())
+                            series.isDrawDataPoints = true
+                            series.dataPointsRadius = 10f
+                            series.thickness = 7
+                            series.isDrawAsPath = true
+                            series.color = getColor(R.color.white)
+
+                            graphView.gridLabelRenderer.labelFormatter =
+                                DateAsXAxisLabelFormatter(this@MMRActivity)
+                            graphView.gridLabelRenderer.numHorizontalLabels = 3
+                            graphView.animate()
+                            graphView.addSeries(series)
+
+                            graphView.viewport.isXAxisBoundsManual = true
+                            graphView.viewport.setMinX(listOfDates[0].toDouble() * 1000)
+                            graphView.viewport.setMaxX(listOfDates[listOfDates.size - 1].toDouble() * 1000)
+
+
+                        } else {
+                            // dates are disabled
+                            graphView.removeAllSeries()
+                            dataPoints.clear()
+                            for (i in 0 until listOfMMRs.size) {
+                                dataPoints.add(DataPoint(i.toDouble(), listOfMMRs[i].toDouble()))
+                            }
+
+                            series = LineGraphSeries(dataPoints.toTypedArray())
+                            series.isDrawDataPoints = true
+                            series.dataPointsRadius = 10f
+                            series.thickness = 7
+                            series.isDrawAsPath = true
+                            series.color = getColor(R.color.white)
+
+                            graphView.viewport.isXAxisBoundsManual = true
+                            graphView.viewport.setMinX(0.0)
+                            graphView.viewport.setMaxX(listOfMMRs.size.toDouble() - 1)
+
+                            graphView.gridLabelRenderer.labelFormatter =
+                                DefaultLabelFormatter()
+                            graphView.gridLabelRenderer.numHorizontalLabels = listOfMMRs.size
+                            graphView.animate()
+                            graphView.addSeries(series)
+
+                            graphView.viewport.isXAxisBoundsManual = false
+                        }
+                    }
+
+                    graphView.removeAllSeries()
+                    dataPoints.clear()
+                    for (i in 0 until listOfMMRs.size) {
+                        dataPoints.add(DataPoint(i.toDouble(), listOfMMRs[i].toDouble()))
+                    }
+
+                    series = LineGraphSeries(dataPoints.toTypedArray())
+                    series.isDrawDataPoints = true
+                    series.dataPointsRadius = 10f
+                    series.thickness = 7
+                    series.isDrawAsPath = true
+                    series.color = getColor(R.color.white)
+
+                    graphView.viewport.isXAxisBoundsManual = true
+                    graphView.viewport.setMinX(0.0)
+                    graphView.viewport.setMaxX(listOfMMRs.size.toDouble() - 1)
+
+                    graphView.gridLabelRenderer.labelFormatter =
+                        DefaultLabelFormatter()
+                    graphView.gridLabelRenderer.numHorizontalLabels = listOfMMRs.size
+                    graphView.animate()
+                    graphView.addSeries(series)
+
+                    graphView.viewport.isXAxisBoundsManual = false
+
                     scroll.setOnItemClickListener { _, _, position, _ ->
                         val rawDate = rawDates[position]
                         trytoFindMatch(rawDate.toInt())
@@ -192,22 +314,33 @@ class MMRActivity : AppCompatActivity() {
             } catch (e: JSONException) {
                 uiThread {
                     progressDialog.dismiss()
-                    AlertDialog.Builder(this@MMRActivity).setTitle("Unranked!")
-                        .setMessage("This user is either unranked or hasn't played competitive in a long time.")
+                    AlertDialog.Builder(this@MMRActivity).setTitle("Error getting rank!")
+                        .setMessage("This user is either unranked or hasn't played competitive in a long time.\n\nOr a random error occurred and you should try again.")
                         .setPositiveButton(android.R.string.ok) { _, _ ->
                             finish()
                         }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
+
+                    // send firebase crash report
+                    FirebaseAnalytics.getInstance(this@MMRActivity)
+                        .logEvent("errorRank", Bundle().apply {
+                            putString("error", e.toString())
+                        })
+
                 }
             } catch (e: Exception) {
                 uiThread {
                     progressDialog.dismiss()
                     AlertDialog.Builder(this@MMRActivity).setTitle("Error!")
-                        .setMessage("There was an issue getting the ranking :/ Error details have been sent to the developer")
+                        .setMessage("There was an issue getting the ranking :/ Error details have been sent to the developer and will be fixed soon.")
                         .setPositiveButton(android.R.string.ok) { _, _ ->
                             finish()
                         }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
+                    FirebaseAnalytics.getInstance(this@MMRActivity)
+                        .logEvent("errorRank", Bundle().apply {
+                            putString("error", e.toString())
+                        })
                 }
             }
         }

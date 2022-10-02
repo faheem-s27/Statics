@@ -134,11 +134,17 @@ class CosmeticAdapter(
         imageView?.alpha = 0f
         // move them 200 pixels to the right
         imageView?.translationX = -200f
-        imageView?.animate()?.alpha(1f)?.translationXBy(200f)?.setDuration(1000)?.start()
+        imageView?.animate()?.alpha(1f)?.translationXBy(200f)?.setDuration(1000)?.setInterpolator {
+            val t = it - 1.0f
+            t * t * t * t * t + 1.0f
+        }?.start()
 
         nameText?.alpha = 0f
         nameText?.translationX = 200f
-        nameText?.animate()?.alpha(1f)?.translationXBy(-200f)?.setDuration(1000)?.start()
+        nameText?.animate()?.alpha(1f)?.translationXBy(-200f)?.setDuration(1000)?.setInterpolator {
+            val t = it - 1.0f
+            t * t * t * t * t + 1.0f
+        }?.start()
 
         return row!!
     }

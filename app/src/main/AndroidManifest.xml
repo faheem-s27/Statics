@@ -15,6 +15,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
+        <activity
+            android:name=".valo.live_match.LiveMatchesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
 
         <receiver
             android:name=".LastMatchWidget"
@@ -134,7 +142,6 @@
             android:exported="false"
             android:label="@string/title_activity_tracker_gg"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".main.AboutActivity"
             android:exported="false"
@@ -146,7 +153,6 @@
             android:resource="@array/preloaded_fonts" />
 
         <service android:name=".valo.LiveMatchService" />
-
     </application>
 
 </manifest>

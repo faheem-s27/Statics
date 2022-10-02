@@ -62,9 +62,8 @@ class LoadingActivity : AppCompatActivity() {
         }
 
         val backgroundIMG = findViewById<ImageView>(R.id.imageView7)
-        // alpha to 0 and animte it to 1 in 1 second
         backgroundIMG.alpha = 0f
-        backgroundIMG.animate().setDuration(2000).alpha(1f).start()
+        backgroundIMG.animate().setDuration(2000).alpha(0.4f).start()
 
         val staticsLogo = findViewById<ImageView>(R.id.imageView3)
         // start this logo at the bottom of the screen with 0 alpha, and then animate it smoothly up to center of screen with 1 alpha in 2 seconds, with ease in and ease out
