@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -626,6 +627,10 @@ class LiveMatchesActivity : AppCompatActivity() {
             }
         } catch (e: UninitializedPropertyAccessException) {
             // do nothing
+        } catch (e: Exception) {
+            // to firebase
+            FirebaseDatabase.getInstance().reference.child("LiveMatchErrors").push()
+                .setValue(e.toString())
         }
     }
 

@@ -49,8 +49,6 @@ class ChatsForumActivity : AppCompatActivity() {
             } else if (message.length > 1000) {
                 Toast.makeText(this, "Message is too long", Toast.LENGTH_SHORT).show()
             }
-
-
         }
 
         // if the user clicks enter, send the message
@@ -116,7 +114,7 @@ class ChatsForumActivity : AppCompatActivity() {
             // scroll to the bottom of the list view
             messagesListView.setSelection(messagesListView.count - 1)
             // with an animation
-            //messagesListView.smoothScrollToPosition(messagesListView.count - 1)
+            //messagesListView.smoothScrollToPosition(messagesListView.count - 1, 20)
         }
     }
 
@@ -124,6 +122,9 @@ class ChatsForumActivity : AppCompatActivity() {
         // get the current time
         val unixTime = System.currentTimeMillis()
         ChatReference.push().setValue(ChatMessage(playerName, playerImage, message, unixTime))
-        updateMessages()
+            .addOnSuccessListener {
+                updateMessages()
+            }
+
     }
 }

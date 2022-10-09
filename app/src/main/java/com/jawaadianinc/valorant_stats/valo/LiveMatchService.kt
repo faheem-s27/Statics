@@ -1,6 +1,9 @@
 package com.jawaadianinc.valorant_stats.valo
 
-import android.app.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -9,6 +12,7 @@ import android.graphics.Color
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.google.firebase.database.FirebaseDatabase
 import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.databases.MatchDatabase
@@ -28,97 +32,133 @@ class LiveMatchService : Service() {
     private var matchID = ""
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        gameStart = intent.extras?.getString("gameStart")!!
-        puuid = intent.extras?.getString("puuid")!!
-        region = intent.extras?.getString("region")!!
-        val key = intent.extras?.getString("key")
-        matchID = intent.extras?.getString("matchID")!!
+        try {
+            gameStart = intent.extras?.getString("gameStart")!!
+            puuid = intent.extras?.getString("puuid")!!
+            region = intent.extras?.getString("region")!!
+            val key = intent.extras?.getString("key")
+            matchID = intent.extras?.getString("matchID")!!
 
-        Thread {
-            while (true) {
-                Thread.sleep(3000)
-                doAsync {
-                    try {
-                        val url =
-                            "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
-                        val response =
-                            JSONObject(URL(url).readText()).getJSONArray("history")
-                                .get(0) as JSONObject
-                        val timeStarted = response.getString("gameStartTimeMillis")
-                        matchID = response.getString("matchId")
-                        Log.d("LiveMatchService", "Checking for game")
+            Thread {
+                while (true) {
+                    Thread.sleep(3000)
+                    doAsync {
+                        try {
+                            val url =
+                                "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
+                            val response =
+                                JSONObject(URL(url).readText()).getJSONArray("history")
+                                    .get(0) as JSONObject
+                            val timeStarted = response.getString("gameStartTimeMillis")
+                            matchID = response.getString("matchId")
+                            Log.d("LiveMatchService", "Checking for game")
 
-                        if (timeStarted != gameStart) {
-                            val game =
-                                JSONObject(URL("https://$region.api.riotgames.com/val/match/v1/matches/$matchID?api_key=$key").readText())
-                            Log.d("LiveMatchService", "Found New Game")
-                            val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
-                            val matchJSON = Henrik(this@LiveMatchService).henrikAPI(matchURl)
-                            val matchDB = MatchDatabase(this@LiveMatchService)
-                            if (!matchDB.insertMatch(matchID, matchJSON.toString())) {
-                                Log.d("MatchDatabase", "Match Database Insert Error")
-                            }
-                            var mode = game.getJSONObject("matchInfo").getString("queueId")
-                            mode = when (mode) {
-                                "" -> {
-                                    "Custom Game"
+                            if (timeStarted != gameStart) {
+                                val game =
+                                    JSONObject(URL("https://$region.api.riotgames.com/val/match/v1/matches/$matchID?api_key=$key").readText())
+                                Log.d("LiveMatchService", "Found New Game")
+                                val matchURl =
+                                    "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
+                                val matchJSON = Henrik(this@LiveMatchService).henrikAPI(matchURl)
+                                val matchDB = MatchDatabase(this@LiveMatchService)
+                                if (!matchDB.insertMatch(matchID, matchJSON.toString())) {
+                                    Log.d("MatchDatabase", "Match Database Insert Error")
                                 }
-                                else -> {
-                                    mode.replaceFirstChar {
-                                        if (it.isLowerCase()) it.titlecase(
-                                            Locale.getDefault()
-                                        ) else it.toString()
+                                var mode = game.getJSONObject("matchInfo").getString("queueId")
+                                mode = when (mode) {
+                                    "" -> {
+                                        "Custom Game"
+                                    }
+                                    else -> {
+                                        mode.replaceFirstChar {
+                                            if (it.isLowerCase()) it.titlecase(
+                                                Locale.getDefault()
+                                            ) else it.toString()
+                                        }
                                     }
                                 }
-                            }
-                            uiThread {
-                                sendNotification(
-                                    "GG on that $mode match",
-                                    notificationID, matchID
-                                )
-                                gameStart = timeStarted
-                                notificationID++
+                                uiThread {
+                                    sendNotification(
+                                        "GG on that $mode match",
+                                        notificationID, matchID
+                                    )
+                                    gameStart = timeStarted
+                                    notificationID++
 
-                                // update the widget
-                                val intent =
-                                    Intent(this@LiveMatchService, LastMatchWidget::class.java)
-                                intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                                val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
-                                    ComponentName(applicationContext, LastMatchWidget::class.java)
-                                )
-                                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-                                sendBroadcast(intent)
+                                    // update the widget
+                                    val intent =
+                                        Intent(this@LiveMatchService, LastMatchWidget::class.java)
+                                    intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                                    val ids =
+                                        AppWidgetManager.getInstance(application).getAppWidgetIds(
+                                            ComponentName(
+                                                applicationContext,
+                                                LastMatchWidget::class.java
+                                            )
+                                        )
+                                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+                                    sendBroadcast(intent)
+                                }
                             }
+                        } catch (e: Exception) {
+                            Log.d("LiveMatch", "Error: $e")
                         }
-                    } catch (e: Exception) {
-                        Log.d("LiveMatch", "Error: $e")
                     }
                 }
-            }
-        }.start()
+            }.start()
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationChannel = NotificationChannel(
-            "live_matches_service",
-            "Live Matches Service",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        notificationChannel.enableLights(true)
-        notificationChannel.lightColor = Color.RED
-        notificationChannel.enableVibration(true)
-        notificationManager.createNotificationChannel(notificationChannel)
-        val notification = NotificationCompat.Builder(this, "live_matches_service")
-            .setContentTitle("Match Notifications")
-            .setContentText("Service is running")
-            .setSmallIcon(R.drawable.just_statics)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setAutoCancel(true)
-            .build()
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationChannel = NotificationChannel(
+                "live_matches_service",
+                "Live Matches Service",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            notificationChannel.enableVibration(true)
+            notificationManager.createNotificationChannel(notificationChannel)
+            val notification = NotificationCompat.Builder(this, "live_matches_service")
+                .setContentTitle("Match Notifications")
+                .setContentText("Service is running")
+                .setSmallIcon(R.drawable.just_statics)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .build()
 
-        startForeground(1, notification)
+            startForeground(1, notification)
 
-        return super.onStartCommand(intent, flags, startId)
+            return super.onStartCommand(intent, flags, startId)
+        } catch (e: Exception) {
+            FirebaseDatabase.getInstance().reference.child("LiveMatchService").child("Error")
+                .setValue(e.toString())
+            // stop the service
+            // send a notification to the user saying that the service has stopped due to an error
+            // and to restart the app
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationChannel = NotificationChannel(
+                "live_matches_service",
+                "Live Matches Service",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            notificationChannel.enableVibration(true)
+            notificationManager.createNotificationChannel(notificationChannel)
+            val notification = NotificationCompat.Builder(this, "live_matches_service")
+                .setContentTitle("Match Notifications")
+                .setContentText("Service has stopped due to an error")
+                .setSmallIcon(R.drawable.just_statics)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .build()
+
+            // send the notification
+            notificationManager.notify(50, notification)
+            stopSelf()
+            return super.onStartCommand(intent, flags, startId)
+        }
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -157,13 +197,4 @@ class LiveMatchService : Service() {
         notificationManager.notify(id, notification)
     }
 
-    fun isServiceRunning(context: Context): Boolean {
-        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (LiveMatchService::class.java.name == service.service.className) {
-                return true
-            }
-        }
-        return false
-    }
 }

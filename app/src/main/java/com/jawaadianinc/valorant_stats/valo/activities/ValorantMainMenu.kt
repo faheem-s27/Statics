@@ -120,7 +120,6 @@ class ValorantMainMenu : AppCompatActivity() {
         playerRef.child(nameSplit[0]).child("GameTag").setValue(nameSplit[1])
         playerRef.child(nameSplit[0]).child("Region").setValue(region)
 
-
         val agentsCozBT = findViewById<Button>(R.id.agentsCozBT)
         val weaponsBT = findViewById<Button>(R.id.weaponsBT)
         val mmrFAB: FloatingActionButton = findViewById(R.id.MMRFAB)
@@ -138,6 +137,11 @@ class ValorantMainMenu : AppCompatActivity() {
         val aboutPage: Button = findViewById(R.id.AboutBT)
         val liveMatches = findViewById<Button>(R.id.LiveMatchBT)
         val ChatsForumButton = findViewById<Button>(R.id.ChatsForumButton)
+
+        showLatestFeature(
+            "Chats",
+            "Now you can chat with other people in the app! Go to the chat tab to see it!"
+        )
 
         ChatsForumButton.setOnClickListener {
             val intent = Intent(this, ChatsForumActivity::class.java)
@@ -1097,4 +1101,35 @@ class ValorantMainMenu : AppCompatActivity() {
             v.alpha = 0f
         }
     }
+
+    private fun showLatestFeature(feature: String, description: String) {
+        // check if the user has seen the latest feature
+        val sharedPreferences = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val latestFeature = sharedPreferences.getString("LatestFeature", "0")
+
+        // if the user has not seen the latest feature, show a dialog about it and save that the user has seen it
+        if (latestFeature != feature) {
+            val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
+            alertDialog.setTitle("New feature: $feature!")
+            alertDialog.setMessage(description)
+            alertDialog.setPositiveButton("Ok") { dialog, which ->
+                dialog.dismiss()
+            }
+            // an option to go to the chat tab
+            alertDialog.setNegativeButton("Go to chat") { dialog, which ->
+                dialog.dismiss()
+                val intent = Intent(this, ChatsForumActivity::class.java)
+                startActivity(intent)
+            }
+            alertDialog.show()
+
+            editor.putString("LatestFeature", feature)
+            editor.apply()
+
+            editor.putString("LatestFeatureDescription", description)
+            editor.apply()
+        }
+    }
+
 }

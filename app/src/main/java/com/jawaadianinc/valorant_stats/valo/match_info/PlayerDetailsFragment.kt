@@ -152,6 +152,9 @@ class PlayerDetailsFragment : Fragment() {
 
 
     private fun displayPlayers(type: String) {
+        // check if activity is still alive
+        if (activity == null) return
+
         val playerList: ListView = requireView().findViewById(R.id.playerList)
         playerList.alpha = 1f
 

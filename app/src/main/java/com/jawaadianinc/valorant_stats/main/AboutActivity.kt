@@ -27,12 +27,12 @@ class AboutActivity : AppCompatActivity() {
         versionElement.title = "Version $version"
 
         val changeLog = Element()
-        changeLog.title =
-            "- Live Matches feature; you can now connect Statics on mobile to your Valorant on PC/Laptop to remote join a match, activate contracts, and see your shop on your phone\n" +
-                    "(In order to do this, you will need to download a Statics client port on ur PC/Laptop in order for the app to connect with your Valorant account)\n" +
-                    "- Agent voice lines are now looking more cleaner\n" +
-                    "- Added graphs for your rankings, with the option to change the X axis between number of matches and dates you've played on them\n" +
-                    "- More cool animations in more areas of the app"
+
+        // get the shared preferences for LatestFeatureDescription
+        val sharedPref = getSharedPreferences("LatestFeature", MODE_PRIVATE)
+        val latestFeatureDescription =
+            sharedPref.getString("LatestFeatureDescription", "No description available")
+        changeLog.title = latestFeatureDescription
 
         val discordElement = Element()
         discordElement.title = "Join the Statics server"
