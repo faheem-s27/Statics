@@ -48,7 +48,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:id="@+id/playerProfile"
+                    android:id="@+id/chatPlayerProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleType="fitCenter"
@@ -255,11 +255,34 @@
                         android:textStyle="bold"
                         app:cornerRadius="50dp"
                         app:icon="@drawable/matchhistory"
-                        app:iconGravity="textTop"
                         app:iconSize="30dp"
                         app:iconTint="#FFFFFF"
                         app:strokeColor="#FFFFFF"
                         app:strokeWidth="1dp" />
+
+                    <Button
+                        android:id="@+id/ChatsForumButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:backgroundTint="@color/ic_launcher_background"
+                        android:clickable="true"
+                        android:fontFamily="@font/lalezar"
+                        android:gravity="center"
+                        android:text="Chat forum"
+                        android:textColor="#FFFFFF"
+                        app:backgroundTint="@color/ic_launcher_background"
+                        app:cornerRadius="50dp"
+                        app:fabSize="auto"
+                        app:icon="@drawable/rsologout"
+                        app:iconPadding="8dp"
+                        app:iconSize="30dp"
+                        app:iconTint="#FFFFFF"
+                        app:iconTintMode="src_in"
+                        app:srcCompat="@drawable/crosshair"
+                        app:strokeColor="@color/light_blue_50"
+                        app:strokeWidth="1dp"
+                        app:tint="@color/white" />
 
                     <Button
                         android:id="@+id/LiveMatchBT"
@@ -276,7 +299,6 @@
                         app:cornerRadius="50dp"
                         app:fabSize="auto"
                         app:icon="@drawable/common_full_open_on_phone"
-                        app:iconGravity="textTop"
                         app:iconPadding="8dp"
                         app:iconSize="30dp"
                         app:iconTint="#FFFFFF"
@@ -301,7 +323,6 @@
                         app:cornerRadius="50dp"
                         app:fabSize="auto"
                         app:icon="@drawable/newcrosshair"
-                        app:iconGravity="textTop"
                         app:iconPadding="8dp"
                         app:iconSize="30dp"
                         app:iconTint="#FFFFFF"
@@ -326,7 +347,6 @@
                         app:cornerRadius="50dp"
                         app:fabSize="auto"
                         app:icon="@android:drawable/ic_menu_info_details"
-                        app:iconGravity="textTop"
                         app:iconPadding="8dp"
                         app:iconSize="30dp"
                         app:iconTint="#FFFFFF"

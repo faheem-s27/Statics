@@ -158,7 +158,7 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
                     JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/${nameSplit[0]}/${nameSplit[1]}?force=true").readText())["data"] as JSONObject
                 val largePic = data.getJSONObject("card").getString("large") as String
                 val smolPic = data.getJSONObject("card").getString("small") as String
-                val playerProfile: ImageView = findViewById(R.id.playerProfile)
+                val playerProfile: ImageView = findViewById(R.id.chatPlayerProfile)
                 val playerLevel: TextView = findViewById(R.id.playerLevel)
                 uiThread {
                     Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
@@ -216,7 +216,7 @@ class RecieveSharedProfileActivity : AppCompatActivity() {
                     JSONObject(URL("https://api.henrikdev.xyz/valorant/v1/account/$gameNamePlayer/${tagLinePlayer}?force=true").readText())["data"] as JSONObject
                 val largePic = data.getJSONObject("card").getString("large") as String
                 val smolPic = data.getJSONObject("card").getString("small") as String
-                val playerProfile: ImageView = findViewById(R.id.playerProfile)
+                val playerProfile: ImageView = findViewById(R.id.chatPlayerProfile)
                 val playerLevel: TextView = findViewById(R.id.playerLevel)
                 uiThread {
                     Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)

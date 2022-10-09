@@ -38,6 +38,7 @@ import com.jawaadianinc.valorant_stats.main.AboutActivity
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.LiveMatchService
+import com.jawaadianinc.valorant_stats.valo.activities.chat.ChatsForumActivity
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
 import com.jawaadianinc.valorant_stats.valo.databases.MatchDatabase
@@ -66,6 +67,7 @@ class ValorantMainMenu : AppCompatActivity() {
     private var region = ""
     private var puuid = ""
     private var gameStarted = ""
+    private var playerImage = ""
 
     private val scraper = TrackerGGScraper()
 
@@ -135,6 +137,15 @@ class ValorantMainMenu : AppCompatActivity() {
         val fabRefresh: FloatingActionButton = findViewById(R.id.refreshFAB)
         val aboutPage: Button = findViewById(R.id.AboutBT)
         val liveMatches = findViewById<Button>(R.id.LiveMatchBT)
+        val ChatsForumButton = findViewById<Button>(R.id.ChatsForumButton)
+
+        ChatsForumButton.setOnClickListener {
+            val intent = Intent(this, ChatsForumActivity::class.java)
+            intent.putExtra("playerName", playerName)
+            intent.putExtra("playerImage", playerImage)
+            startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
 
         liveMatches.setOnClickListener {
             // ask the user if they have the client installed on their PC/Laptop
@@ -834,13 +845,14 @@ class ValorantMainMenu : AppCompatActivity() {
     }
 
     private fun getPlayerCards(RiotName: String, RiotID: String) {
-        val playerProfile: ImageView = findViewById(R.id.playerProfile)
+        val playerProfile: ImageView = findViewById(R.id.chatPlayerProfile)
         val playerLevel: TextView = findViewById(R.id.playerLevel)
         doAsync {
             val data =
                 Henrik(this@ValorantMainMenu).henrikAPI("https://api.henrikdev.xyz/valorant/v1/account/${RiotName}/${RiotID}?force=true")["data"] as JSONObject
             val largePic = data.getJSONObject("card").getString("large") as String
             val smolPic = data.getJSONObject("card").getString("small") as String
+            playerImage = smolPic
             uiThread {
                 Picasso.get().load(smolPic).fit().centerInside().into(playerProfile)
                 Picasso.get().load(largePic)

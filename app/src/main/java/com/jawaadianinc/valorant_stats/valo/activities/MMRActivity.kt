@@ -326,7 +326,6 @@ class MMRActivity : AppCompatActivity() {
                         .logEvent("errorRank", Bundle().apply {
                             putString("error", e.toString())
                         })
-
                 }
             } catch (e: Exception) {
                 uiThread {
