@@ -11,21 +11,9 @@
         android:id="@+id/imageView7"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.4"
+        android:alpha="1"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/statics_gradient" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/just_statics_alot_smaller" />
+        app:srcCompat="@drawable/splash" />
 
     <TextView
         android:id="@+id/textView4"
@@ -52,7 +40,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="100dp"
         android:indeterminate="true"
-        android:indeterminateTint="#DD2C00"
+        android:indeterminateTint="@color/Valorant_Red"
         android:progress="50"
         android:progressTint="#DD2C00"
         android:visibility="visible"

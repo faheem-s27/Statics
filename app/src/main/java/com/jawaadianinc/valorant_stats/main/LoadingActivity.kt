@@ -63,16 +63,10 @@ class LoadingActivity : AppCompatActivity() {
 
         val backgroundIMG = findViewById<ImageView>(R.id.imageView7)
         backgroundIMG.alpha = 0f
-        backgroundIMG.animate().setDuration(2000).alpha(0.4f).start()
-
-        val staticsLogo = findViewById<ImageView>(R.id.imageView3)
-        // start this logo at the bottom of the screen with 0 alpha, and then animate it smoothly up to center of screen with 1 alpha in 2 seconds, with ease in and ease out
-        staticsLogo.translationY = 1000f
-        staticsLogo.alpha = 0f
-        staticsLogo.animate().setDuration(3000).translationYBy(-1000f).alpha(1f).setInterpolator {
-            val t = it - 1.0f
-            t * t * t * t * t + 1.0f
+        backgroundIMG.animate().setDuration(1500).alpha(1f).setInterpolator {
+            it * it * it * (it * (it * 6 - 15) + 10)
         }.start()
+
 
 
         FirebaseApp.initializeApp(/*context=*/this)
@@ -122,14 +116,17 @@ class LoadingActivity : AppCompatActivity() {
                 // function to download the agents and map images to database
                 val agentURL = "https://valorant-api.com/v1/agents?isPlayableCharacter=true"
                 val mapURL = "https://valorant-api.com/v1/maps"
+                val titlesURL = "https://valorant-api.com/v1/playertitles"
 
                 val agentJSON = JSONObject(URL(agentURL).readText())
                 val mapJSON = JSONObject(URL(mapURL).readText())
+                val titlesJSON = JSONObject(URL(titlesURL).readText())
 
                 val agentData = agentJSON.getJSONArray("data")
                 val mapData = mapJSON.getJSONArray("data")
+                val titlesData = titlesJSON.getJSONArray("data")
 
-                val totalCount = agentData.length() + mapData.length()
+                val totalCount = agentData.length() + mapData.length() + titlesData.length()
 
                 if (totalCount != dbCount) {
                     for (i in 0 until agentData.length()) {
@@ -222,6 +219,32 @@ class LoadingActivity : AppCompatActivity() {
                                 })
                         }
                         Thread.sleep(100)
+                    }
+
+                    for (i in 0 until titlesData.length()) {
+                        val currentTitle = titlesData.getJSONObject(i)
+                        val titleName = currentTitle.getString("titleText")
+                        val titleUUID = currentTitle.getString("uuid")
+                        val emptyBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+                        if (!assetsDB.checkForExisting(titleUUID, titleName)) {
+                            if (assetsDB.addData(
+                                    titleUUID,
+                                    "Title",
+                                    titleName,
+                                    emptyBitmap!!
+                                )
+                            ) {
+                                uiThread {
+                                    updateText.text = "Added $titleName"
+                                }
+                            } else {
+                                Log.d(
+                                    "AssetsDatabase",
+                                    "Failed to add $titleName details"
+                                )
+                            }
+                            Thread.sleep(50)
+                        }
                     }
                 }
 

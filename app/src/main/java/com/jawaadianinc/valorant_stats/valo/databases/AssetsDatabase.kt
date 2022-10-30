@@ -22,9 +22,11 @@ class AssetsDatabase(context: Context) : SQLiteOpenHelper(context, "ValoAssets.d
     fun addData(UUID: String, Type: String, Name: String, Image: Bitmap): Boolean {
         val db = this.writableDatabase
         val contentValues = ContentValues()
+        // format the name with no apostrophes
+        val formattedName = Name.replace("'", "")
         contentValues.put(Companion.UUID, UUID)
         contentValues.put(Companion.Type, Type)
-        contentValues.put(Companion.Name, Name)
+        contentValues.put(Companion.Name, formattedName)
         contentValues.put(Companion.Image, getBitmapAsByteArray(Image))
         val success = db.insert(ValoAssets, null, contentValues) != -1L
         db.close()
@@ -92,9 +94,11 @@ class AssetsDatabase(context: Context) : SQLiteOpenHelper(context, "ValoAssets.d
     }
 
     fun checkForExisting(UUID: String, Name: String): Boolean {
+        // format the Name so there is no apostrophe
+        val formattedName = Name.replace("'", "")
         val db = this.readableDatabase
         val cursor = db.rawQuery(
-            "SELECT ${Companion.UUID} FROM $ValoAssets WHERE ${Companion.UUID} = '$UUID' AND ${Companion.Name} = '$Name'",
+            "SELECT ${Companion.UUID} FROM $ValoAssets WHERE ${Companion.UUID} = '$UUID' AND ${Companion.Name} = '$formattedName'",
             null
         )
         val exists = cursor.count > 0

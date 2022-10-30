@@ -35,10 +35,10 @@ import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.AboutActivity
-import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.LiveMatchService
 import com.jawaadianinc.valorant_stats.valo.activities.chat.ChatsForumActivity
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.StaticsMainMenu
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
 import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
 import com.jawaadianinc.valorant_stats.valo.databases.MatchDatabase
@@ -185,9 +185,15 @@ class ValorantMainMenu : AppCompatActivity() {
 
         fabRefresh.setOnClickListener {
             // this will restart the activity
-            finish()
-            startActivity(Intent(this, LoadingActivity::class.java))
-            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+//            finish()
+//            startActivity(Intent(this, SplashActivity::class.java))
+//            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            val intent = Intent(this, StaticsMainMenu::class.java)
+            // add playerName and region to the intent
+            intent.putExtra("playerName", playerName)
+            intent.putExtra("region", region)
+            intent.putExtra("key", key)
+            startActivity(intent)
         }
 
         // show an alert dialog that says thank you for using the app

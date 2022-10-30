@@ -13,7 +13,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
         startActivity(Intent(this, LoadingActivity::class.java))
-        //overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         finish()
     }
 }
