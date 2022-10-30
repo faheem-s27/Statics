@@ -41,9 +41,10 @@ class MessageAdapter(
         if (position == messages.size - 1) {
             // check if it was already played
             if (!wasPlayed) {
+                row.alpha = 0f
                 // animate them coming in from the side
-                row.translationX = -1000f
-                row.animate().translationXBy(1000f).setDuration(500).setInterpolator {
+                row.translationX = -250f
+                row.animate().translationXBy(250f).setDuration(500).alpha(1f).setInterpolator {
                     val t = it - 1.0f
                     t * t * t * t * t + 1.0f
                 }.start()

@@ -1,5 +1,8 @@
 package com.jawaadianinc.valorant_stats.valo.live_match
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.content.Context
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -506,7 +509,19 @@ class LiveMatchesActivity : AppCompatActivity() {
                         val mapImage = mapHash[mapID]
                         Picasso.get().load(mapImage).into(inGameMapBackground)
                         if (mediaPlayer.isPlaying) {
-                            mediaPlayer.stop()
+                            // fade the volume out
+                            val fadeOut = ValueAnimator.ofFloat(1f, 0f)
+                            fadeOut.duration = 1000
+                            fadeOut.addUpdateListener { animation ->
+                                val volume = animation.animatedValue as Float
+                                mediaPlayer.setVolume(volume, volume)
+                            }
+                            fadeOut.addListener(object : AnimatorListenerAdapter() {
+                                override fun onAnimationEnd(animation: Animator) {
+                                    mediaPlayer.stop()
+                                    mediaPlayer.release()
+                                }
+                            })
                         }
 
                         val allyTeam = snapshot.child("Pregame").child("AllyTeam")

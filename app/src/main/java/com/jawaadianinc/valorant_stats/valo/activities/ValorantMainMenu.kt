@@ -139,8 +139,8 @@ class ValorantMainMenu : AppCompatActivity() {
         val ChatsForumButton = findViewById<Button>(R.id.ChatsForumButton)
 
         showLatestFeature(
-            "Chats",
-            "Now you can chat with other people in the app! Go to the chat tab to see it!"
+            "Chat Bug Fix!",
+            "Now you can **actually** use the chat feature 🦆❤️!", true
         )
 
         ChatsForumButton.setOnClickListener {
@@ -1102,26 +1102,21 @@ class ValorantMainMenu : AppCompatActivity() {
         }
     }
 
-    private fun showLatestFeature(feature: String, description: String) {
+    private fun showLatestFeature(feature: String, description: String, show: Boolean) {
         // check if the user has seen the latest feature
         val sharedPreferences = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         val latestFeature = sharedPreferences.getString("LatestFeature", "0")
 
         // if the user has not seen the latest feature, show a dialog about it and save that the user has seen it
-        if (latestFeature != feature) {
+        if (latestFeature != feature && show) {
             val alertDialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
             alertDialog.setTitle("New feature: $feature!")
             alertDialog.setMessage(description)
             alertDialog.setPositiveButton("Ok") { dialog, which ->
                 dialog.dismiss()
             }
-            // an option to go to the chat tab
-            alertDialog.setNegativeButton("Go to chat") { dialog, which ->
-                dialog.dismiss()
-                val intent = Intent(this, ChatsForumActivity::class.java)
-                startActivity(intent)
-            }
+
             alertDialog.show()
 
             editor.putString("LatestFeature", feature)

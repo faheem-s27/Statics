@@ -52,7 +52,7 @@ class ChatsForumActivity : AppCompatActivity() {
         }
 
         // if the user clicks enter, send the message
-        messageTextBox.setOnEditorActionListener { v, actionId, event ->
+        messageTextBox.setOnEditorActionListener { _, _, _ ->
             val message = messageTextBox.text.toString()
             if (message.isNotEmpty() && message.length < 1000) {
                 sendMessage(message)
@@ -78,7 +78,6 @@ class ChatsForumActivity : AppCompatActivity() {
                 ).show()
             }
         })
-
     }
 
     private fun updateMessages() {
@@ -88,21 +87,27 @@ class ChatsForumActivity : AppCompatActivity() {
             val messagesFromDatabase = it.children
             messagesFromDatabase.forEach { message ->
                 // get the message
-                val messageText = message.child("playerMessage").value.toString()
-                val messageSender = message.child("playerName").value.toString()
-                val messageSenderImage = message.child("playerImage").value.toString()
-                val unix = message.child("unixTime").value.toString()
+                try {
+                    val messageText = message.child("playerMessage").value.toString()
+                    val messageSender = message.child("playerName").value.toString()
+                    val messageSenderImage = message.child("playerImage").value.toString()
+                    val unix = message.child("unixTime").value.toString()
 
-                // check if any of the fields are empty
-                if (messageText.isNotEmpty() && messageSender.isNotEmpty() && messageSenderImage.isNotEmpty() && unix.isNotEmpty()) {
-                    messages.add(
-                        ChatMessage(
-                            messageSender,
-                            messageSenderImage,
-                            messageText,
-                            unix.toLong()
+                    // check if any of the fields are empty
+                    if (messageText.isNotEmpty() && messageSender.isNotEmpty() && messageSenderImage.isNotEmpty() && unix.isNotEmpty()) {
+                        messages.add(
+                            ChatMessage(
+                                messageSender,
+                                messageSenderImage,
+                                messageText,
+                                unix.toLong()
+                            )
                         )
-                    )
+                    }
+                } catch (e: Exception) {
+                    // send to firebase
+                    FirebaseDatabase.getInstance().reference.child("Statics/Errors/").child("Chat")
+                        .setValue(e.toString())
                 }
             }
             // add the messages to the list view
@@ -113,18 +118,22 @@ class ChatsForumActivity : AppCompatActivity() {
 
             // scroll to the bottom of the list view
             messagesListView.setSelection(messagesListView.count - 1)
-            // with an animation
-            //messagesListView.smoothScrollToPosition(messagesListView.count - 1, 20)
         }
     }
 
     private fun sendMessage(message: String) {
         // get the current time
         val unixTime = System.currentTimeMillis()
-        ChatReference.push().setValue(ChatMessage(playerName, playerImage, message, unixTime))
-            .addOnSuccessListener {
-                updateMessages()
-            }
+
+        // create unique id for the message
+        val messageId = ChatReference.push().key.toString()
+        ChatReference.child(messageId).child("playerName").setValue(playerName)
+        ChatReference.child(messageId).child("playerImage").setValue(playerImage)
+        ChatReference.child(messageId).child("playerMessage").setValue(message)
+        ChatReference.child(messageId).child("unixTime").setValue(unixTime)
+
+        // update the messages
+        updateMessages()
 
     }
 }
