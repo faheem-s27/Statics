@@ -189,7 +189,6 @@ class ValorantMainMenu : AppCompatActivity() {
 //            startActivity(Intent(this, SplashActivity::class.java))
 //            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             val intent = Intent(this, StaticsMainMenu::class.java)
-            // add playerName and region to the intent
             intent.putExtra("playerName", playerName)
             intent.putExtra("region", region)
             intent.putExtra("key", key)

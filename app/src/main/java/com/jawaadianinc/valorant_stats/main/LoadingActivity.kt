@@ -103,7 +103,6 @@ class LoadingActivity : AppCompatActivity() {
         return cm.activeNetworkInfo?.isConnected == true
     }
 
-
     private fun addAssetsToDatabase() {
         val updateText: TextView = findViewById(R.id.textView4)
         val assetsDB = AssetsDatabase(this@LoadingActivity)

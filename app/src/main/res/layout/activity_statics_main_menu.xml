@@ -58,15 +58,14 @@
                 android:backgroundTint="@color/ToolBar"
                 android:fontFamily="@font/lalezar"
                 android:gravity="center_horizontal"
-                android:text="69"
+                android:text="00"
                 android:textColor="#FFFFFF"
                 android:textSize="14dp"
                 android:textStyle="bold"
                 app:cornerRadius="50dp"
                 app:strokeColor="@color/white"
                 app:strokeWidth="0dp"
-                app:tint="@color/Valorant_SplashColourBackground"
-                tools:text="197" />
+                app:tint="@color/Valorant_SplashColourBackground" />
 
             <ImageView
                 android:id="@+id/new_playerWideImage"
@@ -148,12 +147,27 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:progress="60"
+                android:progress="0"
                 app:indicatorColor="@color/Valorant_Blue"
                 app:indicatorSize="90dp"
                 app:trackColor="@color/white"
                 app:trackCornerRadius="5dp"
                 app:trackThickness="4dp" />
+
+            <Button
+                android:id="@+id/new_playerPastRanks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/ToolBar"
+                android:fontFamily="@font/lalezar"
+                android:text="Past Ranks"
+                android:textColor="#FFFFFF"
+                app:cornerRadius="50dp"
+                app:strokeColor="@color/black"
+                app:strokeWidth="1dp" />
 
             <TextView
                 android:id="@+id/new_playerRankTitle"
@@ -199,15 +213,42 @@
                 android:id="@+id/new_playerRankTimePlayed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/new_rankProgressBar"
-                android:layout_alignBottom="@id/new_rankProgressBar"
-                android:layout_marginStart="8dp"
-                android:layout_toEndOf="@id/new_rankProgressBar"
+                android:layout_alignBottom="@id/new_playerRRText"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp"
                 android:fontFamily="@font/lalezar"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                tools:text="Played yesterday" />
+                tools:text="Comped 22 days ago" />
+
+            <TextView
+                android:id="@+id/new_currentSeason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/lalezar"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                tools:text="Act 3 // Episode 5" />
+
+            <TextView
+                android:id="@+id/new_currentSeasonEnding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/new_currentSeason"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/lalezar"
+                android:gravity="center"
+                android:textColor="#A2A2A2"
+                android:textSize="12sp"
+                tools:text="Ending in 3 days" />
 
             <ImageView
                 android:id="@+id/new_playerRankImage"
@@ -217,7 +258,6 @@
                 android:layout_alignTop="@id/new_rankProgressBar"
                 android:layout_alignEnd="@id/new_rankProgressBar"
                 android:layout_alignBottom="@id/new_rankProgressBar"
-                android:layout_margin="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
