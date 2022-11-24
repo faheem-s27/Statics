@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.jawaadianinc.valorant_stats.valo.ValorantUpdatesActivity">
     <item
-        android:id="@+id/app_bar_search"
-        android:icon="?android:attr/actionModeWebSearchDrawable"
-        android:title="Search"
-        app:actionViewClass="android.widget.SearchView"
+        android:id="@+id/new_refresh"
+        android:icon="@android:drawable/ic_popup_sync"
+        android:title="Refresh"
         app:showAsAction="always" />
 </menu>

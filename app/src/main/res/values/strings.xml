@@ -153,5 +153,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="current_rank">Current Rank:</string>
+    <string name="title_activity_statics_main">StaticsMainActivity</string>
 
 </resources>

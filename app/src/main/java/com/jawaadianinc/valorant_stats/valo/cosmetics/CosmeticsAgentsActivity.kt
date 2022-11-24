@@ -28,6 +28,7 @@ import java.net.URL
 
 class CosmeticsAgentsActivity : AppCompatActivity() {
     private val bustPortrait = arrayListOf<String>()
+    private val agentTextBackgrounds = arrayListOf<String>()
     private val agentName = arrayListOf<String>()
     private val agentRole = arrayListOf<String>()
     private val roleDescription = arrayListOf<String>()
@@ -149,12 +150,24 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         }
     }
 
-    private fun setImageInSlider(images: ArrayList<String>, imageSlider: SliderView) {
+    private fun setImageInSlider(
+        images: ArrayList<String>,
+        imageSlider: SliderView,
+        textBackground: ArrayList<String>,
+        imageSliderText: SliderView
+    ) {
         val adapter = MySliderImageAdapter()
+        val adapterText = MySliderImageAdapter()
         adapter.renewItems(images)
+        adapterText.renewItems(textBackground)
         imageSlider.setSliderAdapter(adapter)
+        imageSliderText.setSliderAdapter(adapterText)
         setAgentInfo(0)
+
         imageSlider.setCurrentPageListener {
+            // Set the slider text background
+            imageSliderText.currentPagePosition = it
+
             agentVoicePlayer.reset()
             voiceLinePlayer.reset()
             setAgentInfo(it)
@@ -188,6 +201,7 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
                             .getJSONArray("mediaList").getJSONObject(0).getString("wave")
                     )
                     bustPortrait.add(agentJSON.getJSONObject(i).getString("fullPortrait"))
+                    agentTextBackgrounds.add(agentJSON.getJSONObject(i).getString("background"))
                     agentBackground.add(agentJSON.getJSONObject(i).getString("bustPortrait"))
 
                     val name = agentJSON.getJSONObject(i).getString("displayName")
@@ -223,7 +237,12 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
                 }
             }
             uiThread {
-                setImageInSlider(bustPortrait, imageSlider)
+                setImageInSlider(
+                    bustPortrait,
+                    imageSlider,
+                    agentTextBackgrounds,
+                    findViewById(R.id.imageSliderText)
+                )
             }
         }
     }

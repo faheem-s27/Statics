@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/new_Stats"
+        android:icon="@drawable/details"
+        android:title="Stats" />
+    <item
+        android:id="@+id/new_Live"
+        android:icon="@drawable/live"
+        android:title="Live " />
+    <item
+        android:id="@+id/new_Assets"
+        android:icon="@drawable/agentesicon"
+        android:title="Assets" />
+</menu>

@@ -16,6 +16,14 @@
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".StaticsMainActivity"
+            android:exported="false"
+            android:label="@string/title_activity_statics_main">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".valo.activities.new_ui.StaticsMainMenu"
             android:exported="false">
             <meta-data

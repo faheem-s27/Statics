@@ -139,8 +139,8 @@ class ValorantMainMenu : AppCompatActivity() {
         val ChatsForumButton = findViewById<Button>(R.id.ChatsForumButton)
 
         showLatestFeature(
-            "Chat Bug Fix!",
-            "Now you can **actually** use the chat feature 🦆❤️!", true
+            "NEW UI IN PREVIEW",
+            "Have a look at the new UI by clicking on the refresh icon!", true
         )
 
         ChatsForumButton.setOnClickListener {
@@ -188,11 +188,7 @@ class ValorantMainMenu : AppCompatActivity() {
 //            finish()
 //            startActivity(Intent(this, SplashActivity::class.java))
 //            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            val intent = Intent(this, StaticsMainMenu::class.java)
-            intent.putExtra("playerName", playerName)
-            intent.putExtra("region", region)
-            intent.putExtra("key", key)
-            startActivity(intent)
+            showNewUI()
         }
 
         // show an alert dialog that says thank you for using the app
@@ -235,7 +231,7 @@ class ValorantMainMenu : AppCompatActivity() {
             editor.putLong("lastTime", System.currentTimeMillis())
             editor.apply()
             // toast to say that the dialog will show again in 2 days
-            Toast.makeText(this, "See you in 2 days! ;)", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "See you in 2 weeks! ;)", Toast.LENGTH_SHORT).show()
 
             val discordRef = database.getReference("VALORANT/discord")
             discordRef.child(nameSplit[0]).child("Joined").setValue(false)
@@ -274,8 +270,8 @@ class ValorantMainMenu : AppCompatActivity() {
                 val currentTime = System.currentTimeMillis()
                 val difference = currentTime - lastTime
 
-                val twoDays = 172800000
-                if (difference > twoDays) {
+                val twoWeeks = 1209600000
+                if (difference > twoWeeks) {
                     // show the alert dialog
                     alertDialog.show()
                     // set the last time to the current time
@@ -1107,7 +1103,11 @@ class ValorantMainMenu : AppCompatActivity() {
         }
     }
 
-    private fun showLatestFeature(feature: String, description: String, show: Boolean) {
+    private fun showLatestFeature(
+        feature: String,
+        description: String,
+        show: Boolean
+    ) {
         // check if the user has seen the latest feature
         val sharedPreferences = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -1121,6 +1121,10 @@ class ValorantMainMenu : AppCompatActivity() {
             alertDialog.setPositiveButton("Ok") { dialog, which ->
                 dialog.dismiss()
             }
+            alertDialog.setNegativeButton("Show me") { dialog, which ->
+                showNewUI()
+                dialog.dismiss()
+            }
 
             alertDialog.show()
 
@@ -1130,6 +1134,14 @@ class ValorantMainMenu : AppCompatActivity() {
             editor.putString("LatestFeatureDescription", description)
             editor.apply()
         }
+    }
+
+    private fun showNewUI() {
+        val intent = Intent(this, StaticsMainMenu::class.java)
+        intent.putExtra("playerName", playerName)
+        intent.putExtra("region", region)
+        intent.putExtra("key", key)
+        startActivity(intent)
     }
 
 }
