@@ -99,56 +99,6 @@ class StaticsMainMenu : AppCompatActivity() {
         animation(binding.newLayoutPlayer, Duration, 0)
         animation(binding.newLayoutMMR, Duration, 200)
         animation(binding.newLayoutMatch, Duration, 400)
-
-//        for (i in 0 until playerCardView.childCount) {
-//            // start from bottom and then accelerate to top, with alpha 0 to 1
-//            val v = playerCardView.getChildAt(i)
-//            val animator = ObjectAnimator.ofFloat(v, "translationY", 1000f, 0f)
-//            animator.duration = Duration
-//            animator.interpolator = DecelerateInterpolator()
-//            animator.start()
-//            val animator2 = ObjectAnimator.ofFloat(v, "alpha", 0f, 1f)
-//            animator2.duration = Duration
-//            animator2.interpolator = DecelerateInterpolator()
-//            animator2.start()
-//
-//            // move them down
-//            ObjectAnimator.ofFloat(v, "translationY", 1000f, 0f).apply {
-//                duration = Duration
-//                interpolator = DecelerateInterpolator()
-//                start()
-//            }
-//        }
-//
-//        val mmrCardView : RelativeLayout = findViewById(R.id.new_LayoutMMR)
-//        for (i in 0 until mmrCardView.childCount) {
-//            val v = mmrCardView.getChildAt(i)
-//            val animator = ObjectAnimator.ofFloat(v, "translationY", 1000f, 0f)
-//            animator.duration = Duration
-//            animator.interpolator = DecelerateInterpolator()
-//            animator.startDelay = 100
-//            animator.start()
-//            val animator2 = ObjectAnimator.ofFloat(v, "alpha", 0f, 1f)
-//            animator2.duration = Duration
-//            animator2.interpolator = DecelerateInterpolator()
-//            animator2.startDelay = 100
-//            animator2.start()
-//        }
-//
-//        val matchCardView : RelativeLayout = findViewById(R.id.new_LayoutMatch)
-//        for (i in 0 until matchCardView.childCount) {
-//            val v = matchCardView.getChildAt(i)
-//            val animator = ObjectAnimator.ofFloat(v, "translationY", 1000f, 0f)
-//            animator.duration = Duration
-//            animator.interpolator = DecelerateInterpolator()
-//            animator.startDelay = 200
-//            animator.start()
-//            val animator2 = ObjectAnimator.ofFloat(v, "alpha", 0f, 1f)
-//            animator2.duration = Duration
-//            animator2.interpolator = DecelerateInterpolator()
-//            animator2.startDelay = 200
-//            animator2.start()
-//        }
     }
 
     private fun animation(layout: RelativeLayout, Duration: Long, Delay: Long) {
