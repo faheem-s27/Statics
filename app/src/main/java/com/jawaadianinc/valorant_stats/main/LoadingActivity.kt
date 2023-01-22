@@ -23,7 +23,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
-import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.StaticsMainActivity
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
@@ -32,11 +32,12 @@ import org.jetbrains.anko.uiThread
 import org.json.JSONObject
 import java.net.URL
 
-
 class LoadingActivity : AppCompatActivity() {
-
+    private lateinit var loadingProgressBar: ProgressBar
+    private lateinit var updateText: TextView
+    private lateinit var backgroundIMG: ImageView
+    private lateinit var videoPlayer: VideoView
     private var key = ""
-    //private var urlStaticsIntro = "https://firebasestorage.googleapis.com/v0/b/statics-fd699.appspot.com/o/staticsIntroPortraitNoot.mp4?alt=media&token=d093d222-84f5-4af9-bc0d-2cfa32d6d53c"
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +45,53 @@ class LoadingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_loading)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
-        val loadingProgressBar: ProgressBar = findViewById(R.id.progressBar4)
-        val updateText: TextView = findViewById(R.id.textView4)
+        loadingProgressBar = findViewById(R.id.progressBar4)
+        updateText = findViewById(R.id.textView4)
+        backgroundIMG = findViewById(R.id.imageView7)
+        videoPlayer = findViewById(R.id.videoView3)
+
+        loadUI()
+
+        // check if network is available, if not, show a dialog box to the user that will have an option to retry
+        if (!isNetworkAvailable()) {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Error!")
+            builder.setMessage("Statics requires an active internet connection!")
+            builder.setPositiveButton("Retry") { _, _ ->
+                recreate()
+            }
+            builder.setNegativeButton("Exit") { _, _ ->
+                finish()
+            }
+            builder.setCancelable(false)
+            builder.show()
+        } else {
+            FirebaseApp.initializeApp(/*context=*/this)
+            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+                SafetyNetAppCheckProviderFactory.getInstance()
+            )
+            Firebase.database.setPersistenceEnabled(true)
+            val database = Firebase.database
+            val playersRef = database.getReference("VALORANT/key")
+
+            playersRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    Log.d("Statics", "Key is: " + dataSnapshot.value)
+                    key = (dataSnapshot.value as String?).toString()
+                    addAssetsToDatabase()
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    //loadingProgressBar.visibility = View.GONE
+                    updateText.text = "An error occurred while connecting to Statics :("
+                }
+
+            })
+        }
+    }
+
+    private fun loadUI() {
+        updateText.text = "Checking connection"
 
         loadingProgressBar.alpha = 0.0f
         updateText.alpha = 0.0f
@@ -53,47 +99,17 @@ class LoadingActivity : AppCompatActivity() {
         loadingProgressBar.translationY = +100f
         updateText.translationY = +100f
 
-        loadingProgressBar.animate().alpha(1f).translationYBy(-100f).duration = 1000
-        updateText.animate().alpha(1f).translationYBy(-100f).duration = 1000
+        loadingProgressBar.animate().alpha(1f).translationYBy(-100f).setInterpolator {
+            it * it * it * (it * (it * 6 - 15) + 10)
+        }.duration = 1000
+        updateText.animate().alpha(1f).translationYBy(-100f).setInterpolator {
+            it * it * it * (it * (it * 6 - 15) + 10)
+        }.duration = 1000
 
-        if (!isNetworkAvailable()) {
-            loadingProgressBar.visibility = View.INVISIBLE
-            updateText.text = "Error!\nStatics requires an active internet connection!"
-        }
-
-        val backgroundIMG = findViewById<ImageView>(R.id.imageView7)
         backgroundIMG.alpha = 0f
         backgroundIMG.animate().setDuration(1500).alpha(1f).setInterpolator {
             it * it * it * (it * (it * 6 - 15) + 10)
         }.start()
-
-
-
-        FirebaseApp.initializeApp(/*context=*/this)
-        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
-            SafetyNetAppCheckProviderFactory.getInstance()
-        )
-
-        val database = Firebase.database
-        val playersRef = database.getReference("VALORANT/key")
-
-        playersRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                key = (dataSnapshot.value as String?).toString()
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Toast.makeText(
-                    this@LoadingActivity,
-                    "Failed to connect to Statics!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                loadingProgressBar.visibility = View.GONE
-                updateText.text = "An error occurred while connecting to Statics :("
-            }
-        })
-
-        addAssetsToDatabase()
     }
 
     private fun isNetworkAvailable(): Boolean {
@@ -104,9 +120,16 @@ class LoadingActivity : AppCompatActivity() {
     }
 
     private fun addAssetsToDatabase() {
-        val updateText: TextView = findViewById(R.id.textView4)
         val assetsDB = AssetsDatabase(this@LoadingActivity)
         val dbCount = assetsDB.getNumberOfRows()
+        val builder = AlertDialog.Builder(this)
+        if (dbCount == 0) {
+            // Tell the user that the app is with an alert dialog
+            builder.setTitle("Loading resources (First time load)")
+            builder.setMessage("This may take a while, please wait...")
+            builder.setCancelable(false)
+            builder.show()
+        }
 
         updateText.text = "Loading resources"
 
@@ -128,6 +151,13 @@ class LoadingActivity : AppCompatActivity() {
                 val totalCount = agentData.length() + mapData.length() + titlesData.length()
 
                 if (totalCount != dbCount) {
+
+                    // Tell the user that the app is with an alert dialog
+                    builder.setTitle("Loading new resources")
+                    builder.setMessage("This may take a while, please wait...")
+                    builder.setCancelable(false)
+                    builder.show()
+
                     for (i in 0 until agentData.length()) {
                         val currentAgent = agentData.getJSONObject(i)
                         val agentName = currentAgent.getString("displayName")
@@ -242,47 +272,43 @@ class LoadingActivity : AppCompatActivity() {
                                     "Failed to add $titleName details"
                                 )
                             }
-                            Thread.sleep(50)
+                            Thread.sleep(100)
                         }
                     }
                 }
 
-                val finalKey = checkForKey()
                 uiThread {
                     updateText.text = "Starting"
                     val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
-                    valoAccountStats(valoName, finalKey)
+                    // remove the builder
+                    valoAccountStats(valoName, key)
                 }
 
             } catch (e: Exception) {
                 uiThread {
-                    val dialog = AlertDialog.Builder(this@LoadingActivity)
-                    dialog.setTitle("Error while loading assets")
-                    dialog.setMessage("An unknown error occurred whilst trying to retrieve Valorant assets\nPlease restart the app. \n\nIf the problem persists, please contact the developer.")
-                    dialog.setPositiveButton("OK") { _, _ ->
-                        // exit the app
-                        finish()
-                    }
-                    dialog.show()
-                    Log.d("AssetsDatabase", "Error downloading assets : $e")
+//                    val dialog = AlertDialog.Builder(this@LoadingActivity)
+//                    dialog.setTitle("Error while loading assets")
+//                    dialog.setMessage("An unknown error occurred whilst trying to retrieve Valorant assets\nPress ok to restart the app\n\nIf the problem persists, please contact the developer.")
+//                    dialog.setPositiveButton("OK") { _, _ ->
+//                        // exit the app
+//                        recreate()
+//                    }
+//                    dialog.show()
+                    // Log to firebase database
+                    val database = Firebase.database
+                    val myRef = database.getReference("Error")
+                    myRef.child("ErrorLoadAssets").setValue(e.toString())
+                    //Log.d("AssetsDatabase", "Error downloading assets : $e")
                 }
             }
         }
     }
 
-    private fun checkForKey(): String {
-        while (true) {
-            if (key == "") {
-                Thread.sleep(500)
-            } else {
-                return key
-            }
-        }
-    }
 
     private fun valoAccountStats(valoName: String?, key: String) {
+
+
         if (valoName == null) {
-            val videoPlayer = findViewById<VideoView>(R.id.videoView3)
             videoPlayer.visibility = View.VISIBLE
             val videoPath = "android.resource://" + packageName + "/" + R.raw.staticsintro
             // set the path of the video to be played
@@ -299,8 +325,13 @@ class LoadingActivity : AppCompatActivity() {
             }
 
         } else {
-            val intent = Intent(this, ValorantMainMenu::class.java)
+            val PUUID =
+                PlayerDatabase(this).getPUUID(valoName.split("#")[0], valoName.split("#")[1])
+
+            val intent = Intent(this, StaticsMainActivity::class.java)
             intent.putExtra("key", key)
+            intent.putExtra("region", PlayerDatabase(this).getRegion(PUUID))
+            intent.putExtra("playerName", valoName)
             startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             finish()

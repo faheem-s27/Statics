@@ -17,6 +17,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.StaticsMainActivity
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
 import okhttp3.*
@@ -234,8 +235,10 @@ class RSOActivity : AppCompatActivity() {
                 widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
                 sendBroadcast(widgetIntent)
 
-                val intent = Intent(this, ValorantMainMenu::class.java)
+                val intent = Intent(this, StaticsMainActivity::class.java)
                 intent.putExtra("key", key)
+                intent.putExtra("name", "$gameName#$gameTag")
+                intent.putExtra("region", region)
                 startActivity(intent)
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout)
                 finish()

@@ -13,15 +13,22 @@ import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.firebase.database.FirebaseDatabase
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.databinding.ActivityStaticsMainMenuBinding
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.MMRActivity
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
@@ -37,31 +44,43 @@ import java.util.*
 import kotlin.math.roundToInt
 
 
-class StaticsMainMenu : AppCompatActivity() {
+class StaticsMainMenu : Fragment() {
     lateinit var playerName: String
     lateinit var region: String
     var key: String = ""
-    lateinit var binding: ActivityStaticsMainMenuBinding
+
+    //lateinit var binding: ActivityStaticsMainMenuBinding
     var toolbar: MaterialToolbar? = null
     private var timer: CountDownTimer? = null
     private var lastMatchData: JSONObject? = null
 
+    var ISACTIVE = true
+
     private var REFRESHING = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityStaticsMainMenuBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.activity_statics_main_menu, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //binding = ActivityStaticsMainMenuBinding.inflate(layoutInflater)
 
         // get the player name from the previous activity
-        playerName = intent.getStringExtra("playerName").toString()
-        region = intent.getStringExtra("region").toString()
-        key = intent.getStringExtra("key").toString()
+        // get it from the intents activity
+
+        playerName = activity?.intent?.getStringExtra("playerName") ?: return
+        region = activity?.intent?.getStringExtra("region") ?: return
+        key = activity?.intent?.getStringExtra("key") ?: return
         setup()
     }
 
     private fun dissapearViews() {
-        val playerCardView: RelativeLayout = findViewById(R.id.new_LayoutPlayer)
+        val playerCardView: RelativeLayout = view?.findViewById(R.id.new_LayoutPlayer) ?: return
         // for each child in the playerCardView, set alpha to 0
         for (i in 0 until playerCardView.childCount) {
             val v = playerCardView.getChildAt(i)
@@ -70,10 +89,9 @@ class StaticsMainMenu : AppCompatActivity() {
                 duration = 500
                 start()
             }
-
         }
 
-        val mmrCardView: RelativeLayout = findViewById(R.id.new_LayoutMMR)
+        val mmrCardView: RelativeLayout = view?.findViewById(R.id.new_LayoutMMR)!!
         for (i in 0 until mmrCardView.childCount) {
             val v = mmrCardView.getChildAt(i)
             // animate the alpha to 0
@@ -83,7 +101,7 @@ class StaticsMainMenu : AppCompatActivity() {
             }
         }
 
-        val matchCardView: RelativeLayout = findViewById(R.id.new_LayoutMatch)
+        val matchCardView: RelativeLayout = view?.findViewById(R.id.new_LayoutMatch)!!
         for (i in 0 until matchCardView.childCount) {
             val v = matchCardView.getChildAt(i)
             // animate the alpha to 0
@@ -95,60 +113,10 @@ class StaticsMainMenu : AppCompatActivity() {
     }
 
     private fun animateViews() {
-        val Duration = 1000L
-        animation(binding.newLayoutPlayer, Duration, 0)
-        animation(binding.newLayoutMMR, Duration, 200)
-        animation(binding.newLayoutMatch, Duration, 400)
-
-//        for (i in 0 until playerCardView.childCount) {
-//            // start from bottom and then accelerate to top, with alpha 0 to 1
-//            val v = playerCardView.getChildAt(i)
-//            val animator = ObjectAnimator.ofFloat(v, "translationY", 1000f, 0f)
-//            animator.duration = Duration
-//            animator.interpolator = DecelerateInterpolator()
-//            animator.start()
-//            val animator2 = ObjectAnimator.ofFloat(v, "alpha", 0f, 1f)
-//            animator2.duration = Duration
-//            animator2.interpolator = DecelerateInterpolator()
-//            animator2.start()
-//
-//            // move them down
-//            ObjectAnimator.ofFloat(v, "translationY", 1000f, 0f).apply {
-//                duration = Duration
-//                interpolator = DecelerateInterpolator()
-//                start()
-//            }
-//        }
-//
-//        val mmrCardView : RelativeLayout = findViewById(R.id.new_LayoutMMR)
-//        for (i in 0 until mmrCardView.childCount) {
-//            val v = mmrCardView.getChildAt(i)
-//            val animator = ObjectAnimator.ofFloat(v, "translationY", 1000f, 0f)
-//            animator.duration = Duration
-//            animator.interpolator = DecelerateInterpolator()
-//            animator.startDelay = 100
-//            animator.start()
-//            val animator2 = ObjectAnimator.ofFloat(v, "alpha", 0f, 1f)
-//            animator2.duration = Duration
-//            animator2.interpolator = DecelerateInterpolator()
-//            animator2.startDelay = 100
-//            animator2.start()
-//        }
-//
-//        val matchCardView : RelativeLayout = findViewById(R.id.new_LayoutMatch)
-//        for (i in 0 until matchCardView.childCount) {
-//            val v = matchCardView.getChildAt(i)
-//            val animator = ObjectAnimator.ofFloat(v, "translationY", 1000f, 0f)
-//            animator.duration = Duration
-//            animator.interpolator = DecelerateInterpolator()
-//            animator.startDelay = 200
-//            animator.start()
-//            val animator2 = ObjectAnimator.ofFloat(v, "alpha", 0f, 1f)
-//            animator2.duration = Duration
-//            animator2.interpolator = DecelerateInterpolator()
-//            animator2.startDelay = 200
-//            animator2.start()
-//        }
+        val duration = 1000L
+        animation(view?.findViewById(R.id.new_LayoutPlayer)!!, duration, 0)
+        animation(view?.findViewById(R.id.new_LayoutMMR)!!, duration, 200)
+        animation(view?.findViewById(R.id.new_LayoutMatch)!!, duration, 400)
     }
 
     private fun animation(layout: RelativeLayout, Duration: Long, Delay: Long) {
@@ -168,7 +136,7 @@ class StaticsMainMenu : AppCompatActivity() {
     }
 
     private fun setup() {
-        toolbar = binding.newMainMenuToolBar
+        toolbar = (activity as AppCompatActivity).findViewById(R.id.new_mainMenuToolBar2)
         toolbar!!.setTitleTextColor(resources.getColor(android.R.color.white))
         toolbar!!.title = playerName.split("#")[0]
         toolbar!!.subtitle = "Loading..."
@@ -186,24 +154,28 @@ class StaticsMainMenu : AppCompatActivity() {
             true
         }
 
-        binding.newPlayerName.text = playerName.split("#")[0]
-        binding.newPlayerTag.text = "#" + playerName.split("#")[1]
+        val newPlayerNameText = view?.findViewById<TextView>(R.id.new_playerName)
+        val newPlayerTag = view?.findViewById<TextView>(R.id.new_playerTag)
+        val newPlayerRegion = view?.findViewById<TextView>(R.id.new_playerRegion)
+
+        newPlayerNameText?.text = playerName.split("#")[0]
+        newPlayerTag?.text = "#" + playerName.split("#")[1]
         // set the regionText to all Caps
-        binding.newPlayerRegion.text = region.uppercase(Locale.ROOT)
+        newPlayerRegion?.text = region.uppercase(Locale.ROOT)
 
         Log.d("newMainMenu", "playerName: $playerName, region: $region")
 
-        loadFromDatabase(playerName, region)
-
-    }
-
-    private fun loadFromDatabase(playerName: String, region: String) {
-        //TODO load from database and then update the UI with the data
-
-
-        // Gets latest data from the API
+        //loadFromDatabase(playerName, region)
         getLatestDetails()
     }
+
+//    private fun loadFromDatabase(playerName: String, region: String) {
+//        //TODO load from database and then update the UI with the data
+//
+//
+//        // Gets latest data from the API
+//        getLatestDetails()
+//    }
 
     private fun getLatestDetails() {
         // split the player name into two parts by # and set it to RiotName and RiotID
@@ -214,12 +186,12 @@ class StaticsMainMenu : AppCompatActivity() {
             "https://api.henrikdev.xyz/valorant/v3/matches/$region/$riotName/$riotID?size=1"
         val ranksURL = "https://api.henrikdev.xyz/valorant/v1/mmr-history/$region/$riotName/$riotID"
 
-        dissapearViews()
+        //dissapearViews()
         getCurrentSeason()
 
         doAsync {
-            val lastMatchData = Henrik(this@StaticsMainMenu).henrikAPI(allmatches)
-            val ranksData = Henrik(this@StaticsMainMenu).henrikAPI(ranksURL)
+            val lastMatchData = Henrik(requireContext()).henrikAPI(allmatches)
+            val ranksData = Henrik(requireContext()).henrikAPI(ranksURL)
             uiThread {
                 // check if the status code is 200
                 if (lastMatchData.getInt("status") == 200) {
@@ -230,7 +202,7 @@ class StaticsMainMenu : AppCompatActivity() {
                     REFRESHING = false
                 } else {
                     // show alert dialog
-                    val builder = AlertDialog.Builder(this@StaticsMainMenu)
+                    val builder = AlertDialog.Builder(requireContext())
                     builder.setTitle("Error")
                     builder.setMessage(
                         "Unable to fetch data. Please try again later.\nError Code: ${
@@ -240,8 +212,8 @@ class StaticsMainMenu : AppCompatActivity() {
                         }, please report this to the developer."
                     )
                     builder.setPositiveButton("OK") { dialog, which ->
-                        // finish the activity
-                        finish()
+                        // finish the fragment
+                        requireActivity().finish()
                     }
                     val dialog: AlertDialog = builder.create()
                     dialog.show()
@@ -287,7 +259,11 @@ class StaticsMainMenu : AppCompatActivity() {
         } catch (e: Exception) {
             Log.d("newMainMenu", "Error from playerDetails: ${e.message}")
             // if there is an error, show the error message
-            Toast.makeText(this, "Error happened while loading player data", Toast.LENGTH_LONG)
+            Toast.makeText(
+                requireContext(),
+                "Error happened while loading player data",
+                Toast.LENGTH_LONG
+            )
                 .show()
 
         }
@@ -296,41 +272,56 @@ class StaticsMainMenu : AppCompatActivity() {
         val sortedPlayerScore =
             playerScore.toList().sortedByDescending { (_, value) -> value }.toMap()
 
+        val newPlayerPositionText = view?.findViewById<TextView>(R.id.new_playerPosition)
+
         // if our position is 1, then add "st" to the end of the position
         when (val ourPosition = sortedPlayerScore.keys.indexOf(playerName.split("#")[0]) + 1) {
             1 -> {
-                binding.newPlayerPosition.text = "${ourPosition}st"
+                newPlayerPositionText?.text = "${ourPosition}st"
             }
             // if our position is 2, then add "nd" to the end of the position
             2 -> {
-                binding.newPlayerPosition.text = "${ourPosition}nd"
+                newPlayerPositionText?.text = "${ourPosition}nd"
             }
             // if our position is 3, then add "rd" to the end of the position
             3 -> {
-                binding.newPlayerPosition.text = "${ourPosition}rd"
+                newPlayerPositionText?.text = "${ourPosition}rd"
             }
             // if our position is 4 or more, then add "th" to the end of the position
             else -> {
-                binding.newPlayerPosition.text = "${ourPosition}th"
+                newPlayerPositionText?.text = "${ourPosition}th"
             }
         }
     }
 
     private fun loadPlayerDetails(currentPlayer: JSONObject) {
-        val db = AssetsDatabase(this)
+        val db = AssetsDatabase(requireContext())
         val title = db.retrieveName(currentPlayer.getString("player_title"))
         val image = currentPlayer.getJSONObject("assets").getJSONObject("card").getString("large")
         val wideImage =
             currentPlayer.getJSONObject("assets").getJSONObject("card").getString("wide")
-        binding.newPlayerTitle.text = title
-        binding.newPlayerLevel.text = currentPlayer.getString("level")
+        val newPlayerTitleText = view?.findViewById<TextView>(R.id.new_playerTitle)
+        val newPlayerLevelText = view?.findViewById<TextView>(R.id.new_playerLevel)
+        val newPlayerBackgroundImage = view?.findViewById<ImageView>(R.id.new_playerBackground)
+        val newPlayerWideImage = view?.findViewById<ImageView>(R.id.new_playerWideImage)
+        newPlayerTitleText?.text = title
+        newPlayerLevelText?.text = currentPlayer.getString("level")
         // Picasso and blur the image
         Picasso.get().load(image).fit().centerCrop()
-            .transform(BlurTransformation(this@StaticsMainMenu)).into(binding.newPlayerBackground)
-        Picasso.get().load(wideImage).fit().centerCrop().into(binding.newPlayerWideImage)
+            .transform(BlurTransformation(requireContext())).into(newPlayerBackgroundImage)
+        Picasso.get().load(wideImage).fit().centerCrop().into(newPlayerWideImage)
     }
 
     private fun loadRankDetails(rankHistory: JSONObject) {
+        val newPlayerRankTimePlayedText =
+            view?.findViewById<TextView>(R.id.new_playerRankTimePlayed)
+        val newRankProgressBar =
+            view?.findViewById<CircularProgressIndicator>(R.id.new_rankProgressBar)
+        val newPlayerChangeRRText = view?.findViewById<TextView>(R.id.new_playerChangeRR)
+        val newPlayerRRText = view?.findViewById<TextView>(R.id.new_playerRRText)
+        val newPlayerRankTitleText = view?.findViewById<TextView>(R.id.new_playerRankTitle)
+        val newPlayerRankImage = view?.findViewById<ImageView>(R.id.new_playerRankImage)
+        val newPlayerPastsRanks = view?.findViewById<MaterialButton>(R.id.new_playerPastRanks)
         try {
             val rankData = rankHistory.getJSONArray("data").getJSONObject(0)
             val title = rankData.getString("currenttierpatched")
@@ -338,45 +329,45 @@ class StaticsMainMenu : AppCompatActivity() {
             val change = rankData.getString("mmr_change_to_last_game")
             val dateRaw = rankData.getString("date_raw")
 
-            binding.newPlayerRankTimePlayed.text = "Comped ${timeAgo(dateRaw.toLong())}"
+            newPlayerRankTimePlayedText?.text = "Comped ${timeAgo(dateRaw.toLong())}"
 
             // if change is positive, then the progress bar colour is Valorant blue, else it is red
             if (change.toInt() > 0) {
-                binding.newRankProgressBar.setIndicatorColor(resources.getColor(R.color.Valorant_Blue))
-                binding.newPlayerChangeRR.text = "+$change"
-                binding.newPlayerChangeRR.setTextColor(resources.getColor(R.color.Valorant_Blue))
+                newRankProgressBar?.setIndicatorColor(resources.getColor(R.color.Valorant_Blue))
+                newPlayerChangeRRText?.text = "+$change"
+                newPlayerChangeRRText?.setTextColor(resources.getColor(R.color.Valorant_Blue))
 
             } else {
-                binding.newRankProgressBar.setIndicatorColor(resources.getColor(R.color.Valorant_Red))
-                binding.newPlayerChangeRR.text = change
-                binding.newPlayerChangeRR.setTextColor(resources.getColor(R.color.Valorant_Red))
+                newRankProgressBar?.setIndicatorColor(resources.getColor(R.color.Valorant_Red))
+                newPlayerChangeRRText?.text = change
+                newPlayerChangeRRText?.setTextColor(resources.getColor(R.color.Valorant_Red))
             }
 
-            binding.newPlayerRRText.text = "$progress/100"
+            newPlayerRRText?.text = "$progress/100"
             animateRankChanges(progress.toInt())
-            binding.newPlayerRankTitle.text = title
+            newPlayerRankTitleText?.text = title
             val rankImage =
                 rankData.getJSONObject("images").getString("large")
-            Picasso.get().load(rankImage).fit().centerInside().into(binding.newPlayerRankImage)
+            Picasso.get().load(rankImage).fit().centerInside().into(newPlayerRankImage)
 
-            binding.newPlayerPastRanks.setOnClickListener {
+            newPlayerPastsRanks?.setOnClickListener {
                 val name1 = playerName.split("#")
-                val intent = Intent(this, MMRActivity::class.java)
+                val intent = Intent(requireContext(), MMRActivity::class.java)
                 intent.putExtra("RiotName", name1[0])
                 intent.putExtra("RiotID", name1[1])
                 intent.putExtra("key", key)
                 startActivity(intent)
-                overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             }
 
         } catch (e: Exception) {
             Log.d("newMainMenu", "Error for rank: ${e.message}")
             Picasso.get()
                 .load("https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/smallicon.png")
-                .fit().centerInside().into(binding.newPlayerRankImage)
-            binding.newPlayerRankTitle.text = "Unranked"
-            binding.newRankProgressBar.progress = 0
-            binding.newPlayerRRText.text = "0/100"
+                .fit().centerInside().into(newPlayerRankImage)
+            newPlayerRankTitleText?.text = "Unranked"
+            newRankProgressBar?.progress = 0
+            newPlayerRRText?.text = "0/100"
         }
     }
 
@@ -440,9 +431,9 @@ class StaticsMainMenu : AppCompatActivity() {
 
     private fun animateRankChanges(maxValue: Int) {
         val duration = 3000
-        val progressBar = binding.newRankProgressBar
+        val progressBar = view?.findViewById<CircularProgressIndicator>(R.id.new_rankProgressBar)
         val progressAnimator =
-            ObjectAnimator.ofInt(progressBar, "progress", progressBar.progress, maxValue)
+            ObjectAnimator.ofInt(progressBar, "progress", progressBar!!.progress, maxValue)
         progressAnimator.duration = duration.toLong()
         progressAnimator.interpolator = DecelerateInterpolator()
         progressAnimator.startDelay = 1000
@@ -451,6 +442,10 @@ class StaticsMainMenu : AppCompatActivity() {
 
     private fun getCurrentSeason() {
         val URL = "https://valorant-api.com/v1/seasons"
+
+        val newCurrentSeasonText = view?.findViewById<TextView>(R.id.new_currentSeason)
+        val newCurrentSeasonEndingText = view?.findViewById<TextView>(R.id.new_currentSeasonEnding)
+
         doAsync {
             val seasonsJSON = JSONObject(URL(URL).readText()).getJSONArray("data")
             // go to last index
@@ -466,7 +461,7 @@ class StaticsMainMenu : AppCompatActivity() {
                     val parentName = season.getString("displayName")
                     uiThread {
                         val seasonName = "$seasonName - $parentName"
-                        binding.newCurrentSeason.text = seasonName
+                        newCurrentSeasonText?.text = seasonName
 
                         // parse the seasonEnd date
                         val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(seasonEnd)
@@ -475,7 +470,7 @@ class StaticsMainMenu : AppCompatActivity() {
                         // convert formatter date to unix time
                         val unixTime = date?.time?.div(1000)
                         val timeLeft = timeAgo(unixTime!!)
-                        binding.newCurrentSeasonEnding.text = "$formattedDate ($timeLeft)"
+                        newCurrentSeasonEndingText?.text = "$formattedDate ($timeLeft)"
                     }
                     break
                 }
@@ -490,12 +485,13 @@ class StaticsMainMenu : AppCompatActivity() {
         }
         timer = object : CountDownTimer(60000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                binding.newMainMenuToolBar.subtitle =
+                if (ISACTIVE) (activity as AppCompatActivity).findViewById<MaterialToolbar>(R.id.new_mainMenuToolBar2).subtitle =
                     "Next update in ${millisUntilFinished / 1000} seconds"
             }
 
             override fun onFinish() {
-                binding.newMainMenuToolBar.subtitle = "Updating..."
+                if (ISACTIVE) (activity as AppCompatActivity).findViewById<MaterialToolbar>(R.id.new_mainMenuToolBar2).subtitle =
+                    "Updating..."
                 getLatestDetails()
             }
         }
@@ -505,31 +501,42 @@ class StaticsMainMenu : AppCompatActivity() {
     private fun stopTimer() {
         REFRESHING = true
         timer?.cancel()
-        binding.newMainMenuToolBar.subtitle = "Refreshing..."
+        if (ISACTIVE) (activity as AppCompatActivity).findViewById<MaterialToolbar>(R.id.new_mainMenuToolBar2).subtitle =
+            "Refreshing..."
     }
 
     private fun loadMatchDetails(lastMatchData: JSONObject) {
-        val db = AssetsDatabase(this)
+
+        val newMatchMapNameText = view?.findViewById<TextView>(R.id.new_matchMapName)
+        val newMapMatchImage = view?.findViewById<ImageView>(R.id.new_matchMapImage)
+        val newMatchGameModeText = view?.findViewById<TextView>(R.id.new_matchGameMode)
+        val newMatchRegionText = view?.findViewById<TextView>(R.id.new_matchRegion)
+        val newMatchMapDate = view?.findViewById<TextView>(R.id.new_matchMapDate)
+        val newMatchKDAText = view?.findViewById<TextView>(R.id.new_matchKDA)
+
+        val db = AssetsDatabase(requireContext())
 
         val metaData = lastMatchData.getJSONObject("metadata")
-        binding.newMatchMapName.text = metaData.getString("map")
+        newMatchMapNameText?.text = metaData.getString("map")
 
         val mapImage = db.retrieveImage(metaData.getString("map"))
-        val blurred = myblur(mapImage, this)
-        binding.newMatchMapImage.setImageBitmap(blurred)
+        val blurred = myblur(mapImage, requireContext())
+        newMapMatchImage?.setImageBitmap(blurred)
 
-        binding.newMatchGameMode.text = metaData.getString("mode")
-        binding.newMatchRegion.text = metaData.getString("cluster")
+        newMatchGameModeText?.text = metaData.getString("mode")
+        newMatchRegionText?.text = metaData.getString("cluster")
 
         val timePlayed = timeAgo(metaData.getLong("game_start"))
-        binding.newMatchMapDate.text = timePlayed
+        newMatchMapDate?.text = timePlayed
 
         val playerData = lastMatchData.getJSONObject("players")
-        binding.newMatchKDA.text = getKDA(playerData.getJSONArray("all_players"))
+        newMatchKDAText?.text = getKDA(playerData.getJSONArray("all_players"))
     }
 
     private fun getKDA(playerJSON: JSONArray): String {
         // loop through the player array until playername is found
+        val newMatchAgentImage = view?.findViewById<ImageView>(R.id.new_matchAgentImage)
+
         for (i in 0 until playerJSON.length()) {
             val player = playerJSON.getJSONObject(i)
             if (player.getString("name") + "#" + player.getString("tag") == playerName) {
@@ -539,7 +546,7 @@ class StaticsMainMenu : AppCompatActivity() {
 
                 val agentImage =
                     player.getJSONObject("assets").getJSONObject("agent").getString("small")
-                Picasso.get().load(agentImage).into(binding.newMatchAgentImage)
+                Picasso.get().load(agentImage).into(newMatchAgentImage)
                 processRoundNumbers(player.getString("team").lowercase(Locale.ROOT))
                 return "$kills/$deaths/$assists"
             }
@@ -549,24 +556,28 @@ class StaticsMainMenu : AppCompatActivity() {
 
     private fun processRoundNumbers(team: String) {
         val teams = lastMatchData?.getJSONObject("teams")
+
+        val newMatchAllyScore = view?.findViewById<TextView>(R.id.new_matchAllyScore)
+        val newMatchEnemyScore = view?.findViewById<TextView>(R.id.new_matchEnemyScore)
+
         if (team == "red") {
             val teamScore = teams?.getJSONObject("red")?.getInt("rounds_won")
-            binding.newMatchAllyScore.text = teamScore.toString()
-            binding.newMatchEnemyScore.text =
+            newMatchAllyScore?.text = teamScore.toString()
+            newMatchEnemyScore?.text =
                 teams?.getJSONObject("blue")?.getInt("rounds_won").toString()
 
             // make ally score valorant red and enemy score valorant blue
-            binding.newMatchAllyScore.setTextColor(Color.parseColor("#f94555"))
-            binding.newMatchEnemyScore.setTextColor(Color.parseColor("#18e4b7"))
+            newMatchAllyScore?.setTextColor(Color.parseColor("#f94555"))
+            newMatchEnemyScore?.setTextColor(Color.parseColor("#18e4b7"))
         } else if (team == "blue") {
             val teamScore = teams?.getJSONObject("blue")?.getInt("rounds_won")
-            binding.newMatchAllyScore.text = teamScore.toString()
-            binding.newMatchEnemyScore.text =
+            newMatchAllyScore?.text = teamScore.toString()
+            newMatchEnemyScore?.text =
                 teams?.getJSONObject("red")?.getInt("rounds_won").toString()
 
             // make ally score valorant blue and enemy score valorant red
-            binding.newMatchAllyScore.setTextColor(Color.parseColor("#18e4b7"))
-            binding.newMatchEnemyScore.setTextColor(Color.parseColor("#f94555"))
+            newMatchAllyScore?.setTextColor(Color.parseColor("#18e4b7"))
+            newMatchEnemyScore?.setTextColor(Color.parseColor("#f94555"))
         }
     }
 

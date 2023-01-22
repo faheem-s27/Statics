@@ -14,20 +14,6 @@
         android:alpha="0.5"
         app:srcCompat="@drawable/red_to_blue" />
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/new_mainMenuToolBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:alpha="0.9"
-        android:background="@color/ToolBar"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/new_playerBackground"
-        app:subtitleCentered="true"
-        app:titleCentered="true" />
-
     <ScrollView
         android:id="@+id/scrollView3"
         android:layout_width="0dp"
@@ -35,7 +21,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_mainMenuToolBar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"

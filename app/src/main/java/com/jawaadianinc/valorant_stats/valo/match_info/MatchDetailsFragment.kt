@@ -35,7 +35,7 @@ class MatchDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val progressDialog =
-            ProgressDialogStatics().setProgressDialog(activity!!, "Loading Match Details")
+            ProgressDialogStatics().setProgressDialog(requireActivity(), "Loading Match Details")
         progressDialog.show()
 
 
