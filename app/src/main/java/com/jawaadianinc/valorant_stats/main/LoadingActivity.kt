@@ -31,6 +31,7 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
 import java.net.URL
+import kotlin.properties.Delegates
 
 class LoadingActivity : AppCompatActivity() {
     private lateinit var loadingProgressBar: ProgressBar
@@ -38,6 +39,7 @@ class LoadingActivity : AppCompatActivity() {
     private lateinit var backgroundIMG: ImageView
     private lateinit var videoPlayer: VideoView
     private var key = ""
+    private var totalCount by Delegates.notNull<Int>()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,8 +78,27 @@ class LoadingActivity : AppCompatActivity() {
 
             playersRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    Log.d("Statics", "Key is: " + dataSnapshot.value)
+                    // Log.d("Statics", "Key is: " + dataSnapshot.value)
                     key = (dataSnapshot.value as String?).toString()
+
+                    loadingProgressBar.alpha = 0.0f
+                    updateText.alpha = 0.0f
+
+                    loadingProgressBar.translationY = +100f
+                    updateText.translationY = +100f
+
+                    loadingProgressBar.animate().alpha(1f).translationYBy(-100f).setInterpolator {
+                        it * it * it * (it * (it * 6 - 15) + 10)
+                    }.duration = 1000
+                    updateText.animate().alpha(1f).translationYBy(-100f).setInterpolator {
+                        it * it * it * (it * (it * 6 - 15) + 10)
+                    }.duration = 1000
+
+                    backgroundIMG.alpha = 0f
+                    backgroundIMG.animate().setDuration(1500).alpha(1f).setInterpolator {
+                        it * it * it * (it * (it * 6 - 15) + 10)
+                    }.start()
+
                     addAssetsToDatabase()
                 }
 
@@ -92,24 +113,6 @@ class LoadingActivity : AppCompatActivity() {
 
     private fun loadUI() {
         updateText.text = "Checking connection"
-
-        loadingProgressBar.alpha = 0.0f
-        updateText.alpha = 0.0f
-
-        loadingProgressBar.translationY = +100f
-        updateText.translationY = +100f
-
-        loadingProgressBar.animate().alpha(1f).translationYBy(-100f).setInterpolator {
-            it * it * it * (it * (it * 6 - 15) + 10)
-        }.duration = 1000
-        updateText.animate().alpha(1f).translationYBy(-100f).setInterpolator {
-            it * it * it * (it * (it * 6 - 15) + 10)
-        }.duration = 1000
-
-        backgroundIMG.alpha = 0f
-        backgroundIMG.animate().setDuration(1500).alpha(1f).setInterpolator {
-            it * it * it * (it * (it * 6 - 15) + 10)
-        }.start()
     }
 
     private fun isNetworkAvailable(): Boolean {
@@ -122,16 +125,16 @@ class LoadingActivity : AppCompatActivity() {
     private fun addAssetsToDatabase() {
         val assetsDB = AssetsDatabase(this@LoadingActivity)
         val dbCount = assetsDB.getNumberOfRows()
-        val builder = AlertDialog.Builder(this)
         if (dbCount == 0) {
-            // Tell the user that the app is with an alert dialog
-            builder.setTitle("Loading resources (First time load)")
-            builder.setMessage("This may take a while, please wait...")
-            builder.setCancelable(false)
-            builder.show()
+            // write me a toast message
+            Toast.makeText(
+                this@LoadingActivity,
+                "Loading resources (first time load)",
+                Toast.LENGTH_LONG
+            ).show()
         }
 
-        updateText.text = "Loading resources"
+        updateText.text = "Connecting to Riot"
 
         doAsync {
             try {
@@ -148,16 +151,9 @@ class LoadingActivity : AppCompatActivity() {
                 val mapData = mapJSON.getJSONArray("data")
                 val titlesData = titlesJSON.getJSONArray("data")
 
-                val totalCount = agentData.length() + mapData.length() + titlesData.length()
+                totalCount = agentData.length() + mapData.length() + titlesData.length()
 
                 if (totalCount != dbCount) {
-
-                    // Tell the user that the app is with an alert dialog
-                    builder.setTitle("Loading new resources")
-                    builder.setMessage("This may take a while, please wait...")
-                    builder.setCancelable(false)
-                    builder.show()
-
                     for (i in 0 until agentData.length()) {
                         val currentAgent = agentData.getJSONObject(i)
                         val agentName = currentAgent.getString("displayName")
@@ -178,7 +174,7 @@ class LoadingActivity : AppCompatActivity() {
                                                     agentBitMap!!
                                                 )
                                             ) {
-                                                updateText.text = "Added $agentName"
+                                                updateResourcesText()
                                             } else {
                                                 Log.d(
                                                     "AssetsDatabase",
@@ -224,7 +220,7 @@ class LoadingActivity : AppCompatActivity() {
                                                 )
                                             ) {
                                                 uiThread {
-                                                    updateText.text = "Added $mapName"
+                                                    updateResourcesText()
                                                 }
                                             } else {
                                                 Log.d(
@@ -264,7 +260,7 @@ class LoadingActivity : AppCompatActivity() {
                                 )
                             ) {
                                 uiThread {
-                                    updateText.text = "Added $titleName"
+                                    updateResourcesText()
                                 }
                             } else {
                                 Log.d(
@@ -278,10 +274,15 @@ class LoadingActivity : AppCompatActivity() {
                 }
 
                 uiThread {
-                    updateText.text = "Starting"
-                    val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
-                    // remove the builder
-                    valoAccountStats(valoName, key)
+                    if (dbCount == totalCount) {
+                        updateText.text = "Starting"
+                        val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
+                        // remove the builder
+                        valoAccountStats(valoName, key)
+                    } else {
+                        updateText.text = "Retrying"
+                        addAssetsToDatabase()
+                    }
                 }
 
             } catch (e: Exception) {
@@ -306,8 +307,6 @@ class LoadingActivity : AppCompatActivity() {
 
 
     private fun valoAccountStats(valoName: String?, key: String) {
-
-
         if (valoName == null) {
             videoPlayer.visibility = View.VISIBLE
             val videoPath = "android.resource://" + packageName + "/" + R.raw.staticsintro
@@ -327,7 +326,6 @@ class LoadingActivity : AppCompatActivity() {
         } else {
             val PUUID =
                 PlayerDatabase(this).getPUUID(valoName.split("#")[0], valoName.split("#")[1])
-
             val intent = Intent(this, StaticsMainActivity::class.java)
             intent.putExtra("key", key)
             intent.putExtra("region", PlayerDatabase(this).getRegion(PUUID))
@@ -336,5 +334,11 @@ class LoadingActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             finish()
         }
+    }
+
+    fun updateResourcesText() {
+        // get the current number of resources
+        val dbCount = AssetsDatabase(this).getNumberOfRows()
+        updateText.text = "Downloading $dbCount/$totalCount assets"
     }
 }

@@ -79,7 +79,6 @@ class ViewMatches : AppCompatActivity() {
         myRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val key = dataSnapshot.value as String?
-
                 val url =
                     "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
                 doAsync {

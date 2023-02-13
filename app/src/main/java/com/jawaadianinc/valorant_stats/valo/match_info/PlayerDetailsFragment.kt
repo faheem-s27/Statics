@@ -158,6 +158,8 @@ class PlayerDetailsFragment : Fragment() {
         val playerList: ListView = requireView().findViewById(R.id.playerList)
         playerList.alpha = 1f
 
+        playerList.scheduleLayoutAnimation()
+
         // check what type is in the parameter and sort the players out accordingly
         when (type) {
             "kills" -> {

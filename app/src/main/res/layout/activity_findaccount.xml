@@ -638,11 +638,12 @@
 
             <SeekBar
                 android:id="@+id/howManyMatches"
-                style="@android:style/Widget.Material.SeekBar"
+
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                style="@android:style/Widget.Material.SeekBar"
                 android:backgroundTint="@color/ic_launcher_background"
                 android:max="40"
                 android:progress="5"

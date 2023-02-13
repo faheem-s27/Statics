@@ -1,6 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -17,21 +18,21 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.BounceInterpolator
 import android.view.animation.DecelerateInterpolator
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.firebase.database.FirebaseDatabase
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.MMRActivity
+import com.jawaadianinc.valorant_stats.valo.activities.ViewMatches
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
+import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import org.jetbrains.anko.doAsync
@@ -47,15 +48,13 @@ import kotlin.math.roundToInt
 class StaticsMainMenu : Fragment() {
     lateinit var playerName: String
     lateinit var region: String
+    private var puuid: String? = null
     var key: String = ""
-
-    //lateinit var binding: ActivityStaticsMainMenuBinding
-    var toolbar: MaterialToolbar? = null
+    private lateinit var toolbar: MaterialToolbar
     private var timer: CountDownTimer? = null
     private var lastMatchData: JSONObject? = null
-
+    private lateinit var seekBar: SeekBar
     var ISACTIVE = true
-
     private var REFRESHING = false
 
     override fun onCreateView(
@@ -69,9 +68,8 @@ class StaticsMainMenu : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //binding = ActivityStaticsMainMenuBinding.inflate(layoutInflater)
-
-        // get the player name from the previous activity
-        // get it from the intents activity
+        toolbar = view.findViewById(R.id.new_mainMenuToolBar)
+        //activity.setSupportActionBar(toolbar)
 
         playerName = activity?.intent?.getStringExtra("playerName") ?: return
         region = activity?.intent?.getStringExtra("region") ?: return
@@ -136,15 +134,15 @@ class StaticsMainMenu : Fragment() {
     }
 
     private fun setup() {
-        toolbar = (activity as AppCompatActivity).findViewById(R.id.new_mainMenuToolBar2)
-        toolbar!!.setTitleTextColor(resources.getColor(android.R.color.white))
-        toolbar!!.title = playerName.split("#")[0]
-        toolbar!!.subtitle = "Loading..."
+        //toolbar = (activity as AppCompatActivity).findViewById(R.id.new_mainMenuToolBar2) as MaterialToolbar
+        toolbar.setTitleTextColor(resources.getColor(android.R.color.white))
+        toolbar.title = playerName.split("#")[0]
+        toolbar.subtitle = "Loading..."
 
         // inflate menu
-        toolbar!!.inflateMenu(R.menu.menu_valorant)
+        toolbar.inflateMenu(R.menu.menu_valorant)
         // listen to menu item clicks
-        toolbar!!.setOnMenuItemClickListener { item: MenuItem? ->
+        toolbar.setOnMenuItemClickListener { item: MenuItem? ->
             when (item!!.itemId) {
                 R.id.new_refresh -> {
                     stopTimer()
@@ -163,19 +161,32 @@ class StaticsMainMenu : Fragment() {
         // set the regionText to all Caps
         newPlayerRegion?.text = region.uppercase(Locale.ROOT)
 
+        val nameSplit = playerName.split("#")
+        puuid = PlayerDatabase(requireActivity()).getPUUID(nameSplit[0], nameSplit[1])
+        val region = PlayerDatabase(requireActivity()).getRegion(puuid!!)
+
         Log.d("newMainMenu", "playerName: $playerName, region: $region")
 
+        seekBar = view?.findViewById(R.id.new_matchesSlider)!!
+
+        val matchButton: FloatingActionButton = view?.findViewById(R.id.new_RecentMatchFAB)!!
+        matchButton.setOnClickListener {
+            val intent = Intent(requireActivity(), ViewMatches::class.java)
+            intent.putExtra("Region", region)
+            intent.putExtra("PUUID", puuid)
+            intent.putExtra("NumberOfMatches", seekBar.progress.toString())
+            startActivity(intent)
+            activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
+
         //loadFromDatabase(playerName, region)
-        getLatestDetails()
+        try {
+            getLatestDetails()
+        } catch (e: Exception) {
+            Log.d("newMainMenu", "Error: ${e.message}")
+        }
     }
 
-//    private fun loadFromDatabase(playerName: String, region: String) {
-//        //TODO load from database and then update the UI with the data
-//
-//
-//        // Gets latest data from the API
-//        getLatestDetails()
-//    }
 
     private fun getLatestDetails() {
         // split the player name into two parts by # and set it to RiotName and RiotID
@@ -186,7 +197,7 @@ class StaticsMainMenu : Fragment() {
             "https://api.henrikdev.xyz/valorant/v3/matches/$region/$riotName/$riotID?size=1"
         val ranksURL = "https://api.henrikdev.xyz/valorant/v1/mmr-history/$region/$riotName/$riotID"
 
-        //dissapearViews()
+        dissapearViews()
         getCurrentSeason()
 
         doAsync {
@@ -278,18 +289,26 @@ class StaticsMainMenu : Fragment() {
         when (val ourPosition = sortedPlayerScore.keys.indexOf(playerName.split("#")[0]) + 1) {
             1 -> {
                 newPlayerPositionText?.text = "${ourPosition}st"
+                // make the text colour gold if we are first
+                newPlayerPositionText?.setTextColor(Color.parseColor("#FFD700"))
             }
             // if our position is 2, then add "nd" to the end of the position
             2 -> {
                 newPlayerPositionText?.text = "${ourPosition}nd"
+                // make the text colour silver if we are second
+                newPlayerPositionText?.setTextColor(Color.parseColor("#C0C0C0"))
             }
             // if our position is 3, then add "rd" to the end of the position
             3 -> {
                 newPlayerPositionText?.text = "${ourPosition}rd"
+                // make the text colour bronze if we are third
+                newPlayerPositionText?.setTextColor(Color.parseColor("#CD7F32"))
             }
             // if our position is 4 or more, then add "th" to the end of the position
             else -> {
                 newPlayerPositionText?.text = "${ourPosition}th"
+                // make the text colour white if we are fourth or lower
+                newPlayerPositionText?.setTextColor(Color.parseColor("#FFFFFF"))
             }
         }
     }
@@ -362,12 +381,16 @@ class StaticsMainMenu : Fragment() {
 
         } catch (e: Exception) {
             Log.d("newMainMenu", "Error for rank: ${e.message}")
-            Picasso.get()
-                .load("https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/smallicon.png")
-                .fit().centerInside().into(newPlayerRankImage)
-            newPlayerRankTitleText?.text = "Unranked"
-            newRankProgressBar?.progress = 0
-            newPlayerRRText?.text = "0/100"
+            try {
+                Picasso.get()
+                    .load("https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/smallicon.png")
+                    .fit().centerInside().into(newPlayerRankImage)
+                newPlayerRankTitleText?.text = "Unranked"
+                newRankProgressBar?.progress = 0
+                newPlayerRRText?.text = "0/100"
+            } catch (e: Exception) {
+                Log.d("newMainMenu", "Error for rank: ${e.message}")
+            }
         }
     }
 
@@ -435,7 +458,7 @@ class StaticsMainMenu : Fragment() {
         val progressAnimator =
             ObjectAnimator.ofInt(progressBar, "progress", progressBar!!.progress, maxValue)
         progressAnimator.duration = duration.toLong()
-        progressAnimator.interpolator = DecelerateInterpolator()
+        progressAnimator.interpolator = BounceInterpolator()
         progressAnimator.startDelay = 1000
         progressAnimator.start()
     }
@@ -485,14 +508,21 @@ class StaticsMainMenu : Fragment() {
         }
         timer = object : CountDownTimer(60000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                if (ISACTIVE) (activity as AppCompatActivity).findViewById<MaterialToolbar>(R.id.new_mainMenuToolBar2).subtitle =
+                if (ISACTIVE) toolbar.subtitle =
                     "Next update in ${millisUntilFinished / 1000} seconds"
+                else {
+                    timer?.cancel()
+                }
             }
 
             override fun onFinish() {
-                if (ISACTIVE) (activity as AppCompatActivity).findViewById<MaterialToolbar>(R.id.new_mainMenuToolBar2).subtitle =
-                    "Updating..."
-                getLatestDetails()
+                if (ISACTIVE) {
+                    toolbar.subtitle =
+                        "Updating..."
+                    getLatestDetails()
+                } else {
+                    timer?.cancel()
+                }
             }
         }
         (timer as CountDownTimer).start()
@@ -501,8 +531,7 @@ class StaticsMainMenu : Fragment() {
     private fun stopTimer() {
         REFRESHING = true
         timer?.cancel()
-        if (ISACTIVE) (activity as AppCompatActivity).findViewById<MaterialToolbar>(R.id.new_mainMenuToolBar2).subtitle =
-            "Refreshing..."
+        if (ISACTIVE) toolbar.subtitle = "Refreshing..."
     }
 
     private fun loadMatchDetails(lastMatchData: JSONObject) {
@@ -531,6 +560,8 @@ class StaticsMainMenu : Fragment() {
 
         val playerData = lastMatchData.getJSONObject("players")
         newMatchKDAText?.text = getKDA(playerData.getJSONArray("all_players"))
+
+        seekBarMatches(key)
     }
 
     private fun getKDA(playerJSON: JSONArray): String {
@@ -597,5 +628,34 @@ class StaticsMainMenu : Fragment() {
         theIntrinsic.forEach(tmpOut)
         tmpOut.copyTo(outputBitmap)
         return outputBitmap
+    }
+
+    private fun seekBarMatches(key: String) {
+        val url =
+            "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
+
+        doAsync {
+            val number = JSONObject(URL(url).readText()).getJSONArray("history").length()
+            uiThread {
+                seekBar.max = number
+                if (number > 0) {
+                    seekBar.progress = number - 1
+                }
+            }
+        }
+
+        val howManyMatches: TextView = view?.findViewById(R.id.new_matchSliderNumber)!!
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            @SuppressLint("SetTextI18n")
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                howManyMatches.text = "$progress"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+        })
     }
 }

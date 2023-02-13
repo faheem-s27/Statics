@@ -7,21 +7,39 @@
     android:background="@color/Valorant_SplashColourBackground"
     tools:context=".valo.activities.new_ui.StaticsMainMenu">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/new_mainMenuToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.6"
+        android:background="@color/Valorant_SplashColourBackground"
+        android:elevation="16dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:subtitleCentered="true"
+        app:titleCentered="true" />
+
     <ImageView
         android:id="@+id/new_playerBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.5"
-        app:srcCompat="@drawable/red_to_blue" />
+        android:background="@color/Discord" />
 
     <ScrollView
         android:id="@+id/scrollView3"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fillViewport="true"
+        android:nestedScrollingEnabled="true"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/new_mainMenuToolBar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
@@ -73,6 +91,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/materialCardViewRank" />
 
+            <TextView
+                android:id="@+id/textView36"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/lalezar"
+                android:text="LAST MATCH"
+                android:textAllCaps="false"
+                android:textColor="#CFCFCF"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialCardViewMatch" />
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/materialCardViewRank"
                 android:layout_width="0dp"
@@ -98,8 +131,7 @@
                         android:id="@+id/new_rankProgressBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="16dp"
+                        android:layout_centerHorizontal="true"
                         android:layout_marginTop="16dp"
                         android:progress="0"
                         app:indicatorColor="@color/Valorant_Blue"
@@ -112,13 +144,13 @@
                         android:id="@+id/new_playerPastRanks"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_above="@id/new_playerRankTimePlayed"
-                        android:layout_below="@id/new_currentSeasonEnding"
-                        android:layout_alignParentEnd="true"
-                        android:layout_margin="16dp"
+                        android:layout_above="@id/new_playerRRText"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginBottom="-20dp"
                         android:backgroundTint="@color/ToolBar"
                         android:fontFamily="@font/lalezar"
-                        android:text="Past Ranks"
+                        android:text="History"
                         android:textColor="#FFFFFF"
                         app:cornerRadius="50dp"
                         app:strokeColor="@color/black"
@@ -171,20 +203,21 @@
                         android:layout_alignBottom="@id/new_playerRRText"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="4dp"
                         android:fontFamily="@font/lalezar"
                         android:gravity="center"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         tools:text="Comped 22 days ago" />
 
                     <TextView
                         android:id="@+id/new_currentSeason"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
                         android:fontFamily="@font/lalezar"
                         android:gravity="center"
                         android:textColor="@color/white"
@@ -196,9 +229,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/new_currentSeason"
-                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="2dp"
-                        android:layout_marginEnd="16dp"
                         android:fontFamily="@font/lalezar"
                         android:gravity="center"
                         android:textColor="#A2A2A2"
@@ -207,16 +240,10 @@
 
                     <ImageView
                         android:id="@+id/new_playerRankImage"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_alignStart="@id/new_rankProgressBar"
-                        android:layout_alignTop="@id/new_rankProgressBar"
-                        android:layout_alignEnd="@id/new_rankProgressBar"
-                        android:layout_alignBottom="@id/new_rankProgressBar"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginBottom="20dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="36dp"
                         android:contentDescription="Rank Image" />
                 </RelativeLayout>
 
@@ -268,7 +295,7 @@
                         android:layout_below="@id/new_playerLevel"
                         android:layout_centerInParent="true"
                         android:layout_marginTop="-16dp"
-                        app:srcCompat="@drawable/blue_to_red" />
+                        android:background="@color/ToolBar" />
 
                     <TextView
                         android:id="@+id/new_playerRegion"
@@ -330,14 +357,13 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/materialCardViewMatch"
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="225dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
                 app:cardCornerRadius="30dp"
                 app:cardElevation="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView34"
@@ -354,8 +380,56 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="48dp"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/blue_to_red" />
+                        android:background="@color/ToolBar"
+                        android:scaleType="centerCrop" />
+
+                    <SeekBar
+                        android:id="@+id/new_matchesSlider"
+                        style="@android:style/Widget.Material.SeekBar"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/new_matchKDA"
+                        android:layout_alignStart="@id/new_matchAgentImage"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="32dp"
+                        android:backgroundTint="@color/ic_launcher_background"
+                        android:max="100"
+                        android:progress="5"
+                        android:progressTint="#FFFFFF"
+                        android:secondaryProgressTint="@color/ic_launcher_background"
+                        android:thumbTint="@color/light_blue_50" />
+
+                    <TextView
+                        android:id="@+id/new_matchSliderNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/new_matchKDA"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="26dp"
+                        android:fontFamily="@font/lalezar"
+                        android:text="69"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/new_RecentMatchFAB"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_below="@id/new_matchKDA"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:clickable="true"
+                        android:foregroundGravity="center"
+                        app:backgroundTint="@color/ic_launcher_background"
+                        app:fabSize="auto"
+                        app:srcCompat="@drawable/recentmatchesicon"
+                        app:tint="@color/white"
+                        tools:ignore="SpeakableTextPresentCheck" />
 
                     <TextView
                         android:id="@+id/new_matchMapName"
@@ -368,8 +442,7 @@
                         android:fontFamily="@font/lalezar"
                         android:text="Loading..."
                         android:textColor="#FFFFFF"
-                        android:textSize="18dp"
-                        android:textStyle="bold"
+                        android:textSize="18sp"
                         tools:text="Split" />
 
                     <TextView
@@ -383,8 +456,7 @@
                         android:fontFamily="@font/lalezar"
                         android:text="Loading..."
                         android:textColor="#FFFFFF"
-                        android:textSize="18dp"
-                        android:textStyle="bold"
+                        android:textSize="18sp"
                         tools:text="Competitive" />
 
                     <TextView
@@ -394,12 +466,12 @@
                         android:layout_below="@id/new_matchMapName"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="-8dp"
+                        android:layout_marginTop="-6dp"
                         android:fontFamily="@font/lalezar"
                         android:text="Loading..."
                         android:textColor="#9C9C9C"
-                        android:textSize="12dp"
-                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:textStyle="italic"
                         tools:text="London" />
 
                     <TextView
@@ -454,38 +526,33 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/new_matchGameMode"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginTop="-8dp"
+                        android:layout_marginTop="-6dp"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
                         android:fontFamily="@font/lalezar"
                         android:text="Loading..."
                         android:textColor="#9C9C9C"
-                        android:textSize="12dp"
-                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:textStyle="italic"
                         tools:text="2020-06-01" />
 
                     <ImageView
                         android:id="@+id/new_matchAgentImage"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_alignTop="@id/new_matchMapImage"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentBottom="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginStart="32dp"
-                        android:layout_marginBottom="16dp"
                         tools:src="@drawable/omen_icon" />
 
                     <TextView
                         android:id="@+id/new_matchKDA"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignTop="@id/new_matchMapImage"
-                        android:layout_alignBottom="@id/new_matchMapImage"
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/lalezar"
                         android:gravity="center"
                         android:textColor="#FFFFFF"
-                        android:textSize="25dp"
+                        android:textSize="25sp"
                         android:textStyle="bold"
                         tools:text="54/12/23" />
 
@@ -493,9 +560,8 @@
                         android:id="@+id/new_playerPosition"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignTop="@id/new_matchMapImage"
-                        android:layout_alignBottom="@id/new_matchMapImage"
                         android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginEnd="32dp"
                         android:fontFamily="@font/lalezar"
                         android:gravity="center"
@@ -509,8 +575,8 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
