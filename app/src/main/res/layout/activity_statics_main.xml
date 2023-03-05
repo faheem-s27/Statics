@@ -7,19 +7,26 @@
 
     <FrameLayout
         android:id="@+id/flFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Valorant_SplashColourBackground" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/Valorant_Red"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/Valorant_SplashColourBackground"
+        android:layout_height="64dp"
+        android:background="@color/ToolBar"
+        android:labelFor="@id/flFragment"
         android:layerType="hardware"
         android:outlineProvider="background"
         android:overScrollMode="ifContentScrolls"
-        app:itemIconTint="@color/light_blue_50"
+        android:saveEnabled="true"
+        app:itemIconSize="24dp"
+        app:itemIconTint="@color/white"
         app:itemTextColor="#FFFFFF"
         app:labelVisibilityMode="selected"
         app:layout_constraintBottom_toBottomOf="parent"

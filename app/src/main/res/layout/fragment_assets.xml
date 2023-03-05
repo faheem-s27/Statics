@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout16"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Valorant_SplashColourBackground"
@@ -10,36 +9,11 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginEnd="64dp"
-        android:backgroundTint="@color/Valorant_SplashColourBackground"
-        android:justificationMode="inter_word"
-        android:paddingLeft="32dp"
-        android:text="Agents"
-        android:textAlignment="viewStart"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:cornerRadius="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_wrapBehaviorInParent="included"
-        app:strokeColor="@color/Discord"
-        app:strokeWidth="1dp" />
-
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:scaleType="centerInside"
         android:src="@drawable/valologo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +24,7 @@
         android:id="@+id/textView35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
         android:autoSizeTextType="uniform"
         android:autoText="true"
         android:fontFamily="@font/baloo_bhai"
@@ -82,6 +56,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView35" />
+
+    <ListView
+        android:id="@+id/new_AssetsListView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="64dp"
+        android:divider="@color/Valorant_SplashColourBackground"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_AssetsText" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

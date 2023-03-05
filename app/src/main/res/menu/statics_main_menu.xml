@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/new_Stats"
-        android:icon="@drawable/details"
+        android:icon="@drawable/players_icon"
         android:title="Stats" />
     <item
         android:id="@+id/new_Live"
@@ -11,6 +11,14 @@
         android:title="Live " />
     <item
         android:id="@+id/new_Assets"
-        android:icon="@drawable/agentesicon"
+        android:icon="@drawable/rioticon"
         android:title="Assets" />
+    <item
+        android:id="@+id/new_Esports"
+        android:icon="@drawable/valorantesports"
+        android:title="ESports" />
+    <item
+        android:id="@+id/new_Settings"
+        android:icon="@drawable/newcrosshair"
+        android:title="Extras" />
 </menu>

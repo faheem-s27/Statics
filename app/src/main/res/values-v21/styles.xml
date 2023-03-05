@@ -4,7 +4,7 @@
         <item name="android:id">@android:id/background</item>
         <item name="android:padding">?attr/appWidgetPadding</item>
         <item name="appWidgetRadius">24dp</item>
-        <item name="android:background">@color/Valorant_SplashColourBackground</item>
+        <item name="android:background">@color/ToolBar</item>
     </style>
 
     <style name="Widget.VALORANT_stats.AppWidget.InnerView" parent="android:Widget">

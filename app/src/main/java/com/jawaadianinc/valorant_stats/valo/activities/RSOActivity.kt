@@ -237,7 +237,7 @@ class RSOActivity : AppCompatActivity() {
 
                 val intent = Intent(this, StaticsMainActivity::class.java)
                 intent.putExtra("key", key)
-                intent.putExtra("name", "$gameName#$gameTag")
+                intent.putExtra("playerName", "$gameName#$gameTag")
                 intent.putExtra("region", region)
                 startActivity(intent)
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout)

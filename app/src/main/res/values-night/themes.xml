@@ -11,8 +11,8 @@
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:windowContentTransitions">true</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/ic_launcher_background</item>
-        <item name="android:navigationBarColor">@color/ic_launcher_background</item>
+        <item name="android:statusBarColor">@color/ToolBar</item>
+        <item name="android:navigationBarColor">@color/ToolBar</item>
 
 
         <!-- Customize your theme here. -->
@@ -25,8 +25,8 @@
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorAccent">@color/ic_launcher_background</item>
-        <item name="android:statusBarColor">@color/ic_launcher_background</item>
-        <item name="android:navigationBarColor">@color/ic_launcher_background</item>
+        <item name="android:statusBarColor">@color/ToolBar</item>
+        <item name="android:navigationBarColor">@color/ToolBar</item>
     </style>
 
     <style name="StaticsNewMenu" parent="Theme.MaterialComponents.DayNight"></style>

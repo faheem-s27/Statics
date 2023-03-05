@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
@@ -45,7 +44,7 @@ class LoadingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
         loadingProgressBar = findViewById(R.id.progressBar4)
         updateText = findViewById(R.id.textView4)
@@ -72,7 +71,6 @@ class LoadingActivity : AppCompatActivity() {
             FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
                 SafetyNetAppCheckProviderFactory.getInstance()
             )
-            Firebase.database.setPersistenceEnabled(true)
             val database = Firebase.database
             val playersRef = database.getReference("VALORANT/key")
 
@@ -287,14 +285,14 @@ class LoadingActivity : AppCompatActivity() {
 
             } catch (e: Exception) {
                 uiThread {
-//                    val dialog = AlertDialog.Builder(this@LoadingActivity)
-//                    dialog.setTitle("Error while loading assets")
-//                    dialog.setMessage("An unknown error occurred whilst trying to retrieve Valorant assets\nPress ok to restart the app\n\nIf the problem persists, please contact the developer.")
-//                    dialog.setPositiveButton("OK") { _, _ ->
-//                        // exit the app
-//                        recreate()
-//                    }
-//                    dialog.show()
+                    val dialog = AlertDialog.Builder(this@LoadingActivity)
+                    dialog.setTitle("Error while loading assets")
+                    dialog.setMessage("Error occurred trying to retrieve Valorant assets\nPress ok to restart the app\n\nIf the problem persists, please contact the developer on discord.\nError: $e")
+                    dialog.setPositiveButton("OK") { _, _ ->
+                        // exit the app
+                        recreate()
+                    }
+                    dialog.show()
                     // Log to firebase database
                     val database = Firebase.database
                     val myRef = database.getReference("Error")

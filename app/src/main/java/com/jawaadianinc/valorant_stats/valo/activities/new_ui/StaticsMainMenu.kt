@@ -3,10 +3,12 @@ package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.renderscript.Allocation
@@ -30,9 +32,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.MMRActivity
+import com.jawaadianinc.valorant_stats.valo.activities.TrackerGGScraper
+import com.jawaadianinc.valorant_stats.valo.activities.TrackerGG_Activity
 import com.jawaadianinc.valorant_stats.valo.activities.ViewMatches
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
+import com.jawaadianinc.valorant_stats.valo.databases.TrackerDB
+import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import org.jetbrains.anko.doAsync
@@ -56,6 +62,9 @@ class StaticsMainMenu : Fragment() {
     private lateinit var seekBar: SeekBar
     var ISACTIVE = true
     private var REFRESHING = false
+    private var testing = false
+    private var JSONRanks = JSONArray()
+    private val scraper = TrackerGGScraper()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,7 +83,25 @@ class StaticsMainMenu : Fragment() {
         playerName = activity?.intent?.getStringExtra("playerName") ?: return
         region = activity?.intent?.getStringExtra("region") ?: return
         key = activity?.intent?.getStringExtra("key") ?: return
-        setup()
+
+        doAsync {
+            val URL = "https://valorant-api.com/v1/competitivetiers"
+            val json = JSONObject(URL(URL).readText()).getJSONArray("data")
+            // get last element
+            val last = json.getJSONObject(json.length() - 1)
+            JSONRanks = last.getJSONArray("tiers")
+            uiThread {
+                testPlayer("BallFondler#His", "eu")
+                getCurrentSeason()
+                setup()
+            }
+        }
+    }
+
+    private fun testPlayer(name: String, region: String) {
+        testing = true
+        playerName = name
+        this.region = region
     }
 
     private fun dissapearViews() {
@@ -162,9 +189,10 @@ class StaticsMainMenu : Fragment() {
         newPlayerRegion?.text = region.uppercase(Locale.ROOT)
 
         val nameSplit = playerName.split("#")
-        puuid = PlayerDatabase(requireActivity()).getPUUID(nameSplit[0], nameSplit[1])
-        val region = PlayerDatabase(requireActivity()).getRegion(puuid!!)
-
+        if (!testing) {
+            puuid = PlayerDatabase(requireActivity()).getPUUID(nameSplit[0], nameSplit[1])
+            val region = PlayerDatabase(requireActivity()).getRegion(puuid!!)
+        }
         Log.d("newMainMenu", "playerName: $playerName, region: $region")
 
         seekBar = view?.findViewById(R.id.new_matchesSlider)!!
@@ -178,6 +206,34 @@ class StaticsMainMenu : Fragment() {
             startActivity(intent)
             activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
+
+        Log.d("newMainMenu", "Loading Stats Button")
+        val StatsButton: Button = view?.findViewById(R.id.new_StatsButton)!!
+        StatsButton.setOnClickListener {
+            // show a dialog to say that these stats are updated once a day
+            // only show this dialog once
+            val prefs = activity?.getSharedPreferences("trackerGGDialog", Context.MODE_PRIVATE)!!
+            val editor = prefs.edit()
+            if (!prefs.getBoolean("shown", false)) {
+                androidx.appcompat.app.AlertDialog.Builder(
+                    requireActivity(),
+                    R.style.AlertDialogTheme
+                ).setTitle("Disclaimer!")
+                    .setMessage("These stats are updated only once a day, so they may not be accurate.")
+                    .setPositiveButton("Ok") { _, _ ->
+                        editor.putBoolean("shown", true)
+                        editor.apply()
+                        checkForTrackerGG(nameSplit[0], nameSplit[1])
+                    }
+                    .setNegativeButton("Cancel") { _, _ ->
+                        Toast.makeText(requireActivity(), "Cancelled", Toast.LENGTH_SHORT).show()
+                    }
+                    .setIcon(android.R.drawable.ic_dialog_alert).show()
+            } else {
+                checkForTrackerGG(nameSplit[0], nameSplit[1])
+            }
+        }
+        Log.d("newMainMenu", "Loaded Stats Button")
 
         //loadFromDatabase(playerName, region)
         try {
@@ -195,17 +251,17 @@ class StaticsMainMenu : Fragment() {
         val riotID = playerNameSplit[1]
         val allmatches =
             "https://api.henrikdev.xyz/valorant/v3/matches/$region/$riotName/$riotID?size=1"
-        val ranksURL = "https://api.henrikdev.xyz/valorant/v1/mmr-history/$region/$riotName/$riotID"
+        val ranksURL = "https://api.henrikdev.xyz/valorant/v2/mmr/$region/$riotName/$riotID"
 
         dissapearViews()
-        getCurrentSeason()
 
         doAsync {
             val lastMatchData = Henrik(requireContext()).henrikAPI(allmatches)
             val ranksData = Henrik(requireContext()).henrikAPI(ranksURL)
+
             uiThread {
                 // check if the status code is 200
-                if (lastMatchData.getInt("status") == 200) {
+                if (lastMatchData.getInt("status") == 200 && ranksData.getInt("status") == 200) {
                     loadRankDetails(ranksData)
                     processPlayerDetails(lastMatchData)
                     updateTimer()
@@ -220,11 +276,11 @@ class StaticsMainMenu : Fragment() {
                             lastMatchData.getInt(
                                 "status"
                             )
-                        }, please report this to the developer."
+                        } ${ranksData.getInt("status")}, report will be sent to the developer."
                     )
                     builder.setPositiveButton("OK") { dialog, which ->
                         // finish the fragment
-                        requireActivity().finish()
+                        //requireActivity().finish()
                     }
                     val dialog: AlertDialog = builder.create()
                     dialog.show()
@@ -235,8 +291,10 @@ class StaticsMainMenu : Fragment() {
                         "errorMessage" to "JSON: $lastMatchData",
                         "playerName" to playerName,
                         "region" to region,
-                        "key" to key
-                    )
+                        "key" to key,
+                        "time" to convertTime(System.currentTimeMillis()),
+
+                        )
                     FirebaseDatabase.getInstance().reference.child("Statics/Errors/")
                         .child("NewMainMenu").push().setValue(error)
                 }
@@ -244,10 +302,30 @@ class StaticsMainMenu : Fragment() {
         }
     }
 
+    private fun convertTime(time: Long): String {
+        val date = Date(time)
+        val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+        return format.format(date)
+    }
+
+
     private fun processPlayerDetails(matchData: JSONObject) {
         val matchDataArray: JSONObject
         // hashmap of player name and score
         val playerScore = HashMap<String, Int>()
+
+        // check if the size of the data array is 0 and tell the user to play a match
+        if (matchData.getJSONArray("data").length() == 0) {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("No Matches Found")
+            builder.setMessage("You have not played any matches in a long time so Statics is unable to process your stats. Please play a match and try again.")
+            builder.setPositiveButton("OK") { dialog, which ->
+            }
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+
+            return
+        }
 
         try {
             matchDataArray = matchData.getJSONArray("data").getJSONObject(0)
@@ -331,6 +409,7 @@ class StaticsMainMenu : Fragment() {
         Picasso.get().load(wideImage).fit().centerCrop().into(newPlayerWideImage)
     }
 
+
     private fun loadRankDetails(rankHistory: JSONObject) {
         val newPlayerRankTimePlayedText =
             view?.findViewById<TextView>(R.id.new_playerRankTimePlayed)
@@ -341,25 +420,35 @@ class StaticsMainMenu : Fragment() {
         val newPlayerRankTitleText = view?.findViewById<TextView>(R.id.new_playerRankTitle)
         val newPlayerRankImage = view?.findViewById<ImageView>(R.id.new_playerRankImage)
         val newPlayerPastsRanks = view?.findViewById<MaterialButton>(R.id.new_playerPastRanks)
+
+        val newPeakRankText = view?.findViewById<TextView>(R.id.new_peakplayerRankTitle)
+        val newPeakSeason = view?.findViewById<TextView>(R.id.new_peakSeason)
+        val newPeakRankImage = view?.findViewById<ImageView>(R.id.new_peakplayerRankImage)
+
         try {
-            val rankData = rankHistory.getJSONArray("data").getJSONObject(0)
+            val rankData = rankHistory.getJSONObject("data").getJSONObject("current_data")
             val title = rankData.getString("currenttierpatched")
             val progress = rankData.getString("ranking_in_tier")
             val change = rankData.getString("mmr_change_to_last_game")
-            val dateRaw = rankData.getString("date_raw")
-
-            newPlayerRankTimePlayedText?.text = "Comped ${timeAgo(dateRaw.toLong())}"
+            //val dateRaw = rankData.getString("date_raw")
+            //newPlayerRankTimePlayedText?.text = "Comped ${timeAgo(dateRaw.toLong())}"
 
             // if change is positive, then the progress bar colour is Valorant blue, else it is red
             if (change.toInt() > 0) {
                 newRankProgressBar?.setIndicatorColor(resources.getColor(R.color.Valorant_Blue))
                 newPlayerChangeRRText?.text = "+$change"
                 newPlayerChangeRRText?.setTextColor(resources.getColor(R.color.Valorant_Blue))
+                // change stroke colour to blue
+                newPlayerPastsRanks?.strokeColor =
+                    resources.getColorStateList(R.color.Valorant_Blue)
 
             } else {
                 newRankProgressBar?.setIndicatorColor(resources.getColor(R.color.Valorant_Red))
                 newPlayerChangeRRText?.text = change
                 newPlayerChangeRRText?.setTextColor(resources.getColor(R.color.Valorant_Red))
+                // change stroke colour to red
+                newPlayerPastsRanks?.strokeColor =
+                    resources.getColorStateList(R.color.Valorant_Red)
             }
 
             newPlayerRRText?.text = "$progress/100"
@@ -379,6 +468,15 @@ class StaticsMainMenu : Fragment() {
                 activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             }
 
+            val peakRankData = rankHistory.getJSONObject("data").getJSONObject("highest_rank")
+            val peakTitle = peakRankData.getString("patched_tier")
+            newPeakRankText?.text = peakTitle
+            val peakSeason = peakRankData.getString("season")
+            newPeakSeason?.text = formatSeasonPeakName(peakSeason)
+            Picasso.get().load(findPeakRankImage(peakTitle)).fit().centerInside()
+                .into(newPeakRankImage)
+
+
         } catch (e: Exception) {
             Log.d("newMainMenu", "Error for rank: ${e.message}")
             try {
@@ -392,6 +490,24 @@ class StaticsMainMenu : Fragment() {
                 Log.d("newMainMenu", "Error for rank: ${e.message}")
             }
         }
+    }
+
+    private fun findPeakRankImage(RankName: String): String {
+        // Capitalise the entire string
+        val rankName = RankName.uppercase(Locale.ROOT)
+        for (i in 0 until JSONRanks.length()) {
+            if (JSONRanks.getJSONObject(i).getString("tierName") == rankName) {
+                return JSONRanks.getJSONObject(i).getString("largeIcon")
+            }
+        }
+        return "https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/smallicon.png"
+    }
+
+    private fun formatSeasonPeakName(season: String): String {
+        // its formatted as "e5a1" where E is the Episode and A is the Act so return "Episode 5 Act 1"
+        val episode = season[1].toString().toInt()
+        val act = season[3].toString().toInt()
+        return "ACT $act - EPISODE $episode"
     }
 
     private fun timeAgo(unixTime: Long): String {
@@ -436,7 +552,7 @@ class StaticsMainMenu : Fragment() {
         val HOUR_MILLIS = 60 * MINUTE_MILLIS
         val DAY_MILLIS = 24 * HOUR_MILLIS
         return if (diff < MINUTE_MILLIS) {
-            "just now"
+            "Just now"
         } else if (diff < 2 * MINUTE_MILLIS) {
             "a minute ago"
         } else if (diff < 50 * MINUTE_MILLIS) {
@@ -446,7 +562,7 @@ class StaticsMainMenu : Fragment() {
         } else if (diff < 24 * HOUR_MILLIS) {
             (diff / HOUR_MILLIS).toString() + " hours ago"
         } else if (diff < 48 * HOUR_MILLIS) {
-            "yesterday"
+            "Yesterday"
         } else {
             (diff / DAY_MILLIS).toString() + " days ago"
         }
@@ -469,13 +585,23 @@ class StaticsMainMenu : Fragment() {
         val newCurrentSeasonText = view?.findViewById<TextView>(R.id.new_currentSeason)
         val newCurrentSeasonEndingText = view?.findViewById<TextView>(R.id.new_currentSeasonEnding)
 
+        Log.d("newMainMenu", "Getting current season")
+
         doAsync {
             val seasonsJSON = JSONObject(URL(URL).readText()).getJSONArray("data")
-            // go to last index
-            val currentSeason = seasonsJSON.getJSONObject(seasonsJSON.length() - 1)
+            // go to last index which has parentUUID not null
+            var currentSeason = seasonsJSON.getJSONObject(seasonsJSON.length() - 1)
+            val type = currentSeason.getString("type")
+            if (type != "EAresSeasonType::Act") {
+                currentSeason = seasonsJSON.getJSONObject(seasonsJSON.length() - 2)
+                Log.d("newMainMenu", "Current season is not an act, getting previous season")
+
+            }
             val seasonName = currentSeason.getString("displayName")
             val seasonEnd = currentSeason.getString("endTime")
             val parentUUID = currentSeason.getString("parentUuid")
+
+            Log.d("newMainMenu", "Current season is $seasonName")
 
             // find the parent season
             for (i in 0 until seasonsJSON.length()) {
@@ -485,7 +611,6 @@ class StaticsMainMenu : Fragment() {
                     uiThread {
                         val seasonName = "$seasonName - $parentName"
                         newCurrentSeasonText?.text = seasonName
-
                         // parse the seasonEnd date
                         val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(seasonEnd)
                         val formatter = SimpleDateFormat("dd MMM yyyy")
@@ -493,7 +618,12 @@ class StaticsMainMenu : Fragment() {
                         // convert formatter date to unix time
                         val unixTime = date?.time?.div(1000)
                         val timeLeft = timeAgo(unixTime!!)
-                        newCurrentSeasonEndingText?.text = "$formattedDate ($timeLeft)"
+                        newCurrentSeasonEndingText?.text = "$formattedDate\n($timeLeft)"
+
+                        Log.d(
+                            "newMainMenu",
+                            "Current season is $seasonName, ending on $formattedDate ($timeLeft)"
+                        )
                     }
                     break
                 }
@@ -546,11 +676,16 @@ class StaticsMainMenu : Fragment() {
         val db = AssetsDatabase(requireContext())
 
         val metaData = lastMatchData.getJSONObject("metadata")
+        val matchID = metaData.getString("matchid")
         newMatchMapNameText?.text = metaData.getString("map")
 
         val mapImage = db.retrieveImage(metaData.getString("map"))
         val blurred = myblur(mapImage, requireContext())
         newMapMatchImage?.setImageBitmap(blurred)
+
+        newMapMatchImage?.setOnClickListener {
+            matchActivityStart(playerName.split("#")[0], playerName.split("#")[1], matchID)
+        }
 
         newMatchGameModeText?.text = metaData.getString("mode")
         newMatchRegionText?.text = metaData.getString("cluster")
@@ -658,4 +793,164 @@ class StaticsMainMenu : Fragment() {
             }
         })
     }
+
+    private fun matchActivityStart(Name: String, ID: String, matchID: String) {
+        val matchintent = Intent(requireActivity(), MatchHistoryActivity::class.java)
+        matchintent.putExtra("RiotName", Name)
+        matchintent.putExtra("RiotID", ID)
+        matchintent.putExtra("MatchNumber", 0)
+        matchintent.putExtra("MatchID", matchID)
+        matchintent.putExtra("Region", region)
+        startActivity(matchintent)
+    }
+
+    private fun checkForTrackerGG(gameName: String, gameTag: String) {
+        // show loading dialog
+        // show an alert dialog with options to choose which game mode to view stats on
+        val builder =
+            androidx.appcompat.app.AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
+        builder.setTitle("Choose a game mode for $gameName#$gameTag")
+        val gameModes = arrayOf("Competitive", "Unrated", "Spike Rush")
+        var mode = ""
+        builder.setItems(gameModes) { _, which ->
+            when (which) {
+                0 -> {
+                    // ranked
+                    mode = "competitive"
+                    loadTrackerGG(gameName, gameTag, mode)
+                }
+                1 -> {
+                    // unrated
+                    mode = "unrated"
+                    loadTrackerGG(gameName, gameTag, mode)
+                }
+                2 -> {
+                    // competitive
+                    mode = "spikerush"
+                    loadTrackerGG(gameName, gameTag, mode)
+                }
+            }
+        }
+        builder.show()
+    }
+
+    private fun loadTrackerGG(gameName: String, gameTag: String, mode: String) {
+        val progressDoalog = ProgressDialog(requireActivity())
+        progressDoalog.max = 5
+        progressDoalog.setMessage("Compiling stats...")
+        progressDoalog.setTitle("$gameName#$gameTag's $mode stats")
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        progressDoalog.show()
+
+        val db = TrackerDB(requireActivity())
+
+        doAsync {
+            try {
+                val json = scraper.getProfile(gameName, gameTag)
+                uiThread {
+                    progressDoalog.progress = 1
+                }
+                val privacy =
+                    json.getJSONObject("data").getJSONObject("metadata").getString("privacy")
+                if (privacy == "public") {
+                    if (!db.checkIfDataExists(mode, playerName)) {
+                        scraper.getMaps(mode)
+                        uiThread {
+                            progressDoalog.progress = 2
+                        }
+                        scraper.getAgents(mode)
+                        uiThread {
+                            progressDoalog.progress = 3
+                        }
+                        scraper.getWeapons(mode)
+                        uiThread {
+                            progressDoalog.progress = 4
+                        }
+
+                        scraper.putToDatabase(mode, requireActivity(), playerName)
+                        Thread.sleep(500)
+                        uiThread {
+                            progressDoalog.progress = 5
+                            progressDoalog.dismiss()
+                            startTrackerGG(mode)
+                        }
+                    } else if (db.checkIfNewDataNeeded(mode, playerName)) {
+                        Log.d("TrackerGG", "Data for $mode exists, but is old, updating")
+
+                        scraper.getMaps(mode)
+                        uiThread {
+                            progressDoalog.progress = 2
+                        }
+                        scraper.getAgents(mode)
+                        uiThread {
+                            progressDoalog.progress = 3
+                        }
+                        scraper.getWeapons(mode)
+                        uiThread {
+                            progressDoalog.progress = 4
+                        }
+                        Thread.sleep(500)
+                        uiThread {
+                            scraper.putToDatabase(mode, requireActivity(), playerName)
+                            progressDoalog.progress = 5
+                            progressDoalog.dismiss()
+                            startTrackerGG(mode)
+                        }
+                    } else {
+                        Log.d("TrackerGG", "Data for $mode exists, starting activity")
+                        progressDoalog.progress = 5
+                        progressDoalog.dismiss()
+                        startTrackerGG(mode)
+                    }
+
+                } else {
+                    uiThread {
+                        progressDoalog.dismiss()
+                        // show dialog saying player is not signed in at tracker.gg
+                        val builder =
+                            androidx.appcompat.app.AlertDialog.Builder(
+                                requireActivity(),
+                                R.style.AlertDialogTheme
+                            )
+                        builder.setTitle("Profile is private")
+                        builder.setMessage("To continue, you need to be signed in at tracker.gg and have your profile set to public.")
+                        builder.setPositiveButton("Sign in") { _, _ ->
+                            signIntoTrackerGG(gameName, gameTag)
+                        }
+                        builder.setNegativeButton("Cancel") { _, _ ->
+                            Toast.makeText(
+                                requireActivity(),
+                                "Request cancelled",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        builder.show()
+                    }
+                }
+
+            } catch (e: Exception) {
+                uiThread {
+                    progressDoalog.dismiss()
+                    Toast.makeText(requireActivity(), "Error: $e", Toast.LENGTH_LONG).show()
+                    Log.d("TrackerGG", "Error: $e")
+                }
+            }
+        }
+    }
+
+    private fun startTrackerGG(mode: String) {
+        val intent = Intent(requireActivity(), TrackerGG_Activity::class.java)
+        intent.putExtra("mode", mode)
+        intent.putExtra("playerName", playerName)
+        startActivity(intent)
+        activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+    }
+
+    private fun signIntoTrackerGG(name: String, tag: String) {
+        val signInURL = "https://tracker.gg/valorant/profile/riot/$name%23$tag/overview"
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(signInURL)
+        startActivity(intent)
+    }
+
 }

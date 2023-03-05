@@ -34,6 +34,8 @@ class StaticsMainActivity : AppCompatActivity() {
         val statsFragment = StaticsMainMenu()
         val LiveStatsFragment = LiveStatsFragment()
         val AssetsFragment = AssetsFragment()
+        val ESportsFragment = ESportsFragment()
+        val SettingsFragment = SettingsFragment()
         val fragmentManager = supportFragmentManager
         activeFragment = statsFragment
 
@@ -58,6 +60,8 @@ class StaticsMainActivity : AppCompatActivity() {
             add(R.id.container, AssetsFragment, "1").hide(AssetsFragment)
             add(R.id.container, LiveStatsFragment, "2").hide(LiveStatsFragment)
             add(R.id.container, statsFragment, "3")
+            add(R.id.container, ESportsFragment, "4").hide(ESportsFragment)
+            add(R.id.container, SettingsFragment, "5").hide(SettingsFragment)
         }.commit()
 
         bottomNavBar.setOnNavigationItemSelectedListener {
@@ -72,6 +76,14 @@ class StaticsMainActivity : AppCompatActivity() {
                 }
                 R.id.new_Assets -> {
                     changeFragment(AssetsFragment)
+                    true
+                }
+                R.id.new_Settings -> {
+                    changeFragment(SettingsFragment)
+                    true
+                }
+                R.id.new_Esports -> {
+                    changeFragment(ESportsFragment)
                     true
                 }
                 else -> {

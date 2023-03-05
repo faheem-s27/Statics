@@ -4,7 +4,8 @@
     tools:context="com.jawaadianinc.valorant_stats.valo.ValorantUpdatesActivity">
     <item
         android:id="@+id/new_refresh"
-        android:icon="@android:drawable/ic_popup_sync"
+        android:icon="@drawable/refresh_icon"
+        android:iconTintMode="src_in"
         android:title="Refresh"
         app:showAsAction="always" />
 </menu>
