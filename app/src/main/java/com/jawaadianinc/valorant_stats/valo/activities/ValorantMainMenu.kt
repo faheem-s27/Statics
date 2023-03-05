@@ -868,7 +868,6 @@ class ValorantMainMenu : AppCompatActivity() {
         }
     }
 
-
     private fun getRank(RiotName: String, RiotID: String) {
         val rankImageMainMenu: ImageView = findViewById(R.id.rankImageMainMenu)
         val rankPatchedMainMenu: TextView = findViewById(R.id.rankPatchedMainMenu)

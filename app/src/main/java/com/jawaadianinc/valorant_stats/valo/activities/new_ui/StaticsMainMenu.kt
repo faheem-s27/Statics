@@ -84,6 +84,8 @@ class StaticsMainMenu : Fragment() {
         region = activity?.intent?.getStringExtra("region") ?: return
         key = activity?.intent?.getStringExtra("key") ?: return
 
+        dissapearViews()
+
         doAsync {
             val URL = "https://valorant-api.com/v1/competitivetiers"
             val json = JSONObject(URL(URL).readText()).getJSONArray("data")
@@ -91,7 +93,7 @@ class StaticsMainMenu : Fragment() {
             val last = json.getJSONObject(json.length() - 1)
             JSONRanks = last.getJSONArray("tiers")
             uiThread {
-                testPlayer("BallFondler#His", "eu")
+                //testPlayer("BallFondler#His", "eu")
                 getCurrentSeason()
                 setup()
             }
@@ -243,7 +245,6 @@ class StaticsMainMenu : Fragment() {
         }
     }
 
-
     private fun getLatestDetails() {
         // split the player name into two parts by # and set it to RiotName and RiotID
         val playerNameSplit = playerName.split("#".toRegex()).toTypedArray()
@@ -307,7 +308,6 @@ class StaticsMainMenu : Fragment() {
         val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         return format.format(date)
     }
-
 
     private fun processPlayerDetails(matchData: JSONObject) {
         val matchDataArray: JSONObject
@@ -407,6 +407,7 @@ class StaticsMainMenu : Fragment() {
         Picasso.get().load(image).fit().centerCrop()
             .transform(BlurTransformation(requireContext())).into(newPlayerBackgroundImage)
         Picasso.get().load(wideImage).fit().centerCrop().into(newPlayerWideImage)
+        StaticsMainActivity.playerImage = image
     }
 
 

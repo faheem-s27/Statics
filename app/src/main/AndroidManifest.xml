@@ -24,13 +24,6 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".valo.activities.new_ui.StaticsMainMenu"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".valo.activities.chat.ChatsForumActivity"
             android:exported="false">
             <meta-data

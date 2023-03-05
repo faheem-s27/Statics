@@ -23,7 +23,6 @@
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:backgroundTint="@color/Valorant_SplashColourBackground"
@@ -39,7 +38,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_AssetsText"
         app:layout_wrapBehaviorInParent="included"
         app:strokeColor="@color/ToolBar"
         app:strokeWidth="2dp" />

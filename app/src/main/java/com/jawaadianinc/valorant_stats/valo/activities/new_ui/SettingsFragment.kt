@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +13,12 @@ import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
+import com.jawaadianinc.valorant_stats.valo.activities.chat.ChatsForumActivity
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 
 class SettingsFragment : Fragment() {
     lateinit var playerName: String
+    var playerImage: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,9 +44,30 @@ class SettingsFragment : Fragment() {
             alert.show()
         }
 
+
+        val ChatsButton = view.findViewById<View>(R.id.new_ExtrasChatButton)
+        ChatsButton.setOnClickListener {
+            // get the player image from the fragments activity
+            playerImage = StaticsMainActivity.playerImage
+            Log.d(
+                "SettingsFragment",
+                "playerImage: $playerImage" + " Fragment: " + StaticsMainActivity.playerImage
+            )
+            if (playerImage == "") {
+                // Tell the user to wait
+                Toast.makeText(requireActivity(), "Please wait...", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val intent = Intent(requireActivity(), ChatsForumActivity::class.java)
+            intent.putExtra("playerName", playerName)
+            intent.putExtra("playerImage", playerImage)
+            startActivity(intent)
+            activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
+
     }
 
-    fun logOut(name: String) {
+    private fun logOut(name: String) {
         val playerDB = PlayerDatabase(requireActivity())
         if (playerDB.logOutPlayer(name)) {
             val widgetIntent = Intent(requireActivity(), LastMatchWidget::class.java)

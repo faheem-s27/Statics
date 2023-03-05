@@ -103,5 +103,9 @@ class StaticsMainActivity : AppCompatActivity() {
         activeFragment = fragment
     }
 
+    companion object {
+        var playerImage: String = ""
+    }
+
 
 }

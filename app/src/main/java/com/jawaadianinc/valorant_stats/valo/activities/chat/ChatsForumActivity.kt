@@ -1,13 +1,12 @@
 package com.jawaadianinc.valorant_stats.valo.activities.chat
 
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.*
 import com.jawaadianinc.valorant_stats.databinding.ActivityChatsForumBinding
+import com.squareup.picasso.Picasso
 
 class ChatsForumActivity : AppCompatActivity() {
 
@@ -18,6 +17,8 @@ class ChatsForumActivity : AppCompatActivity() {
     private lateinit var ChatReference: DatabaseReference
     private lateinit var playerName: String
     private lateinit var playerImage: String
+    private lateinit var speakerText: TextView
+    private lateinit var speakerImage: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,10 +29,12 @@ class ChatsForumActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.title = "Chats & Forum"
+        supportActionBar?.title = "Statics Chat"
         toolbar.setNavigationOnClickListener {
             finish()
         }
+
+
 
         sendMessagesButton = binding.sendMessageFAB
         messageTextBox = binding.sendMesssageEditText
@@ -39,6 +42,15 @@ class ChatsForumActivity : AppCompatActivity() {
         ChatReference = FirebaseDatabase.getInstance().reference.child("VALORANT/Chats/")
         playerName = intent.getStringExtra("playerName").toString()
         playerImage = intent.getStringExtra("playerImage").toString()
+
+        speakerText = binding.chatSpeaker
+        speakerText.text = "Speaking as: $playerName"
+        speakerImage = binding.chatSpeakerIcon
+        Picasso
+            .get()
+            .load(playerImage)
+            .fit()
+            .into(speakerImage)
 
         sendMessagesButton.setOnClickListener {
             val message = messageTextBox.text.toString()
