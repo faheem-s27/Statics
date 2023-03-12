@@ -1,5 +1,6 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
+import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,8 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsAgentsActivity
+import com.jawaadianinc.valorant_stats.valo.cosmetics.CosmeticsListActivity
 import com.squareup.picasso.Picasso
 
 class AssetsButtonNewAdapter(
@@ -43,31 +46,80 @@ class AssetsButtonNewAdapter(
             //Log.d("AssetsButtonAdapter", "Got Asset Image: $i")
         }
 
-        Log.d("AssetsButtonAdapter", "Got Asset Images for ${assetName[position]}: ${images.size}")
+        assetNameTextView?.setOnClickListener {
+            if (assetName[position] == "Agents") {
+                val intent = Intent(context.requireActivity(), CosmeticsAgentsActivity::class.java)
+                intent.putExtra("data", "agent")
+                context.requireActivity().startActivity(intent)
+                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            } else if (assetName[position] == "Buddies") {
+                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                intent.putExtra("cosmetic", "buddies")
+                context.requireActivity().startActivity(intent)
+                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            } else if (assetName[position] == "Competitive Tiers") {
+                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                intent.putExtra("cosmetic", "ranks")
+                context.requireActivity().startActivity(intent)
+                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            }
+            // do the same for "Maps", "Level Borders", "Player Cards", "Weapons"
+            else if (assetName[position] == "Maps") {
+                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                intent.putExtra("cosmetic", "maps")
+                context.requireActivity().startActivity(intent)
+                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            } else if (assetName[position] == "Level Borders") {
+                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                intent.putExtra("cosmetic", "borders")
+                context.requireActivity().startActivity(intent)
+                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            } else if (assetName[position] == "Player Cards") {
+                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                intent.putExtra("cosmetic", "cards")
+                intent.putExtra("size", "large")
+                context.requireActivity().startActivity(intent)
+                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            } else if (assetName[position] == "Weapons") {
+                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                intent.putExtra("cosmetic", "weapons")
+                context.requireActivity().startActivity(intent)
+                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            } else if (assetName[position] == "Sprays") {
+                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                intent.putExtra("cosmetic", "sprays")
+                context.requireActivity().startActivity(intent)
+                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            }
+        }
+
         if (images.isNotEmpty()) {
             images.shuffle()
-
-            // a smooth fade in for the new image with Picasso
-
-
             Picasso
                 .get()
                 .load(images[0])
                 .placeholder(assetImage!!.drawable)
-                .fit()
-                .centerInside()
-                .into(assetImage, object : com.squareup.picasso.Callback {
-                    override fun onSuccess() {
-//                        assetImage.alpha = 0f
-//                          assetImage.animate().setDuration(300).alpha(1f).start()
-
+                .into(object : com.squareup.picasso.Target {
+                    override fun onBitmapLoaded(
+                        bitmap: android.graphics.Bitmap?,
+                        from: Picasso.LoadedFrom?
+                    ) {
+                        // fade in the new image
+                        assetImage.animate().alpha(0f).setDuration(200).withEndAction {
+                            assetImage.setImageBitmap(bitmap)
+                            assetImage.animate().alpha(1f).setDuration(200).start()
+                        }
                     }
 
-                    override fun onError(e: Exception?) {
-                        Log.d(
-                            "AssetsButtonAdapter",
-                            "Failed to load image for ${assetName[position]}"
-                        )
+                    override fun onBitmapFailed(
+                        e: java.lang.Exception?,
+                        errorDrawable: android.graphics.drawable.Drawable?
+                    ) {
+                        Log.d("AssetsButtonAdapter", "Failed to load image")
+                    }
+
+                    override fun onPrepareLoad(placeHolderDrawable: android.graphics.drawable.Drawable?) {
+                        Log.d("AssetsButtonAdapter", "Preparing to load image")
                     }
                 })
         }

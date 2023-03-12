@@ -29,6 +29,8 @@ class AssetsDatabase(context: Context) : SQLiteOpenHelper(context, "ValoAssets.d
         contentValues.put(Companion.Name, formattedName)
         contentValues.put(Companion.Image, getBitmapAsByteArray(Image))
         val success = db.insert(ValoAssets, null, contentValues) != -1L
+        // close the database
+        contentValues.clear()
         db.close()
 
         // Return true if the insertion was successful
@@ -98,7 +100,7 @@ class AssetsDatabase(context: Context) : SQLiteOpenHelper(context, "ValoAssets.d
         val formattedName = Name.replace("'", "")
         val db = this.readableDatabase
         val cursor = db.rawQuery(
-            "SELECT ${Companion.UUID} FROM $ValoAssets WHERE ${Companion.UUID} = '$UUID' AND ${Companion.Name} = '$formattedName'",
+            "SELECT * FROM $ValoAssets WHERE ${Companion.UUID} = '$UUID' AND ${Companion.Name} = '$formattedName'",
             null
         )
         val exists = cursor.count > 0

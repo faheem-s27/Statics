@@ -29,6 +29,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.firebase.database.FirebaseDatabase
+import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.MMRActivity
@@ -65,6 +66,7 @@ class StaticsMainMenu : Fragment() {
     private var testing = false
     private var JSONRanks = JSONArray()
     private val scraper = TrackerGGScraper()
+    lateinit var progressDialog: androidx.appcompat.app.AlertDialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,6 +81,9 @@ class StaticsMainMenu : Fragment() {
         //binding = ActivityStaticsMainMenuBinding.inflate(layoutInflater)
         toolbar = view.findViewById(R.id.new_mainMenuToolBar)
         //activity.setSupportActionBar(toolbar)
+        progressDialog =
+            ProgressDialogStatics().setProgressDialog(requireActivity(), "Loading data...")
+        progressDialog.show()
 
         playerName = activity?.intent?.getStringExtra("playerName") ?: return
         region = activity?.intent?.getStringExtra("region") ?: return
@@ -316,6 +321,17 @@ class StaticsMainMenu : Fragment() {
 
         // check if the size of the data array is 0 and tell the user to play a match
         if (matchData.getJSONArray("data").length() == 0) {
+            StaticsMainActivity.playerImage =
+                "https://media.valorant-api.com/playercards/9fb348bc-41a0-91ad-8a3e-818035c4e561/smallart.png"
+            StaticsMainActivity.largeplayerImage =
+                "https://media.valorant-api.com/playercards/9fb348bc-41a0-91ad-8a3e-818035c4e561/largeart.png"
+            val newPlayerBackgroundImage = view?.findViewById<ImageView>(R.id.new_playerBackground)
+            val newPlayerWideImage = view?.findViewById<ImageView>(R.id.new_playerWideImage)
+            Picasso.get().load(StaticsMainActivity.playerImage).fit().centerCrop()
+                .transform(BlurTransformation(requireContext())).into(newPlayerBackgroundImage)
+            Picasso.get().load(StaticsMainActivity.largeplayerImage).fit().centerCrop()
+                .into(newPlayerWideImage)
+
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("No Matches Found")
             builder.setMessage("You have not played any matches in a long time so Statics is unable to process your stats. Please play a match and try again.")
@@ -397,6 +413,8 @@ class StaticsMainMenu : Fragment() {
         val image = currentPlayer.getJSONObject("assets").getJSONObject("card").getString("large")
         val wideImage =
             currentPlayer.getJSONObject("assets").getJSONObject("card").getString("wide")
+        val smallImage =
+            currentPlayer.getJSONObject("assets").getJSONObject("card").getString("small")
         val newPlayerTitleText = view?.findViewById<TextView>(R.id.new_playerTitle)
         val newPlayerLevelText = view?.findViewById<TextView>(R.id.new_playerLevel)
         val newPlayerBackgroundImage = view?.findViewById<ImageView>(R.id.new_playerBackground)
@@ -407,7 +425,7 @@ class StaticsMainMenu : Fragment() {
         Picasso.get().load(image).fit().centerCrop()
             .transform(BlurTransformation(requireContext())).into(newPlayerBackgroundImage)
         Picasso.get().load(wideImage).fit().centerCrop().into(newPlayerWideImage)
-        StaticsMainActivity.playerImage = image
+        StaticsMainActivity.playerImage = smallImage
     }
 
 
@@ -637,6 +655,9 @@ class StaticsMainMenu : Fragment() {
         if (timer != null) {
             timer!!.cancel()
         }
+
+        progressDialog.dismiss()
+
         timer = object : CountDownTimer(60000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 if (ISACTIVE) toolbar.subtitle =

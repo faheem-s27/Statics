@@ -78,25 +78,6 @@ class LoadingActivity : AppCompatActivity() {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     // Log.d("Statics", "Key is: " + dataSnapshot.value)
                     key = (dataSnapshot.value as String?).toString()
-
-                    loadingProgressBar.alpha = 0.0f
-                    updateText.alpha = 0.0f
-
-                    loadingProgressBar.translationY = +100f
-                    updateText.translationY = +100f
-
-                    loadingProgressBar.animate().alpha(1f).translationYBy(-100f).setInterpolator {
-                        it * it * it * (it * (it * 6 - 15) + 10)
-                    }.duration = 1000
-                    updateText.animate().alpha(1f).translationYBy(-100f).setInterpolator {
-                        it * it * it * (it * (it * 6 - 15) + 10)
-                    }.duration = 1000
-
-                    backgroundIMG.alpha = 0f
-                    backgroundIMG.animate().setDuration(1500).alpha(1f).setInterpolator {
-                        it * it * it * (it * (it * 6 - 15) + 10)
-                    }.start()
-
                     addAssetsToDatabase()
                 }
 
@@ -110,6 +91,23 @@ class LoadingActivity : AppCompatActivity() {
     }
 
     private fun loadUI() {
+        loadingProgressBar.alpha = 0.0f
+        updateText.alpha = 0.0f
+
+        loadingProgressBar.translationY = +100f
+        updateText.translationY = +100f
+
+        loadingProgressBar.animate().alpha(1f).translationYBy(-100f).setInterpolator {
+            it * it * it * (it * (it * 6 - 15) + 10)
+        }.duration = 1000
+        updateText.animate().alpha(1f).translationYBy(-100f).setInterpolator {
+            it * it * it * (it * (it * 6 - 15) + 10)
+        }.duration = 1000
+
+        backgroundIMG.alpha = 0f
+        backgroundIMG.animate().setDuration(1500).alpha(1f).setInterpolator {
+            it * it * it * (it * (it * 6 - 15) + 10)
+        }.start()
         updateText.text = "Checking connection"
     }
 
@@ -194,7 +192,7 @@ class LoadingActivity : AppCompatActivity() {
                                     }
                                 })
                         }
-                        Thread.sleep(100)
+                        Thread.sleep(200)
                     }
 
                     for (i in 0 until mapData.length()) {
@@ -241,7 +239,7 @@ class LoadingActivity : AppCompatActivity() {
                                     }
                                 })
                         }
-                        Thread.sleep(100)
+                        Thread.sleep(200)
                     }
 
                     for (i in 0 until titlesData.length()) {
@@ -266,7 +264,7 @@ class LoadingActivity : AppCompatActivity() {
                                     "Failed to add $titleName details"
                                 )
                             }
-                            Thread.sleep(100)
+                            Thread.sleep(200)
                         }
                     }
                 }
@@ -325,6 +323,10 @@ class LoadingActivity : AppCompatActivity() {
             val PUUID =
                 PlayerDatabase(this).getPUUID(valoName.split("#")[0], valoName.split("#")[1])
             val intent = Intent(this, StaticsMainActivity::class.java)
+
+            // TESTING PLAYERS
+
+
             intent.putExtra("key", key)
             intent.putExtra("region", PlayerDatabase(this).getRegion(PUUID))
             intent.putExtra("playerName", valoName)

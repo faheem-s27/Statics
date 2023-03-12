@@ -105,6 +105,7 @@ class StaticsMainActivity : AppCompatActivity() {
 
     companion object {
         var playerImage: String = ""
+        var largeplayerImage: String = ""
     }
 
 
