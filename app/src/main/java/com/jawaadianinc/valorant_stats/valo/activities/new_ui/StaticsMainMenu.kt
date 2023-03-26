@@ -303,6 +303,8 @@ class StaticsMainMenu : Fragment() {
                         )
                     FirebaseDatabase.getInstance().reference.child("Statics/Errors/")
                         .child("NewMainMenu").push().setValue(error)
+
+                    progressDialog.dismiss()
                 }
             }
         }

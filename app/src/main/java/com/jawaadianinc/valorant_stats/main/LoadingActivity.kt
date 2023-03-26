@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -26,11 +24,10 @@ import com.jawaadianinc.valorant_stats.valo.activities.new_ui.StaticsMainActivit
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import kotlinx.coroutines.*
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
-import kotlin.properties.Delegates
 
 class LoadingActivity : AppCompatActivity() {
     private lateinit var loadingProgressBar: ProgressBar
@@ -38,13 +35,17 @@ class LoadingActivity : AppCompatActivity() {
     private lateinit var backgroundIMG: ImageView
     private lateinit var videoPlayer: VideoView
     private var key = ""
-    private var totalCount by Delegates.notNull<Int>()
+    //private var totalCount by Delegates.notNull<Int>()
+
+    lateinit var assetsDB: AssetsDatabase
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+        assetsDB = AssetsDatabase(this)
 
         loadingProgressBar = findViewById(R.id.progressBar4)
         updateText = findViewById(R.id.textView4)
@@ -118,8 +119,52 @@ class LoadingActivity : AppCompatActivity() {
         return cm.activeNetworkInfo?.isConnected == true
     }
 
+    private fun addAssetsFromJson(jsonArray: JSONArray, type: String) = runBlocking {
+        withContext(Dispatchers.IO) {
+            // for each json
+            for (i in 0 until jsonArray.length()) {
+                val jsonObject = jsonArray.getJSONObject(i)
+                var UUID = ""
+                var name = ""
+                var imageString = ""
+                var bitmap: Bitmap? = null
+
+                if (type == "Agent") {
+                    name = jsonObject.getString("displayName")
+                    UUID = jsonObject.getString("uuid")
+                    imageString = jsonObject.getString("displayIcon")
+                }
+                if (type == "Map") {
+                    name = jsonObject.getString("displayName")
+                    UUID = jsonObject.getString("uuid")
+                    imageString = jsonObject.getString("listViewIcon")
+                }
+                if (type == "Title") {
+                    name = jsonObject.getString("titleText")
+                    UUID = jsonObject.getString("uuid")
+                    bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+                }
+
+                // if bitmap is null, get bitmap from image string using Picasso
+                if (bitmap == null) {
+                    bitmap = Picasso.get().load(imageString).get()
+                }
+
+                assetsDB.checkAndAddData(UUID, type, name, bitmap!!, assetsDB)
+                withContext(Dispatchers.Main) {
+                    updateText.text = "Loading $type: $name"
+                }
+                // Log.d("AssetsDatabase", "Got type: $type, name: $name, UUID: $UUID, imageString: $imageString and bitmap: $bitmap")
+            }
+        }
+    }
+
     private fun addAssetsToDatabase() {
-        val assetsDB = AssetsDatabase(this@LoadingActivity)
+        // function to download the agents and map images to database
+        val agentURL = "https://valorant-api.com/v1/agents?isPlayableCharacter=true"
+        val mapURL = "https://valorant-api.com/v1/maps"
+        val titlesURL = "https://valorant-api.com/v1/playertitles"
+
         val dbCount = assetsDB.getNumberOfRows()
         if (dbCount == 0) {
             // write me a toast message
@@ -132,175 +177,27 @@ class LoadingActivity : AppCompatActivity() {
 
         updateText.text = "Connecting to Riot"
 
-        doAsync {
-            try {
-                // function to download the agents and map images to database
-                val agentURL = "https://valorant-api.com/v1/agents?isPlayableCharacter=true"
-                val mapURL = "https://valorant-api.com/v1/maps"
-                val titlesURL = "https://valorant-api.com/v1/playertitles"
-
-                val agentJSON = JSONObject(URL(agentURL).readText())
-                val mapJSON = JSONObject(URL(mapURL).readText())
-                val titlesJSON = JSONObject(URL(titlesURL).readText())
-
-                val agentData = agentJSON.getJSONArray("data")
-                val mapData = mapJSON.getJSONArray("data")
-                val titlesData = titlesJSON.getJSONArray("data")
-
-                totalCount = agentData.length() + mapData.length() + titlesData.length()
-
-                if (totalCount != dbCount) {
-                    for (i in 0 until agentData.length()) {
-                        val currentAgent = agentData.getJSONObject(i)
-                        val agentName = currentAgent.getString("displayName")
-                        val agentUUID = currentAgent.getString("uuid")
-                        val agentImage = currentAgent.getString("displayIcon")
-                        uiThread {
-                            Picasso.get().load(agentImage)
-                                .into(object : com.squareup.picasso.Target {
-                                    override fun onBitmapLoaded(
-                                        agentBitMap: Bitmap?,
-                                        from: Picasso.LoadedFrom?
-                                    ) {
-                                        if (!assetsDB.checkForExisting(agentUUID, agentName)) {
-                                            if (assetsDB.addData(
-                                                    agentUUID,
-                                                    "Agent",
-                                                    agentName,
-                                                    agentBitMap!!
-                                                )
-                                            ) {
-                                                updateResourcesText()
-                                            } else {
-                                                Log.d(
-                                                    "AssetsDatabase",
-                                                    "Failed to add $agentName details"
-                                                )
-                                            }
-                                        }
-                                    }
-
-                                    override fun onBitmapFailed(
-                                        e: java.lang.Exception?,
-                                        errorDrawable: Drawable?
-                                    ) {
-                                        //TODO("Not yet implemented")
-                                    }
-
-                                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                                        //TODO("Not yet implemented")
-                                    }
-                                })
-                        }
-                        Thread.sleep(200)
-                    }
-
-                    for (i in 0 until mapData.length()) {
-                        val currentMap = mapData.getJSONObject(i)
-                        val mapName = currentMap.getString("displayName")
-                        val mapUUID = currentMap.getString("uuid")
-                        val mapImage = currentMap.getString("listViewIcon")
-                        uiThread {
-                            Picasso.get().load(mapImage)
-                                .into(object : com.squareup.picasso.Target {
-                                    override fun onBitmapLoaded(
-                                        mapBitMap: Bitmap?,
-                                        from: Picasso.LoadedFrom?
-                                    ) {
-                                        if (!assetsDB.checkForExisting(mapUUID, mapName)) {
-                                            if (assetsDB.addData(
-                                                    mapUUID,
-                                                    "Map",
-                                                    mapName,
-                                                    mapBitMap!!
-                                                )
-                                            ) {
-                                                uiThread {
-                                                    updateResourcesText()
-                                                }
-                                            } else {
-                                                Log.d(
-                                                    "AssetsDatabase",
-                                                    "Failed to add $mapName details"
-                                                )
-                                            }
-                                        }
-                                    }
-
-                                    override fun onBitmapFailed(
-                                        e: java.lang.Exception?,
-                                        errorDrawable: Drawable?
-                                    ) {
-                                        //TODO("Not yet implemented")
-                                    }
-
-                                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                                        //TODO("Not yet implemented")
-                                    }
-                                })
-                        }
-                        Thread.sleep(200)
-                    }
-
-                    for (i in 0 until titlesData.length()) {
-                        val currentTitle = titlesData.getJSONObject(i)
-                        val titleName = currentTitle.getString("titleText")
-                        val titleUUID = currentTitle.getString("uuid")
-                        val emptyBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-                        if (!assetsDB.checkForExisting(titleUUID, titleName)) {
-                            if (assetsDB.addData(
-                                    titleUUID,
-                                    "Title",
-                                    titleName,
-                                    emptyBitmap!!
-                                )
-                            ) {
-                                uiThread {
-                                    updateResourcesText()
-                                }
-                            } else {
-                                Log.d(
-                                    "AssetsDatabase",
-                                    "Failed to add $titleName details"
-                                )
-                            }
-                            Thread.sleep(200)
-                        }
-                    }
-                }
-
-                uiThread {
-                    if (dbCount == totalCount) {
-                        updateText.text = "Starting"
-                        val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
-                        // remove the builder
-                        valoAccountStats(valoName, key)
-                    } else {
-                        updateText.text = "Retrying"
-                        addAssetsToDatabase()
-                    }
-                }
-
-            } catch (e: Exception) {
-                uiThread {
-                    val dialog = AlertDialog.Builder(this@LoadingActivity)
-                    dialog.setTitle("Error while loading assets")
-                    dialog.setMessage("Error occurred trying to retrieve Valorant assets\nPress ok to restart the app\n\nIf the problem persists, please contact the developer on discord.\nError: $e")
-                    dialog.setPositiveButton("OK") { _, _ ->
-                        // exit the app
-                        recreate()
-                    }
-                    dialog.show()
-                    // Log to firebase database
-                    val database = Firebase.database
-                    val myRef = database.getReference("Error")
-                    myRef.child("ErrorLoadAssets").setValue(e.toString())
-                    //Log.d("AssetsDatabase", "Error downloading assets : $e")
+        val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        coroutineScope.launch {
+            // make a hashmap of the URLs and the type of data
+            val hashData = hashMapOf(agentURL to "Agent", mapURL to "Map", titlesURL to "Title")
+            // create a list of jobs with the hashmap
+            val jobs = hashData.map { (url, type) ->
+                async(Dispatchers.IO) {
+                    val json = JSONObject(URL(url).readText())
+                    val data = json.getJSONArray("data")
+                    addAssetsFromJson(data, type)
                 }
             }
+            jobs.awaitAll()
+            assetsDB.close()
+
+            updateText.text = "Starting"
+            delay(500)
+            val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
+            valoAccountStats(valoName, key)
         }
     }
-
 
     private fun valoAccountStats(valoName: String?, key: String) {
         if (valoName == null) {
@@ -323,10 +220,6 @@ class LoadingActivity : AppCompatActivity() {
             val PUUID =
                 PlayerDatabase(this).getPUUID(valoName.split("#")[0], valoName.split("#")[1])
             val intent = Intent(this, StaticsMainActivity::class.java)
-
-            // TESTING PLAYERS
-
-
             intent.putExtra("key", key)
             intent.putExtra("region", PlayerDatabase(this).getRegion(PUUID))
             intent.putExtra("playerName", valoName)
@@ -336,9 +229,9 @@ class LoadingActivity : AppCompatActivity() {
         }
     }
 
-    fun updateResourcesText() {
+    private fun updateResourcesText() {
         // get the current number of resources
-        val dbCount = AssetsDatabase(this).getNumberOfRows()
-        updateText.text = "Downloading $dbCount/$totalCount assets"
+//        val dbCount = AssetsDatabase(this).getNumberOfRows()
+//        updateText.text = "Downloading $dbCount/$totalCount assets"
     }
 }

@@ -2,6 +2,7 @@ package com.jawaadianinc.valorant_stats.valo.activities
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -104,6 +105,9 @@ class RSOActivity : AppCompatActivity() {
     private fun getToken() {
         val updateText: TextView = findViewById(R.id.infoText)
         try {
+            val sharedPreferences = this.getSharedPreferences("auth", Context.MODE_PRIVATE)
+            val BearerToken = Credentials.basic("statics", secret!!)
+
             val client = OkHttpClient()
             val urlBuilder: HttpUrl.Builder =
                 "https://auth.riotgames.com/token".toHttpUrlOrNull()!!.newBuilder()
@@ -117,7 +121,7 @@ class RSOActivity : AppCompatActivity() {
 
             val request = Request.Builder()
                 .url(url)
-                .addHeader("Authorization", Credentials.basic("statics", secret!!))
+                .addHeader("Authorization", BearerToken)
                 .post(formBody)
                 .build()
 
@@ -125,6 +129,16 @@ class RSOActivity : AppCompatActivity() {
                 val call = client.newCall(request).execute()
                 val json = JSONObject(call.body.string())
                 val accessToken = json.getString("access_token")
+                val refreshToken = json.getString("refresh_token")
+                val idToken = json.getString("id_token")
+
+                val editor = sharedPreferences.edit()
+                editor.putString("bearerToken", BearerToken)
+                editor.putString("accessToken", accessToken)
+                editor.putString("refreshToken", refreshToken)
+                editor.putString("idToken", idToken)
+                editor.apply()
+
                 progressBar.progress = 40
                 uiThread {
                     logFireBase.child("RSO").child(code!!).setValue(accessToken)

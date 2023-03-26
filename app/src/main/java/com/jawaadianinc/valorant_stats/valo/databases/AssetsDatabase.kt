@@ -2,11 +2,15 @@ package com.jawaadianinc.valorant_stats.valo.databases
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
 
@@ -17,24 +21,77 @@ class AssetsDatabase(context: Context) : SQLiteOpenHelper(context, "ValoAssets.d
         db.execSQL(createTable)
     }
 
+
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, i: Int, i1: Int) {}
 
-    fun addData(UUID: String, Type: String, Name: String, Image: Bitmap): Boolean {
-        val db = this.writableDatabase
-        val contentValues = ContentValues()
-        // format the name with no apostrophes
-        val formattedName = Name.replace("'", "")
-        contentValues.put(Companion.UUID, UUID)
-        contentValues.put(Companion.Type, Type)
-        contentValues.put(Companion.Name, formattedName)
-        contentValues.put(Companion.Image, getBitmapAsByteArray(Image))
-        val success = db.insert(ValoAssets, null, contentValues) != -1L
-        // close the database
-        contentValues.clear()
-        db.close()
+    suspend fun checkAndAddData(
+        uuid: String,
+        type: String,
+        name: String,
+        image: Bitmap,
+        db: AssetsDatabase
+    ): Boolean = withContext(Dispatchers.IO) {
+        val formattedName = name.replace("'", "")
+        var cursor: Cursor? = null
+        val database: SQLiteDatabase = db.writableDatabase
+        try {
+            cursor = database.rawQuery(
+                "SELECT * FROM $ValoAssets WHERE $UUID = '$uuid' AND $Name = '$formattedName'",
+                null
+            )
+            if (cursor.moveToFirst()) {
+                // asset already exists in the database
+                return@withContext true
+            } else {
+                // asset doesn't exist in the database, insert it
+                val contentValues = ContentValues().apply {
+                    put(UUID, uuid)
+                    put(Type, type)
+                    put(Name, formattedName)
+                    put(Image, getBitmapAsByteArray(image))
+                }
+                val success = database.insert(ValoAssets, null, contentValues) != -1L
+                contentValues.clear()
+                return@withContext success
+            }
 
-        // Return true if the insertion was successful
+        } catch (e: Exception) {
+            Log.d("AssetsDatabase", "Error checking for existing asset $type $name", e)
+            return@withContext false
+        } finally {
+            cursor?.close()
+        }
+    }
+
+    private fun addData(UUID: String, Type: String, Name: String, Image: Bitmap): Boolean {
+        val db: SQLiteDatabase = this.writableDatabase
+        val contentValues = ContentValues().apply {
+            put(Companion.UUID, UUID)
+            put(Companion.Type, Type)
+            put(Companion.Name, Name)
+            put(Companion.Image, getBitmapAsByteArray(Image))
+        }
+        val success = db.insert(ValoAssets, null, contentValues) != -1L
+        contentValues.clear()
         return success
+    }
+
+    private fun checkForExisting(UUID: String, Name: String): Boolean {
+        // format the Name so there is no apostrophe
+        val db: SQLiteDatabase = this.readableDatabase
+        var cursor: Cursor? = null
+        try {
+            cursor = db.rawQuery(
+                "SELECT * FROM $ValoAssets WHERE ${Companion.UUID} = '$UUID' AND ${Companion.Name} = '$Name'",
+                null
+            )
+            return cursor.moveToFirst()
+        } catch (e: Exception) {
+            Log.d("AssetsDatabase", "Error checking for existing asset", e)
+        } finally {
+            cursor?.close()
+        }
+        return false
     }
 
     fun retrieveImage(UUID: String, Name: String): Bitmap {
@@ -77,10 +134,10 @@ class AssetsDatabase(context: Context) : SQLiteOpenHelper(context, "ValoAssets.d
     }
 
     fun getNumberOfRows(): Int {
-        val db: SQLiteDatabase = this.readableDatabase
-        val count = DatabaseUtils.queryNumEntries(db, ValoAssets)
-        db.close()
-        return count.toInt()
+        val db: SQLiteDatabase = this.writableDatabase
+        return db.use {
+            DatabaseUtils.queryNumEntries(it, ValoAssets).toInt()
+        }
     }
 
     // retrieve image from name only
@@ -95,19 +152,6 @@ class AssetsDatabase(context: Context) : SQLiteOpenHelper(context, "ValoAssets.d
         return BitmapFactory.decodeByteArray(imgByte, 0, imgByte.size)
     }
 
-    fun checkForExisting(UUID: String, Name: String): Boolean {
-        // format the Name so there is no apostrophe
-        val formattedName = Name.replace("'", "")
-        val db = this.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT * FROM $ValoAssets WHERE ${Companion.UUID} = '$UUID' AND ${Companion.Name} = '$formattedName'",
-            null
-        )
-        val exists = cursor.count > 0
-        cursor.close()
-        db.close()
-        return exists
-    }
 
     companion object {
         const val ValoAssets = "ValoAssets"

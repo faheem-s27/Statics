@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
@@ -53,7 +54,7 @@ class SettingsFragment : Fragment() {
         gettingPlayerProfile()
 
 
-        val ChatsButton = view.findViewById<View>(R.id.new_ExtrasChatButton)
+        val ChatsButton = view.findViewById<FloatingActionButton>(R.id.new_ExtrasChatButton)
         ChatsButton.setOnClickListener {
             // get the player image from the fragments activity
             playerImage = StaticsMainActivity.playerImage
