@@ -1,43 +1,39 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.AlertDialog
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.fragment.app.Fragment
-import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
-import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import okhttp3.FormBody
+import io.ktor.client.*
+import kotlinx.coroutines.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 class LiveStatsFragment : Fragment() {
     lateinit var playerName: String
-    lateinit var sharedPreferences: SharedPreferences
-    var bearerToken: String? = null
+    lateinit var region: String
+    lateinit var authPreferences: SharedPreferences
     var accessToken: String? = null
-    var refreshToken: String? = null
-    var idToken: String? = null
     var entitlementToken: String? = null
-    var playerId: String? = null
+    var PlayerUUID: String? = null
+    lateinit var SETUPVIEW: View
+    lateinit var LIVEVIEW: View
+    lateinit var CurrentScreen: String
+    lateinit var SETUPProgressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,180 +46,264 @@ class LiveStatsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         playerName = activity?.intent?.getStringExtra("playerName") ?: return
-        sharedPreferences = requireActivity().getSharedPreferences("auth", Context.MODE_PRIVATE)
+        region = activity?.intent?.getStringExtra("region") ?: return
+        authPreferences = requireActivity().getSharedPreferences("auth", Context.MODE_PRIVATE)
 
-        val liveButtonCheck = view.findViewById<View>(R.id.button)
-        liveButtonCheck.setOnClickListener {
-            getAuth()
+        accessToken = authPreferences.getString("accessTokenV2", null)
+        entitlementToken = authPreferences.getString("entitlementTokenV2", null)
+
+        SETUPVIEW = requireView().findViewById(R.id.SetUpView)
+        LIVEVIEW = requireView().findViewById(R.id.LiveView)
+
+        SETUPProgressBar = requireView().findViewById(R.id.progressBar7)
+
+        loadUI("SETUP")
+
+        val discordURL = "https://discord.gg/jwfJUQMPP7"
+        requireView().findViewById<Button>(R.id.button).setOnClickListener {
+            val dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle("Join Discord")
+            dialog.setMessage("Join the discord server and look for the channel called 'live_access'\nThere you will find the file you need to get live stats!")
+            dialog.setPositiveButton("Join") { _, _ ->
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(discordURL))
+                startActivity(browserIntent)
+            }
+            dialog.setNegativeButton("Cancel") { _, _ -> }
+            dialog.show()
         }
-    }
 
-    private fun logOut(name: String) {
-        val playerDB = PlayerDatabase(requireActivity())
-        if (playerDB.logOutPlayer(name)) {
-            val widgetIntent = Intent(requireActivity(), LastMatchWidget::class.java)
-            widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-            val ids = AppWidgetManager.getInstance(activity?.application).getAppWidgetIds(
-                ComponentName(activity?.applicationContext!!, LastMatchWidget::class.java)
-            )
-            widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-            activity?.sendBroadcast(widgetIntent)
-
-            startActivity(Intent(requireActivity(), LoggingInActivityRSO::class.java))
-            activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            activity?.finish()
-            Toast.makeText(requireActivity(), "Logged out!", Toast.LENGTH_SHORT).show()
+        if (accessToken == null || entitlementToken == null) {
+            getTokens()
         } else {
-            Toast.makeText(requireActivity(), "Error logging out O_o", Toast.LENGTH_SHORT).show()
+            testTokens(accessToken!!)
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun getAuth() {
-        // Check for bearerToken, accessToken, refreshToken, idToken in SharedPreferences
-        bearerToken = sharedPreferences.getString("bearerToken", null)
-        accessToken = sharedPreferences.getString("accessToken", null)
-        refreshToken = sharedPreferences.getString("refreshToken", null)
-        idToken = sharedPreferences.getString("idToken", null)
+    private fun LIVEView() {
+//        GlobalScope.launch {
+//        val url = "https://glz-${region}-${region}.a.pvp.net/parties/v1/players/${PlayerUUID}".toHttpUrlOrNull()
+//        val client = OkHttpClient()
+//        var request = Request.Builder()
+//            .addHeader("Authorization", "Bearer $accessToken")
+//            .addHeader("X-Riot-Entitlements-JWT", entitlementToken!!)
+//            .addHeader("X-Riot-ClientVersion", "63.0.9.4909983.4789131")
+//            .url(url!!)
+//            .build()
+//
+//            var response = client.newCall(request).execute()
+//            var body = response.body.string()
+//            var JSON = JSONObject(body)
+//            val partyID = JSON.getString("CurrentPartyID")
+//            val partyURL = "https://glz-$region-$region.a.pvp.net/parties/v1/parties/${partyID}".toHttpUrlOrNull()
+//
+//            Log.d("LIVE_STATS_party", partyID)
+//
+//            request = Request.Builder()
+//                .addHeader("Authorization", "Bearer $accessToken")
+//                .addHeader("X-Riot-Entitlements-JWT", entitlementToken!!)
+//                .url(partyURL!!)
+//                .build()
+//
+//            response = client.newCall(request).execute()
+//            body = response.body.string()
+//
+//            withContext(Dispatchers.Main)
+//            {
+//                val textView = requireView().findViewById<TextView>(R.id.textView40)
+//                textView.text = body
+//            }
+//        }
+    }
 
-        // If any of the tokens are null, then the user is not logged in
-        if (bearerToken == null || accessToken == null || refreshToken == null || idToken == null) {
-            // show dialog to login again
-            val dialog = AlertDialog.Builder(requireContext())
-            dialog.setTitle("Login Required!")
-            dialog.setMessage("You need to login again to access this feature.")
-            dialog.setPositiveButton("Log out") { _, _ ->
-                logOut(playerName.split("#")[0])
+    // function to check CurrentScreen and show the correct view
+    private fun loadUI(mode: String) {
+        CurrentScreen = mode
+        when (CurrentScreen) {
+            "SETUP" -> {
+                SETUPVIEW.visibility = View.VISIBLE
+                LIVEVIEW.visibility = View.GONE
             }
-            dialog.setNegativeButton("Cancel") { _, _ ->
+            "LIVE" -> {
+                SETUPVIEW.visibility = View.GONE
+                LIVEVIEW.visibility = View.VISIBLE
+                LIVEView()
             }
-            dialog.show()
-            return
+            "ERROR" -> {
+                SETUPVIEW.visibility = View.GONE
+                LIVEVIEW.visibility = View.GONE
+            }
         }
+    }
 
-        entitlementToken = sharedPreferences.getString("entitlementToken", null)
-        if (entitlementToken == null) {
-            GlobalScope.launch {
-                getUserInfo(accessToken)
-                val entitlementToken = getEntitlementToken(accessToken)
-                if (entitlementToken != null) {
-                    //sharedPreferences.edit().putString("entitlementToken", entitlementToken).apply()
+    private fun testTokens(access: String) {
+        CurrentScreen = "SETUP"
+        val client = OkHttpClient()
+        val url = "https://auth.riotgames.com/userinfo".toHttpUrlOrNull()
+        // put access token in header as Bearer
+        val request = Request.Builder()
+            .addHeader("Authorization", "Bearer $access")
+            .url(url!!)
+            .build()
+
+        GlobalScope.launch {
+            try {
+                val response = client.newCall(request).execute()
+                val body = response.body.string()
+                val JSON = JSONObject(body)
+                val name = JSON.getString("username")
+                PlayerUUID = JSON.getString("sub")
+                withContext(Dispatchers.Main)
+                {
+                    val textView = requireView().findViewById<TextView>(R.id.textView38)
+                    textView.text = "Logged in as\n$name"
+                    textView.clearAnimation()
+                    val continueButton = requireView().findViewById<Button>(R.id.button3)
+                    continueButton.isClickable = true
+                    continueButton.alpha = 1.0f
+
+                    Toast.makeText(requireActivity(), "LIVE CLIENT ACTIVATED!", Toast.LENGTH_SHORT)
+                        .show()
+
+                    // hide progress bar
+                    SETUPProgressBar.visibility = View.INVISIBLE
+                    // show button
+                    val IPButtonCheck = requireView().findViewById<Button>(R.id.button2)
+                    IPButtonCheck.visibility = View.VISIBLE
+
+                    continueButton.setOnClickListener {
+                        loadUI("LIVE")
+                    }
+                }
+            } catch (e: Exception) {
+                val textView = requireView().findViewById<TextView>(R.id.textView38)
+                textView.text = "Waiting for IP..."
+                val continueButton = requireView().findViewById<Button>(R.id.button3)
+                continueButton.isClickable = false
+                continueButton.alpha = 0.5f
+                withContext(Dispatchers.Main) {
+                    val dialog = AlertDialog.Builder(requireActivity())
+                    dialog.setTitle("Error")
+                    dialog.setMessage("Error authorizing tokens.\n\nPlease enter IP again.\n\nError:\n${e.message}")
+                    dialog.setPositiveButton("Enter") { _, _ ->
+                        getTokens()
+                    }
+                    dialog.setNegativeButton("Cancel") { _, _ -> }
+                    dialog.show()
+
+                    // hide progress bar
+                    SETUPProgressBar.visibility = View.INVISIBLE
+                    // show button
+                    val IPButtonCheck = requireView().findViewById<Button>(R.id.button2)
+                    IPButtonCheck.visibility = View.VISIBLE
                 }
             }
         }
-
     }
 
-    private fun getUserInfo(accessToken: String?) {
-        val client = OkHttpClient()
-        val urlBuilder = "https://auth.riotgames.com/userinfo".toHttpUrlOrNull()?.newBuilder()
-        val url = urlBuilder?.build().toString()
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun getTokens() {
+        CurrentScreen = "SETUP"
+        fadeRepeat(requireView().findViewById(R.id.textView38))
 
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "Bearer $accessToken")
-            .addHeader("Content-Type", "application/json")
-            .build()
+        val continueButton = requireView().findViewById<Button>(R.id.button3)
+        continueButton.isClickable = false
+        continueButton.alpha = 0.5f
 
-        val response = client.newCall(request).execute()
-        val responseString = response.body.string()
+        val IPInput = requireView().findViewById<EditText>(R.id.IPInput)
+        // clear IPInput
+        IPInput.setText("")
 
-        if (responseString != null) {
-            if (responseString == "\"\"") {
-                Log.d("LIVE_STATS_UserInfo", "Empty response, refresh token!")
-                refreshToken()
-                return
+
+        val IPButtonCheck = requireView().findViewById<Button>(R.id.button2)
+        IPButtonCheck.setOnClickListener {
+            // hide keyboard
+            val imm =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+
+            // hide button
+            IPButtonCheck.visibility = View.INVISIBLE
+            // show progress bar
+            SETUPProgressBar.visibility = View.VISIBLE
+
+            // get value of IPInput
+            val IPInput = requireView().findViewById<EditText>(R.id.IPInput)
+            val IP = IPInput.text.toString()
+
+            // check if IP is valid
+            if (IP == "") return@setOnClickListener
+
+            GlobalScope.launch {
+                val client = OkHttpClient()
+                val url = "http://$IP:5000/".toHttpUrlOrNull()
+                val request = Request.Builder()
+                    .url(url!!)
+                    .build()
+                try {
+                    val response = client.newCall(request).execute()
+                    val body = response.body.string()
+                    if (response.code == 200) {
+                        val JSON = JSONObject(body)
+                        accessToken = JSON.getString("accessToken")
+                        entitlementToken = JSON.getString("entitlementToken")
+
+                        val editor = authPreferences.edit()
+                        editor.putString("accessTokenV2", accessToken)
+                        editor.putString("entitlementTokenV2", entitlementToken)
+                        editor.apply()
+
+                        withContext(Dispatchers.Main)
+                        {
+                            testTokens(accessToken!!)
+                        }
+
+                    } else {
+                        withContext(Dispatchers.Main)
+                        {
+                            val dialog = AlertDialog.Builder(requireActivity())
+                            dialog.setTitle("Error")
+                            dialog.setMessage("Couldn't connect to IP. Please check your IP address and try again.")
+                            dialog.setPositiveButton("OK") { _, _ -> }
+                            dialog.show()
+
+                            // show button
+                            IPButtonCheck.visibility = View.VISIBLE
+                            // hide progress bar
+                            SETUPProgressBar.visibility = View.INVISIBLE
+                        }
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main)
+                    {
+                        val dialog = AlertDialog.Builder(requireActivity())
+                        dialog.setTitle("Error")
+                        dialog.setMessage("Error getting tokens.\n\nError message:\n${e.message}")
+                        dialog.setPositiveButton("OK") { _, _ -> }
+                        dialog.show()
+
+                        // show button
+                        IPButtonCheck.visibility = View.VISIBLE
+                        // hide progress bar
+                        SETUPProgressBar.visibility = View.INVISIBLE
+                    }
+                    return@launch
+                }
+
+
             }
-            // get player id from "sub" asjson
-            val json = JSONObject(responseString)
-            playerId = json.getString("sub")
-            Log.d("LIVE_STATS_UserInfo", "The player id is $playerId")
         }
     }
 
-    private fun refreshToken() {
-        Log.d("LIVE_STATS_RefreshToken", "Refreshing token...")
-        if (refreshToken == null || accessToken == null || bearerToken == null) {
-            return
-        }
-
-        val client = OkHttpClient()
-        val urlBuilder = " https://auth.riotgames.com/token".toHttpUrlOrNull()?.newBuilder()
-        val url = urlBuilder?.build().toString()
-
-        val formBody: RequestBody = FormBody.Builder()
-            .add("grant_type", "refresh_token")
-            .add("refresh_token", refreshToken!!)
-            .build()
-
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "Bearer " + bearerToken!!)
-            .post(formBody)
-            .build()
-
-        val response = client.newCall(request).execute()
-        val responseString = response.body.string()
-        Log.d("LIVE_STATS_RefreshToken", responseString!!)
+    private fun fadeRepeat(view: View) {
+        // repeat forever fade in and out
+        val fadeIn = AlphaAnimation(0.0f, 1.0f)
+        fadeIn.interpolator = AccelerateInterpolator()
+        fadeIn.duration = 1000
+        fadeIn.repeatCount = Animation.INFINITE
+        fadeIn.repeatMode = Animation.REVERSE
+        view.startAnimation(fadeIn)
     }
 
-    private fun getEntitlementToken(accessToken: String?): String? {
-        if (accessToken == null) {
-            return null
-        }
-        val client = OkHttpClient()
-
-        val authURL = "https://auth.riotgames.com/api/v1/authorization"
-        var authBody =
-            "{\"client_id\":\"play-valorant-web-prod\",\"nonce\":\"1\",\"redirect_uri\":\"https://playvalorant.com/opt_in\",\"response_type\":\"token id_token\",\"scope\":\"account openid\"}"
-        // make user agent as if it was a PC browser
-        val userAgent =
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
-        val authRequest = Request.Builder()
-            .url(authURL)
-            .addHeader("User-Agent", userAgent)
-            .addHeader("Content-Type", "application/json")
-            .post(authBody.toRequestBody("application/json".toMediaTypeOrNull()))
-            .build()
-
-        val authResponse = client.newCall(authRequest).execute()
-        val authHeaders = authResponse.headers
-        val authResponseString = authResponse.body.string()
-        Log.d("LIVE_STATS_EntitlementToken", authResponseString!!)
-        Log.d("LIVE_STATS_EntitlementToken", authHeaders.toString())
-
-        authBody =
-            "{\"type\":\"auth\",\"username\":\"pinchedrainbow\",\"password\":\"Anayamiral2004\"}"
-        val authRequest2 = Request.Builder()
-            .url(authURL)
-            .addHeader("Content-Type", "application/json")
-            .post(authBody.toRequestBody("application/json".toMediaTypeOrNull()))
-            .build()
-
-        val authResponse2 = client.newCall(authRequest2).execute()
-        val authResponseString2 = authResponse2.body.string()
-        Log.d("LIVE_STATS_EntitlementToken", authResponseString2!!)
-//
-//
-
-        val urlBuilder =
-            "https://entitlements.auth.riotgames.com/api/token/v1".toHttpUrlOrNull()?.newBuilder()
-        val url = urlBuilder?.build().toString()
-
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "Bearer $accessToken")
-            .addHeader("Content-Type", "application/json")
-            .build()
-
-        val response = client.newCall(request).execute()
-        val responseString = response.body.string()
-        if (responseString != null) {
-            Log.d("LIVE_STATS_EntitlementToken", responseString)
-            return responseString
-        }
-        return null
-
-    }
 
 }
