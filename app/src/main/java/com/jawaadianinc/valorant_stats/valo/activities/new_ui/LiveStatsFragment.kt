@@ -30,6 +30,7 @@ class LiveStatsFragment : Fragment() {
     var accessToken: String? = null
     var entitlementToken: String? = null
     var PlayerUUID: String? = null
+    lateinit var INITVIEW: View
     lateinit var SETUPVIEW: View
     lateinit var LIVEVIEW: View
     lateinit var CurrentScreen: String
@@ -52,13 +53,20 @@ class LiveStatsFragment : Fragment() {
         accessToken = authPreferences.getString("accessTokenV2", null)
         entitlementToken = authPreferences.getString("entitlementTokenV2", null)
 
+        INITVIEW = requireView().findViewById(R.id.InitView)
         SETUPVIEW = requireView().findViewById(R.id.SetUpView)
         LIVEVIEW = requireView().findViewById(R.id.LiveView)
 
         SETUPProgressBar = requireView().findViewById(R.id.progressBar7)
 
-        loadUI("SETUP")
+        loadUI("INIT")
+        val continueButton = requireView().findViewById<Button>(R.id.continueInit)
+        continueButton.setOnClickListener {
+            loadUI("SETUP")
+        }
+    }
 
+    private fun SETUPView() {
         val discordURL = "https://discord.gg/jwfJUQMPP7"
         requireView().findViewById<Button>(R.id.button).setOnClickListener {
             val dialog = AlertDialog.Builder(requireContext())
@@ -81,55 +89,31 @@ class LiveStatsFragment : Fragment() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun LIVEView() {
-//        GlobalScope.launch {
-//        val url = "https://glz-${region}-${region}.a.pvp.net/parties/v1/players/${PlayerUUID}".toHttpUrlOrNull()
-//        val client = OkHttpClient()
-//        var request = Request.Builder()
-//            .addHeader("Authorization", "Bearer $accessToken")
-//            .addHeader("X-Riot-Entitlements-JWT", entitlementToken!!)
-//            .addHeader("X-Riot-ClientVersion", "63.0.9.4909983.4789131")
-//            .url(url!!)
-//            .build()
-//
-//            var response = client.newCall(request).execute()
-//            var body = response.body.string()
-//            var JSON = JSONObject(body)
-//            val partyID = JSON.getString("CurrentPartyID")
-//            val partyURL = "https://glz-$region-$region.a.pvp.net/parties/v1/parties/${partyID}".toHttpUrlOrNull()
-//
-//            Log.d("LIVE_STATS_party", partyID)
-//
-//            request = Request.Builder()
-//                .addHeader("Authorization", "Bearer $accessToken")
-//                .addHeader("X-Riot-Entitlements-JWT", entitlementToken!!)
-//                .url(partyURL!!)
-//                .build()
-//
-//            response = client.newCall(request).execute()
-//            body = response.body.string()
-//
-//            withContext(Dispatchers.Main)
-//            {
-//                val textView = requireView().findViewById<TextView>(R.id.textView40)
-//                textView.text = body
-//            }
-//        }
     }
 
     // function to check CurrentScreen and show the correct view
     private fun loadUI(mode: String) {
         CurrentScreen = mode
         when (CurrentScreen) {
-            "SETUP" -> {
-                SETUPVIEW.visibility = View.VISIBLE
+            "INIT" -> {
+                INITVIEW.visibility = View.VISIBLE
+                SETUPVIEW.visibility = View.GONE
                 LIVEVIEW.visibility = View.GONE
             }
+            "SETUP" -> {
+                INITVIEW.visibility = View.GONE
+                SETUPVIEW.visibility = View.VISIBLE
+                LIVEVIEW.visibility = View.GONE
+                SETUPView()
+            }
             "LIVE" -> {
+                INITVIEW.visibility = View.GONE
                 SETUPVIEW.visibility = View.GONE
                 LIVEVIEW.visibility = View.VISIBLE
                 LIVEView()
             }
             "ERROR" -> {
+                INITVIEW.visibility = View.GONE
                 SETUPVIEW.visibility = View.GONE
                 LIVEVIEW.visibility = View.GONE
             }
