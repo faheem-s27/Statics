@@ -29,7 +29,7 @@
         <item name="android:navigationBarColor">@color/ToolBar</item>
     </style>
 
-    <style name="StaticsNewMenu" parent="Theme.MaterialComponents.DayNight"></style>
+    <style name="StaticsNewMenu" parent="Theme.MaterialComponents.DayNight" />
 
     <style name="Theme.App.About" parent="Theme.AppCompat">
         <item name="aboutStyle">@style/about_About</item>

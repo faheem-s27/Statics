@@ -1,6 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -14,11 +15,16 @@ class StaticsMainActivity : AppCompatActivity() {
     lateinit var playerName: String
     lateinit var region: String
     lateinit var key: String
+    lateinit var playerImageID: String
 
     private lateinit var activeFragment: Fragment
 
     private lateinit var binding: ActivityStaticsMainBinding
     private lateinit var bottomNavBar: BottomNavigationView
+
+    //    lateinit var playerCardSmall : String
+//    lateinit var playerCardLarge : String
+//    lateinit var playerCardWide : String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStaticsMainBinding.inflate(layoutInflater)
@@ -30,6 +36,14 @@ class StaticsMainActivity : AppCompatActivity() {
         playerName = intent.getStringExtra("playerName").toString()
         region = intent.getStringExtra("region").toString()
         key = intent.getStringExtra("key").toString()
+        playerImageID = intent.getStringExtra("playerImageID").toString()
+
+        playerCardSmall = "https://media.valorant-api.com/playercards/$playerImageID/smallart.png"
+        playerCardLarge = "https://media.valorant-api.com/playercards/$playerImageID/largeart.png"
+        playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
+        playerCardID = playerImageID
+
+        Toast.makeText(this, "Got ID: $playerImageID", Toast.LENGTH_SHORT).show()
 
         val statsFragment = StaticsMainMenu()
         val LiveStatsFragment = LiveStatsFragment()
@@ -103,10 +117,20 @@ class StaticsMainActivity : AppCompatActivity() {
         activeFragment = fragment
     }
 
-    companion object {
-        var playerImage: String = ""
-        var largeplayerImage: String = ""
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (activeFragment is StaticsMainMenu) {
+            super.onBackPressed()
+        } else {
+            changeFragment(StaticsMainMenu())
+            bottomNavBar.selectedItemId = R.id.new_Stats
+        }
     }
 
-
+    companion object {
+        var playerCardWide = ""
+        var playerCardLarge = ""
+        var playerCardSmall = ""
+        var playerCardID = ""
+    }
 }

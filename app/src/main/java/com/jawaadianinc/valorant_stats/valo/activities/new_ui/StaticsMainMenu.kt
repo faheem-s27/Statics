@@ -56,6 +56,7 @@ class StaticsMainMenu : Fragment() {
     lateinit var playerName: String
     lateinit var region: String
     private var puuid: String? = null
+
     var key: String = ""
     private lateinit var toolbar: MaterialToolbar
     private var timer: CountDownTimer? = null
@@ -88,6 +89,13 @@ class StaticsMainMenu : Fragment() {
         playerName = activity?.intent?.getStringExtra("playerName") ?: return
         region = activity?.intent?.getStringExtra("region") ?: return
         key = activity?.intent?.getStringExtra("key") ?: return
+
+        val newPlayerBackgroundImage = view.findViewById<ImageView>(R.id.new_playerBackground)
+        val newPlayerWideImage = view.findViewById<ImageView>(R.id.new_playerWideImage)
+
+        Picasso.get().load(StaticsMainActivity.playerCardLarge).fit().centerCrop()
+            .transform(BlurTransformation(requireContext())).into(newPlayerBackgroundImage)
+        Picasso.get().load(StaticsMainActivity.playerCardWide).into(newPlayerWideImage)
 
         dissapearViews()
 
@@ -190,6 +198,12 @@ class StaticsMainMenu : Fragment() {
         val newPlayerTag = view?.findViewById<TextView>(R.id.new_playerTag)
         val newPlayerRegion = view?.findViewById<TextView>(R.id.new_playerRegion)
 
+        // if the playername is longer than 14 characters, make the font size smaller for name and tag
+        if (playerName.length > 14) {
+            newPlayerNameText?.textSize = 12f
+            newPlayerTag?.textSize = 12f
+        }
+
         newPlayerNameText?.text = playerName.split("#")[0]
         newPlayerTag?.text = "#" + playerName.split("#")[1]
         // set the regionText to all Caps
@@ -198,9 +212,7 @@ class StaticsMainMenu : Fragment() {
         val nameSplit = playerName.split("#")
         if (!testing) {
             puuid = PlayerDatabase(requireActivity()).getPUUID(nameSplit[0], nameSplit[1])
-            val region = PlayerDatabase(requireActivity()).getRegion(puuid!!)
         }
-        Log.d("newMainMenu", "playerName: $playerName, region: $region")
 
         seekBar = view?.findViewById(R.id.new_matchesSlider)!!
 
@@ -323,15 +335,15 @@ class StaticsMainMenu : Fragment() {
 
         // check if the size of the data array is 0 and tell the user to play a match
         if (matchData.getJSONArray("data").length() == 0) {
-            StaticsMainActivity.playerImage =
-                "https://media.valorant-api.com/playercards/9fb348bc-41a0-91ad-8a3e-818035c4e561/smallart.png"
-            StaticsMainActivity.largeplayerImage =
+            val smol =
+                "https://media.valorant-api.com/playercards/9fb348bc-41a0-91ad-8a3e-818035c4e561/wideart.png"
+            val large =
                 "https://media.valorant-api.com/playercards/9fb348bc-41a0-91ad-8a3e-818035c4e561/largeart.png"
             val newPlayerBackgroundImage = view?.findViewById<ImageView>(R.id.new_playerBackground)
             val newPlayerWideImage = view?.findViewById<ImageView>(R.id.new_playerWideImage)
-            Picasso.get().load(StaticsMainActivity.playerImage).fit().centerCrop()
+            Picasso.get().load(large).fit().centerCrop()
                 .transform(BlurTransformation(requireContext())).into(newPlayerBackgroundImage)
-            Picasso.get().load(StaticsMainActivity.largeplayerImage).fit().centerCrop()
+            Picasso.get().load(smol).fit().centerCrop()
                 .into(newPlayerWideImage)
 
             val builder = AlertDialog.Builder(requireContext())
@@ -427,7 +439,6 @@ class StaticsMainMenu : Fragment() {
         Picasso.get().load(image).fit().centerCrop()
             .transform(BlurTransformation(requireContext())).into(newPlayerBackgroundImage)
         Picasso.get().load(wideImage).fit().centerCrop().into(newPlayerWideImage)
-        StaticsMainActivity.playerImage = smallImage
     }
 
 

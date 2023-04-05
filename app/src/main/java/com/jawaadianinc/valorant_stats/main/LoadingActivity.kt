@@ -223,15 +223,31 @@ class LoadingActivity : AppCompatActivity() {
             intent.putExtra("key", key)
             intent.putExtra("region", PlayerDatabase(this).getRegion(PUUID))
             intent.putExtra("playerName", valoName)
+            val image = getPlayerImage(valoName)
+            intent.putExtra("playerImageID", image)
             startActivity(intent)
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             finish()
         }
     }
 
-    private fun updateResourcesText() {
-        // get the current number of resources
-//        val dbCount = AssetsDatabase(this).getNumberOfRows()
-//        updateText.text = "Downloading $dbCount/$totalCount assets"
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun getPlayerImage(valoName: String?): String {
+        if (valoName == null) return "9fb348bc-41a0-91ad-8a3e-818035c4e561"
+        // run on main thread blocking
+        return runBlocking(Dispatchers.IO) {
+            try {
+                val url =
+                    "https://api.henrikdev.xyz/valorant/v1/account/${valoName.split("#")[0]}/${
+                        valoName.split("#")[1]
+                    }"
+                val json = JSONObject(URL(url).readText())
+                val IDCard = json.getJSONObject("data").getJSONObject("card").getString("id")
+                return@runBlocking IDCard
+            } catch (e: Exception) {
+                return@runBlocking "9fb348bc-41a0-91ad-8a3e-818035c4e561"
+            }
+        }
     }
+
 }

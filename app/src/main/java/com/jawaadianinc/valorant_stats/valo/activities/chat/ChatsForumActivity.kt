@@ -5,8 +5,10 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.*
+import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityChatsForumBinding
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.BlurTransformation
 
 class ChatsForumActivity : AppCompatActivity() {
 
@@ -31,10 +33,10 @@ class ChatsForumActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.title = "Statics Chat"
         toolbar.setNavigationOnClickListener {
+            // finish and override the transition
             finish()
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
-
-
 
         sendMessagesButton = binding.sendMessageFAB
         messageTextBox = binding.sendMesssageEditText
@@ -43,12 +45,19 @@ class ChatsForumActivity : AppCompatActivity() {
         playerName = intent.getStringExtra("playerName").toString()
         playerImage = intent.getStringExtra("playerImage").toString()
 
+        val playerCardSmall = "https://media.valorant-api.com/playercards/$playerImage/smallart.png"
+        val playerCardLarge = "https://media.valorant-api.com/playercards/$playerImage/largeart.png"
+
+        val backGround = binding.imageView3
+        Picasso.get().load(playerCardLarge).fit().centerCrop()
+            .transform(BlurTransformation(this)).into(backGround)
+
         speakerText = binding.chatSpeaker
         speakerText.text = "Speaking as: $playerName"
         speakerImage = binding.chatSpeakerIcon
         Picasso
             .get()
-            .load(playerImage)
+            .load(playerCardSmall)
             .fit()
             .into(speakerImage)
 
@@ -146,6 +155,10 @@ class ChatsForumActivity : AppCompatActivity() {
 
         // update the messages
         updateMessages()
+    }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
     }
 }

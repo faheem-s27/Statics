@@ -6,6 +6,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +18,16 @@ import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.google.gson.Gson
+import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import io.ktor.client.*
 import kotlinx.coroutines.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 class LiveStatsFragment : Fragment() {
@@ -63,6 +70,116 @@ class LiveStatsFragment : Fragment() {
         val continueButton = requireView().findViewById<Button>(R.id.continueInit)
         continueButton.setOnClickListener {
             loadUI("SETUP")
+        }
+        val usernamepassword: Button = requireView().findViewById(R.id.continueInit2)
+        usernamepassword.setOnClickListener {
+            val dialogView = LayoutInflater.from(requireActivity())
+                .inflate(R.layout.dialog_username_password, null)
+
+            val editTextUsername = dialogView.findViewById<EditText>(R.id.editTextUsername)
+            val editTextPassword = dialogView.findViewById<EditText>(R.id.editTextPassword)
+
+            // set a listener on the username to detect the character # and remove it
+            editTextUsername.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    if (s.toString().contains("#")) {
+                        editTextUsername.setText(s.toString().replace("#", ""))
+                        editTextUsername.setSelection(editTextUsername.text.length)
+                        // show a toast to tell the user that the character # is not allowed
+                        Toast.makeText(
+                            requireContext(),
+                            "The character # is not allowed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            })
+
+            val builder = AlertDialog.Builder(requireActivity())
+                .setView(dialogView)
+                .setTitle("Enter username and password")
+                .setPositiveButton("OK") { _, _ ->
+                    val username = editTextUsername.text.toString()
+                    val password = editTextPassword.text.toString()
+
+                    if (username.isEmpty() || password.isEmpty()) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Please enter a username and password",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@setPositiveButton
+                    }
+
+                    // hide the keyboard
+                    val imm =
+                        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+
+                    // Do something with the username and password
+                    authenticateUser(username, password)
+                }
+                .setNegativeButton("Cancel", null)
+            builder.show()
+        }
+    }
+
+    private fun authenticateUser(username: String, password: String) {
+        // show the Statics Dialog Progress Bar
+        val dialog =
+            ProgressDialogStatics().setProgressDialog(requireActivity(), "Authenticating...")
+        dialog.show()
+
+        // create a new coroutine scope
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            val client = OkHttpClient.Builder()
+                .build()
+
+            val authBody = AuthCookiesBody()
+            val mediaType = "application/json".toMediaTypeOrNull()
+            val hiBody = Gson().toJson(authBody).toRequestBody(mediaType)
+
+            // Log each body
+            Log.d("LIVE_STATS", "Auth Body: " + Gson().toJson(authBody))
+
+            // create a new request
+            val request = Request.Builder()
+                .url("https://auth.riotgames.com/api/v1/authorization")
+                .addHeader("Content-Type", "application/json")
+                .post(hiBody)
+                .build()
+
+            // execute the request
+            val response = client.newCall(request).execute()
+            val cookies = response.headers("Set-Cookie")
+            val cookie = cookies[0].split(";")[0]
+            // get the response body
+            val body = response.body.string()
+            // get the response code
+            val code = response.code
+
+            withContext(Dispatchers.Main)
+            {
+                dialog.dismiss()
+                val msg = "Response code: $code\nBody: $body"
+                val dialog = AlertDialog.Builder(requireContext())
+                    .setTitle("Response")
+                    .setMessage(msg)
+                    .setPositiveButton("OK", null)
+                dialog.show()
+            }
         }
     }
 
