@@ -1,7 +1,6 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,9 +21,6 @@ class StaticsMainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStaticsMainBinding
     private lateinit var bottomNavBar: BottomNavigationView
 
-    //    lateinit var playerCardSmall : String
-//    lateinit var playerCardLarge : String
-//    lateinit var playerCardWide : String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStaticsMainBinding.inflate(layoutInflater)
@@ -42,8 +38,6 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardLarge = "https://media.valorant-api.com/playercards/$playerImageID/largeart.png"
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
-
-        Toast.makeText(this, "Got ID: $playerImageID", Toast.LENGTH_SHORT).show()
 
         val statsFragment = StaticsMainMenu()
         val LiveStatsFragment = LiveStatsFragment()

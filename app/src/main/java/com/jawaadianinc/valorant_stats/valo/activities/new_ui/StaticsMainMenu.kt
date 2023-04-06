@@ -626,8 +626,6 @@ class StaticsMainMenu : Fragment() {
             val type = currentSeason.getString("type")
             if (type != "EAresSeasonType::Act") {
                 currentSeason = seasonsJSON.getJSONObject(seasonsJSON.length() - 2)
-                Log.d("newMainMenu", "Current season is not an act, getting previous season")
-
             }
             val seasonName = currentSeason.getString("displayName")
             val seasonEnd = currentSeason.getString("endTime")

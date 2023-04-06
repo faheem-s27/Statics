@@ -231,7 +231,6 @@ class LoadingActivity : AppCompatActivity() {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun getPlayerImage(valoName: String?): String {
         if (valoName == null) return "9fb348bc-41a0-91ad-8a3e-818035c4e561"
         // run on main thread blocking

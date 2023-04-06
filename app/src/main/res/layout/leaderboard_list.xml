@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/leaderboardV2_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/leaderboardV2_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/leaderboardV2_image"
+        app:layout_constraintTop_toTopOf="@+id/leaderboardV2_image"
+        tools:text="Duck#2004" />
+
+    <TextView
+        android:id="@+id/leaderboardV2_rank"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/leaderboardV2_image"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/leaderboardV2_image"
+        tools:text="#1" />
+
+    <TextView
+        android:id="@+id/leaderboardV2_rankRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/leaderboardV2_name"
+        app:layout_constraintTop_toBottomOf="@+id/leaderboardV2_name"
+        tools:text="Ranked Rating: 1176" />
+
+    <TextView
+        android:id="@+id/leaderboardV2_wins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/leaderboardV2_name"
+        app:layout_constraintTop_toBottomOf="@+id/leaderboardV2_rankRating"
+        tools:text="Wins: 90" />
+</androidx.constraintlayout.widget.ConstraintLayout>
