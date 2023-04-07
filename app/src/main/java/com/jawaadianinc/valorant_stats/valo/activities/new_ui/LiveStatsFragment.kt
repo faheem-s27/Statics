@@ -7,8 +7,8 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +45,9 @@ class LiveStatsFragment : Fragment() {
     lateinit var CurrentScreen: String
     lateinit var SETUPProgressBar: ProgressBar
 
+    val clientPlatformToken =
+        "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp"
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,8 +62,17 @@ class LiveStatsFragment : Fragment() {
         region = activity?.intent?.getStringExtra("region") ?: return
         authPreferences = requireActivity().getSharedPreferences("auth", Context.MODE_PRIVATE)
 
-        accessToken = authPreferences.getString("accessTokenV2", null)
-        entitlementToken = authPreferences.getString("entitlementTokenV2", null)
+//        accessToken = authPreferences.getString("accessTokenV2", null)
+//        entitlementToken = authPreferences.getString("entitlementTokenV2", null)
+
+        val username = authPreferences.getString("username", null)
+        val password = authPreferences.getString("password", null)
+
+        if (username != null && password != null) {
+            authenticateUser(username, password)
+        } else {
+            loadUI("INIT")
+        }
 
         INITVIEW = requireView().findViewById(R.id.InitView)
         SETUPVIEW = requireView().findViewById(R.id.SetUpView)
@@ -153,40 +165,107 @@ class LiveStatsFragment : Fragment() {
             val client = OkHttpClient.Builder()
                 .build()
 
-            val authBody = AuthCookiesBody()
             val mediaType = "application/json".toMediaTypeOrNull()
-            val hiBody = Gson().toJson(authBody).toRequestBody(mediaType)
+            val authBody = AuthCookiesBody()
+            val authBodyJson = Gson().toJson(authBody).toRequestBody(mediaType)
 
-            // Log each body
-            Log.d("LIVE_STATS", "Auth Body: " + Gson().toJson(authBody))
+            val clientPlatformBody = ClientPlatformBody()
+            val clientPlatformBodyJson = Gson().toJson(clientPlatformBody).toRequestBody(mediaType)
+
 
             // create a new request
             val request = Request.Builder()
                 .url("https://auth.riotgames.com/api/v1/authorization")
                 .addHeader("Content-Type", "application/json")
-                .post(hiBody)
+                .addHeader("Accept", "application/json")
+                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                .post(authBodyJson)
                 .build()
 
             // execute the request
             val response = client.newCall(request).execute()
-            val cookies = response.headers("Set-Cookie")
-            val cookie = cookies[0].split(";")[0]
-            // get the response body
-            val body = response.body.string()
-            // get the response code
             val code = response.code
+
+            if (response.code != 200) {
+                withContext(Dispatchers.Main)
+                {
+                    dialog.dismiss()
+                    val body = response.body.string()
+                    val msg = "Response code: $code\nBody: $body"
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setTitle("Response from Auth Cookies")
+                        .setMessage(msg)
+                        .setPositiveButton("OK", null)
+                    dialog.show()
+                }
+            }
+
+            // get the asid cookie
+            val cookies = response.headers("Set-Cookie")
+            val cookieHeader = TextUtils.join("; ", cookies)
+
+            val authBodyUserNamePassword = AuthRequestBody(username, password)
+            val authBodyUserNamePasswordJson =
+                Gson().toJson(authBodyUserNamePassword).toRequestBody(mediaType)
+
+            val authRequest = Request.Builder()
+                .url("https://auth.riotgames.com/api/v1/authorization")
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                .addHeader("Cookie", cookieHeader)
+                .put(authBodyUserNamePasswordJson)
+                .build()
+
+            // execute the request
+            val authResponse = client.newCall(authRequest).execute()
+            // get the response body
+            val authResponseBody = authResponse.body.string()
+
+            val jsonAuthBody = JSONObject(authResponseBody)
+            // look for error in the response body
+            val error = jsonAuthBody.optString("error", "")
+            if (error.isNotEmpty()) {
+                withContext(Dispatchers.Main)
+                {
+                    dialog.dismiss()
+                    val msg = "Response was successful but username or password is incorrect"
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setTitle("Response from Statics")
+                        .setMessage(msg)
+                        .setPositiveButton("OK", null)
+                    dialog.show()
+                }
+                return@launch
+            }
 
             withContext(Dispatchers.Main)
             {
                 dialog.dismiss()
-                val msg = "Response code: $code\nBody: $body"
+                val msg = "You are now authenticated!"
                 val dialog = AlertDialog.Builder(requireContext())
-                    .setTitle("Response")
+                    .setTitle("Response from Statics")
                     .setMessage(msg)
-                    .setPositiveButton("OK", null)
+                    .setPositiveButton("OK") { _, _ ->
+                        // store the username and password in authPrefs
+                        storeEverything(username, password)
+                        // dismiss the dialog
+                        dialog.dismiss()
+                    }
                 dialog.show()
             }
+
         }
+    }
+
+    private fun storeEverything(username: String, password: String) {
+        // store the username and password in authPrefs
+        authPreferences.edit().putString("username", username).apply()
+        authPreferences.edit().putString("password", password).apply()
+    }
+
+    private fun getTokensLogin(username: String, password: String) {
+
     }
 
     private fun SETUPView() {
@@ -215,6 +294,9 @@ class LiveStatsFragment : Fragment() {
         // Entitlement as X-Riot-Entitlements-JWT
         // Access as Bearer Authorization
         val scope = CoroutineScope(Dispatchers.IO)
+        val CurrentPlayer: LivePlayer
+        scope.launch {
+        }
 
     }
 
@@ -237,7 +319,7 @@ class LiveStatsFragment : Fragment() {
                 INITVIEW.visibility = View.GONE
                 SETUPVIEW.visibility = View.GONE
                 LIVEVIEW.visibility = View.VISIBLE
-                LIVEView()
+                LIVEView("", "")
             }
             "ERROR" -> {
                 INITVIEW.visibility = View.GONE
@@ -287,15 +369,15 @@ class LiveStatsFragment : Fragment() {
                     }
                 }
             } catch (e: Exception) {
-                val textView = requireView().findViewById<TextView>(R.id.textView38)
-                textView.text = "Waiting for IP..."
-                val continueButton = requireView().findViewById<Button>(R.id.button3)
-                continueButton.isClickable = false
-                continueButton.alpha = 0.5f
                 withContext(Dispatchers.Main) {
+                    val textView = requireView().findViewById<TextView>(R.id.textView38)
+                    textView.text = "Waiting for IP..."
+                    val continueButton = requireView().findViewById<Button>(R.id.button3)
+                    continueButton.isClickable = false
+                    continueButton.alpha = 0.5f
                     val dialog = AlertDialog.Builder(requireActivity())
                     dialog.setTitle("Error")
-                    dialog.setMessage("Error authorizing tokens.\n\nPlease enter IP again.\n\nError:\n${e.message}")
+                    dialog.setMessage("Error authorizing.\n\nPlease enter IP again.\n\nError:\n${e.message}")
                     dialog.setPositiveButton("Enter") { _, _ ->
                         getTokens()
                     }
