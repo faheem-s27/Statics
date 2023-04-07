@@ -146,10 +146,12 @@ class ChatsForumActivity : AppCompatActivity() {
         // get the current time
         val unixTime = System.currentTimeMillis()
 
+        val playerCardSmall = "https://media.valorant-api.com/playercards/$playerImage/smallart.png"
+
         // create unique id for the message
         val messageId = ChatReference.push().key.toString()
         ChatReference.child(messageId).child("playerName").setValue(playerName)
-        ChatReference.child(messageId).child("playerImage").setValue(playerImage)
+        ChatReference.child(messageId).child("playerImage").setValue(playerCardSmall)
         ChatReference.child(messageId).child("playerMessage").setValue(message)
         ChatReference.child(messageId).child("unixTime").setValue(unixTime)
 

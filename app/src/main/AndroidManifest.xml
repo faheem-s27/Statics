@@ -8,16 +8,17 @@
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
     <application
-
-        android:usesCleartextTraffic="true"
-
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VALORANT_stats"
+        android:usesCleartextTraffic="true"
         tools:ignore="LockedOrientationActivity">
+        <activity
+            android:name=".valo.activities.new_ui.LeaderboardsV2"
+            android:exported="false" />
         <activity
             android:name=".valo.activities.new_ui.StaticsMainActivity"
             android:exported="false"

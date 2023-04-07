@@ -7,11 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
@@ -20,7 +20,6 @@ import com.jawaadianinc.valorant_stats.valo.activities.chat.ChatsForumActivity
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
-import org.json.JSONObject
 
 class SettingsFragment : Fragment() {
     lateinit var playerName: String
@@ -75,7 +74,16 @@ class SettingsFragment : Fragment() {
             playerNameTV.textSize = 20f
         }
         playerNameTV.text = playerName
-        getLeaderboards()
+
+        val leaderBoardsBtn = view.findViewById<Button>(R.id.new_Leaderboards)
+        leaderBoardsBtn.setOnClickListener {
+            val intent = Intent(requireActivity(), LeaderboardsV2::class.java)
+            intent.putExtra("playerName", playerName)
+            intent.putExtra("region", region)
+            intent.putExtra("playerImage", StaticsMainActivity.playerCardID)
+            startActivity(intent)
+            activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
     }
 
     private fun logOut(name: String) {
@@ -98,46 +106,5 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun getLeaderboards() {
-        val progressBar = view?.findViewById<ProgressBar>(R.id.progressBar8)
-        progressBar!!.visibility = View.VISIBLE
-        progressBar.progress = 0
-        val leaderboardList = ArrayList<Leaderboard>()
-        val leaderboardRecyclerView = view?.findViewById<ListView>(R.id.leaderboardV2_listview)
-        val url = "https://api.henrikdev.xyz/valorant/v2/leaderboard/$region"
-        val queue = Volley.newRequestQueue(requireActivity())
-        val stringRequest = StringRequest(
-            Request.Method.GET, url,
-            { response ->
-                val json = JSONObject(response)
-                val data = json.getJSONArray("players")
-                progressBar.max = data.length()
-                for (i in 0 until data.length()) {
-                    try {
-                        val player = data.getJSONObject(i)
-                        val name = player.getString("gameName") + "#" + player.getString("tagLine")
-                        val rank = player.getInt("leaderboardRank")
-                        val playerCardID = player.getString("PlayerCardID")
-                        val mmr = player.getInt("rankedRating")
-                        val wins = player.getInt("numberOfWins")
-                        val leaderboard = Leaderboard(name, rank, playerCardID, mmr, wins)
-                        leaderboardList.add(leaderboard)
-                        progressBar.progress = i
-                    } catch (_: Exception) {
-                    }
-                }
-                progressBar.visibility = View.GONE
-                val leaderboardAdapter = LeaderboardAdapter(requireActivity(), leaderboardList)
-                leaderboardRecyclerView!!.adapter = leaderboardAdapter
-            },
-            { error ->
-                Toast.makeText(
-                    requireActivity(),
-                    "Error getting leaderboards + $error",
-                    Toast.LENGTH_SHORT
-                ).show()
-            })
-        queue.add(stringRequest)
 
-    }
 }

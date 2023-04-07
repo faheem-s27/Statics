@@ -46,7 +46,6 @@
         android:id="@+id/new_SignOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:backgroundTint="#d32f2f"
         android:fontFamily="@font/lalezar"
         android:gravity="center"
@@ -60,6 +59,29 @@
         app:iconSize="36dp"
         app:iconTint="#00FFFFFF"
         app:iconTintMode="add"
+        app:layout_constraintBottom_toBottomOf="@+id/new_ExtrasChatButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/new_ExtrasChatButton" />
+
+    <Button
+        android:id="@+id/new_Leaderboards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/Valorant_Red"
+        android:fontFamily="@font/lalezar"
+        android:gravity="center"
+        android:text="Leaderboards"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:cornerRadius="33px"
+        app:icon="@drawable/rankicon"
+        app:iconSize="36dp"
+        app:iconTint="@color/light_blue_50"
+        app:iconTintMode="src_in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Extras_PlayerName" />
@@ -91,31 +113,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="@color/white" />
-
-    <ProgressBar
-        android:id="@+id/progressBar8"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="2"
-        app:layout_constraintBottom_toBottomOf="@+id/leaderboardV2_listview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/leaderboardV2_listview" />
-
-    <ListView
-        android:id="@+id/leaderboardV2_listview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/new_ExtrasChatButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_SignOutButton">
-
-    </ListView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
+import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.BlurTransformation
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
@@ -47,6 +50,10 @@ class AssetsFragment : Fragment() {
         assets.add("Sprays")
         assets.add("Weapons")
         getAssets(assets)
+
+        val bg = view.findViewById<ImageView>(R.id.new_AssetsBackground)
+        Picasso.get().load(StaticsMainActivity.playerCardLarge).fit().centerCrop()
+            .transform(BlurTransformation(requireContext())).into(bg)
 
     }
 

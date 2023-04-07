@@ -21,7 +21,9 @@ import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
+import com.squareup.picasso.Picasso
 import io.ktor.client.*
+import jp.wasabeef.picasso.transformations.BlurTransformation
 import kotlinx.coroutines.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -65,6 +67,10 @@ class LiveStatsFragment : Fragment() {
         LIVEVIEW = requireView().findViewById(R.id.LiveView)
 
         SETUPProgressBar = requireView().findViewById(R.id.progressBar7)
+
+        val bg = requireView().findViewById<ImageView>(R.id.new_LiveStatsBackground)
+        Picasso.get().load(StaticsMainActivity.playerCardLarge).fit().centerCrop()
+            .transform(BlurTransformation(requireContext())).into(bg)
 
         loadUI("INIT")
         val continueButton = requireView().findViewById<Button>(R.id.continueInit)
@@ -205,7 +211,11 @@ class LiveStatsFragment : Fragment() {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun LIVEView() {
+    private fun LIVEView(entitlementToken: String, accessToken: String) {
+        // Entitlement as X-Riot-Entitlements-JWT
+        // Access as Bearer Authorization
+        val scope = CoroutineScope(Dispatchers.IO)
+
     }
 
     // function to check CurrentScreen and show the correct view
