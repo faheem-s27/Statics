@@ -53,6 +53,7 @@ class LiveStatsFragment : Fragment() {
     var partyState: String? = null
 
     private var partyExpanded = true
+    private var loadoutExpanded = true
     private var SpraysIDImage = HashMap<String, String>()
 
     override fun onCreateView(
@@ -79,10 +80,11 @@ class LiveStatsFragment : Fragment() {
         gameModes = arrayOf(
             "Unrated",
             "Competitive",
+            "Swift Play",
             "Spike Rush",
             "Deathmatch",
-            "Replication",
-            "Escalation"
+            "Escalation",
+            "Replication"
         )
 
         GlobalScope.launch {
@@ -103,27 +105,31 @@ class LiveStatsFragment : Fragment() {
         val username = authPreferences.getString("username", null)
         val password = authPreferences.getString("password", null)
 
-        val getStartedButton = requireView().findViewById<Button>(R.id.continueInit2)
-        getStartedButton.setOnClickListener {
-            if (username != null && password != null) {
-                // show dialog that a previous username and password was found
-                val builder = AlertDialog.Builder(requireActivity())
-                    .setTitle("Found previous account")
-                    .setMessage("Do you want to use the account $username?")
-                    .setPositiveButton("Yes") { _, _ ->
-                        // authenticate the user
-                        authenticateUser(username, password)
-                    }
-                    .setNegativeButton("No") { _, _ ->
-                        // clear the username and password from the shared preferences
-                        authPreferences.edit().clear().apply()
-                        loadUI("INIT")
-                    }
-                builder.show()
-            } else {
-                loadUI("INIT")
-            }
+        if (username != null && password != null) {
+            authenticateUser(username, password)
         }
+
+//        val getStartedButton = requireView().findViewById<Button>(R.id.continueInit2)
+//        getStartedButton.setOnClickListener {
+//            if (username != null && password != null) {
+//                // show dialog that a previous username and password was found
+//                val builder = AlertDialog.Builder(requireActivity())
+//                    .setTitle("Found previous account")
+//                    .setMessage("Do you want to use the account $username?")
+//                    .setPositiveButton("Yes") { _, _ ->
+//                        // authenticate the user
+//                        authenticateUser(username, password)
+//                    }
+//                    .setNegativeButton("No") { _, _ ->
+//                        // clear the username and password from the shared preferences
+//                        authPreferences.edit().clear().apply()
+//                        loadUI("INIT")
+//                    }
+//                builder.show()
+//            } else {
+//                loadUI("INIT")
+//            }
+//        }
 
         val bg = requireView().findViewById<ImageView>(R.id.new_LiveStatsBackground)
         Picasso.get().load(StaticsMainActivity.playerCardLarge).fit().centerCrop()
@@ -165,6 +171,44 @@ class LiveStatsFragment : Fragment() {
                 partyExpanded = true
             }
         }
+
+        val materialCardPlayerLoadouts =
+            requireView().findViewById<MaterialCardView>(R.id.materialCardCurrentLoadout)
+        materialCardPlayerLoadouts.visibility = View.GONE
+        val loadoutExpandButton =
+            requireView().findViewById<ImageButton>(R.id.currentLoadoutExpandButton)
+        loadoutExpandButton.setOnClickListener {
+            if (loadoutExpanded) {
+                // animate the material card to fade out
+                val fadeOut = AlphaAnimation(1f, 0f)
+                fadeOut.interpolator = AccelerateInterpolator()
+                fadeOut.duration = 300
+                fadeOut.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationRepeat(animation: Animation?) {}
+                    override fun onAnimationEnd(animation: Animation?) {
+                        materialCardPlayerLoadouts.visibility = View.GONE
+                    }
+
+                    override fun onAnimationStart(animation: Animation?) {}
+                })
+                materialCardPlayerLoadouts.startAnimation(fadeOut)
+                loadoutExpandButton.animate().rotation(-90f).setDuration(300).setInterpolator {
+                    AccelerateInterpolator().getInterpolation(it)
+                }.start()
+                loadoutExpanded = false
+            } else {
+                materialCardPlayerLoadouts.visibility = View.VISIBLE
+                val fadeIn = AlphaAnimation(0f, 1f)
+                fadeIn.interpolator = AccelerateInterpolator()
+                fadeIn.duration = 300
+                materialCardPlayerLoadouts.startAnimation(fadeIn)
+                loadoutExpandButton.animate().rotation(0f).setDuration(300).setInterpolator {
+                    AccelerateInterpolator().getInterpolation(it)
+                }.start()
+                loadoutExpanded = true
+            }
+        }
+
 
     }
 
@@ -238,7 +282,7 @@ class LiveStatsFragment : Fragment() {
         // show the Statics Dialog Progress Bar
         val dialog =
             ProgressDialogStatics().setProgressDialog(requireActivity(), "Authenticating...")
-        dialog.show()
+        //dialog.show()
 
         // create a new coroutine scope
         val scope = CoroutineScope(Dispatchers.IO)
@@ -467,7 +511,7 @@ class LiveStatsFragment : Fragment() {
                 .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
                 .addHeader("Authorization", "Bearer $access")
                 .post(
-                    byteArrayOf().toRequestBody(null, 0, content.size)
+                    byteArrayOf().toRequestBody(null, 0, 0)
                 ) // empty body
                 .build()
 
@@ -539,8 +583,41 @@ class LiveStatsFragment : Fragment() {
         }
 
         liveSetup()
-        getPartyStatus()
+        timerLiveAPI()
         getPlayerLoadOuts()
+        //getContracts()
+    }
+
+    // a kotlin coroutine to get the party status every second
+    private fun timerLiveAPI() {
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            while (true) {
+                delay(1000)
+                // context is the main thread
+                withContext(Dispatchers.Main)
+                {
+                    getPartyStatus()
+                }
+            }
+        }
+    }
+
+    private fun getContracts() {
+        if (PlayerUUID == null) {
+            return
+        }
+
+        val url = "https://pd.${region}.a.pvp.net/store/v1/wallet/$PlayerUUID"
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+        val code = response.code
+
+        Log.d("LIVE_STATS_CONTRACTS", "Response code: $code Body: $body")
+
+        if (code == 200) {
+            //Log.d("LIVE_STATS_CONTRACTS", "Response: $body")
+        }
     }
 
     private fun getPlayerLoadOuts() {
@@ -562,26 +639,16 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun loadSprays(Sprays: JSONArray) {
-        val PreRoundSpray = Sprays.getJSONObject(1).getString("SprayID")
-        val MidRoundSpray = Sprays.getJSONObject(2).getString("SprayID")
-        val PostRoundSpray = Sprays.getJSONObject(0).getString("SprayID")
-
-        // Get the PreRoundSpray image from hashmap using PreRoundSprayID
-        val PreRoundSprayImage = SpraysIDImage[PreRoundSpray]
-        val MidRoundSprayImage = SpraysIDImage[MidRoundSpray]
-        val PostRoundSprayImage = SpraysIDImage[PostRoundSpray]
-
-        Log.d("LIVE_STATS_SPRAY", "PreRoundSpray: $PreRoundSprayImage")
-        Log.d("LIVE_STATS_SPRAY", "MidRoundSpray: $MidRoundSprayImage")
-        Log.d("LIVE_STATS_SPRAY", "PostRoundSpray: $PostRoundSprayImage")
-
         val PreRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayPreRound)
         val MidRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayMidRound)
         val PostRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayPostRound)
 
-        Picasso.get().load(PreRoundSprayImage).fit().centerInside().into(PreRoundSprayView)
-        Picasso.get().load(MidRoundSprayImage).fit().centerInside().into(MidRoundSprayView)
-        Picasso.get().load(PostRoundSprayImage).fit().centerInside().into(PostRoundSprayView)
+        Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(1).getString("SprayID")]).fit()
+            .centerInside().into(PreRoundSprayView)
+        Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(2).getString("SprayID")]).fit()
+            .centerInside().into(MidRoundSprayView)
+        Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(0).getString("SprayID")]).fit()
+            .centerInside().into(PostRoundSprayView)
 
 
         PreRoundSprayView!!.setOnClickListener {
@@ -603,12 +670,12 @@ class LiveStatsFragment : Fragment() {
         val image = view?.findViewById<ImageView>(R.id.new_playerAvatar)
         Picasso.get().load(StaticsMainActivity.playerCardSmall).into(image)
 
-        val refreshButton = view?.findViewById<ImageButton>(R.id.new_refreshButton)
-        refreshButton?.setOnClickListener {
+        val refreshButtonCurrentLoadout =
+            view?.findViewById<ImageButton>(R.id.new_refreshButtonCurrentLoadout)
+        refreshButtonCurrentLoadout?.setOnClickListener {
             // animate 360
-            refreshButton.animate().rotationBy(360f).setDuration(500).withEndAction {
-                changePartyStatusText("Refreshing...")
-                getPartyStatus()
+            refreshButtonCurrentLoadout.animate().rotationBy(360f).setDuration(500).withEndAction {
+                getPlayerLoadOuts()
             }
         }
 
@@ -631,6 +698,7 @@ class LiveStatsFragment : Fragment() {
         val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
         joinMatchButton!!.setOnClickListener {
             if (playerPartyID == null || partyState == null) return@setOnClickListener
+            getPartyStatus()
             if (partyState == "MATCHMAKING") {
                 // cancel matchmaking
                 cancelMatchmaking()
@@ -669,26 +737,30 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun getPartyStatus() {
-        val response =
-            APIRequestValorant("https://glz-${region}-1.${region}.a.pvp.net/parties/v1/players/${PlayerUUID}")
-        val code = response.code
-        val body = response.body.string()
-        if (code == 404 || body.contains("PLAYER_DOES_NOT_EXIST")) {
-            // No party found so player is not on Valorant
-            notInGame()
-            return
-        } else if (code == 400 && body.contains("BAD_CLAIMS")) {
-            // auth expired so tell user to restart app
-            changePartyStatusText("Auth expired, please restart app")
-            return
-        } else if (code == 200) {
-            changePartyStatusText("Online!")
-            val partyJSON = JSONObject(body)
-            playerPartyID = partyJSON.getString("CurrentPartyID")
-            getPartyDetails(playerPartyID!!)
-        } else {
-            Log.d("LIVE_STATS", "Error: $code")
-            Log.d("LIVE_STATS", "Body: $body")
+        try {
+            val response =
+                APIRequestValorant("https://glz-${region}-1.${region}.a.pvp.net/parties/v1/players/${PlayerUUID}")
+            val code = response.code
+            val body = response.body.string()
+            if (code == 404 || body.contains("PLAYER_DOES_NOT_EXIST")) {
+                // No party found so player is not on Valorant
+                notInGame()
+                return
+            } else if (code == 400 && body.contains("BAD_CLAIMS")) {
+                // auth expired so tell user to restart app
+                changePartyStatusText("Auth expired, please restart app")
+                return
+            } else if (code == 200) {
+                changePartyStatusText("Online!")
+                val partyJSON = JSONObject(body)
+                playerPartyID = partyJSON.getString("CurrentPartyID")
+                getPartyDetails(playerPartyID!!)
+            } else {
+                Log.d("LIVE_STATS_PARTY_STATUS", "Error: $code")
+                Log.d("LIVE_STATS_PARTY_STATUS", "Body: $body")
+            }
+        } catch (e: Exception) {
+            Log.d("LIVE_STATS_PARTY_STATUS", "Error: ${e.message}")
         }
     }
 
@@ -701,8 +773,45 @@ class LiveStatsFragment : Fragment() {
     private fun getPartyDetails(partyID: String) {
         val url = "https://glz-${region}-1.${region}.a.pvp.net/parties/v1/parties/${partyID}"
         val response = APIRequestValorant(url)
-        if (response.code != 200) return
-        partyState = JSONObject(response.body.string()).getString("State")
+        val body = response.body.string()
+        val code = response.code
+        if (code != 200) return
+        partyState = JSONObject(body).getString("State")
+        val previousState = JSONObject(body).getString("PreviousState")
+        val currentModeSelected =
+            JSONObject(body).getJSONObject("MatchmakingData").getString("QueueID")
+
+        // add a capital letter to the current mode selected
+        var currentModeSelectedCapital =
+            currentModeSelected[0].uppercaseChar() + currentModeSelected.substring(1)
+        if (currentModeSelectedCapital == "Spikerush") currentModeSelectedCapital = "Spike Rush"
+        if (currentModeSelectedCapital == "Swiftplay") currentModeSelectedCapital = "Swift Play"
+        if (currentModeSelectedCapital == "Ggteam") currentModeSelectedCapital = "Escalation"
+        if (currentModeSelectedCapital == "Onefa") currentModeSelectedCapital = "Replication"
+
+        val spinner = view?.findViewById<Spinner>(R.id.new_partyGameModeSelect)
+        val currentModeSelectedIndex = gameModes.indexOf(currentModeSelectedCapital)
+        spinner?.setSelection(currentModeSelectedIndex)
+        handlePartyState(partyState!!, previousState)
+        Log.d("LIVE_STATS_PARTY_STATUS", "Party state: $body")
+    }
+
+    private fun handlePartyState(state: String, previousState: String? = null) {
+        val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
+        joinMatchButton!!.alpha = 1.0f
+        joinMatchButton.isEnabled = true
+        if (state == "MATCHMAKING") {
+            joinMatchButton.text = "Cancel queue"
+            changePartyStatusText("Matchmaking...")
+        } else if (state == "DEFAULT" && previousState == "LEAVING_MATCHMAKING") {
+            joinMatchButton.text = "Join queue"
+            changePartyStatusText("In Lobby")
+        } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING") {
+            changePartyStatusText("In a game!")
+            joinMatchButton.text = "Already in a game"
+            joinMatchButton.alpha = 0.5f
+            joinMatchButton.isEnabled = false
+        }
     }
 
     private fun notInGame() {
@@ -713,7 +822,6 @@ class LiveStatsFragment : Fragment() {
 
         playerPartyID = null
         partyState = null
-        Toast.makeText(requireContext(), "Launch Valorant :D", Toast.LENGTH_LONG).show()
     }
 
     private fun changeQueue(mode: String) {
@@ -765,8 +873,8 @@ class LiveStatsFragment : Fragment() {
         // repeat forever fade in and out
         val fadeIn = AlphaAnimation(0.0f, 1.0f)
         fadeIn.interpolator = AccelerateInterpolator()
-        fadeIn.duration = 1000
-        fadeIn.repeatCount = 3
+        fadeIn.duration = 500
+        fadeIn.repeatCount = 2
         fadeIn.repeatMode = Animation.REVERSE
         view.startAnimation(fadeIn)
     }

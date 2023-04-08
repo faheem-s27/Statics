@@ -140,15 +140,30 @@
                             android:backgroundTint="@color/white"
                             android:scaleType="centerCrop" />
 
+                        <!-- Big text saying Sprays -->
+                        <TextView
+                            android:id="@+id/CurrentLoadoutSprayText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Sprays"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
                         <!-- An image of a spray -->
                         <ImageView
                             android:id="@+id/CurrentLoadoutSprayPreRound"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:layout_alignTop="@id/new_refreshButtonCurrentLoadout"
+                            android:layout_below="@+id/CurrentLoadoutSprayText"
                             android:layout_alignParentStart="true"
                             android:layout_marginStart="16dp"
-                            android:layout_marginTop="32dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
                             android:backgroundTint="@color/white"
@@ -175,10 +190,9 @@
                             android:id="@+id/CurrentLoadoutSprayMidRound"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:layout_alignTop="@id/new_refreshButtonCurrentLoadout"
+                            android:layout_below="@+id/CurrentLoadoutSprayText"
                             android:layout_centerHorizontal="true"
                             android:layout_marginStart="16dp"
-                            android:layout_marginTop="32dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
                             android:backgroundTint="@color/white"
@@ -205,10 +219,9 @@
                             android:id="@+id/CurrentLoadoutSprayPostRound"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:layout_alignTop="@id/new_refreshButtonCurrentLoadout"
+                            android:layout_below="@+id/CurrentLoadoutSprayText"
                             android:layout_alignParentEnd="true"
                             android:layout_marginStart="16dp"
-                            android:layout_marginTop="32dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
                             android:backgroundTint="@color/white"
@@ -230,6 +243,22 @@
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
+                        <!-- Big text saying Title -->
+                        <TextView
+                            android:id="@+id/CurrentLoadoutTitleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/CurrentLoadoutSprayPreRoundText"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Title"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
                     </RelativeLayout>
 
 
@@ -241,10 +270,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
-                    android:fontFamily="@font/lalezar"
+                    android:fontFamily="@font/baloo_bhai"
                     android:text="PARTY DETAILS"
-                    android:textColor="#CFCFCF"
-                    android:textSize="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -255,10 +284,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="32dp"
-                    android:fontFamily="@font/lalezar"
+                    android:fontFamily="@font/baloo_bhai"
                     android:text="CURRENT LOADOUT"
-                    android:textColor="#CFCFCF"
-                    android:textSize="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/materialCardPartyPlayer" />
@@ -379,17 +408,6 @@
                             app:cornerRadius="50dp" />
 
                         <!-- Refresh button in the top right -->
-                        <ImageButton
-                            android:id="@+id/new_refreshButton"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:background="@drawable/refreshicon"
-                            android:backgroundTint="@color/white"
-                            android:scaleType="centerCrop" />
 
                     </RelativeLayout>
 

@@ -84,7 +84,7 @@ class StaticsMainMenu : Fragment() {
         //activity.setSupportActionBar(toolbar)
         progressDialog =
             ProgressDialogStatics().setProgressDialog(requireActivity(), "Loading data...")
-        progressDialog.show()
+        //progressDialog.show()
 
         playerName = activity?.intent?.getStringExtra("playerName") ?: return
         region = activity?.intent?.getStringExtra("region") ?: return
