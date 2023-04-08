@@ -30,11 +30,11 @@
         tools:visibility="gone">
 
         <TextView
-            android:id="@+id/textView31"
+            android:id="@+id/textView46"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="64dp"
-            android:layout_marginEnd="63dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:gravity="center"
             android:text="Welcome to Live!"
             android:textColor="#FFFFFF"
@@ -46,33 +46,20 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <!--        A button in center of screen that says continue -->
-        <Button
-            android:id="@+id/continueInit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="@color/Valorant_Red"
-            android:text="PC Client"
-            android:textColor="@color/light_blue_50"
-            android:textStyle="bold"
-            app:cornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="@+id/continueInit2"
-            app:layout_constraintStart_toStartOf="@+id/continueInit2"
-            app:layout_constraintTop_toBottomOf="@+id/textView31" />
 
         <Button
             android:id="@+id/continueInit2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:backgroundTint="@color/Valorant_Red"
-            android:text="Username/Password"
+            android:text="Get Started"
             android:textColor="@color/light_blue_50"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/continueInit" />
+            app:layout_constraintTop_toBottomOf="@+id/textView46" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -86,148 +73,332 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
-        <TextView
-            android:id="@+id/textView40"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Thanks for testing!"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
+        <ScrollView
+            android:id="@+id/scrollView3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:nestedScrollingEnabled="true"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/SetUpView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:context=".valo.activities.new_ui.StaticsMainMenu">
 
-        <TextView
-            android:id="@+id/textView32"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Open the PC Client"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/IPInput"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                <ImageButton
+                    android:id="@+id/currentLoadoutExpandButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:background="#00C48383"
+                    android:backgroundTint="#FFE6E6"
+                    android:backgroundTintMode="src_in"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView38"
+                    app:layout_constraintStart_toEndOf="@+id/textView38"
+                    app:layout_constraintTop_toTopOf="@+id/textView38"
+                    app:srcCompat="@android:drawable/arrow_down_float" />
 
-        <TextView
-            android:id="@+id/textView38"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:gravity="center"
-            android:text="Waiting for connection"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button2" />
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/materialCardCurrentLoadout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="80dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/currentLoadoutExpandButton"
+                    app:strokeColor="@color/white"
+                    app:strokeWidth="1dp">
 
-        <TextView
-            android:id="@+id/textView39"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="and enter the IP"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/IPInput"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+                    <RelativeLayout
+                        android:id="@+id/new_LayoutCurrentLoadout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/Valorant_Red"
-            android:text="Get download link"
-            android:textColor="@color/light_blue_50"
-            android:textStyle="bold"
-            app:cornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView32" />
+                        <!-- Refresh button in the top right -->
+                        <ImageButton
+                            android:id="@+id/new_refreshButtonCurrentLoadout"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="@drawable/refreshicon"
+                            android:backgroundTint="@color/white"
+                            android:scaleType="centerCrop" />
 
-        <!--        Add a input text that takes in only numbers -->
-        <EditText
-            android:id="@+id/IPInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:autofillHints="192.168.X.XXX"
-            android:backgroundTint="@color/Valorant_Red"
-            android:digits="0123456789."
-            android:ems="10"
-            android:inputType="numberDecimal"
-            android:textColor="@color/light_blue_50"
-            android:textStyle="bold"
-            app:cornerRadius="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                        <!-- An image of a spray -->
+                        <ImageView
+                            android:id="@+id/CurrentLoadoutSprayPreRound"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_alignTop="@id/new_refreshButtonCurrentLoadout"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="32dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:backgroundTint="@color/white"
+                            android:scaleType="centerCrop"
+                            tools:srcCompat="@tools:sample/avatars" />
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/Valorant_Red"
-            android:text="Connect"
-            android:textColor="@color/light_blue_50"
-            android:textStyle="bold"
-            app:cornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/IPInput" />
+                        <!-- Text under the spray saying Pre round -->
+                        <TextView
+                            android:id="@+id/CurrentLoadoutSprayPreRoundText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/CurrentLoadoutSprayPreRound"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Pre Round"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:alpha="0.5"
-            android:backgroundTint="@color/Valorant_Red"
-            android:clickable="false"
-            android:text="Continue"
-            android:textColor="@color/light_blue_50"
-            android:textStyle="bold"
-            app:cornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView38" />
+                        <!-- An image of a spray -->
+                        <ImageView
+                            android:id="@+id/CurrentLoadoutSprayMidRound"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_alignTop="@id/new_refreshButtonCurrentLoadout"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="32dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:backgroundTint="@color/white"
+                            android:scaleType="centerCrop"
+                            tools:srcCompat="@tools:sample/avatars" />
 
-        <ProgressBar
-            android:id="@+id/progressBar7"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/Valorant_Red"
-            android:indeterminate="true"
-            android:progressTint="@color/Valorant_Red"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/IPInput" />
+                        <!-- Text under the spray saying Mid round -->
+                        <TextView
+                            android:id="@+id/CurrentLoadoutSprayMidRoundText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/CurrentLoadoutSprayMidRound"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Mid Round"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
+                        <!-- An image of a spray -->
+                        <ImageView
+                            android:id="@+id/CurrentLoadoutSprayPostRound"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_alignTop="@id/new_refreshButtonCurrentLoadout"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="32dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:backgroundTint="@color/white"
+                            android:scaleType="centerCrop"
+                            tools:srcCompat="@tools:sample/avatars" />
+
+                        <!-- Text under the spray saying Post round -->
+                        <TextView
+                            android:id="@+id/CurrentLoadoutSprayPostRoundText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/CurrentLoadoutSprayPostRound"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Post Round"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/lalezar"
+                    android:text="PARTY DETAILS"
+                    android:textColor="#CFCFCF"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView38"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:fontFamily="@font/lalezar"
+                    android:text="CURRENT LOADOUT"
+                    android:textColor="#CFCFCF"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/materialCardPartyPlayer" />
+
+                <ImageButton
+                    android:id="@+id/partyExpandButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:background="#00C48383"
+                    android:backgroundTint="#FFE6E6"
+                    android:backgroundTintMode="src_in"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView31"
+                    app:layout_constraintStart_toEndOf="@+id/textView31"
+                    app:layout_constraintTop_toTopOf="@+id/textView31"
+                    app:srcCompat="@android:drawable/arrow_down_float" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/materialCardPartyPlayer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="80dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/partyExpandButton"
+                    app:strokeColor="@color/white"
+                    app:strokeWidth="1dp">
+
+                    <RelativeLayout
+                        android:id="@+id/new_LayoutPartyPlayer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/new_partyPlayerName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_toEndOf="@+id/new_playerAvatar"
+                            android:fontFamily="@font/lalezar"
+                            android:text="Duck"
+                            android:textColor="@color/white"
+                            android:textSize="18dp" />
+
+                        <TextView
+                            android:id="@+id/new_partyPlayerTag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@id/new_partyPlayerName"
+                            android:layout_alignBottom="@id/new_partyPlayerName"
+                            android:layout_marginStart="4dp"
+                            android:layout_toEndOf="@+id/new_partyPlayerName"
+                            android:fontFamily="@font/lalezar"
+                            android:gravity="center"
+                            android:text="#2004"
+                            android:textAlignment="center"
+                            android:textColor="#B0B0B0"
+                            android:textSize="16dp" />
+
+                        <TextView
+                            android:id="@+id/new_playerPartyStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/new_partyPlayerName"
+                            android:layout_alignStart="@+id/new_partyPlayerName"
+                            android:fontFamily="@font/lalezar"
+                            android:gravity="center"
+                            android:text="Not in game!"
+                            android:textAlignment="center"
+                            android:textColor="#B0B0B0"
+                            android:textSize="16dp" />
+
+                        <ImageView
+                            android:id="@+id/new_playerAvatar"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:scaleType="fitCenter"
+                            tools:srcCompat="@tools:sample/avatars" />
+
+                        <!-- Dropdown menu called new_partyGameModeSelect -->
+                        <Spinner
+                            android:id="@+id/new_partyGameModeSelect"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/new_playerAvatar"
+                            android:layout_alignStart="@+id/new_playerAvatar"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:spinnerMode="dropdown" />
+
+                        <!-- Button that says Find Match -->
+                        <Button
+                            android:id="@+id/new_findMatchButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/new_partyGameModeSelect"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:backgroundTint="@color/Valorant_Red"
+                            android:fontFamily="@font/lalezar"
+                            android:text="FIND MATCH"
+                            android:textColor="@color/white"
+                            android:textSize="16dp"
+                            app:cornerRadius="50dp" />
+
+                        <!-- Refresh button in the top right -->
+                        <ImageButton
+                            android:id="@+id/new_refreshButton"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:background="@drawable/refreshicon"
+                            android:backgroundTint="@color/white"
+                            android:scaleType="centerCrop" />
+
+                    </RelativeLayout>
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

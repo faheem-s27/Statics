@@ -74,7 +74,7 @@ class StaticsMainMenu : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.activity_statics_main_menu, container, false)
+        return inflater.inflate(R.layout.fragment_statics_main_menu, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -120,7 +120,8 @@ class StaticsMainMenu : Fragment() {
     }
 
     private fun dissapearViews() {
-        val playerCardView: RelativeLayout = view?.findViewById(R.id.new_LayoutPlayer) ?: return
+        val playerCardView: RelativeLayout =
+            view?.findViewById(R.id.new_LayoutPartyPlayer) ?: return
         // for each child in the playerCardView, set alpha to 0
         for (i in 0 until playerCardView.childCount) {
             val v = playerCardView.getChildAt(i)
@@ -154,7 +155,7 @@ class StaticsMainMenu : Fragment() {
 
     private fun animateViews() {
         val duration = 1000L
-        animation(view?.findViewById(R.id.new_LayoutPlayer)!!, duration, 0)
+        animation(view?.findViewById(R.id.new_LayoutPartyPlayer)!!, duration, 0)
         animation(view?.findViewById(R.id.new_LayoutMMR)!!, duration, 200)
         animation(view?.findViewById(R.id.new_LayoutMatch)!!, duration, 400)
     }
@@ -194,8 +195,8 @@ class StaticsMainMenu : Fragment() {
             true
         }
 
-        val newPlayerNameText = view?.findViewById<TextView>(R.id.new_playerName)
-        val newPlayerTag = view?.findViewById<TextView>(R.id.new_playerTag)
+        val newPlayerNameText = view?.findViewById<TextView>(R.id.new_partyPlayerName)
+        val newPlayerTag = view?.findViewById<TextView>(R.id.new_partyPlayerTag)
         val newPlayerRegion = view?.findViewById<TextView>(R.id.new_playerRegion)
 
         // if the playername is longer than 14 characters, make the font size smaller for name and tag

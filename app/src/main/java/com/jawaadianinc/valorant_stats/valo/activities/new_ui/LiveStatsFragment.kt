@@ -2,13 +2,12 @@ package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,19 +17,21 @@ import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.google.android.material.card.MaterialCardView
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
-import io.ktor.client.*
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import kotlinx.coroutines.*
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONArray
 import org.json.JSONObject
+import java.net.URL
 
 class LiveStatsFragment : Fragment() {
     lateinit var playerName: String
@@ -40,13 +41,19 @@ class LiveStatsFragment : Fragment() {
     var entitlementToken: String? = null
     var PlayerUUID: String? = null
     lateinit var INITVIEW: View
-    lateinit var SETUPVIEW: View
     lateinit var LIVEVIEW: View
     lateinit var CurrentScreen: String
-    lateinit var SETUPProgressBar: ProgressBar
-
-    val clientPlatformToken =
+    lateinit var ClientVersion: String
+    var client = OkHttpClient()
+    private val clientPlatformToken =
         "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp"
+    lateinit var gameModes: Array<String>
+
+    var playerPartyID: String? = null
+    var partyState: String? = null
+
+    private var partyExpanded = true
+    private var SpraysIDImage = HashMap<String, String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,34 +69,108 @@ class LiveStatsFragment : Fragment() {
         region = activity?.intent?.getStringExtra("region") ?: return
         authPreferences = requireActivity().getSharedPreferences("auth", Context.MODE_PRIVATE)
 
-//        accessToken = authPreferences.getString("accessTokenV2", null)
-//        entitlementToken = authPreferences.getString("entitlementTokenV2", null)
+        INITVIEW = requireView().findViewById(R.id.InitView)
+        LIVEVIEW = requireView().findViewById(R.id.LiveView)
+
+        INITVIEW.visibility = View.VISIBLE
+        LIVEVIEW.visibility = View.GONE
+
+        // add the game modes to the array
+        gameModes = arrayOf(
+            "Unrated",
+            "Competitive",
+            "Spike Rush",
+            "Deathmatch",
+            "Replication",
+            "Escalation"
+        )
+
+        GlobalScope.launch {
+            val url = "https://valorant-api.com/v1/version"
+            val json = JSONObject(URL(url).readText())
+            ClientVersion = json.getJSONObject("data").getString("riotClientBuild")
+
+            val spraysURL = "https://valorant-api.com/v1/sprays"
+            val spraysJSON = JSONObject(URL(spraysURL).readText())
+            val spraysData = spraysJSON.getJSONArray("data")
+            for (i in 0 until spraysData.length()) {
+                val spray = spraysData.getJSONObject(i)
+                SpraysIDImage[spray.getString("uuid")] = spray.getString("fullTransparentIcon")
+            }
+
+        }
 
         val username = authPreferences.getString("username", null)
         val password = authPreferences.getString("password", null)
 
-        if (username != null && password != null) {
-            authenticateUser(username, password)
-        } else {
-            loadUI("INIT")
+        val getStartedButton = requireView().findViewById<Button>(R.id.continueInit2)
+        getStartedButton.setOnClickListener {
+            if (username != null && password != null) {
+                // show dialog that a previous username and password was found
+                val builder = AlertDialog.Builder(requireActivity())
+                    .setTitle("Found previous account")
+                    .setMessage("Do you want to use the account $username?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        // authenticate the user
+                        authenticateUser(username, password)
+                    }
+                    .setNegativeButton("No") { _, _ ->
+                        // clear the username and password from the shared preferences
+                        authPreferences.edit().clear().apply()
+                        loadUI("INIT")
+                    }
+                builder.show()
+            } else {
+                loadUI("INIT")
+            }
         }
-
-        INITVIEW = requireView().findViewById(R.id.InitView)
-        SETUPVIEW = requireView().findViewById(R.id.SetUpView)
-        LIVEVIEW = requireView().findViewById(R.id.LiveView)
-
-        SETUPProgressBar = requireView().findViewById(R.id.progressBar7)
 
         val bg = requireView().findViewById<ImageView>(R.id.new_LiveStatsBackground)
         Picasso.get().load(StaticsMainActivity.playerCardLarge).fit().centerCrop()
             .transform(BlurTransformation(requireContext())).into(bg)
 
-        loadUI("INIT")
-        val continueButton = requireView().findViewById<Button>(R.id.continueInit)
-        continueButton.setOnClickListener {
-            loadUI("SETUP")
+
+        val materialCardPartyPlayer =
+            requireView().findViewById<MaterialCardView>(R.id.materialCardPartyPlayer)
+        materialCardPartyPlayer.visibility = View.GONE
+        val partyExpandButton = requireView().findViewById<ImageButton>(R.id.partyExpandButton)
+        partyExpandButton.setOnClickListener {
+            if (partyExpanded) {
+                // animate the material card to fade out
+                val fadeOut = AlphaAnimation(1f, 0f)
+                fadeOut.interpolator = AccelerateInterpolator()
+                fadeOut.duration = 300
+                fadeOut.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationRepeat(animation: Animation?) {}
+                    override fun onAnimationEnd(animation: Animation?) {
+                        materialCardPartyPlayer.visibility = View.GONE
+                    }
+
+                    override fun onAnimationStart(animation: Animation?) {}
+                })
+                materialCardPartyPlayer.startAnimation(fadeOut)
+                partyExpandButton.animate().rotation(-90f).setDuration(300).setInterpolator {
+                    AccelerateInterpolator().getInterpolation(it)
+                }.start()
+                partyExpanded = false
+            } else {
+                materialCardPartyPlayer.visibility = View.VISIBLE
+                val fadeIn = AlphaAnimation(0f, 1f)
+                fadeIn.interpolator = AccelerateInterpolator()
+                fadeIn.duration = 300
+                materialCardPartyPlayer.startAnimation(fadeIn)
+                partyExpandButton.animate().rotation(0f).setDuration(300).setInterpolator {
+                    AccelerateInterpolator().getInterpolation(it)
+                }.start()
+                partyExpanded = true
+            }
         }
+
+    }
+
+    private fun INITMode() {
         val usernamepassword: Button = requireView().findViewById(R.id.continueInit2)
+        usernamepassword.text = "Username/Password"
         usernamepassword.setOnClickListener {
             val dialogView = LayoutInflater.from(requireActivity())
                 .inflate(R.layout.dialog_username_password, null)
@@ -162,16 +243,12 @@ class LiveStatsFragment : Fragment() {
         // create a new coroutine scope
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            val client = OkHttpClient.Builder()
-                .build()
-
             val mediaType = "application/json".toMediaTypeOrNull()
             val authBody = AuthCookiesBody()
             val authBodyJson = Gson().toJson(authBody).toRequestBody(mediaType)
 
             val clientPlatformBody = ClientPlatformBody()
             val clientPlatformBodyJson = Gson().toJson(clientPlatformBody).toRequestBody(mediaType)
-
 
             // create a new request
             val request = Request.Builder()
@@ -200,9 +277,23 @@ class LiveStatsFragment : Fragment() {
                 }
             }
 
-            // get the asid cookie
+            // get the cookie
             val cookies = response.headers("Set-Cookie")
-            val cookieHeader = TextUtils.join("; ", cookies)
+            var cookieHeader = TextUtils.join("; ", cookies)
+
+            // get the mfaCookie if it exists in shared preferences
+            val mfaCookie = authPreferences.getString("cookieMFA", null)
+            if (mfaCookie != null) {
+                // add the mfa cookie to the cookie header
+                cookieHeader += "; $mfaCookie"
+            }
+
+            // get the auth cookie if it exists in shared preferences
+            val authCookie = authPreferences.getString("cookieAuth", null)
+            if (authCookie != null) {
+                // add the auth cookie to the cookie header
+                cookieHeader += "; $authCookie"
+            }
 
             val authBodyUserNamePassword = AuthRequestBody(username, password)
             val authBodyUserNamePasswordJson =
@@ -222,6 +313,9 @@ class LiveStatsFragment : Fragment() {
             // get the response body
             val authResponseBody = authResponse.body.string()
 
+            val authCookies = authResponse.headers("Set-Cookie")
+            val authCookieHeader = TextUtils.join("; ", authCookies)
+
             val jsonAuthBody = JSONObject(authResponseBody)
             // look for error in the response body
             val error = jsonAuthBody.optString("error", "")
@@ -233,7 +327,14 @@ class LiveStatsFragment : Fragment() {
                     val dialog = AlertDialog.Builder(requireContext())
                         .setTitle("Response from Statics")
                         .setMessage(msg)
-                        .setPositiveButton("OK", null)
+                        .setPositiveButton("OK") { _, _ ->
+                            // clear the username and password from authPrefs
+                            authPreferences.edit().remove("username").apply()
+                            authPreferences.edit().remove("password").apply()
+
+                            // dismiss the dialog
+                            dialog.dismiss()
+                        }
                     dialog.show()
                 }
                 return@launch
@@ -242,248 +343,420 @@ class LiveStatsFragment : Fragment() {
             withContext(Dispatchers.Main)
             {
                 dialog.dismiss()
-                val msg = "You are now authenticated!"
-                val dialog = AlertDialog.Builder(requireContext())
-                    .setTitle("Response from Statics")
-                    .setMessage(msg)
-                    .setPositiveButton("OK") { _, _ ->
-                        // store the username and password in authPrefs
-                        storeEverything(username, password)
-                        // dismiss the dialog
-                        dialog.dismiss()
-                    }
-                dialog.show()
+                // store authCookieHeader in shared preferences
+                //authPreferences.edit().putString("cookieAuth", authCookieHeader).apply()
+                storeEverything(username, password, authResponseBody, authCookieHeader)
             }
-
         }
     }
 
-    private fun storeEverything(username: String, password: String) {
+    private fun storeEverything(
+        username: String,
+        password: String,
+        uriParam: String,
+        cookieHeader: String
+    ) {
         // store the username and password in authPrefs
         authPreferences.edit().putString("username", username).apply()
         authPreferences.edit().putString("password", password).apply()
-    }
 
-    private fun getTokensLogin(username: String, password: String) {
+        val json = JSONObject(uriParam)
 
-    }
-
-    private fun SETUPView() {
-        val discordURL = "https://discord.gg/jwfJUQMPP7"
-        requireView().findViewById<Button>(R.id.button).setOnClickListener {
-            val dialog = AlertDialog.Builder(requireContext())
-            dialog.setTitle("Join Discord")
-            dialog.setMessage("Join the discord server and look for the channel called 'live_access'\nThere you will find the file you need to get live stats!")
-            dialog.setPositiveButton("Join") { _, _ ->
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(discordURL))
-                startActivity(browserIntent)
-            }
-            dialog.setNegativeButton("Cancel") { _, _ -> }
-            dialog.show()
-        }
-
-        if (accessToken == null || entitlementToken == null) {
-            getTokens()
+        // look for response json object
+        val response = json.optJSONObject("response")
+        if (response != null) {
+            val uri = response.getJSONObject("parameters").getString("uri")
+            // get value of access_token from query by searching for access_token
+            val access = uri.substringAfter("access_token=").substringBefore("&")
+            getEntitlement(access)
         } else {
-            testTokens(accessToken!!)
+            val type = json.getString("type")
+            val email = json.getJSONObject("multifactor").getString("email")
+            if (type == "multifactor") {
+                val builder = AlertDialog.Builder(context)
+                val inflater = LayoutInflater.from(context)
+                val dialogView = inflater.inflate(R.layout.dialog_multifactor, null)
+                builder.setView(dialogView)
+
+                // Add any other dialog box configuration here (e.g. title, buttons)
+                builder.setTitle("2FA Code for $email")
+                builder.setPositiveButton("Send") { _, _ ->
+                    val code =
+                        dialogView.findViewById<EditText>(R.id.multifactor_code_input).text.toString()
+                    send2FAcode(code, cookieHeader)
+                }
+
+                val dialog = builder.create()
+                dialog.show()
+            }
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun LIVEView(entitlementToken: String, accessToken: String) {
+    private fun send2FAcode(code: String, cookieHeader: String) {
+        val multifactorRequest = Request.Builder()
+            .url("https://auth.riotgames.com/api/v1/authorization")
+            .addHeader("Content-Type", "application/json")
+            .addHeader("Accept", "application/json")
+            .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+            .addHeader("Cookie", cookieHeader)
+            .put(
+                """
+                            {
+                                "type": "multifactor",
+                                "code": "$code",
+                                "rememberDevice": true
+                            }
+                        """.trimIndent().toRequestBody("application/json".toMediaTypeOrNull())
+            )
+            .build()
+
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            val responseMFA = client.newCall(multifactorRequest).execute()
+            val body = responseMFA.body.string()
+            // Log the response code and body
+            Log.d("LIVE_STATS_2FA", "Response code: ${responseMFA.code} Body: $body")
+            withContext(Dispatchers.Main)
+            {
+                if (responseMFA.code != 200) {
+                    Log.d("LIVE_STATS_2FA", "Response code not 200")
+                    val msg = "Response code: $code\nBody: $body"
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setTitle("Response from Statics")
+                        .setMessage(msg)
+                        .setPositiveButton("OK", null)
+                    dialog.show()
+                } else {
+                    Log.d("LIVE_STATS_2FA", "Response code 200")
+                    val json = JSONObject(body)
+                    Log.d("LIVE_STATS_2FA", "JSON: $json")
+                    val error = json.optString("error", "")
+                    if (error.isNotEmpty()) {
+                        val msg = "Incorrect 2FA code"
+                        val dialog = AlertDialog.Builder(requireContext())
+                            .setTitle("Response from Statics")
+                            .setMessage(msg)
+                            .setPositiveButton("OK", null)
+                        dialog.show()
+                        return@withContext
+                    }
+
+                    Log.d("LIVE_STATS_2FA", "No error in response")
+
+                    val mfaCookies = responseMFA.headers("Set-Cookie")
+                    val mfaCookieHeader = TextUtils.join("; ", mfaCookies)
+                    // save the cookie
+                    authPreferences.edit().putString("cookieMFA", mfaCookieHeader)
+                        .apply()
+
+                    val uri = json.getJSONObject("response").getJSONObject("parameters")
+                        .getString("uri")
+                    val access =
+                        uri.substringAfter("access_token=").substringBefore("&")
+                    getEntitlement(access)
+                }
+            }
+        }
+    }
+
+    private fun getEntitlement(access: String) {
+        GlobalScope.launch {
+            val request = Request.Builder()
+                .url("https://entitlements.auth.riotgames.com/api/token/v1")
+                .addHeader("Content-Type", "application/json")
+                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                .addHeader("Authorization", "Bearer $access")
+                .post(
+                    byteArrayOf().toRequestBody(null, 0, content.size)
+                ) // empty body
+                .build()
+
+            val response = client.newCall(request).execute()
+            val code = response.code
+
+            if (response.code != 200) {
+                withContext(Dispatchers.Main)
+                {
+                    val body = response.body.string()
+                    val msg = "Response code: $code\nBody: $body"
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setTitle("Response from Entitlement Token")
+                        .setMessage(msg)
+                        .setPositiveButton("OK", null)
+                    dialog.show()
+                }
+                return@launch
+            }
+
+            val entitlementResponse = response.body.string()
+            val entitlementJSON = JSONObject(entitlementResponse)
+            val Etoken = entitlementJSON.getString("entitlements_token")
+            accessToken = access
+            entitlementToken = Etoken
+
+            val userInfoRequest = Request.Builder()
+                .url("https://auth.riotgames.com/userinfo")
+                .addHeader("Content-Type", "application/json")
+                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                .addHeader("Authorization", "Bearer $access")
+                .build()
+
+            val userInfoResponse = client.newCall(userInfoRequest).execute()
+            val userInfoResponseCode = userInfoResponse.code
+
+            if (userInfoResponseCode != 200) {
+                withContext(Dispatchers.Main)
+                {
+                    val body = userInfoResponse.body.string()
+                    val msg = "Response code: $userInfoResponseCode\nBody: $body"
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setTitle("Response from User Info")
+                        .setMessage(msg)
+                        .setPositiveButton("OK", null)
+                    dialog.show()
+                }
+                return@launch
+            }
+
+            val userInfoResponseBody = userInfoResponse.body.string()
+            val userInfoJSON = JSONObject(userInfoResponseBody)
+            val userID = userInfoJSON.getString("sub")
+
+            PlayerUUID = userID
+
+            withContext(Dispatchers.Main)
+            {
+                loadUI("LIVE")
+            }
+        }
+    }
+
+    private fun LIVE(entitlementToken: String?, accessToken: String?) {
         // Entitlement as X-Riot-Entitlements-JWT
         // Access as Bearer Authorization
-        val scope = CoroutineScope(Dispatchers.IO)
-        val CurrentPlayer: LivePlayer
-        scope.launch {
+        if (entitlementToken == null || accessToken == null) {
+            return
+        }
+
+        liveSetup()
+        getPartyStatus()
+        getPlayerLoadOuts()
+    }
+
+    private fun getPlayerLoadOuts() {
+        if (PlayerUUID == null) {
+            return
+        }
+
+        val url =
+            "https://pd.${region}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+        val code = response.code
+
+        if (code == 200) {
+            // show dialog
+            val json = JSONObject(body)
+            loadSprays(json.getJSONArray("Sprays"))
+        }
+    }
+
+    private fun loadSprays(Sprays: JSONArray) {
+        val PreRoundSpray = Sprays.getJSONObject(1).getString("SprayID")
+        val MidRoundSpray = Sprays.getJSONObject(2).getString("SprayID")
+        val PostRoundSpray = Sprays.getJSONObject(0).getString("SprayID")
+
+        // Get the PreRoundSpray image from hashmap using PreRoundSprayID
+        val PreRoundSprayImage = SpraysIDImage[PreRoundSpray]
+        val MidRoundSprayImage = SpraysIDImage[MidRoundSpray]
+        val PostRoundSprayImage = SpraysIDImage[PostRoundSpray]
+
+        Log.d("LIVE_STATS_SPRAY", "PreRoundSpray: $PreRoundSprayImage")
+        Log.d("LIVE_STATS_SPRAY", "MidRoundSpray: $MidRoundSprayImage")
+        Log.d("LIVE_STATS_SPRAY", "PostRoundSpray: $PostRoundSprayImage")
+
+        val PreRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayPreRound)
+        val MidRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayMidRound)
+        val PostRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayPostRound)
+
+        Picasso.get().load(PreRoundSprayImage).fit().centerInside().into(PreRoundSprayView)
+        Picasso.get().load(MidRoundSprayImage).fit().centerInside().into(MidRoundSprayView)
+        Picasso.get().load(PostRoundSprayImage).fit().centerInside().into(PostRoundSprayView)
+
+
+        PreRoundSprayView!!.setOnClickListener {
+        }
+    }
+
+    private fun liveSetup() {
+        val spinner = view?.findViewById<Spinner>(R.id.new_partyGameModeSelect)
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, gameModes)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner?.adapter = adapter
+
+        val name = view?.findViewById<TextView>(R.id.new_partyPlayerName)
+        name?.text = playerName.split("#")[0]
+        val tag = view?.findViewById<TextView>(R.id.new_partyPlayerTag)
+        tag?.text = "#" + playerName.split("#")[1]
+
+        val image = view?.findViewById<ImageView>(R.id.new_playerAvatar)
+        Picasso.get().load(StaticsMainActivity.playerCardSmall).into(image)
+
+        val refreshButton = view?.findViewById<ImageButton>(R.id.new_refreshButton)
+        refreshButton?.setOnClickListener {
+            // animate 360
+            refreshButton.animate().rotationBy(360f).setDuration(500).withEndAction {
+                changePartyStatusText("Refreshing...")
+                getPartyStatus()
+            }
+        }
+
+        // spinner listener
+        spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                changeQueue(gameModes[position])
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // do nothing
+            }
+        }
+
+        val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
+        joinMatchButton!!.setOnClickListener {
+            if (playerPartyID == null || partyState == null) return@setOnClickListener
+            if (partyState == "MATCHMAKING") {
+                // cancel matchmaking
+                cancelMatchmaking()
+            } else {
+                // join matchmaking
+                joinMatchmaking()
+            }
+            getPartyStatus()
+        }
+    }
+
+    private fun joinMatchmaking() {
+        val url =
+            "https://glz-${region}-1.${region}.a.pvp.net/parties/v1/parties/${playerPartyID}/matchmaking/join"
+        val response = APIRequestValorant(url, "")
+        val code = response.code
+        if (code == 200) {
+            val partyStatus = view?.findViewById<TextView>(R.id.new_playerPartyStatus)
+            partyStatus?.text = "Matchmaking..."
+            val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
+            joinMatchButton?.text = "Cancel queue"
+        }
+    }
+
+    private fun cancelMatchmaking() {
+        val url =
+            "https://glz-${region}-1.${region}.a.pvp.net/parties/v1/parties/${playerPartyID}/matchmaking/leave"
+        val response = APIRequestValorant(url, "")
+        val code = response.code
+        if (code == 200) {
+            val partyStatus = view?.findViewById<TextView>(R.id.new_playerPartyStatus)
+            partyStatus?.text = "In Lobby"
+            val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
+            joinMatchButton?.text = "Join queue"
+        }
+    }
+
+    private fun getPartyStatus() {
+        val response =
+            APIRequestValorant("https://glz-${region}-1.${region}.a.pvp.net/parties/v1/players/${PlayerUUID}")
+        val code = response.code
+        val body = response.body.string()
+        if (code == 404 || body.contains("PLAYER_DOES_NOT_EXIST")) {
+            // No party found so player is not on Valorant
+            notInGame()
+            return
+        } else if (code == 400 && body.contains("BAD_CLAIMS")) {
+            // auth expired so tell user to restart app
+            changePartyStatusText("Auth expired, please restart app")
+            return
+        } else if (code == 200) {
+            changePartyStatusText("Online!")
+            val partyJSON = JSONObject(body)
+            playerPartyID = partyJSON.getString("CurrentPartyID")
+            getPartyDetails(playerPartyID!!)
+        } else {
+            Log.d("LIVE_STATS", "Error: $code")
+            Log.d("LIVE_STATS", "Body: $body")
+        }
+    }
+
+    private fun changePartyStatusText(newText: String) {
+        val partyStatus = view?.findViewById<TextView>(R.id.new_playerPartyStatus)
+        partyStatus?.text = newText
+        fadeRepeat(partyStatus!!)
+    }
+
+    private fun getPartyDetails(partyID: String) {
+        val url = "https://glz-${region}-1.${region}.a.pvp.net/parties/v1/parties/${partyID}"
+        val response = APIRequestValorant(url)
+        if (response.code != 200) return
+        partyState = JSONObject(response.body.string()).getString("State")
+    }
+
+    private fun notInGame() {
+        changePartyStatusText("Not in game!")
+        val findMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
+        findMatchButton!!.alpha = 0.5f
+        findMatchButton.isEnabled = false
+
+        playerPartyID = null
+        partyState = null
+        Toast.makeText(requireContext(), "Launch Valorant :D", Toast.LENGTH_LONG).show()
+    }
+
+    private fun changeQueue(mode: String) {
+        if (playerPartyID == null) return
+        var queueID = mode.lowercase().replace(" ", "")
+        if (queueID == "escalation") queueID = "ggteam"
+        if (queueID == "replication") queueID = "onefa"
+
+        val url =
+            "https://glz-${region}-1.${region}.a.pvp.net/parties/v1/parties/${playerPartyID}/queue"
+        val body = "{\"queueId\":\"${queueID}\"}"
+
+        val response = APIRequestValorant(url, body)
+        val code = response.code
+        if (code == 200) {
+            changePartyStatusText("Queue changed to $mode")
+            // delay coroutine to allow time for party state to change
+            GlobalScope.launch {
+                delay(1000)
+                withContext(Dispatchers.Main)
+                {
+                    changePartyStatusText("In Lobby")
+                }
+            }
         }
 
     }
-
-    // function to check CurrentScreen and show the correct view
     private fun loadUI(mode: String) {
         CurrentScreen = mode
         when (CurrentScreen) {
             "INIT" -> {
                 INITVIEW.visibility = View.VISIBLE
-                SETUPVIEW.visibility = View.GONE
                 LIVEVIEW.visibility = View.GONE
-            }
-            "SETUP" -> {
-                INITVIEW.visibility = View.GONE
-                SETUPVIEW.visibility = View.VISIBLE
-                LIVEVIEW.visibility = View.GONE
-                SETUPView()
+                INITMode()
             }
             "LIVE" -> {
                 INITVIEW.visibility = View.GONE
-                SETUPVIEW.visibility = View.GONE
                 LIVEVIEW.visibility = View.VISIBLE
-                LIVEView("", "")
+                LIVE(entitlementToken, accessToken)
             }
             "ERROR" -> {
                 INITVIEW.visibility = View.GONE
-                SETUPVIEW.visibility = View.GONE
                 LIVEVIEW.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun testTokens(access: String) {
-        CurrentScreen = "SETUP"
-        val client = OkHttpClient()
-        val url = "https://auth.riotgames.com/userinfo".toHttpUrlOrNull()
-        // put access token in header as Bearer
-        val request = Request.Builder()
-            .addHeader("Authorization", "Bearer $access")
-            .url(url!!)
-            .build()
-
-        GlobalScope.launch {
-            try {
-                val response = client.newCall(request).execute()
-                val body = response.body.string()
-                val JSON = JSONObject(body)
-                val name = JSON.getString("username")
-                PlayerUUID = JSON.getString("sub")
-                withContext(Dispatchers.Main)
-                {
-                    val textView = requireView().findViewById<TextView>(R.id.textView38)
-                    textView.text = "Logged in as\n$name"
-                    textView.clearAnimation()
-                    val continueButton = requireView().findViewById<Button>(R.id.button3)
-                    continueButton.isClickable = true
-                    continueButton.alpha = 1.0f
-
-                    Toast.makeText(requireActivity(), "LIVE CLIENT ACTIVATED!", Toast.LENGTH_SHORT)
-                        .show()
-
-                    // hide progress bar
-                    SETUPProgressBar.visibility = View.INVISIBLE
-                    // show button
-                    val IPButtonCheck = requireView().findViewById<Button>(R.id.button2)
-                    IPButtonCheck.visibility = View.VISIBLE
-
-                    continueButton.setOnClickListener {
-                        loadUI("LIVE")
-                    }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    val textView = requireView().findViewById<TextView>(R.id.textView38)
-                    textView.text = "Waiting for IP..."
-                    val continueButton = requireView().findViewById<Button>(R.id.button3)
-                    continueButton.isClickable = false
-                    continueButton.alpha = 0.5f
-                    val dialog = AlertDialog.Builder(requireActivity())
-                    dialog.setTitle("Error")
-                    dialog.setMessage("Error authorizing.\n\nPlease enter IP again.\n\nError:\n${e.message}")
-                    dialog.setPositiveButton("Enter") { _, _ ->
-                        getTokens()
-                    }
-                    dialog.setNegativeButton("Cancel") { _, _ -> }
-                    dialog.show()
-
-                    // hide progress bar
-                    SETUPProgressBar.visibility = View.INVISIBLE
-                    // show button
-                    val IPButtonCheck = requireView().findViewById<Button>(R.id.button2)
-                    IPButtonCheck.visibility = View.VISIBLE
-                }
-            }
-        }
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun getTokens() {
-        CurrentScreen = "SETUP"
-        fadeRepeat(requireView().findViewById(R.id.textView38))
-
-        val continueButton = requireView().findViewById<Button>(R.id.button3)
-        continueButton.isClickable = false
-        continueButton.alpha = 0.5f
-
-        val IPInput = requireView().findViewById<EditText>(R.id.IPInput)
-        // clear IPInput
-        IPInput.setText("")
-
-
-        val IPButtonCheck = requireView().findViewById<Button>(R.id.button2)
-        IPButtonCheck.setOnClickListener {
-            // hide keyboard
-            val imm =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(requireView().windowToken, 0)
-
-            // hide button
-            IPButtonCheck.visibility = View.INVISIBLE
-            // show progress bar
-            SETUPProgressBar.visibility = View.VISIBLE
-
-            // get value of IPInput
-            val IPInput = requireView().findViewById<EditText>(R.id.IPInput)
-            val IP = IPInput.text.toString()
-
-            // check if IP is valid
-            if (IP == "") return@setOnClickListener
-
-            GlobalScope.launch {
-                val client = OkHttpClient()
-                val url = "http://$IP:5000/".toHttpUrlOrNull()
-                val request = Request.Builder()
-                    .url(url!!)
-                    .build()
-                try {
-                    val response = client.newCall(request).execute()
-                    val body = response.body.string()
-                    if (response.code == 200) {
-                        val JSON = JSONObject(body)
-                        accessToken = JSON.getString("accessToken")
-                        entitlementToken = JSON.getString("entitlementToken")
-
-                        val editor = authPreferences.edit()
-                        editor.putString("accessTokenV2", accessToken)
-                        editor.putString("entitlementTokenV2", entitlementToken)
-                        editor.apply()
-
-                        withContext(Dispatchers.Main)
-                        {
-                            testTokens(accessToken!!)
-                        }
-
-                    } else {
-                        withContext(Dispatchers.Main)
-                        {
-                            val dialog = AlertDialog.Builder(requireActivity())
-                            dialog.setTitle("Error")
-                            dialog.setMessage("Couldn't connect to IP. Please check your IP address and try again.")
-                            dialog.setPositiveButton("OK") { _, _ -> }
-                            dialog.show()
-
-                            // show button
-                            IPButtonCheck.visibility = View.VISIBLE
-                            // hide progress bar
-                            SETUPProgressBar.visibility = View.INVISIBLE
-                        }
-                    }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main)
-                    {
-                        val dialog = AlertDialog.Builder(requireActivity())
-                        dialog.setTitle("Error")
-                        dialog.setMessage("Error getting tokens.\n\nError message:\n${e.message}")
-                        dialog.setPositiveButton("OK") { _, _ -> }
-                        dialog.show()
-
-                        // show button
-                        IPButtonCheck.visibility = View.VISIBLE
-                        // hide progress bar
-                        SETUPProgressBar.visibility = View.INVISIBLE
-                    }
-                    return@launch
-                }
-
-
             }
         }
     }
@@ -493,10 +766,42 @@ class LiveStatsFragment : Fragment() {
         val fadeIn = AlphaAnimation(0.0f, 1.0f)
         fadeIn.interpolator = AccelerateInterpolator()
         fadeIn.duration = 1000
-        fadeIn.repeatCount = Animation.INFINITE
+        fadeIn.repeatCount = 3
         fadeIn.repeatMode = Animation.REVERSE
         view.startAnimation(fadeIn)
     }
 
+    private fun APIRequestValorant(url: String, body: String? = null): Response {
+        if (body == null) {
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("X-Riot-Entitlements-JWT", entitlementToken!!)
+                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                .addHeader("X-Riot-ClientVersion", ClientVersion)
+                .addHeader("Authorization", "Bearer $accessToken")
+                .get()
+                .build()
 
+            // return main thread blocking
+            return runBlocking(Dispatchers.IO) {
+                return@runBlocking client.newCall(request).execute()
+            }
+        } else {
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("X-Riot-Entitlements-JWT", entitlementToken!!)
+                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                .addHeader("X-Riot-ClientVersion", ClientVersion)
+                .addHeader("Authorization", "Bearer $accessToken")
+                .post(body.toRequestBody("application/json".toMediaTypeOrNull()))
+                .build()
+
+            // return main thread blocking
+            return runBlocking(Dispatchers.IO) {
+                return@runBlocking client.newCall(request).execute()
+            }
+        }
+    }
 }

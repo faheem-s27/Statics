@@ -32,7 +32,8 @@ class WeaponStats : Fragment() {
         val index = CosmeticsListActivity.weaponIndex
 
         val weaponImage = view.findViewById<ImageView>(R.id.imageWeapon)
-        val url = json!!.getJSONArray("data").getJSONObject(index!!).getString("killStreamIcon")
+        val url = json!!.getJSONArray("data").getJSONObject(index!!).getJSONObject("shopData")
+            .getString("newImage")
         Picasso.get().load(url).into(weaponImage)
         val arrayList = ArrayList<String>()
         val mAdapter = object :
@@ -53,50 +54,53 @@ class WeaponStats : Fragment() {
             }
         }
         try {
+            val data = json.getJSONArray("data").getJSONObject(index)
             val weaponStatsJson =
-                json.getJSONArray("data").getJSONObject(index)?.getJSONObject("weaponStats")
+                data.getJSONObject("weaponStats")
 
             val listView: ListView = view.findViewById(R.id.weaponStatsLV)
 
 
             listView.adapter = mAdapter
-            mAdapter.add("Fire Rate: " + (weaponStatsJson?.getString("fireRate") ?: "N/A"))
-            mAdapter.add("Magazine Size : " + (weaponStatsJson?.getString("magazineSize") ?: "N/A"))
+            mAdapter.add("------- General stats -------")
+            mAdapter.add("Cost : " + (data?.getJSONObject("shopData")?.getString("cost") ?: "N/A"))
+            mAdapter.add("Fire Rate: " + (weaponStatsJson.getString("fireRate") ?: "N/A"))
+            mAdapter.add("Magazine Size : " + (weaponStatsJson.getString("magazineSize") ?: "N/A"))
             mAdapter.add(
-                ("Reload Time : " + weaponStatsJson?.getString("reloadTimeSeconds") + "s")
+                ("Reload Time : " + weaponStatsJson.getString("reloadTimeSeconds") + "s")
             )
             mAdapter.add(
-                ("Equip Time : " + weaponStatsJson?.getString("equipTimeSeconds") + "s")
+                ("Equip Time : " + weaponStatsJson.getString("equipTimeSeconds") + "s")
             )
             mAdapter.add(
-                "Run Speed Multiplier : " + (weaponStatsJson?.getString("runSpeedMultiplier")
+                "Run Speed Multiplier : " + (weaponStatsJson.getString("runSpeedMultiplier")
                     ?: "N/A")
             )
             mAdapter.add(
-                "First Bullet Accuracy : " + (weaponStatsJson?.getString("firstBulletAccuracy")
+                "First Bullet Accuracy : " + (weaponStatsJson.getString("firstBulletAccuracy")
                     ?: "N/A")
             )
             mAdapter.add(
-                "Shotgun Pellet Count : " + (weaponStatsJson?.getString("shotgunPelletCount")
+                "Shotgun Pellet Count : " + (weaponStatsJson.getString("shotgunPelletCount")
                     ?: "N/A")
             )
             mAdapter.add("------- ADS stats -------")
             try {
                 mAdapter.add(
-                    "Fire Rate: " + (weaponStatsJson?.getJSONObject("adsStats")
+                    "Fire Rate: " + (weaponStatsJson.getJSONObject("adsStats")
                         ?.getString("fireRate")
                         ?: "N/A")
                 )
                 mAdapter.add(
-                    "Zoom Multiplier : " + (weaponStatsJson?.getJSONObject("adsStats")
+                    "Zoom Multiplier : " + (weaponStatsJson.getJSONObject("adsStats")
                         ?.getString("zoomMultiplier") ?: "N/A")
                 )
                 mAdapter.add(
-                    "Run Speed Multiplier : " + (weaponStatsJson?.getJSONObject("adsStats")
+                    "Run Speed Multiplier : " + (weaponStatsJson.getJSONObject("adsStats")
                         ?.getString("runSpeedMultiplier") ?: "N/A")
                 )
                 mAdapter.add(
-                    "First Bullet Accuracy : " + (weaponStatsJson?.getJSONObject("adsStats")
+                    "First Bullet Accuracy : " + (weaponStatsJson.getJSONObject("adsStats")
                         ?.getString("firstBulletAccuracy") ?: "N/A")
                 )
             } catch (e: Exception) {
@@ -105,7 +109,7 @@ class WeaponStats : Fragment() {
 
 
             mAdapter.add("------- Damage Ranges -------")
-            val damageRange = weaponStatsJson?.getJSONArray("damageRanges")
+            val damageRange = weaponStatsJson.getJSONArray("damageRanges")
             for (i in 0 until (damageRange?.length() ?: 0)) {
                 mAdapter.add(
                     "--- For " + (damageRange?.getJSONObject(i)

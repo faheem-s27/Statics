@@ -32,7 +32,6 @@ class LeaderboardsV2 : AppCompatActivity() {
         Picasso.get().load(cardURL).fit().centerCrop()
             .transform(BlurTransformation(this)).into(background)
 
-
         val tv = findViewById<TextView>(R.id.textView41)
         tv.text = "Leaderboards [${region.uppercase(Locale.getDefault())}]"
 
@@ -86,9 +85,9 @@ class LeaderboardsV2 : AppCompatActivity() {
         queue.add(stringRequest)
 
         val searchViewLeaderboards =
-            findViewById<androidx.appcompat.widget.SearchView>(R.id.searchViewLeaderboards)
+            findViewById<android.widget.SearchView>(R.id.searchViewLeaderboards)
         searchViewLeaderboards.setOnQueryTextListener(object :
-            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }

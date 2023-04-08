@@ -74,7 +74,7 @@
                 android:textSize="16dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/materialCardViewPlayer" />
+                app:layout_constraintTop_toBottomOf="@+id/materialCardPartyPlayer" />
 
             <TextView
                 android:id="@+id/textView34"
@@ -114,8 +114,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
-                app:cardCornerRadius="30dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView33"
@@ -333,15 +333,15 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/materialCardViewPlayer"
+                android:id="@+id/materialCardPartyPlayer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
-                app:cardCornerRadius="30dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="80dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView31"
@@ -349,7 +349,7 @@
                 app:strokeWidth="1dp">
 
                 <RelativeLayout
-                    android:id="@+id/new_LayoutPlayer"
+                    android:id="@+id/new_LayoutPartyPlayer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -357,7 +357,7 @@
                         android:id="@+id/new_playerLevel"
                         android:layout_width="60dp"
                         android:layout_height="40dp"
-                        android:layout_below="@+id/new_playerName"
+                        android:layout_below="@+id/new_partyPlayerName"
                         android:layout_centerHorizontal="true"
                         android:backgroundTint="@color/ToolBar"
                         android:fontFamily="@font/lalezar"
@@ -413,7 +413,7 @@
                         tools:text="EU" />
 
                     <TextView
-                        android:id="@+id/new_playerName"
+                        android:id="@+id/new_partyPlayerName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -438,13 +438,13 @@
                         tools:text="Habibi" />
 
                     <TextView
-                        android:id="@+id/new_playerTag"
+                        android:id="@+id/new_partyPlayerTag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignTop="@id/new_playerName"
-                        android:layout_alignBottom="@id/new_playerName"
+                        android:layout_alignTop="@id/new_partyPlayerName"
+                        android:layout_alignBottom="@id/new_partyPlayerName"
                         android:layout_marginStart="4dp"
-                        android:layout_toEndOf="@+id/new_playerName"
+                        android:layout_toEndOf="@+id/new_partyPlayerName"
                         android:fontFamily="@font/lalezar"
                         android:gravity="center"
                         android:text="#2004"
@@ -464,8 +464,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
-                app:cardCornerRadius="30dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView34"
