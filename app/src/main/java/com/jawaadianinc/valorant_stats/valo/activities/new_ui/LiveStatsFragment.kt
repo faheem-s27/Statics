@@ -18,9 +18,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import kotlinx.coroutines.*
@@ -55,6 +57,10 @@ class LiveStatsFragment : Fragment() {
     private var partyExpanded = true
     private var loadoutExpanded = true
     private var SpraysIDImage = HashMap<String, String>()
+    private var AgentNamesID = HashMap<String, String>()
+
+    private var timerSeconds: Long = 500
+    lateinit var assetsDB: AssetsDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,6 +93,8 @@ class LiveStatsFragment : Fragment() {
             "Replication"
         )
 
+        assetsDB = AssetsDatabase(requireContext())
+
         GlobalScope.launch {
             val url = "https://valorant-api.com/v1/version"
             val json = JSONObject(URL(url).readText())
@@ -100,6 +108,14 @@ class LiveStatsFragment : Fragment() {
                 SpraysIDImage[spray.getString("uuid")] = spray.getString("fullTransparentIcon")
             }
 
+            val agentsURL = "https://valorant-api.com/v1/agents"
+            val agentsJSON = JSONObject(URL(agentsURL).readText())
+            val agentsData = agentsJSON.getJSONArray("data")
+            for (i in 0 until agentsData.length()) {
+                val agent = agentsData.getJSONObject(i)
+                AgentNamesID[agent.getString("uuid")] = agent.getString("displayName")
+            }
+
         }
 
         val username = authPreferences.getString("username", null)
@@ -107,29 +123,11 @@ class LiveStatsFragment : Fragment() {
 
         if (username != null && password != null) {
             authenticateUser(username, password)
+        } else {
+            requireView().findViewById<Button>(R.id.continueInit2).setOnClickListener {
+                loadUI("INIT")
+            }
         }
-
-//        val getStartedButton = requireView().findViewById<Button>(R.id.continueInit2)
-//        getStartedButton.setOnClickListener {
-//            if (username != null && password != null) {
-//                // show dialog that a previous username and password was found
-//                val builder = AlertDialog.Builder(requireActivity())
-//                    .setTitle("Found previous account")
-//                    .setMessage("Do you want to use the account $username?")
-//                    .setPositiveButton("Yes") { _, _ ->
-//                        // authenticate the user
-//                        authenticateUser(username, password)
-//                    }
-//                    .setNegativeButton("No") { _, _ ->
-//                        // clear the username and password from the shared preferences
-//                        authPreferences.edit().clear().apply()
-//                        loadUI("INIT")
-//                    }
-//                builder.show()
-//            } else {
-//                loadUI("INIT")
-//            }
-//        }
 
         val bg = requireView().findViewById<ImageView>(R.id.new_LiveStatsBackground)
         Picasso.get().load(StaticsMainActivity.playerCardLarge).fit().centerCrop()
@@ -138,7 +136,7 @@ class LiveStatsFragment : Fragment() {
 
         val materialCardPartyPlayer =
             requireView().findViewById<MaterialCardView>(R.id.materialCardPartyPlayer)
-        materialCardPartyPlayer.visibility = View.GONE
+        materialCardPartyPlayer.visibility = View.VISIBLE
         val partyExpandButton = requireView().findViewById<ImageButton>(R.id.partyExpandButton)
         partyExpandButton.setOnClickListener {
             if (partyExpanded) {
@@ -174,7 +172,7 @@ class LiveStatsFragment : Fragment() {
 
         val materialCardPlayerLoadouts =
             requireView().findViewById<MaterialCardView>(R.id.materialCardCurrentLoadout)
-        materialCardPlayerLoadouts.visibility = View.GONE
+        materialCardPlayerLoadouts.visibility = View.VISIBLE
         val loadoutExpandButton =
             requireView().findViewById<ImageButton>(R.id.currentLoadoutExpandButton)
         loadoutExpandButton.setOnClickListener {
@@ -378,6 +376,9 @@ class LiveStatsFragment : Fragment() {
 
                             // dismiss the dialog
                             dialog.dismiss()
+
+                            // refresh the activity
+                            requireActivity().recreate()
                         }
                     dialog.show()
                 }
@@ -593,7 +594,7 @@ class LiveStatsFragment : Fragment() {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             while (true) {
-                delay(1000)
+                delay((timerSeconds))
                 // context is the main thread
                 withContext(Dispatchers.Main)
                 {
@@ -624,7 +625,6 @@ class LiveStatsFragment : Fragment() {
         if (PlayerUUID == null) {
             return
         }
-
         val url =
             "https://pd.${region}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
         val response = APIRequestValorant(url)
@@ -635,6 +635,76 @@ class LiveStatsFragment : Fragment() {
             // show dialog
             val json = JSONObject(body)
             loadSprays(json.getJSONArray("Sprays"))
+            loadTitle(json.getJSONObject("Identity").getString("PlayerTitleID"))
+        }
+    }
+
+    private fun loadTitle(TitleID: String) {
+        val TitleView = view?.findViewById<TextView>(R.id.CurrentLoadoutTitle)
+        val titleName = assetsDB.retrieveName(TitleID)
+        TitleView?.text = titleName
+
+        val CurrentLoadoutTitleEdit = view?.findViewById<ImageView>(R.id.CurrentLoadoutTitleEdit)
+        CurrentLoadoutTitleEdit?.setOnClickListener {
+            // get all of the titles from the assets db
+            val titles = getAvailableTitles()
+            // convert to CharSequence
+            val titlesCharSequence = titles.map { it }.toTypedArray()
+            // show a dialog with all of the titles
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("Select a Title")
+                .setItems(titlesCharSequence) { _, which ->
+                    // get the title id from the selected item
+                    val titleID = assetsDB.retrieveIDTitle(titles[which])
+                    // update the title
+                    updateTitle(titleID)
+                }
+                .setNegativeButton("Cancel", null)
+            dialog.show()
+        }
+    }
+
+    private fun updateTitle(titleID: String) {
+        val url =
+            "https://pd.${region}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
+        val response = APIRequestValorant(url)
+        var body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return
+
+        val json = JSONObject(body)
+        val identity = json.getJSONObject("Identity")
+        identity.put("PlayerTitleID", titleID)
+
+        // convert to string
+        body = json.toString()
+
+        val titleResponse = APIRequestValorant(url, body, true)
+        val titleBody = titleResponse.body.string()
+        val titleCode = titleResponse.code
+
+        if (titleCode == 200) {
+            // update the title
+            //loadTitle(titleID)
+            Snackbar.make(
+                requireView(),
+                "Title updated successfully",
+                Snackbar.LENGTH_SHORT
+            ).show()
+            val refreshButtonCurrentLoadout =
+                view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
+            refreshButtonCurrentLoadout!!.animate().rotationBy(360f).setDuration(500)
+                .withEndAction {
+                    getPlayerLoadOuts()
+                }
+        } else {
+            // show error
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("Error")
+                .setMessage("Error updating title: $titleBody")
+                .setPositiveButton("OK", null)
+            dialog.show()
         }
     }
 
@@ -744,6 +814,7 @@ class LiveStatsFragment : Fragment() {
             val body = response.body.string()
             if (code == 404 || body.contains("PLAYER_DOES_NOT_EXIST")) {
                 // No party found so player is not on Valorant
+                timerSeconds = 10000
                 notInGame()
                 return
             } else if (code == 400 && body.contains("BAD_CLAIMS")) {
@@ -751,6 +822,7 @@ class LiveStatsFragment : Fragment() {
                 changePartyStatusText("Auth expired, please restart app")
                 return
             } else if (code == 200) {
+                timerSeconds = 500
                 changePartyStatusText("Online!")
                 val partyJSON = JSONObject(body)
                 playerPartyID = partyJSON.getString("CurrentPartyID")
@@ -873,13 +945,42 @@ class LiveStatsFragment : Fragment() {
         // repeat forever fade in and out
         val fadeIn = AlphaAnimation(0.0f, 1.0f)
         fadeIn.interpolator = AccelerateInterpolator()
-        fadeIn.duration = 500
+        fadeIn.duration = 250
         fadeIn.repeatCount = 2
         fadeIn.repeatMode = Animation.REVERSE
         view.startAnimation(fadeIn)
     }
 
-    private fun APIRequestValorant(url: String, body: String? = null): Response {
+    private fun getAvailableTitles(): ArrayList<String> {
+        val availableTitles = arrayListOf<String>()
+        val titleID = "de7caa6b-adf7-4588-bbd1-143831e786c6\t"
+        val url = "https://pd.${region}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$titleID"
+
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return arrayListOf()
+
+        Log.d("LIVE_STATS_AVAILABLE_TITLES", body)
+
+        val titles = JSONObject(body).getJSONArray("Entitlements")
+        for (i in 0 until titles.length()) {
+            val titleObject = titles.getJSONObject(i)
+            val titleID = titleObject.getString("ItemID")
+
+            // convert titleID to title name
+            val converted = assetsDB.retrieveName(titleID)
+            availableTitles.add(converted)
+        }
+        return availableTitles
+    }
+
+    private fun APIRequestValorant(
+        url: String,
+        body: String? = null,
+        put: Boolean? = false
+    ): Response {
         if (body == null) {
             val request = Request.Builder()
                 .url(url)
@@ -895,7 +996,7 @@ class LiveStatsFragment : Fragment() {
             return runBlocking(Dispatchers.IO) {
                 return@runBlocking client.newCall(request).execute()
             }
-        } else {
+        } else if (put == false) {
             val request = Request.Builder()
                 .url(url)
                 .addHeader("Content-Type", "application/json")
@@ -904,6 +1005,21 @@ class LiveStatsFragment : Fragment() {
                 .addHeader("X-Riot-ClientVersion", ClientVersion)
                 .addHeader("Authorization", "Bearer $accessToken")
                 .post(body.toRequestBody("application/json".toMediaTypeOrNull()))
+                .build()
+
+            // return main thread blocking
+            return runBlocking(Dispatchers.IO) {
+                return@runBlocking client.newCall(request).execute()
+            }
+        } else {
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("X-Riot-Entitlements-JWT", entitlementToken!!)
+                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                .addHeader("X-Riot-ClientVersion", ClientVersion)
+                .addHeader("Authorization", "Bearer $accessToken")
+                .put(body.toRequestBody("application/json".toMediaTypeOrNull()))
                 .build()
 
             // return main thread blocking

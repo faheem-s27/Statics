@@ -259,6 +259,36 @@
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
+                        <!-- players actual title underneath it in the center -->
+                        <TextView
+                            android:id="@+id/CurrentLoadoutTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/CurrentLoadoutTitleText"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Title"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <!-- Image Icon next to it of a pencil -->
+                        <ImageView
+                            android:id="@+id/CurrentLoadoutTitleEdit"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignTop="@+id/CurrentLoadoutTitle"
+                            android:layout_alignBottom="@+id/CurrentLoadoutTitle"
+                            android:layout_marginStart="8dp"
+                            android:layout_toEndOf="@+id/CurrentLoadoutTitle"
+                            android:backgroundTint="@color/light_blue_50"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/edit_icon"
+                            app:tint="@color/white" />
+
                     </RelativeLayout>
 
 

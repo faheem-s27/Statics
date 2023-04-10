@@ -21,6 +21,7 @@ class StaticsMainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStaticsMainBinding
     private lateinit var bottomNavBar: BottomNavigationView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStaticsMainBinding.inflate(layoutInflater)

@@ -63,37 +63,6 @@ class AssetsDatabase(context: Context) : SQLiteOpenHelper(context, "ValoAssets.d
         }
     }
 
-    private fun addData(UUID: String, Type: String, Name: String, Image: Bitmap): Boolean {
-        val db: SQLiteDatabase = this.writableDatabase
-        val contentValues = ContentValues().apply {
-            put(Companion.UUID, UUID)
-            put(Companion.Type, Type)
-            put(Companion.Name, Name)
-            put(Companion.Image, getBitmapAsByteArray(Image))
-        }
-        val success = db.insert(ValoAssets, null, contentValues) != -1L
-        contentValues.clear()
-        return success
-    }
-
-    private fun checkForExisting(UUID: String, Name: String): Boolean {
-        // format the Name so there is no apostrophe
-        val db: SQLiteDatabase = this.readableDatabase
-        var cursor: Cursor? = null
-        try {
-            cursor = db.rawQuery(
-                "SELECT * FROM $ValoAssets WHERE ${Companion.UUID} = '$UUID' AND ${Companion.Name} = '$Name'",
-                null
-            )
-            return cursor.moveToFirst()
-        } catch (e: Exception) {
-            Log.d("AssetsDatabase", "Error checking for existing asset", e)
-        } finally {
-            cursor?.close()
-        }
-        return false
-    }
-
     fun retrieveImage(UUID: String, Name: String): Bitmap {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
@@ -166,5 +135,30 @@ class AssetsDatabase(context: Context) : SQLiteOpenHelper(context, "ValoAssets.d
         val outputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         return outputStream.toByteArray()
+    }
+
+    fun retrieveAllTitles(): ArrayList<String> {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT $Name FROM $ValoAssets WHERE $Type = 'Title'", null)
+        val titles = ArrayList<String>()
+        while (cursor.moveToNext()) {
+            titles.add(cursor.getString(0))
+        }
+        cursor.close()
+        db.close()
+        return titles
+    }
+
+    fun retrieveIDTitle(TitleName: String): String {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT $UUID FROM $ValoAssets WHERE $Type = 'Title' AND $Name = '$TitleName'",
+            null
+        )
+        cursor.moveToFirst()
+        val id = cursor.getString(0)
+        cursor.close()
+        db.close()
+        return id
     }
 }
