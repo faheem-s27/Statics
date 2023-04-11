@@ -17,6 +17,8 @@ import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -58,9 +60,12 @@ class LiveStatsFragment : Fragment() {
     private var loadoutExpanded = true
     private var SpraysIDImage = HashMap<String, String>()
     private var AgentNamesID = HashMap<String, String>()
+    private var MapsImagesID = HashMap<String, String>()
 
     private var timerSeconds: Long = 500
     lateinit var assetsDB: AssetsDatabase
+
+    private lateinit var agentPreGameRecyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,8 +84,12 @@ class LiveStatsFragment : Fragment() {
         INITVIEW = requireView().findViewById(R.id.InitView)
         LIVEVIEW = requireView().findViewById(R.id.LiveView)
 
+        agentPreGameRecyclerView = requireView().findViewById(R.id.new_agentSelectGridRecyclerView)
+        agentPreGameRecyclerView.layoutManager = GridLayoutManager(requireContext(), 6)
+
         INITVIEW.visibility = View.VISIBLE
         LIVEVIEW.visibility = View.GONE
+
 
         // add the game modes to the array
         gameModes = arrayOf(
@@ -108,12 +117,20 @@ class LiveStatsFragment : Fragment() {
                 SpraysIDImage[spray.getString("uuid")] = spray.getString("fullTransparentIcon")
             }
 
-            val agentsURL = "https://valorant-api.com/v1/agents"
+            val agentsURL = "https://valorant-api.com/v1/agents?isPlayableCharacter=true"
             val agentsJSON = JSONObject(URL(agentsURL).readText())
             val agentsData = agentsJSON.getJSONArray("data")
             for (i in 0 until agentsData.length()) {
                 val agent = agentsData.getJSONObject(i)
                 AgentNamesID[agent.getString("uuid")] = agent.getString("displayName")
+            }
+
+            val mapsURL = "https://valorant-api.com/v1/maps"
+            val mapsJSON = JSONObject(URL(mapsURL).readText())
+            val mapsData = mapsJSON.getJSONArray("data")
+            for (i in 0 until mapsData.length()) {
+                val map = mapsData.getJSONObject(i)
+                MapsImagesID[map.getString("mapUrl")] = map.getString("splash")
             }
 
         }
@@ -778,6 +795,8 @@ class LiveStatsFragment : Fragment() {
             }
             getPartyStatus()
         }
+
+        agentPreGameRecyclerView.adapter = ImageAdapter(getAgentImages())
     }
 
     private fun joinMatchmaking() {
@@ -819,11 +838,11 @@ class LiveStatsFragment : Fragment() {
                 return
             } else if (code == 400 && body.contains("BAD_CLAIMS")) {
                 // auth expired so tell user to restart app
+                timerSeconds = 10000
                 changePartyStatusText("Auth expired, please restart app")
                 return
             } else if (code == 200) {
-                timerSeconds = 500
-                changePartyStatusText("Online!")
+                timerSeconds = 1000
                 val partyJSON = JSONObject(body)
                 playerPartyID = partyJSON.getString("CurrentPartyID")
                 getPartyDetails(playerPartyID!!)
@@ -853,6 +872,14 @@ class LiveStatsFragment : Fragment() {
         val currentModeSelected =
             JSONObject(body).getJSONObject("MatchmakingData").getString("QueueID")
 
+        var isReady = true
+
+        val members = JSONObject(body).getJSONArray("Members")
+        for (i in 0 until members.length()) {
+            if (!members.getJSONObject(i).getBoolean("IsReady")) isReady = false
+            break
+        }
+
         // add a capital letter to the current mode selected
         var currentModeSelectedCapital =
             currentModeSelected[0].uppercaseChar() + currentModeSelected.substring(1)
@@ -864,25 +891,37 @@ class LiveStatsFragment : Fragment() {
         val spinner = view?.findViewById<Spinner>(R.id.new_partyGameModeSelect)
         val currentModeSelectedIndex = gameModes.indexOf(currentModeSelectedCapital)
         spinner?.setSelection(currentModeSelectedIndex)
-        handlePartyState(partyState!!, previousState)
+        handlePartyState(partyState!!, previousState, isReady)
         Log.d("LIVE_STATS_PARTY_STATUS", "Party state: $body")
+
     }
 
-    private fun handlePartyState(state: String, previousState: String? = null) {
+    private fun handlePartyState(
+        state: String,
+        previousState: String? = null,
+        isReady: Boolean? = null
+    ) {
         val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
         joinMatchButton!!.alpha = 1.0f
         joinMatchButton.isEnabled = true
         if (state == "MATCHMAKING") {
             joinMatchButton.text = "Cancel queue"
             changePartyStatusText("Matchmaking...")
-        } else if (state == "DEFAULT" && previousState == "LEAVING_MATCHMAKING") {
+            hideLayoutsMatch()
+        } else if (state == "DEFAULT" && previousState == "LEAVING_MATCHMAKING" || previousState == "DEFAULT") {
             joinMatchButton.text = "Join queue"
+            hideLayoutsMatch()
             changePartyStatusText("In Lobby")
-        } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING") {
-            changePartyStatusText("In a game!")
-            joinMatchButton.text = "Already in a game"
+        } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING" && !isReady!!) {
+            changePartyStatusText("Party is not ready")
+            joinMatchButton.text = "Not ready"
             joinMatchButton.alpha = 0.5f
             joinMatchButton.isEnabled = false
+            getGameInfoPlayer()
+        } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING" && isReady!!) {
+            joinMatchButton.text = "Join queue"
+            hideLayoutsMatch()
+            changePartyStatusText("In Lobby")
         }
     }
 
@@ -894,6 +933,198 @@ class LiveStatsFragment : Fragment() {
 
         playerPartyID = null
         partyState = null
+    }
+
+    private fun getGameInfoPlayer() {
+        val PreGameLayout = view?.findViewById<RelativeLayout>(R.id.new_LayoutPartyPreGame)
+
+
+        if (PlayerUUID == null) return
+        val url = "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
+        val response = APIRequestValorant(url)
+        val code = response.code
+        val body = response.body.string()
+
+        if (code == 200) {
+            val preGameJSON = JSONObject(body)
+            val matchID = preGameJSON.getString("MatchID")
+            PreGameLayout?.visibility = View.VISIBLE
+            playerPreGame(matchID)
+        } else if (code == 404) {
+            PreGameLayout?.visibility = View.GONE
+            val coreGameURL =
+                "https://glz-${region}-1.${region}.a.pvp.net/core-game/v1/players/${PlayerUUID}"
+            val coreGameResponse = APIRequestValorant(coreGameURL)
+            val coreGameCode = coreGameResponse.code
+            val coreGameBody = coreGameResponse.body.string()
+
+            if (coreGameCode == 200) {
+                val coreGameJSON = JSONObject(coreGameBody)
+                val matchID = coreGameJSON.getString("MatchID")
+                playerCoreGame(matchID)
+            }
+        }
+    }
+
+    private fun hideLayoutsMatch() {
+        val pregameLayout = view?.findViewById<RelativeLayout>(R.id.new_LayoutPartyPreGame)
+        pregameLayout?.visibility = View.GONE
+        val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
+        lockInButton!!.alpha = 1.0f
+        lockInButton.isEnabled = true
+        lockInButton.text = "Select Agents"
+    }
+
+    private fun playerPreGame(matchID: String) {
+        val url = "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/matches/${matchID}"
+        val response = APIRequestValorant(url)
+
+        val code = response.code
+        val body = response.body.string()
+
+        if (code != 200) return
+
+        val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
+        lockInButton!!.setOnClickListener {
+            // get the text from the lock in button
+            val lockInButtonText = lockInButton.text.toString()
+            // get the last word of the text
+            val lockInButtonTextLastWord = lockInButtonText.split(" ").last()
+            // check if the last word is in the agents ID hashmap
+            if (AgentNamesID.containsValue(lockInButtonTextLastWord)) {
+                // get the key of the last word
+                val agentID =
+                    AgentNamesID.filterValues { it == lockInButtonTextLastWord }.keys.first()
+                // select the character
+                lockInCharacter(agentID)
+            }
+        }
+
+        val quitButton = view?.findViewById<Button>(R.id.new_quitButton)
+        quitButton!!.setOnClickListener {
+            quitMatch(matchID)
+        }
+
+        val preGameJSON = JSONObject(body)
+//        val allyTeamJSON = preGameJSON.getJSONArray("Players")
+
+        val currentModeSelected = preGameJSON.getString("QueueID")
+        // add a capital letter to the current mode selected
+        var currentModeSelectedCapital =
+            currentModeSelected[0].uppercaseChar() + currentModeSelected.substring(1)
+        if (currentModeSelectedCapital == "Spikerush") currentModeSelectedCapital = "Spike Rush"
+        if (currentModeSelectedCapital == "Swiftplay") currentModeSelectedCapital = "Swift Play"
+        if (currentModeSelectedCapital == "Ggteam") currentModeSelectedCapital = "Escalation"
+        if (currentModeSelectedCapital == "Onefa") currentModeSelectedCapital = "Replication"
+        val textViewMode = view?.findViewById<TextView>(R.id.new_partyPreGameTitle)
+        textViewMode?.text = "Playing $currentModeSelectedCapital"
+
+        val mapName = preGameJSON.getString("MapID")
+        val pregameBackground = view?.findViewById<ImageView>(R.id.new_partyPreGameMapImage)
+        Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop().into(pregameBackground)
+    }
+
+    private fun quitMatch(matchID: String) {
+        // Show a dialog to confirm the user wants to quit the match
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Quit match")
+        builder.setMessage("Are you sure you want to quit the match? (This could result in a penalty)")
+        builder.setPositiveButton("Yes") { dialog, which ->
+            // get the match ID
+            val url =
+                "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/matches/${matchID}/quit"
+            val response = APIRequestValorant(url, "")
+            val code = response.code
+            if (code == 200) {
+                Toast.makeText(context, "Successfully quit the match", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Failed to quit the match", Toast.LENGTH_SHORT).show()
+            }
+        }
+        builder.setNegativeButton("No") { dialog, which ->
+            // do nothing
+        }
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+    private fun selectCharacter(agentID: String) {
+        // check if the pregame layout is visible
+        val preGameLayout = view?.findViewById<RelativeLayout>(R.id.new_LayoutPartyPreGame)
+        if (preGameLayout?.visibility == View.GONE) return
+
+        if (PlayerUUID == null) return
+        val preGameUrl =
+            "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
+        val preGameresponse = APIRequestValorant(preGameUrl)
+        val preGamecode = preGameresponse.code
+        val preGamebody = preGameresponse.body.string()
+
+        if (preGamecode != 200) return
+
+        val preGameJSON = JSONObject(preGamebody)
+        val matchID = preGameJSON.getString("MatchID")
+
+        val url =
+            "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/matches/${matchID}/select/${agentID}"
+        val response = APIRequestValorant(url, "")
+
+        val code = response.code
+
+        if (code == 200) {
+            val agentName = AgentNamesID[agentID]
+            changePartyStatusText("Selected $agentName")
+            val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
+            agentButton?.text = "Lock in $agentName"
+        }
+    }
+
+    private fun lockInCharacter(agentID: String) {
+        // check if the pregame layout is visible
+        val preGameLayout = view?.findViewById<RelativeLayout>(R.id.new_LayoutPartyPreGame)
+        if (preGameLayout?.visibility == View.GONE) return
+
+        if (PlayerUUID == null) return
+        val preGameUrl =
+            "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
+        val preGameresponse = APIRequestValorant(preGameUrl)
+        val preGamecode = preGameresponse.code
+        val preGamebody = preGameresponse.body.string()
+
+        if (preGamecode != 200) return
+
+        val preGameJSON = JSONObject(preGamebody)
+        val matchID = preGameJSON.getString("MatchID")
+
+        val url =
+            "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/matches/${matchID}/lock/${agentID}"
+        val response = APIRequestValorant(url, "")
+
+        val code = response.code
+
+        if (code == 200) {
+            val agentName = AgentNamesID[agentID]
+            changePartyStatusText("Selected $agentName")
+            val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
+            lockInButton?.isEnabled = false
+            lockInButton?.alpha = 0.5f
+            lockInButton?.text = "Locked in $agentName"
+        }
+    }
+
+    private fun playerCoreGame(matchID: String) {
+
+    }
+
+    private fun getAgentImages(): ArrayList<String> {
+        val agentImages = ArrayList<String>()
+
+        // go thru hashmap
+        for (agent in AgentNamesID.keys) {
+            agentImages.add(agent)
+        }
+        return agentImages
+
     }
 
     private fun changeQueue(mode: String) {
@@ -945,7 +1176,7 @@ class LiveStatsFragment : Fragment() {
         // repeat forever fade in and out
         val fadeIn = AlphaAnimation(0.0f, 1.0f)
         fadeIn.interpolator = AccelerateInterpolator()
-        fadeIn.duration = 250
+        fadeIn.duration = 500
         fadeIn.repeatCount = 2
         fadeIn.repeatMode = Animation.REVERSE
         view.startAnimation(fadeIn)
@@ -973,7 +1204,44 @@ class LiveStatsFragment : Fragment() {
             val converted = assetsDB.retrieveName(titleID)
             availableTitles.add(converted)
         }
+        // sort titles alphabetically
+        availableTitles.sort()
         return availableTitles
+    }
+
+
+    private inner class ImageAdapter(private val images: List<String>) :
+        RecyclerView.Adapter<ImageViewHolder>() {
+        private var selectedItem = RecyclerView.NO_POSITION // Store the selected item position
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.agent_pregame_grid_item, parent, false)
+            return ImageViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
+            val image = images[position]
+
+            // Bind the image data and isSelected value to ViewHolder
+            holder.bind(image, position == selectedItem)
+
+            // Set click listener for the ViewHolder
+            holder.setOnItemClickListener(object : ImageViewHolder.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    // Update the selected item position and notify data changes
+                    selectedItem = position
+                    notifyDataSetChanged()
+
+                    val images = getAgentImages()
+                    selectCharacter(images[position])
+                }
+            })
+        }
+
+        override fun getItemCount(): Int {
+            return images.size
+        }
     }
 
     private fun APIRequestValorant(
@@ -1027,5 +1295,57 @@ class LiveStatsFragment : Fragment() {
                 return@runBlocking client.newCall(request).execute()
             }
         }
+    }
+
+    // override when application is not in focus
+    override fun onPause() {
+        super.onPause()
+        Log.d("LIVE_STATS", "onPause")
+        timerSeconds = 10000
+    }
+
+    override fun onResume() {
+        super.onResume()
+        timerSeconds = 1000
+    }
+}
+
+class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val imageView: ImageView = itemView.findViewById(R.id.image_view)
+
+    fun bind(image: String, isSelected: Boolean) {
+        // Set the image resource and alpha value
+        val fullURL = "https://media.valorant-api.com/agents/${image}/displayicon.png"
+        Picasso.get().load(fullURL).fit().into(imageView)
+        imageView.alpha = if (isSelected) 1.0f else 0.6f
+
+        // Add or remove a border based on isSelected value
+        if (isSelected) {
+            // do an animation of the background resource making it zoom in
+            imageView.setBackgroundResource(R.drawable.border_selected)
+            imageView.animate().scaleX(1.1f).scaleY(1.1f).setDuration(200).start()
+        } else {
+            imageView.setBackgroundResource(0) // Set 0 for no border
+            imageView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start()
+        }
+
+        // Set click listener to handle image click event
+        imageView.setOnClickListener {
+            // Notify the adapter of the click event
+            adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let { position ->
+                onItemClickListener?.onItemClick(position)
+            }
+        }
+    }
+
+    // Interface for click listener
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
+    private var onItemClickListener: OnItemClickListener? = null
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        onItemClickListener = listener
     }
 }
