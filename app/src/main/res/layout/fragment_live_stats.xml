@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/textView46"
@@ -53,13 +53,42 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/Valorant_Red"
-            android:text="Get Started"
+            android:text="Enter details"
             android:textColor="@color/light_blue_50"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView46" />
+
+        <Button
+            android:id="@+id/continueInit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/Valorant_Red"
+            android:text="Why password?"
+            android:textColor="@color/light_blue_50"
+            android:textStyle="bold"
+            app:cornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView46" />
+
+        <Button
+            android:id="@+id/continueInit3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/Valorant_Red"
+            android:text="Invalid usenrname/password?"
+            android:textColor="@color/light_blue_50"
+            android:textStyle="bold"
+            app:cornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/continueInit" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -71,7 +100,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <ScrollView
             android:id="@+id/scrollView3"
@@ -442,7 +471,8 @@
                             android:id="@+id/new_LayoutPartyPreGame"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/new_findMatchButton">
+                            android:layout_below="@+id/new_findMatchButton"
+                            android:visibility="gone">
 
                             <!-- Imageview that covers the whole layout -->
                             <ImageView

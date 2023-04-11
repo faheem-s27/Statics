@@ -90,7 +90,6 @@ class LiveStatsFragment : Fragment() {
         INITVIEW.visibility = View.VISIBLE
         LIVEVIEW.visibility = View.GONE
 
-
         // add the game modes to the array
         gameModes = arrayOf(
             "Unrated",
@@ -141,9 +140,7 @@ class LiveStatsFragment : Fragment() {
         if (username != null && password != null) {
             authenticateUser(username, password)
         } else {
-            requireView().findViewById<Button>(R.id.continueInit2).setOnClickListener {
-                loadUI("INIT")
-            }
+            loadUI("INIT")
         }
 
         val bg = requireView().findViewById<ImageView>(R.id.new_LiveStatsBackground)
@@ -291,13 +288,32 @@ class LiveStatsFragment : Fragment() {
                 .setNegativeButton("Cancel", null)
             builder.show()
         }
+
+        val whyPassword = requireView().findViewById<Button>(R.id.continueInit)
+        whyPassword.setOnClickListener {
+            val builder = AlertDialog.Builder(requireActivity())
+                .setTitle("Why do I need to enter my password?")
+                .setMessage(
+                    "Unfortunately, Statics needs your Riot username and password to use the live mode. The password is required to authenticate your account and is used to get the data from the API. The password is not stored anywhere and is only used to authenticate your account." +
+                            "I won't sugarcoat things. Due to the way Statics uses the API, I believe there's no other way to sign in than to have people enter their credentials directly. \n" +
+                            "Under those circumstances, there's really no good way for anyone to be sure their credentials remain safe. \n" +
+                            "For what it's worth:\n" +
+                            "• Your credentials only ever leave your device in the form of a login request directly to Riot. They are never stored or sent anywhere else.\n" +
+                            "• You can enable 2-factor authentication, so you'd at least have another layer of security if it went bad.\n" +
+                            "\n" +
+                            "The code is open-source and visible on GitHub (pending); you can build it yourself if you want to be sure of what's running.\n" +
+                            "TL;DR: you'll have to take my word for it. \uD83E\uDD86❤️ "
+                )
+                .setPositiveButton("OK", null)
+            builder.show()
+        }
     }
 
     private fun authenticateUser(username: String, password: String) {
         // show the Statics Dialog Progress Bar
-        val dialog =
+        val progressdialog =
             ProgressDialogStatics().setProgressDialog(requireActivity(), "Authenticating...")
-        //dialog.show()
+        progressdialog.show()
 
         // create a new coroutine scope
         val scope = CoroutineScope(Dispatchers.IO)
@@ -325,7 +341,7 @@ class LiveStatsFragment : Fragment() {
             if (response.code != 200) {
                 withContext(Dispatchers.Main)
                 {
-                    dialog.dismiss()
+                    progressdialog.dismiss()
                     val body = response.body.string()
                     val msg = "Response code: $code\nBody: $body"
                     val dialog = AlertDialog.Builder(requireContext())
@@ -381,7 +397,7 @@ class LiveStatsFragment : Fragment() {
             if (error.isNotEmpty()) {
                 withContext(Dispatchers.Main)
                 {
-                    dialog.dismiss()
+                    progressdialog.dismiss()
                     val msg = "Response was successful but username or password is incorrect"
                     val dialog = AlertDialog.Builder(requireContext())
                         .setTitle("Response from Statics")
@@ -392,7 +408,7 @@ class LiveStatsFragment : Fragment() {
                             authPreferences.edit().remove("password").apply()
 
                             // dismiss the dialog
-                            dialog.dismiss()
+                            progressdialog.dismiss()
 
                             // refresh the activity
                             requireActivity().recreate()
@@ -404,7 +420,7 @@ class LiveStatsFragment : Fragment() {
 
             withContext(Dispatchers.Main)
             {
-                dialog.dismiss()
+                progressdialog.dismiss()
                 // store authCookieHeader in shared preferences
                 //authPreferences.edit().putString("cookieAuth", authCookieHeader).apply()
                 storeEverything(username, password, authResponseBody, authCookieHeader)

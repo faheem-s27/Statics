@@ -44,8 +44,9 @@
 
     <Button
         android:id="@+id/new_SignOutButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:backgroundTint="#d32f2f"
         android:fontFamily="@font/lalezar"
         android:gravity="center"
@@ -59,10 +60,9 @@
         app:iconSize="36dp"
         app:iconTint="#00FFFFFF"
         app:iconTintMode="add"
-        app:layout_constraintBottom_toBottomOf="@+id/new_ExtrasChatButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/new_ExtrasChatButton" />
+        app:layout_constraintEnd_toEndOf="@+id/new_About"
+        app:layout_constraintStart_toStartOf="@+id/new_About"
+        app:layout_constraintTop_toBottomOf="@+id/new_About" />
 
     <Button
         android:id="@+id/new_Leaderboards"
@@ -86,6 +86,50 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Extras_PlayerName" />
 
+    <Button
+        android:id="@+id/new_Chats"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/Valorant_Red"
+        android:fontFamily="@font/lalezar"
+        android:gravity="center"
+        android:text="Chat"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:cornerRadius="33px"
+        app:icon="@drawable/chats"
+        app:iconSize="36dp"
+        app:iconTint="@color/light_blue_50"
+        app:iconTintMode="src_in"
+        app:layout_constraintEnd_toEndOf="@+id/new_Leaderboards"
+        app:layout_constraintStart_toStartOf="@+id/new_Leaderboards"
+        app:layout_constraintTop_toBottomOf="@+id/new_Leaderboards" />
+
+    <Button
+        android:id="@+id/new_About"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/Valorant_Red"
+        android:fontFamily="@font/lalezar"
+        android:gravity="center"
+        android:text="About"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:cornerRadius="33px"
+        app:icon="@drawable/just_statics_alot_smaller"
+        app:iconSize="36dp"
+        app:iconTint="@color/light_blue_50"
+        app:iconTintMode="src_in"
+        app:layout_constraintEnd_toEndOf="@+id/new_Leaderboards"
+        app:layout_constraintStart_toStartOf="@+id/new_Leaderboards"
+        app:layout_constraintTop_toBottomOf="@+id/new_Chats" />
+
     <TextView
         android:id="@+id/Extras_PlayerName"
         android:layout_width="wrap_content"
@@ -99,19 +143,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/circley_PFP"
         tools:text="Duck#2004" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/new_ExtrasChatButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="80dp"
-        android:clickable="true"
-        android:contentDescription="Chat with other people using Statics!"
-        android:src="@drawable/chats"
-        app:backgroundTint="@color/Valorant_Red"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

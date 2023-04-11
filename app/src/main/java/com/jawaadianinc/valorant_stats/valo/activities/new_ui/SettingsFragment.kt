@@ -12,9 +12,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.main.AboutActivity
 import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
 import com.jawaadianinc.valorant_stats.valo.activities.chat.ChatsForumActivity
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
@@ -59,7 +59,7 @@ class SettingsFragment : Fragment() {
         Picasso.get().load(StaticsMainActivity.playerCardLarge).fit().centerCrop()
             .transform(BlurTransformation(requireContext())).into(Lpfp)
 
-        val ChatsButton = view.findViewById<FloatingActionButton>(R.id.new_ExtrasChatButton)
+        val ChatsButton = view.findViewById<Button>(R.id.new_Chats)
         ChatsButton.setOnClickListener {
             val intent = Intent(requireActivity(), ChatsForumActivity::class.java)
             intent.putExtra("playerName", playerName)
@@ -81,6 +81,13 @@ class SettingsFragment : Fragment() {
             intent.putExtra("playerName", playerName)
             intent.putExtra("region", region)
             intent.putExtra("playerImage", StaticsMainActivity.playerCardID)
+            startActivity(intent)
+            activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        }
+
+        val aboutButton = view.findViewById<Button>(R.id.new_About)
+        aboutButton.setOnClickListener {
+            val intent = Intent(requireActivity(), AboutActivity::class.java)
             startActivity(intent)
             activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
