@@ -5,6 +5,6 @@ data class AuthRequestBody(
     val password: String
 ) {
     val type: String = "auth"
-    val remember: Boolean = true
     val language: String = "en_US"
+    val remember: Boolean = true
 }

@@ -2,11 +2,13 @@ package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,22 +26,23 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import kotlinx.coroutines.*
+import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+import java.util.*
 
 class LiveStatsFragment : Fragment() {
     lateinit var playerName: String
     lateinit var region: String
+    lateinit var shard: String
     lateinit var authPreferences: SharedPreferences
     var accessToken: String? = null
     var entitlementToken: String? = null
@@ -50,9 +53,9 @@ class LiveStatsFragment : Fragment() {
     lateinit var ClientVersion: String
     var client = OkHttpClient()
     private val clientPlatformToken =
-        "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp"
+        "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9"
     lateinit var gameModes: Array<String>
-
+    lateinit var riotClientVersion: String
     var playerPartyID: String? = null
     var partyState: String? = null
 
@@ -81,6 +84,13 @@ class LiveStatsFragment : Fragment() {
         region = activity?.intent?.getStringExtra("region") ?: return
         authPreferences = requireActivity().getSharedPreferences("auth", Context.MODE_PRIVATE)
 
+        shard =
+            if (region.lowercase(Locale.ROOT) == "latam" || region.lowercase(Locale.getDefault()) == "br") {
+                "na"
+            } else {
+                region.lowercase(Locale.getDefault())
+            }
+
         INITVIEW = requireView().findViewById(R.id.InitView)
         LIVEVIEW = requireView().findViewById(R.id.LiveView)
 
@@ -107,6 +117,7 @@ class LiveStatsFragment : Fragment() {
             val url = "https://valorant-api.com/v1/version"
             val json = JSONObject(URL(url).readText())
             ClientVersion = json.getJSONObject("data").getString("riotClientBuild")
+            riotClientVersion = json.getJSONObject("data").getString("riotClientVersion")
 
             val spraysURL = "https://valorant-api.com/v1/sprays"
             val spraysJSON = JSONObject(URL(spraysURL).readText())
@@ -134,13 +145,55 @@ class LiveStatsFragment : Fragment() {
 
         }
 
+        client = OkHttpClient.Builder()
+            .connectionSpecs(
+                listOf(
+                    ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                        .tlsVersions(TlsVersion.TLS_1_3)
+                        .cipherSuites(
+                            CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
+                            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+                            CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+                            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+                            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+                            // Add other ciphers as needed
+                        )
+                        .build(),
+                    ConnectionSpec.CLEARTEXT
+                )
+            )
+            .build()
+
         val username = authPreferences.getString("username", null)
         val password = authPreferences.getString("password", null)
 
-        if (username != null && password != null) {
-            authenticateUser(username, password)
-        } else {
-            loadUI("INIT")
+        val usernamepassword: Button = requireView().findViewById(R.id.continueInit2)
+        usernamepassword.text = "Get started"
+        usernamepassword.setOnClickListener {
+            if (username != null && password != null) {
+                authenticateUser(username, password)
+            } else {
+                loadUI("INIT")
+            }
+        }
+
+        val whyPassword = requireView().findViewById<Button>(R.id.continueInit)
+        whyPassword.setOnClickListener {
+            val builder = AlertDialog.Builder(requireActivity())
+                .setTitle("Why do I need to enter my password?")
+                .setMessage(
+                    "Unfortunately, Statics needs your Riot username and password to use the live mode. The password is required to authenticate your account and is used to get the data from the API. The password is not stored anywhere and is only used to authenticate your account." +
+                            "I won't sugarcoat things. Due to the way Statics uses the API, I believe there's no other way to sign in than to have people enter their credentials directly. \n" +
+                            "Under those circumstances, there's really no good way for anyone to be sure their credentials remain safe. \n" +
+                            "For what it's worth:\n" +
+                            "• Your credentials only ever leave your device in the form of a login request directly to Riot. They are never stored or sent anywhere else.\n" +
+                            "• You can enable 2-factor authentication, so you'd at least have another layer of security if it went bad.\n" +
+                            "\n" +
+                            "The code is open-source and visible on GitHub (pending); you can build it yourself if you want to be sure of what's running.\n" +
+                            "TL;DR: you'll have to take my word for it. \uD83E\uDD86❤️ "
+                )
+                .setPositiveButton("OK", null)
+            builder.show()
         }
 
         val bg = requireView().findViewById<ImageView>(R.id.new_LiveStatsBackground)
@@ -220,8 +273,6 @@ class LiveStatsFragment : Fragment() {
                 loadoutExpanded = true
             }
         }
-
-
     }
 
     private fun INITMode() {
@@ -283,28 +334,12 @@ class LiveStatsFragment : Fragment() {
                     imm.hideSoftInputFromWindow(requireView().windowToken, 0)
 
                     // Do something with the username and password
-                    authenticateUser(username, password)
+                    // base 64 encode the password
+                    val passwordBase64 =
+                        Base64.encodeToString(password.toByteArray(), Base64.DEFAULT)
+                    authenticateUser(username, passwordBase64)
                 }
                 .setNegativeButton("Cancel", null)
-            builder.show()
-        }
-
-        val whyPassword = requireView().findViewById<Button>(R.id.continueInit)
-        whyPassword.setOnClickListener {
-            val builder = AlertDialog.Builder(requireActivity())
-                .setTitle("Why do I need to enter my password?")
-                .setMessage(
-                    "Unfortunately, Statics needs your Riot username and password to use the live mode. The password is required to authenticate your account and is used to get the data from the API. The password is not stored anywhere and is only used to authenticate your account." +
-                            "I won't sugarcoat things. Due to the way Statics uses the API, I believe there's no other way to sign in than to have people enter their credentials directly. \n" +
-                            "Under those circumstances, there's really no good way for anyone to be sure their credentials remain safe. \n" +
-                            "For what it's worth:\n" +
-                            "• Your credentials only ever leave your device in the form of a login request directly to Riot. They are never stored or sent anywhere else.\n" +
-                            "• You can enable 2-factor authentication, so you'd at least have another layer of security if it went bad.\n" +
-                            "\n" +
-                            "The code is open-source and visible on GitHub (pending); you can build it yourself if you want to be sure of what's running.\n" +
-                            "TL;DR: you'll have to take my word for it. \uD83E\uDD86❤️ "
-                )
-                .setPositiveButton("OK", null)
             builder.show()
         }
     }
@@ -318,87 +353,172 @@ class LiveStatsFragment : Fragment() {
         // create a new coroutine scope
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            val mediaType = "application/json".toMediaTypeOrNull()
-            val authBody = AuthCookiesBody()
-            val authBodyJson = Gson().toJson(authBody).toRequestBody(mediaType)
+            try {
+                val mediaType = "application/json".toMediaTypeOrNull()
+                val authBody = AuthCookiesBody()
+                val authBodyJson = Gson().toJson(authBody).toRequestBody(mediaType)
 
-            val clientPlatformBody = ClientPlatformBody()
-            val clientPlatformBodyJson = Gson().toJson(clientPlatformBody).toRequestBody(mediaType)
+                // create a new request
+                val request = Request.Builder()
+                    .url("https://auth.riotgames.com/api/v1/authorization")
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Accept", "application/json")
+                    .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                    .post(authBodyJson)
+                    .build()
 
-            // create a new request
-            val request = Request.Builder()
-                .url("https://auth.riotgames.com/api/v1/authorization")
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
-                .post(authBodyJson)
-                .build()
+                // execute the request
+                val response = client.newCall(request).execute()
+                val code = response.code
+                val body = response.body.string()
 
-            // execute the request
-            val response = client.newCall(request).execute()
-            val code = response.code
+                if (response.code != 200) {
+                    withContext(Dispatchers.Main)
+                    {
+                        progressdialog.dismiss()
+                        val msg = "Response code: $code\nBody: $body"
+                        val dialog = AlertDialog.Builder(requireContext())
+                            .setTitle("Response from Auth Cookies")
+                            .setMessage(msg)
+                            .setPositiveButton("OK") { dialog, _ ->
+                                // clear username and password from shared preferences
+                                authPreferences.edit().remove("username").apply()
+                                authPreferences.edit().remove("password").apply()
 
-            if (response.code != 200) {
-                withContext(Dispatchers.Main)
-                {
-                    progressdialog.dismiss()
-                    val body = response.body.string()
-                    val msg = "Response code: $code\nBody: $body"
-                    val dialog = AlertDialog.Builder(requireContext())
-                        .setTitle("Response from Auth Cookies")
-                        .setMessage(msg)
-                        .setPositiveButton("OK", null)
-                    dialog.show()
+                                // clear the cookies from shared preferences
+                                authPreferences.edit().remove("cookieMFA").apply()
+                                authPreferences.edit().remove("cookieAuth").apply()
+                                dialog.dismiss()
+                            }
+                        dialog.show()
+                    }
+
+                    return@launch
                 }
-            }
 
-            // get the cookie
-            val cookies = response.headers("Set-Cookie")
-            var cookieHeader = TextUtils.join("; ", cookies)
+                // get the cookie
+                val cookies = response.headers("Set-Cookie")
+                var cookieHeader = TextUtils.join("; ", cookies)
 
-            // get the mfaCookie if it exists in shared preferences
-            val mfaCookie = authPreferences.getString("cookieMFA", null)
-            if (mfaCookie != null) {
-                // add the mfa cookie to the cookie header
-                cookieHeader += "; $mfaCookie"
-            }
+                // get the mfaCookie if it exists in shared preferences
+                val mfaCookie = authPreferences.getString("cookieMFA", null)
+                if (mfaCookie != null) {
+                    // add the mfa cookie to the cookie header
+                    cookieHeader += "; $mfaCookie"
+                }
 
-            // get the auth cookie if it exists in shared preferences
-            val authCookie = authPreferences.getString("cookieAuth", null)
-            if (authCookie != null) {
-                // add the auth cookie to the cookie header
-                cookieHeader += "; $authCookie"
-            }
+                // get the auth cookie if it exists in shared preferences
+                val authCookie = authPreferences.getString("cookieAuth", null)
+                if (authCookie != null) {
+                    // add the auth cookie to the cookie header
+                    cookieHeader += "; $authCookie"
+                }
 
-            val authBodyUserNamePassword = AuthRequestBody(username, password)
-            val authBodyUserNamePasswordJson =
-                Gson().toJson(authBodyUserNamePassword).toRequestBody(mediaType)
+                // decode the base64 password
+                val passwordDecoded = String(Base64.decode(password, Base64.DEFAULT))
 
-            val authRequest = Request.Builder()
-                .url("https://auth.riotgames.com/api/v1/authorization")
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
-                .addHeader("Cookie", cookieHeader)
-                .put(authBodyUserNamePasswordJson)
-                .build()
+                val authBodyUserNamePassword = AuthRequestBody(username, passwordDecoded)
+                val authBodyUserNamePasswordJson =
+                    Gson().toJson(authBodyUserNamePassword).toRequestBody(mediaType)
 
-            // execute the request
-            val authResponse = client.newCall(authRequest).execute()
-            // get the response body
-            val authResponseBody = authResponse.body.string()
+                val authRequest = Request.Builder()
+                    .url("https://auth.riotgames.com/api/v1/authorization")
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Accept", "application/json")
+                    .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                    .addHeader("Cookie", cookieHeader)
+                    .put(authBodyUserNamePasswordJson)
+                    .build()
 
-            val authCookies = authResponse.headers("Set-Cookie")
-            val authCookieHeader = TextUtils.join("; ", authCookies)
+                // execute the request
+                val authResponse = client.newCall(authRequest).execute()
+                // get the response body
+                val authResponseBody = authResponse.body.string()
 
-            val jsonAuthBody = JSONObject(authResponseBody)
-            // look for error in the response body
-            val error = jsonAuthBody.optString("error", "")
-            if (error.isNotEmpty()) {
+                val authCookies = authResponse.headers("Set-Cookie")
+                val authCookieHeader = TextUtils.join("; ", authCookies)
+
+                val jsonAuthBody = JSONObject(authResponseBody)
+                // look for error in the response body
+                val error = jsonAuthBody.optString("error", "")
+                if (error.isNotEmpty()) {
+                    withContext(Dispatchers.Main)
+                    {
+                        if (jsonAuthBody.getString("error") == "auth_failure") {
+                            progressdialog.dismiss()
+                            val msg =
+                                "Response was successful but username or password is incorrect"
+                            val dialog = AlertDialog.Builder(requireContext())
+                                .setTitle("Response from Statics")
+                                .setMessage(msg)
+                                .setPositiveButton("OK") { _, _ ->
+                                    // clear the username and password from authPrefs
+                                    authPreferences.edit().remove("username").apply()
+                                    authPreferences.edit().remove("password").apply()
+
+                                    // clear the cookies from shared preferences
+                                    authPreferences.edit().remove("cookieMFA").apply()
+                                    authPreferences.edit().remove("cookieAuth").apply()
+
+                                    // dismiss the dialog
+                                    progressdialog.dismiss()
+
+                                    val intent =
+                                        Intent(requireContext(), LoadingActivity::class.java)
+                                    startActivity(intent)
+                                    activity?.finish()
+                                    activity?.overridePendingTransition(
+                                        R.anim.fadein,
+                                        R.anim.fadeout
+                                    )
+                                }
+                            dialog.show()
+                        } else {
+                            progressdialog.dismiss()
+                            val msg =
+                                "An error occurred when signing in\n\n\nError message: $jsonAuthBody"
+                            val dialog = AlertDialog.Builder(requireContext())
+                                .setTitle("Response from Statics")
+                                .setMessage(msg)
+                                .setPositiveButton("OK") { _, _ ->
+                                    // clear the username and password from authPrefs
+                                    authPreferences.edit().remove("username").apply()
+                                    authPreferences.edit().remove("password").apply()
+
+                                    // clear the cookies from shared preferences
+                                    authPreferences.edit().remove("cookieMFA").apply()
+                                    authPreferences.edit().remove("cookieAuth").apply()
+
+                                    // dismiss the dialog
+                                    progressdialog.dismiss()
+
+                                    val intent =
+                                        Intent(requireContext(), LoadingActivity::class.java)
+                                    startActivity(intent)
+                                    activity?.finish()
+                                    activity?.overridePendingTransition(
+                                        R.anim.fadein,
+                                        R.anim.fadeout
+                                    )
+                                }
+                            dialog.show()
+                        }
+                    }
+                    return@launch
+                }
+
                 withContext(Dispatchers.Main)
                 {
                     progressdialog.dismiss()
-                    val msg = "Response was successful but username or password is incorrect"
+                    // store authCookieHeader in shared preferences
+                    //authPreferences.edit().putString("cookieAuth", authCookieHeader).apply()
+                    storeEverything(username, password, authResponseBody, authCookieHeader)
+                }
+            } catch (e: java.lang.Exception) {
+                withContext(Dispatchers.Main)
+                {
+                    progressdialog.dismiss()
+                    val msg = "An error occurred\n\n\nError message: $e"
                     val dialog = AlertDialog.Builder(requireContext())
                         .setTitle("Response from Statics")
                         .setMessage(msg)
@@ -407,25 +527,23 @@ class LiveStatsFragment : Fragment() {
                             authPreferences.edit().remove("username").apply()
                             authPreferences.edit().remove("password").apply()
 
+                            // clear the cookies from shared preferences
+                            authPreferences.edit().remove("cookieMFA").apply()
+                            authPreferences.edit().remove("cookieAuth").apply()
+
                             // dismiss the dialog
                             progressdialog.dismiss()
 
-                            // refresh the activity
-                            requireActivity().recreate()
+                            val intent = Intent(requireContext(), LoadingActivity::class.java)
+                            startActivity(intent)
+                            activity?.finish()
+                            activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
                         }
                     dialog.show()
                 }
-                return@launch
-            }
-
-            withContext(Dispatchers.Main)
-            {
-                progressdialog.dismiss()
-                // store authCookieHeader in shared preferences
-                //authPreferences.edit().putString("cookieAuth", authCookieHeader).apply()
-                storeEverything(username, password, authResponseBody, authCookieHeader)
             }
         }
+
     }
 
     private fun storeEverything(
@@ -435,6 +553,7 @@ class LiveStatsFragment : Fragment() {
         cookieHeader: String
     ) {
         // store the username and password in authPrefs
+
         authPreferences.edit().putString("username", username).apply()
         authPreferences.edit().putString("password", password).apply()
 
@@ -475,7 +594,12 @@ class LiveStatsFragment : Fragment() {
             .url("https://auth.riotgames.com/api/v1/authorization")
             .addHeader("Content-Type", "application/json")
             .addHeader("Accept", "application/json")
+            .addHeader("X-Riot-ClientVersion", riotClientVersion)
             .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+            .addHeader(
+                "User-Agent",
+                "RiotClient/$ClientVersion rso-auth (Windows; 10;;Professional, x64)"
+            )
             .addHeader("Cookie", cookieHeader)
             .put(
                 """
@@ -493,21 +617,17 @@ class LiveStatsFragment : Fragment() {
             val responseMFA = client.newCall(multifactorRequest).execute()
             val body = responseMFA.body.string()
             // Log the response code and body
-            Log.d("LIVE_STATS_2FA", "Response code: ${responseMFA.code} Body: $body")
             withContext(Dispatchers.Main)
             {
                 if (responseMFA.code != 200) {
-                    Log.d("LIVE_STATS_2FA", "Response code not 200")
                     val msg = "Response code: $code\nBody: $body"
                     val dialog = AlertDialog.Builder(requireContext())
-                        .setTitle("Response from Statics")
+                        .setTitle("Response from Statics 2FA")
                         .setMessage(msg)
                         .setPositiveButton("OK", null)
                     dialog.show()
                 } else {
-                    Log.d("LIVE_STATS_2FA", "Response code 200")
                     val json = JSONObject(body)
-                    Log.d("LIVE_STATS_2FA", "JSON: $json")
                     val error = json.optString("error", "")
                     if (error.isNotEmpty()) {
                         val msg = "Incorrect 2FA code"
@@ -518,8 +638,6 @@ class LiveStatsFragment : Fragment() {
                         dialog.show()
                         return@withContext
                     }
-
-                    Log.d("LIVE_STATS_2FA", "No error in response")
 
                     val mfaCookies = responseMFA.headers("Set-Cookie")
                     val mfaCookieHeader = TextUtils.join("; ", mfaCookies)
@@ -542,7 +660,12 @@ class LiveStatsFragment : Fragment() {
             val request = Request.Builder()
                 .url("https://entitlements.auth.riotgames.com/api/token/v1")
                 .addHeader("Content-Type", "application/json")
+                .addHeader("X-Riot-ClientVersion", riotClientVersion)
                 .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                .addHeader(
+                    "User-Agent",
+                    "RiotClient/$ClientVersion rso-auth (Windows; 10;;Professional, x64)"
+                )
                 .addHeader("Authorization", "Bearer $access")
                 .post(
                     byteArrayOf().toRequestBody(null, 0, 0)
@@ -577,6 +700,12 @@ class LiveStatsFragment : Fragment() {
                 .addHeader("Content-Type", "application/json")
                 .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
                 .addHeader("Authorization", "Bearer $access")
+                .addHeader("X-Riot-ClientVersion", riotClientVersion)
+                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+                .addHeader(
+                    "User-Agent",
+                    "RiotClient/$ClientVersion rso-auth (Windows; 10;;Professional, x64)"
+                )
                 .build()
 
             val userInfoResponse = client.newCall(userInfoRequest).execute()
@@ -601,6 +730,16 @@ class LiveStatsFragment : Fragment() {
             val userID = userInfoJSON.getString("sub")
 
             PlayerUUID = userID
+
+            Log.d("LIVE_STATS", "UserInfo: $userInfoJSON")
+
+            val gameName = userInfoJSON.getJSONObject("acct").getString("game_name")
+            val tagLine = userInfoJSON.getJSONObject("acct").getString("tag_line")
+
+            val partyPlayerNameTV = requireView().findViewById<TextView>(R.id.new_partyPlayerName)
+            val partyPlayerTagTV = requireView().findViewById<TextView>(R.id.new_partyPlayerTag)
+            partyPlayerNameTV.text = gameName
+            partyPlayerTagTV.text = "#$tagLine"
 
             withContext(Dispatchers.Main)
             {
@@ -669,7 +808,19 @@ class LiveStatsFragment : Fragment() {
             val json = JSONObject(body)
             loadSprays(json.getJSONArray("Sprays"))
             loadTitle(json.getJSONObject("Identity").getString("PlayerTitleID"))
+            loadPlayerCard(json.getJSONObject("Identity").getString("PlayerCardID"))
         }
+    }
+
+    private fun loadPlayerCard(titleID: String) {
+        val largeURL = "https://media.valorant-api.com/playercards/${titleID}/largeart.png"
+        val smallURL = "https://media.valorant-api.com/playercards/${titleID}/smallart.png"
+
+        val smolImg = view?.findViewById<ImageView>(R.id.new_playerAvatar)
+        val bigImg = view?.findViewById<ImageView>(R.id.new_LiveStatsBackground)
+
+        Picasso.get().load(smallURL).fit().centerCrop().into(smolImg)
+        Picasso.get().load(largeURL).fit().centerCrop().into(bigImg)
     }
 
     private fun loadTitle(TitleID: String) {
@@ -765,14 +916,6 @@ class LiveStatsFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner?.adapter = adapter
 
-        val name = view?.findViewById<TextView>(R.id.new_partyPlayerName)
-        name?.text = playerName.split("#")[0]
-        val tag = view?.findViewById<TextView>(R.id.new_partyPlayerTag)
-        tag?.text = "#" + playerName.split("#")[1]
-
-        val image = view?.findViewById<ImageView>(R.id.new_playerAvatar)
-        Picasso.get().load(StaticsMainActivity.playerCardSmall).into(image)
-
         val refreshButtonCurrentLoadout =
             view?.findViewById<ImageButton>(R.id.new_refreshButtonCurrentLoadout)
         refreshButtonCurrentLoadout?.setOnClickListener {
@@ -813,11 +956,30 @@ class LiveStatsFragment : Fragment() {
         }
 
         agentPreGameRecyclerView.adapter = ImageAdapter(getAgentImages())
+
+        val logOut = view?.findViewById<ImageButton>(R.id.new_partyPlayerLogOut)
+        logOut?.setOnClickListener {
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("Log out")
+                .setMessage("Are you sure you want to log out?")
+                .setPositiveButton("Yes") { _, _ ->
+                    // log out
+                    // clear the shared preferences from auth
+                    authPreferences.edit().clear().apply()
+                    // go to loading screen
+                    val intent = Intent(requireContext(), LoadingActivity::class.java)
+                    startActivity(intent)
+                    activity?.finish()
+                    activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                }
+                .setNegativeButton("No", null)
+            dialog.show()
+        }
     }
 
     private fun joinMatchmaking() {
         val url =
-            "https://glz-${region}-1.${region}.a.pvp.net/parties/v1/parties/${playerPartyID}/matchmaking/join"
+            "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${playerPartyID}/matchmaking/join"
         val response = APIRequestValorant(url, "")
         val code = response.code
         if (code == 200) {
@@ -830,7 +992,7 @@ class LiveStatsFragment : Fragment() {
 
     private fun cancelMatchmaking() {
         val url =
-            "https://glz-${region}-1.${region}.a.pvp.net/parties/v1/parties/${playerPartyID}/matchmaking/leave"
+            "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${playerPartyID}/matchmaking/leave"
         val response = APIRequestValorant(url, "")
         val code = response.code
         if (code == 200) {
@@ -844,7 +1006,7 @@ class LiveStatsFragment : Fragment() {
     private fun getPartyStatus() {
         try {
             val response =
-                APIRequestValorant("https://glz-${region}-1.${region}.a.pvp.net/parties/v1/players/${PlayerUUID}")
+                APIRequestValorant("https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/players/${PlayerUUID}")
             val code = response.code
             val body = response.body.string()
             if (code == 404 || body.contains("PLAYER_DOES_NOT_EXIST")) {
@@ -878,7 +1040,7 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun getPartyDetails(partyID: String) {
-        val url = "https://glz-${region}-1.${region}.a.pvp.net/parties/v1/parties/${partyID}"
+        val url = "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${partyID}"
         val response = APIRequestValorant(url)
         val body = response.body.string()
         val code = response.code
@@ -956,7 +1118,7 @@ class LiveStatsFragment : Fragment() {
 
 
         if (PlayerUUID == null) return
-        val url = "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
+        val url = "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
         val response = APIRequestValorant(url)
         val code = response.code
         val body = response.body.string()
@@ -969,7 +1131,7 @@ class LiveStatsFragment : Fragment() {
         } else if (code == 404) {
             PreGameLayout?.visibility = View.GONE
             val coreGameURL =
-                "https://glz-${region}-1.${region}.a.pvp.net/core-game/v1/players/${PlayerUUID}"
+                "https://glz-${region}-1.${shard}.a.pvp.net/core-game/v1/players/${PlayerUUID}"
             val coreGameResponse = APIRequestValorant(coreGameURL)
             val coreGameCode = coreGameResponse.code
             val coreGameBody = coreGameResponse.body.string()
@@ -992,7 +1154,7 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun playerPreGame(matchID: String) {
-        val url = "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/matches/${matchID}"
+        val url = "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}"
         val response = APIRequestValorant(url)
 
         val code = response.code
@@ -1048,7 +1210,7 @@ class LiveStatsFragment : Fragment() {
         builder.setPositiveButton("Yes") { dialog, which ->
             // get the match ID
             val url =
-                "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/matches/${matchID}/quit"
+                "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}/quit"
             val response = APIRequestValorant(url, "")
             val code = response.code
             if (code == 200) {
@@ -1071,7 +1233,7 @@ class LiveStatsFragment : Fragment() {
 
         if (PlayerUUID == null) return
         val preGameUrl =
-            "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
+            "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
         val preGameresponse = APIRequestValorant(preGameUrl)
         val preGamecode = preGameresponse.code
         val preGamebody = preGameresponse.body.string()
@@ -1082,7 +1244,7 @@ class LiveStatsFragment : Fragment() {
         val matchID = preGameJSON.getString("MatchID")
 
         val url =
-            "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/matches/${matchID}/select/${agentID}"
+            "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}/select/${agentID}"
         val response = APIRequestValorant(url, "")
 
         val code = response.code
@@ -1102,7 +1264,7 @@ class LiveStatsFragment : Fragment() {
 
         if (PlayerUUID == null) return
         val preGameUrl =
-            "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
+            "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
         val preGameresponse = APIRequestValorant(preGameUrl)
         val preGamecode = preGameresponse.code
         val preGamebody = preGameresponse.body.string()
@@ -1113,7 +1275,7 @@ class LiveStatsFragment : Fragment() {
         val matchID = preGameJSON.getString("MatchID")
 
         val url =
-            "https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/matches/${matchID}/lock/${agentID}"
+            "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}/lock/${agentID}"
         val response = APIRequestValorant(url, "")
 
         val code = response.code
@@ -1150,7 +1312,7 @@ class LiveStatsFragment : Fragment() {
         if (queueID == "replication") queueID = "onefa"
 
         val url =
-            "https://glz-${region}-1.${region}.a.pvp.net/parties/v1/parties/${playerPartyID}/queue"
+            "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${playerPartyID}/queue"
         val body = "{\"queueId\":\"${queueID}\"}"
 
         val response = APIRequestValorant(url, body)

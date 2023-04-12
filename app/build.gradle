@@ -11,8 +11,8 @@ android {
         applicationId "com.jawaadianinc.valorant_stats"
         minSdk 26
         targetSdk 33
-        versionCode 270
-        versionName "2.70"
+        versionCode 277
+        versionName "2.77 Release"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -22,8 +22,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled = true
-            shrinkResources = true
+            minifyEnabled = false
+            shrinkResources = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

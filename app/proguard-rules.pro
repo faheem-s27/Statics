@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep OkHttp classes
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+# Keep Live Stats Fragment
+-keep class com.jawaadianinc.valorant_stats.valo.activities.new_ui.LiveStatsFragment { *; }

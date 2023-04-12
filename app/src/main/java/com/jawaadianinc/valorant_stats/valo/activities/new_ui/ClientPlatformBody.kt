@@ -7,5 +7,4 @@ data class ClientPlatformBody(
     @SerializedName("platformOS") val platformOS: String = "Windows",
     @SerializedName("platformOSVersion") val platformOSVersion: String = "10.0.19042.1.256.64bit",
     @SerializedName("platformChipset") val platformBrowser: String = "Unknown",
-
     )

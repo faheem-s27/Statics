@@ -1,7 +1,6 @@
 package com.jawaadianinc.valorant_stats.valo
 
 import android.content.Context
-import android.util.Log
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
@@ -24,16 +23,6 @@ class Henrik(val context: Context) {
         val time = System.currentTimeMillis()
         playersRef.child(playerName!!.split("#")[0]).child("Calls").child(time.toString())
             .setValue(playerURL)
-
-        val ze_key = database.getReference("VALORANT/henrik")
-        // get the value of the key
-        var key = ""
-        ze_key.get().addOnSuccessListener {
-            key = it.value.toString()
-            //Log.d("Henrik", "Key: $key")
-        }.addOnFailureListener {
-            Log.d("Henrik", "Failed to get key")
-        }
 
         val client = OkHttpClient()
         val urlBuilder: HttpUrl.Builder =

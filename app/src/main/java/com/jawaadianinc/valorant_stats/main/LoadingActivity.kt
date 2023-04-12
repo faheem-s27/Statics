@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -19,6 +20,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
 import com.jawaadianinc.valorant_stats.valo.activities.new_ui.StaticsMainActivity
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
@@ -240,10 +242,11 @@ class LoadingActivity : AppCompatActivity() {
                     "https://api.henrikdev.xyz/valorant/v1/account/${valoName.split("#")[0]}/${
                         valoName.split("#")[1]
                     }"
-                val json = JSONObject(URL(url).readText())
+                val json = Henrik(this@LoadingActivity).henrikAPI(url)
                 val IDCard = json.getJSONObject("data").getJSONObject("card").getString("id")
                 return@runBlocking IDCard
             } catch (e: Exception) {
+                Log.d("LoadingActivity", "Error getting player image: $e")
                 return@runBlocking "9fb348bc-41a0-91ad-8a3e-818035c4e561"
             }
         }
