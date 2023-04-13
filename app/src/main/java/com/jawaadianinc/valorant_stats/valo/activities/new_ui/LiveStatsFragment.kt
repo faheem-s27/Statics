@@ -31,9 +31,11 @@ import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import kotlinx.coroutines.*
-import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
@@ -145,25 +147,6 @@ class LiveStatsFragment : Fragment() {
 
         }
 
-        client = OkHttpClient.Builder()
-            .connectionSpecs(
-                listOf(
-                    ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                        .tlsVersions(TlsVersion.TLS_1_3)
-                        .cipherSuites(
-                            CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
-                            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-                            CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-                            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-                            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-                            // Add other ciphers as needed
-                        )
-                        .build(),
-                    ConnectionSpec.CLEARTEXT
-                )
-            )
-            .build()
-
         val username = authPreferences.getString("username", null)
         val password = authPreferences.getString("password", null)
 
@@ -182,15 +165,15 @@ class LiveStatsFragment : Fragment() {
             val builder = AlertDialog.Builder(requireActivity())
                 .setTitle("Why do I need to enter my password?")
                 .setMessage(
-                    "Unfortunately, Statics needs your Riot username and password to use the live mode. The password is required to authenticate your account and is used to get the data from the API. The password is not stored anywhere and is only used to authenticate your account." +
-                            "I won't sugarcoat things. Due to the way Statics uses the API, I believe there's no other way to sign in than to have people enter their credentials directly. \n" +
+                    "Unfortunately, Statics needs your Riot username and password to use the live mode.\nThe password is required to authenticate your account and is used to get the data from Valorant.\nThe password is not stored anywhere and is only used to authenticate your account." +
+                            "\nI won't sugarcoat things. Due to the way Statics uses the API, I believe there's no other way to sign in than to have people enter their credentials directly. \n" +
                             "Under those circumstances, there's really no good way for anyone to be sure their credentials remain safe. \n" +
-                            "For what it's worth:\n" +
+                            "\nFor what it's worth:\n" +
                             "• Your credentials only ever leave your device in the form of a login request directly to Riot. They are never stored or sent anywhere else.\n" +
                             "• You can enable 2-factor authentication, so you'd at least have another layer of security if it went bad.\n" +
                             "\n" +
                             "The code is open-source and visible on GitHub (pending); you can build it yourself if you want to be sure of what's running.\n" +
-                            "TL;DR: you'll have to take my word for it. \uD83E\uDD86❤️ "
+                            "TL;DR: you'll have to take my word for it. \uD83E\uDD86❤️ " + "\n\n" + "If you're still not comfortable with this, you can use the app without live mode."
                 )
                 .setPositiveButton("OK", null)
             builder.show()
@@ -755,9 +738,27 @@ class LiveStatsFragment : Fragment() {
             return
         }
 
-        liveSetup()
-        timerLiveAPI()
-        getPlayerLoadOuts()
+        try {
+            liveSetup()
+            timerLiveAPI()
+            getPlayerLoadOuts()
+        } catch (e: Exception) {
+            // Alert the user and ask to send a bug report
+            val msg = "Error: ${e.message}"
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("Send to developer on discord!")
+                .setMessage(msg)
+                .setPositiveButton("Send") { dialog, which ->
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.type = "text/plain"
+                    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("statics#0001"))
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Bug Report")
+                    intent.putExtra(Intent.EXTRA_TEXT, msg)
+                    startActivity(Intent.createChooser(intent, "Send Email"))
+                }
+                .setNegativeButton("Cancel", null)
+            dialog.show()
+        }
         //getContracts()
     }
 
