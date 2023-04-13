@@ -22,7 +22,9 @@
         <activity
             android:name=".valo.activities.new_ui.StaticsMainActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_statics_main">
+
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

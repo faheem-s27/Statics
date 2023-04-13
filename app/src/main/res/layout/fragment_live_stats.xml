@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <TextView
             android:id="@+id/textView46"
@@ -86,7 +86,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <ScrollView
             android:id="@+id/scrollView3"
@@ -439,12 +439,22 @@
                             android:scaleType="fitCenter"
                             tools:srcCompat="@tools:sample/avatars" />
 
+                        <ListView
+                            android:id="@+id/new_partyMembersListView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/new_playerAvatar"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp" />
+
                         <!-- Dropdown menu called new_partyGameModeSelect -->
                         <Spinner
                             android:id="@+id/new_partyGameModeSelect"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/new_playerAvatar"
+                            android:layout_below="@+id/new_partyMembersListView"
                             android:layout_alignStart="@+id/new_playerAvatar"
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="16dp"
@@ -562,6 +572,7 @@
                                 app:cornerRadius="50dp" />
 
                         </RelativeLayout>
+
 
                     </RelativeLayout>
 

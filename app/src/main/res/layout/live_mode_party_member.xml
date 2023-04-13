@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -22,9 +23,21 @@
             android:layout_marginTop="16dp"
             android:layout_toEndOf="@+id/new_playerAvatar"
             android:fontFamily="@font/lalezar"
-            android:text="Duck"
+            tools:text="Duck"
             android:textColor="@color/white"
             android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/new_partyPlayerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/lalezar"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            tools:text="Habibi" />
 
         <TextView
             android:id="@+id/new_partyPlayerTag"
@@ -36,7 +49,7 @@
             android:layout_toEndOf="@+id/new_partyPlayerName"
             android:fontFamily="@font/lalezar"
             android:gravity="center"
-            android:text="#2004"
+            tools:text="#2004"
             android:textAlignment="center"
             android:textColor="#B0B0B0"
             android:textSize="16dp" />
@@ -49,7 +62,7 @@
             android:layout_alignStart="@+id/new_partyPlayerName"
             android:fontFamily="@font/lalezar"
             android:gravity="center"
-            android:text="Not in game!"
+            tools:text="Not ready!"
             android:textAlignment="center"
             android:textColor="#B0B0B0"
             android:textSize="16dp" />

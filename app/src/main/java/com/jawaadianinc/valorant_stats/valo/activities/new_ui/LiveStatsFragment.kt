@@ -828,12 +828,10 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun loadTitle(TitleID: String) {
-        val TitleView = view?.findViewById<TextView>(R.id.CurrentLoadoutTitle)
         val titleName = assetsDB.retrieveName(TitleID)
-        TitleView?.text = titleName
+        view?.findViewById<TextView>(R.id.CurrentLoadoutTitle)?.text = titleName
 
-        val CurrentLoadoutTitleEdit = view?.findViewById<ImageView>(R.id.CurrentLoadoutTitleEdit)
-        CurrentLoadoutTitleEdit?.setOnClickListener {
+        view?.findViewById<ImageView>(R.id.CurrentLoadoutTitleEdit)?.setOnClickListener {
             // get all of the titles from the assets db
             val titles = getAvailableTitles()
             // convert to CharSequence
@@ -997,14 +995,7 @@ class LiveStatsFragment : Fragment() {
     private fun cancelMatchmaking() {
         val url =
             "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${playerPartyID}/matchmaking/leave"
-        val response = APIRequestValorant(url, "")
-        val code = response.code
-        if (code == 200) {
-            val partyStatus = view?.findViewById<TextView>(R.id.new_playerPartyStatus)
-            partyStatus?.text = "In Lobby"
-            val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
-            joinMatchButton?.text = "Join queue"
-        }
+        APIRequestValorant(url, "")
     }
 
     private fun getPartyStatus() {
@@ -1043,6 +1034,35 @@ class LiveStatsFragment : Fragment() {
         fadeRepeat(partyStatus!!)
     }
 
+    private fun handlePartyMembers(members: JSONArray) {
+        for (i in 0 until members.length()) {
+            val member = members.getJSONObject(i)
+            val subject = member.getString("Subject")
+            val name = decodeNameFromSubject(subject)
+        }
+    }
+
+    private fun decodeNameFromSubject(subject: String): String {
+        // check if authpreferences contains the subject
+        if (authPreferences.contains(subject)) {
+            // return the name
+            return authPreferences.getString(subject, "")!!
+        } else {
+            // get the name from the subject
+            val url = "https://pd.${shard}.a.pvp.net/name-service/v2/players"
+            // body is an array of subjects
+            val body = "[\"$subject\"]"
+
+            val response = APIRequestValorant(url, body, true)
+            val code = response.code
+            val subjectBody = response.body.string()
+
+            Log.d("LIVE_STATS_DECODE_NAME", "Code: $code, Body: $subjectBody")
+
+            return ""
+        }
+    }
+
     private fun getPartyDetails(partyID: String) {
         val url = "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${partyID}"
         val response = APIRequestValorant(url)
@@ -1057,6 +1077,7 @@ class LiveStatsFragment : Fragment() {
         var isReady = true
 
         val members = JSONObject(body).getJSONArray("Members")
+        handlePartyMembers(members)
         for (i in 0 until members.length()) {
             if (!members.getJSONObject(i).getBoolean("IsReady")) isReady = false
             break
