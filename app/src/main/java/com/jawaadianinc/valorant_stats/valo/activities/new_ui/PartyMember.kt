@@ -8,13 +8,13 @@ class PartyMember(
     val gameTag: String,
     val titleID: String,
     val cardID: String,
-    isReady: Boolean
+    val isReady: Boolean
 ) {
     fun getPlayerImage(): String {
         return "https://media.valorant-api.com/playercards/${cardID}/smallart.png"
     }
 
     fun getTitle(context: Context): String {
-        return AssetsDatabase(context).retrieveIDTitle(titleID)
+        return AssetsDatabase(context).retrieveName(titleID)
     }
 }

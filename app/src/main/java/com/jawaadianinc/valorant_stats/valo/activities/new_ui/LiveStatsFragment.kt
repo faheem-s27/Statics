@@ -1035,11 +1035,33 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun handlePartyMembers(members: JSONArray) {
+        // A list of PartyMember objects
+        val partyMembers = ArrayList<PartyMember>()
+        view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
+            members.length().toString() + " members in party"
+
         for (i in 0 until members.length()) {
             val member = members.getJSONObject(i)
             val subject = member.getString("Subject")
             val name = decodeNameFromSubject(subject)
+            val playerCardID = member.getJSONObject("PlayerIdentity").getString("PlayerCardID")
+            val playerTitleID = member.getJSONObject("PlayerIdentity").getString("PlayerTitleID")
+            val playerReady = member.getBoolean("IsReady")
+
+            partyMembers.add(
+                PartyMember(
+                    name.split("#")[0],
+                    name.split("#")[1],
+                    playerTitleID,
+                    playerCardID,
+                    playerReady
+                )
+            )
         }
+
+        val partyMemberListView = view?.findViewById<ListView>(R.id.new_partyMembersListView)
+        partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
+
     }
 
     private fun decodeNameFromSubject(subject: String): String {
@@ -1057,9 +1079,15 @@ class LiveStatsFragment : Fragment() {
             val code = response.code
             val subjectBody = response.body.string()
 
-            Log.d("LIVE_STATS_DECODE_NAME", "Code: $code, Body: $subjectBody")
+            if (code != 200) return ""
+            val playerName = JSONArray(subjectBody).getJSONObject(0).getString("GameName")
+            val playerTag = JSONArray(subjectBody).getJSONObject(0).getString("TagLine")
 
-            return ""
+            val displayName = "$playerName#$playerTag"
+
+            // save the name to the shared preferences
+            authPreferences.edit().putString(subject, displayName).apply()
+            return displayName
         }
     }
 
