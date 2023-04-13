@@ -1037,11 +1037,14 @@ class LiveStatsFragment : Fragment() {
     private fun handlePartyMembers(members: JSONArray) {
         // A list of PartyMember objects
         val partyMembers = ArrayList<PartyMember>()
+        val partyMemberListView = view?.findViewById<ListView>(R.id.new_partyMembersListView)
 
         if (members.length() == 1) {
             // only one member so hide the listview
             view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = "Only you in party"
             view?.findViewById<ListView>(R.id.new_partyMembersListView)?.visibility = View.INVISIBLE
+            // clear the listview
+            partyMemberListView?.adapter = null
             return
         } else {
             view?.findViewById<ListView>(R.id.new_partyMembersListView)?.visibility = View.VISIBLE
@@ -1068,9 +1071,8 @@ class LiveStatsFragment : Fragment() {
             )
         }
 
-        val partyMemberListView = view?.findViewById<ListView>(R.id.new_partyMembersListView)
-        partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
 
+        partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
     }
 
     private fun decodeNameFromSubject(subject: String): String {
