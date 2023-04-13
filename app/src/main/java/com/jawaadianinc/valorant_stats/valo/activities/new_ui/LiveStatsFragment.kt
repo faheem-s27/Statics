@@ -1,9 +1,8 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -165,8 +164,8 @@ class LiveStatsFragment : Fragment() {
             val builder = AlertDialog.Builder(requireActivity())
                 .setTitle("Why do I need to enter my password?")
                 .setMessage(
-                    "Unfortunately, Statics needs your Riot username and password to use the live mode.\nThe password is required to authenticate your account and is used to get the data from Valorant.\nThe password is not stored anywhere and is only used to authenticate your account." +
-                            "\nI won't sugarcoat things. Due to the way Statics uses the API, I believe there's no other way to sign in than to have people enter their credentials directly. \n" +
+                    "Unfortunately, Statics needs your Riot username and password to use the live mode as the password is required to authenticate your account and is used to get the data from Valorant.\n\nThe password is not stored anywhere and is only used to authenticate your account." +
+                            "\n\nI won't sugarcoat things. Due to the way Statics uses the API, I believe there's no other way to sign in than to have people enter their credentials directly. \n" +
                             "Under those circumstances, there's really no good way for anyone to be sure their credentials remain safe. \n" +
                             "\nFor what it's worth:\n" +
                             "• Your credentials only ever leave your device in the form of a login request directly to Riot. They are never stored or sent anywhere else.\n" +
@@ -182,7 +181,6 @@ class LiveStatsFragment : Fragment() {
         val bg = requireView().findViewById<ImageView>(R.id.new_LiveStatsBackground)
         Picasso.get().load(StaticsMainActivity.playerCardLarge).fit().centerCrop()
             .transform(BlurTransformation(requireContext())).into(bg)
-
 
         val materialCardPartyPlayer =
             requireView().findViewById<MaterialCardView>(R.id.materialCardPartyPlayer)
@@ -737,29 +735,34 @@ class LiveStatsFragment : Fragment() {
         if (entitlementToken == null || accessToken == null) {
             return
         }
-
         try {
             liveSetup()
             timerLiveAPI()
             getPlayerLoadOuts()
+
+            // Throw an exception as a test
+//            throw Exception("Hello Discord, this is a test so that next time you get an error\n\nYou do the following:\n\n1. Click on 'Copy & Send'\n2. Send it in channel 'bugs and issues'" +
+//                    "\n\nBoom! I'll now be able to help out much more!")
+
         } catch (e: Exception) {
             // Alert the user and ask to send a bug report
-            val msg = "Error: ${e.message}"
+            val msg = "An error happened in live mode: ${e.message}"
             val dialog = AlertDialog.Builder(requireContext())
                 .setTitle("Send to developer on discord!")
                 .setMessage(msg)
-                .setPositiveButton("Send") { dialog, which ->
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.type = "text/plain"
-                    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("statics#0001"))
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "Bug Report")
-                    intent.putExtra(Intent.EXTRA_TEXT, msg)
-                    startActivity(Intent.createChooser(intent, "Send Email"))
+                .setPositiveButton("Copy & Send") { dialog, which ->
+                    // copy to clipboard and send to discord
+                    val clipboard =
+                        requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("Valorant Live Stats", msg)
+                    clipboard.setPrimaryClip(clip)
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse("https://discord.gg/jwfJUQMPP7")
+                    startActivity(intent)
                 }
                 .setNegativeButton("Cancel", null)
             dialog.show()
         }
-        //getContracts()
     }
 
     // a kotlin coroutine to get the party status every second

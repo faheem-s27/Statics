@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/new_LayoutPartyPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- FAB in top right corner to log out -->
+
+        <TextView
+            android:id="@+id/new_partyPlayerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@+id/new_playerAvatar"
+            android:fontFamily="@font/lalezar"
+            android:text="Duck"
+            android:textColor="@color/white"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/new_partyPlayerTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/new_partyPlayerName"
+            android:layout_alignBottom="@id/new_partyPlayerName"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@+id/new_partyPlayerName"
+            android:fontFamily="@font/lalezar"
+            android:gravity="center"
+            android:text="#2004"
+            android:textAlignment="center"
+            android:textColor="#B0B0B0"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/new_playerPartyStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/new_partyPlayerName"
+            android:layout_alignStart="@+id/new_partyPlayerName"
+            android:fontFamily="@font/lalezar"
+            android:gravity="center"
+            android:text="Not in game!"
+            android:textAlignment="center"
+            android:textColor="#B0B0B0"
+            android:textSize="16dp" />
+
+        <ImageView
+            android:id="@+id/new_playerAvatar"
+            tools:srcCompat="@tools:sample/avatars"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="fitCenter" />
+
+        <!-- Dropdown menu called new_partyGameModeSelect -->
+
+        <!-- Button that says Find Match -->
+
+        <!-- have a new relative layout underneath the button -->
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
