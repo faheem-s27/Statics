@@ -1037,8 +1037,17 @@ class LiveStatsFragment : Fragment() {
     private fun handlePartyMembers(members: JSONArray) {
         // A list of PartyMember objects
         val partyMembers = ArrayList<PartyMember>()
-        view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
-            members.length().toString() + " members in party"
+
+        if (members.length() == 1) {
+            // only one member so hide the listview
+            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = "Only you in party"
+            view?.findViewById<ListView>(R.id.new_partyMembersListView)?.visibility = View.INVISIBLE
+            return
+        } else {
+            view?.findViewById<ListView>(R.id.new_partyMembersListView)?.visibility = View.VISIBLE
+            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
+                members.length().toString() + " members in party"
+        }
 
         for (i in 0 until members.length()) {
             val member = members.getJSONObject(i)
