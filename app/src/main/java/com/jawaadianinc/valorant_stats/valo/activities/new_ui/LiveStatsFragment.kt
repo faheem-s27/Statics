@@ -842,6 +842,8 @@ class LiveStatsFragment : Fragment() {
                         requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("Valorant Live Stats", msg)
                     clipboard.setPrimaryClip(clip)
+                    Toast.makeText(requireContext(), "Copied to clipboard!", Toast.LENGTH_SHORT)
+                        .show()
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse("https://discord.gg/jwfJUQMPP7")
                     startActivity(intent)
@@ -871,7 +873,7 @@ class LiveStatsFragment : Fragment() {
             return
         }
 
-        val url = "https://pd.${region}.a.pvp.net/store/v1/wallet/$PlayerUUID"
+        val url = "https://pd.${shard}.a.pvp.net/store/v1/wallet/$PlayerUUID"
         val response = APIRequestValorant(url)
         val body = response.body.string()
         val code = response.code
@@ -888,7 +890,7 @@ class LiveStatsFragment : Fragment() {
             return
         }
         val url =
-            "https://pd.${region}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
+            "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
         val response = APIRequestValorant(url)
         val body = response.body.string()
         val code = response.code
@@ -938,7 +940,7 @@ class LiveStatsFragment : Fragment() {
 
     private fun updateTitle(titleID: String) {
         val url =
-            "https://pd.${region}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
+            "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
         val response = APIRequestValorant(url)
         var body = response.body.string()
         val code = response.code
@@ -985,13 +987,32 @@ class LiveStatsFragment : Fragment() {
         val MidRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayMidRound)
         val PostRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayPostRound)
 
-        Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(1).getString("SprayID")]).fit()
-            .centerInside().into(PreRoundSprayView)
-        Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(2).getString("SprayID")]).fit()
-            .centerInside().into(MidRoundSprayView)
-        Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(0).getString("SprayID")]).fit()
-            .centerInside().into(PostRoundSprayView)
-
+        for (i in 0 until Sprays.length()) {
+            val EquipSlotID = Sprays.getJSONObject(i).getString("EquipSlotID")
+            when (EquipSlotID) {
+                "0814b2fe-4512-60a4-5288-1fbdcec6ca48" -> {
+                    // Pre Round Spray
+                    Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(i).getString("SprayID")])
+                        .fit()
+                        .centerInside().into(PreRoundSprayView)
+                }
+                "04af080a-4071-487b-61c0-5b9c0cfaac74" -> {
+                    // Mid Round Spray
+                    Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(i).getString("SprayID")])
+                        .fit()
+                        .centerInside().into(MidRoundSprayView)
+                }
+                "5863985e-43ac-b05d-cb2d-139e72970014" -> {
+                    // Post Round Spray
+                    Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(i).getString("SprayID")])
+                        .fit()
+                        .centerInside().into(PostRoundSprayView)
+                }
+            }
+        }
+//        Log.d("LIVE_STATS_SPRAYS", "Pre Round Spray Equip Slot: ${Sprays.getJSONObject(1).getString("EquipSlotID")}")
+//        Log.d("LIVE_STATS_SPRAYS", "Mid Round Spray Equip Slot: ${Sprays.getJSONObject(2).getString("EquipSlotID")}")
+//        Log.d("LIVE_STATS_SPRAYS", "Post Round Spray Equip Slot: ${Sprays.getJSONObject(0).getString("EquipSlotID")}")
 
         PreRoundSprayView!!.setOnClickListener {
         }
@@ -1514,7 +1535,7 @@ class LiveStatsFragment : Fragment() {
     private fun getAvailableTitles(): ArrayList<String> {
         val availableTitles = arrayListOf<String>()
         val titleID = "de7caa6b-adf7-4588-bbd1-143831e786c6\t"
-        val url = "https://pd.${region}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$titleID"
+        val url = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$titleID"
 
         val response = APIRequestValorant(url)
         val body = response.body.string()

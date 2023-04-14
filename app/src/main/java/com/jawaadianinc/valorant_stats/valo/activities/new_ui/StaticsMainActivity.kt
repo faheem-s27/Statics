@@ -52,7 +52,7 @@ class StaticsMainActivity : AppCompatActivity() {
             if (!hasSeen) {
                 // show the dialog
                 val dialog = AlertDialog.Builder(this)
-                dialog.setTitle("You are using a beta version of the app ($versionName))")
+                dialog.setTitle("You are using a beta version of the app ($versionName)")
                 dialog.setMessage("This means that the app may not work as intended. If you find any bugs, please report them to the developer.")
                 dialog.setPositiveButton("Ok") { _, _ -> }
                 dialog.show()
