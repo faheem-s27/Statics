@@ -42,6 +42,9 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
 
+        val updateDescription = "- Fixed BR & LATAM regions not working" +
+                "\n- Fixed a spray ordering bug"
+
         // check if the version name is beta or not
         val versionName = packageManager.getPackageInfo(packageName, 0).versionName
         if (versionName.contains("Beta")) {
@@ -53,7 +56,7 @@ class StaticsMainActivity : AppCompatActivity() {
                 // show the dialog
                 val dialog = AlertDialog.Builder(this)
                 dialog.setTitle("You are using a beta version of the app ($versionName)")
-                dialog.setMessage("This means that the app may not work as intended. If you find any bugs, please report them to the developer.")
+                dialog.setMessage("This means that the app may not work as intended. If you find any bugs, please report them to the developer. \n\n$updateDescription")
                 dialog.setPositiveButton("Ok") { _, _ -> }
                 dialog.show()
                 with(sharedPref.edit()) {
