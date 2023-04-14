@@ -1,5 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
+import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -39,6 +41,27 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardLarge = "https://media.valorant-api.com/playercards/$playerImageID/largeart.png"
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
+
+        // check if the version name is beta or not
+        val versionName = packageManager.getPackageInfo(packageName, 0).versionName
+        if (versionName.contains("Beta")) {
+            // check if they have seen the dialog that says that this is a beta version
+            val sharedPref = getSharedPreferences("beta", Context.MODE_PRIVATE)
+            // make hasSeen based off the version name
+            val hasSeen = sharedPref.getBoolean(versionName, false)
+            if (!hasSeen) {
+                // show the dialog
+                val dialog = AlertDialog.Builder(this)
+                dialog.setTitle("You are using a beta version of the app ($versionName))")
+                dialog.setMessage("This means that the app may not work as intended. If you find any bugs, please report them to the developer.")
+                dialog.setPositiveButton("Ok") { _, _ -> }
+                dialog.show()
+                with(sharedPref.edit()) {
+                    putBoolean(versionName, true)
+                    apply()
+                }
+            }
+        }
 
         val statsFragment = StaticsMainMenu()
         val LiveStatsFragment = LiveStatsFragment()

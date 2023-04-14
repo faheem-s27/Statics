@@ -527,6 +527,67 @@ class LiveStatsFragment : Fragment() {
 
     }
 
+    private fun reauthCookies(): Boolean {
+        val authCookie = authPreferences.getString("cookieAuth", null) ?: return false
+
+        val url =
+            "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1"
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Content-Type", "application/json")
+            .addHeader("Accept", "application/json")
+            .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+            .addHeader("Cookie", authCookie)
+            .build()
+
+        return runBlocking(Dispatchers.IO) {
+            val authResponse = client.newCall(request).execute()
+            val authCookies = authResponse.headers("Set-Cookie")
+            val authCookieHeader = TextUtils.join("; ", authCookies)
+            val json = JSONObject(authResponse.body.string())
+            val response = json.optJSONObject("response")
+            if (response != null) {
+                val uri = response.getJSONObject("parameters").getString("uri")
+                // get value of access_token from query by searching for access_token
+                val access = uri.substringAfter("access_token=").substringBefore("&")
+                // store cookie in shared preferences
+                authPreferences.edit().putString("cookieAuth", authCookieHeader).apply()
+                val entitlementResponse = refreshEntitlement(access)
+                val entitlementResponseCode = entitlementResponse.code
+                val entitlementResponseBody = entitlementResponse.body.string()
+                if (entitlementResponseCode != 200) {
+                    return@runBlocking false
+                }
+                val entitlementJSON = JSONObject(entitlementResponseBody)
+                val Etoken = entitlementJSON.getString("entitlements_token")
+                accessToken = access
+                entitlementToken = Etoken
+                return@runBlocking true
+            } else {
+                val type = json.getString("type")
+                val email = json.getJSONObject("multifactor").getString("email")
+                if (type == "multifactor") {
+                    val builder = AlertDialog.Builder(context)
+                    val inflater = LayoutInflater.from(context)
+                    val dialogView = inflater.inflate(R.layout.dialog_multifactor, null)
+                    builder.setView(dialogView)
+
+                    // Add any other dialog box configuration here (e.g. title, buttons)
+                    builder.setTitle("2FA Code for $email")
+                    builder.setPositiveButton("Send") { _, _ ->
+                        val code =
+                            dialogView.findViewById<EditText>(R.id.multifactor_code_input).text.toString()
+                        send2FAcode(code, authCookieHeader, true)
+                    }
+
+                    val dialog = builder.create()
+                    dialog.show()
+                }
+            }
+            return@runBlocking true
+        }
+    }
+
     private fun storeEverything(
         username: String,
         password: String,
@@ -570,7 +631,7 @@ class LiveStatsFragment : Fragment() {
         }
     }
 
-    private fun send2FAcode(code: String, cookieHeader: String) {
+    private fun send2FAcode(code: String, cookieHeader: String, refresh: Boolean? = false) {
         val multifactorRequest = Request.Builder()
             .url("https://auth.riotgames.com/api/v1/authorization")
             .addHeader("Content-Type", "application/json")
@@ -630,9 +691,34 @@ class LiveStatsFragment : Fragment() {
                         .getString("uri")
                     val access =
                         uri.substringAfter("access_token=").substringBefore("&")
-                    getEntitlement(access)
+                    if (refresh == true) {
+                        val response = refreshEntitlement(access)
+                    } else {
+                        getEntitlement(access)
+                    }
                 }
             }
+        }
+    }
+
+    private fun refreshEntitlement(newAccess: String): Response {
+        val request = Request.Builder()
+            .url("https://entitlements.auth.riotgames.com/api/token/v1")
+            .addHeader("Content-Type", "application/json")
+            .addHeader("X-Riot-ClientVersion", riotClientVersion)
+            .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
+            .addHeader(
+                "User-Agent",
+                "RiotClient/$ClientVersion rso-auth (Windows; 10;;Professional, x64)"
+            )
+            .addHeader("Authorization", "Bearer $newAccess")
+            .post(
+                byteArrayOf().toRequestBody(null, 0, 0)
+            ) // empty body
+            .build()
+
+        return runBlocking(Dispatchers.IO) {
+            return@runBlocking client.newCall(request).execute()
         }
     }
 
@@ -1055,10 +1141,13 @@ class LiveStatsFragment : Fragment() {
         for (i in 0 until members.length()) {
             val member = members.getJSONObject(i)
             val subject = member.getString("Subject")
-            val name = decodeNameFromSubject(subject)
+            var name = decodeNameFromSubject(subject)
             val playerCardID = member.getJSONObject("PlayerIdentity").getString("PlayerCardID")
             val playerTitleID = member.getJSONObject("PlayerIdentity").getString("PlayerTitleID")
             val playerReady = member.getBoolean("IsReady")
+            val isModerator = member.getBoolean("IsModerator")
+
+            if (isModerator) name = "(Leader) $name"
 
             partyMembers.add(
                 PartyMember(
@@ -1070,7 +1159,6 @@ class LiveStatsFragment : Fragment() {
                 )
             )
         }
-
 
         partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
     }
@@ -1180,7 +1268,6 @@ class LiveStatsFragment : Fragment() {
     private fun getGameInfoPlayer() {
         val PreGameLayout = view?.findViewById<RelativeLayout>(R.id.new_LayoutPartyPreGame)
 
-
         if (PlayerUUID == null) return
         val url = "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
         val response = APIRequestValorant(url)
@@ -1275,13 +1362,13 @@ class LiveStatsFragment : Fragment() {
             // get the match ID
             val url =
                 "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}/quit"
-            val response = APIRequestValorant(url, "")
-            val code = response.code
-            if (code == 200) {
-                Toast.makeText(context, "Successfully quit the match", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Failed to quit the match", Toast.LENGTH_SHORT).show()
-            }
+            APIRequestValorant(url, "")
+//            val code = response.code
+//            if (code == 200) {
+//                Toast.makeText(context, "Successfully quit the match", Toast.LENGTH_SHORT).show()
+//            } else {
+//                Toast.makeText(context, "Failed to quit the match", Toast.LENGTH_SHORT).show()
+//            }
         }
         builder.setNegativeButton("No") { dialog, which ->
             // do nothing
