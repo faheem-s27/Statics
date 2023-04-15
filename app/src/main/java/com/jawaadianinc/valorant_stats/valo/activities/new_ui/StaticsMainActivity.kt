@@ -42,8 +42,15 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
 
-        val updateDescription = "- Fixed BR & LATAM regions not working" +
-                "\n- Fixed a spray ordering bug"
+        val updateDescription = "- Testing contracts" +
+                "\n- Testing player store"
+
+        // put the update description in the shared preferences
+        val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
+        with(update.edit()) {
+            putString("LatestFeatureDescription", updateDescription)
+            apply()
+        }
 
         // check if the version name is beta or not
         val versionName = packageManager.getPackageInfo(packageName, 0).versionName

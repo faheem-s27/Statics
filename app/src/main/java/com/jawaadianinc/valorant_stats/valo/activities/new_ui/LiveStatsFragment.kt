@@ -62,6 +62,7 @@ class LiveStatsFragment : Fragment() {
 
     private var partyExpanded = true
     private var loadoutExpanded = true
+    private var storeExpanded = true
     private var SpraysIDImage = HashMap<String, String>()
     private var AgentNamesID = HashMap<String, String>()
     private var MapsImagesID = HashMap<String, String>()
@@ -70,6 +71,7 @@ class LiveStatsFragment : Fragment() {
     lateinit var assetsDB: AssetsDatabase
 
     private lateinit var agentPreGameRecyclerView: RecyclerView
+    val storeTimerScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -252,6 +254,43 @@ class LiveStatsFragment : Fragment() {
                     AccelerateInterpolator().getInterpolation(it)
                 }.start()
                 loadoutExpanded = true
+            }
+        }
+
+        val materialCardPlayerStore =
+            requireView().findViewById<MaterialCardView>(R.id.materialCardPlayerStore)
+        materialCardPlayerStore.visibility = View.VISIBLE
+        val storeExpandButton =
+            requireView().findViewById<ImageButton>(R.id.playerStoreExpandButton)
+        storeExpandButton.setOnClickListener {
+            if (storeExpanded) {
+                // animate the material card to fade out
+                val fadeOut = AlphaAnimation(1f, 0f)
+                fadeOut.interpolator = AccelerateInterpolator()
+                fadeOut.duration = 300
+                fadeOut.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationRepeat(animation: Animation?) {}
+                    override fun onAnimationEnd(animation: Animation?) {
+                        materialCardPlayerStore.visibility = View.GONE
+                    }
+
+                    override fun onAnimationStart(animation: Animation?) {}
+                })
+                materialCardPlayerStore.startAnimation(fadeOut)
+                storeExpandButton.animate().rotation(-90f).setDuration(300).setInterpolator {
+                    AccelerateInterpolator().getInterpolation(it)
+                }.start()
+                storeExpanded = false
+            } else {
+                materialCardPlayerStore.visibility = View.VISIBLE
+                val fadeIn = AlphaAnimation(0f, 1f)
+                fadeIn.interpolator = AccelerateInterpolator()
+                fadeIn.duration = 300
+                materialCardPlayerStore.startAnimation(fadeIn)
+                storeExpandButton.animate().rotation(0f).setDuration(300).setInterpolator {
+                    AccelerateInterpolator().getInterpolation(it)
+                }.start()
+                storeExpanded = true
             }
         }
     }
@@ -873,16 +912,74 @@ class LiveStatsFragment : Fragment() {
             return
         }
 
-        val url = "https://pd.${shard}.a.pvp.net/store/v1/wallet/$PlayerUUID"
+        val url = "https://pd.${shard}.a.pvp.net/contracts/v1/contracts/$PlayerUUID"
         val response = APIRequestValorant(url)
         val body = response.body.string()
         val code = response.code
 
         Log.d("LIVE_STATS_CONTRACTS", "Response code: $code Body: $body")
 
-        if (code == 200) {
-            //Log.d("LIVE_STATS_CONTRACTS", "Response: $body")
+
+    }
+
+    private fun showStoreFront() {
+        val url = "https://pd.${shard}.a.pvp.net/store/v2/storefront/${PlayerUUID}"
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return
+
+        Log.d("LIVE_STATS_STOREFRONT", "Response code: $code Body: $body")
+        // copy the body to Log so that PC can copy it
+//        val clipboard =
+//            requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+//        val clip = ClipData.newPlainText("Valorant Live Stats", body)
+//        clipboard.setPrimaryClip(clip)
+//        Toast.makeText(requireContext(), "Copied to clipboard!", Toast.LENGTH_SHORT)
+//            .show()
+
+        val json = JSONObject(body)
+        // see if theres a object called BonusStore
+        val timerSeconds =
+            json.getJSONObject("FeaturedBundle").getInt("BundleRemainingDurationInSeconds")
+        setStoreTimer(timerSeconds)
+        val NightMarket = json.optJSONObject("BonusStore")
+        if (NightMarket != null) {
+            // show dialog
+            Snackbar.make(requireView(), "Night Market is open!", Snackbar.LENGTH_LONG).show()
         }
+    }
+
+    private fun setStoreTimer(seconds: Int, scope: CoroutineScope? = null) {
+        val timer = requireView().findViewById<TextView>(R.id.playerStoreTimer)
+        // format as HH:MM:SS
+        val hours = seconds / 3600
+        val minutes = (seconds % 3600) / 60
+        val secs = seconds % 60
+        val time = String.format("%02d:%02d:%02d", hours, minutes, secs)
+        timer.text = time
+
+//        if (seconds <= 0) {
+//            // stop the coroutine
+//            scope?.cancel()
+//            // hide the timer
+//            timer.visibility = View.GONE
+//        }
+//
+//        if (scope == null)
+//        {
+//            val NEWscope = CoroutineScope(Dispatchers.IO)
+//            NEWscope.launch {
+//                while (true) {
+//                    delay((1000))
+//                    // context is the main thread
+//                    withContext(Dispatchers.Main)
+//                    {
+//                        setStoreTimer(seconds - 1, NEWscope)
+//                    }
+//                }
+//            }
     }
 
     private fun getPlayerLoadOuts() {
@@ -902,6 +999,9 @@ class LiveStatsFragment : Fragment() {
             loadTitle(json.getJSONObject("Identity").getString("PlayerTitleID"))
             loadPlayerCard(json.getJSONObject("Identity").getString("PlayerCardID"))
         }
+
+        showStoreFront()
+        getContracts()
     }
 
     private fun loadPlayerCard(titleID: String) {
@@ -1141,23 +1241,11 @@ class LiveStatsFragment : Fragment() {
         fadeRepeat(partyStatus!!)
     }
 
+
     private fun handlePartyMembers(members: JSONArray) {
         // A list of PartyMember objects
         val partyMembers = ArrayList<PartyMember>()
         val partyMemberListView = view?.findViewById<ListView>(R.id.new_partyMembersListView)
-
-        if (members.length() == 1) {
-            // only one member so hide the listview
-            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = "Only you in party"
-            view?.findViewById<ListView>(R.id.new_partyMembersListView)?.visibility = View.INVISIBLE
-            // clear the listview
-            partyMemberListView?.adapter = null
-            return
-        } else {
-            view?.findViewById<ListView>(R.id.new_partyMembersListView)?.visibility = View.VISIBLE
-            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
-                members.length().toString() + " members in party"
-        }
 
         for (i in 0 until members.length()) {
             val member = members.getJSONObject(i)
@@ -1167,6 +1255,8 @@ class LiveStatsFragment : Fragment() {
             val playerTitleID = member.getJSONObject("PlayerIdentity").getString("PlayerTitleID")
             val playerReady = member.getBoolean("IsReady")
             val isModerator = member.getBoolean("IsModerator")
+
+            if (subject == PlayerUUID) loadPlayerCard(playerCardID)
 
             if (isModerator) name = "(Leader) $name"
 
@@ -1179,6 +1269,19 @@ class LiveStatsFragment : Fragment() {
                     playerReady
                 )
             )
+        }
+
+        if (members.length() == 1) {
+            // only one member so hide the listview
+            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = "Only you in party"
+            view?.findViewById<ListView>(R.id.new_partyMembersListView)?.visibility = View.INVISIBLE
+            // clear the listview
+            partyMemberListView?.adapter = null
+            return
+        } else {
+            view?.findViewById<ListView>(R.id.new_partyMembersListView)?.visibility = View.VISIBLE
+            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
+                members.length().toString() + " members in party"
         }
 
         partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
@@ -1530,6 +1633,27 @@ class LiveStatsFragment : Fragment() {
         fadeIn.repeatCount = 2
         fadeIn.repeatMode = Animation.REVERSE
         view.startAnimation(fadeIn)
+    }
+
+    private fun getAvailablePlayerCards(): ArrayList<String> {
+        val availablePlayerCards = arrayListOf<String>()
+        val playerCardID = "3f296c07-64c3-494c-923b-fe692a4fa1bd\t"
+        val url = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$playerCardID"
+
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return arrayListOf()
+
+        Log.d("LIVE_STATS_AVAILABLE_PLAYERCARDS", body)
+        val playerCards = JSONObject(body).getJSONArray("Entitlements")
+        for (i in 0 until playerCards.length()) {
+            val playerCardObject = playerCards.getJSONObject(i)
+            val playerCardID = playerCardObject.getString("ItemID")
+            availablePlayerCards.add(playerCardID)
+        }
+        return availablePlayerCards
     }
 
     private fun getAvailableTitles(): ArrayList<String> {

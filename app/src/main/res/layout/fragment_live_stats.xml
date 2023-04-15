@@ -127,6 +127,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="48dp"
                     app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="80dp"
@@ -337,6 +338,84 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/materialCardPartyPlayer" />
 
+                <TextView
+                    android:id="@+id/textView32"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:fontFamily="@font/baloo_bhai"
+                    android:text="PLAYER STORE"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/materialCardCurrentLoadout" />
+
+                <ImageButton
+                    android:id="@+id/playerStoreExpandButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:background="#00C48383"
+                    android:backgroundTint="#FFE6E6"
+                    android:backgroundTintMode="src_in"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView32"
+                    app:layout_constraintStart_toEndOf="@+id/textView32"
+                    app:layout_constraintTop_toTopOf="@+id/textView32"
+                    app:srcCompat="@android:drawable/arrow_down_float" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/materialCardPlayerStore"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="48dp"
+                    app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="80dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView32"
+                    app:strokeColor="@color/white"
+                    app:strokeWidth="1dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/textView33"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Featured Bundle"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <!-- A timer in the top right corner that counts down -->
+                        <TextView
+                            android:id="@+id/playerStoreTimer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="@font/baloo_bhai"
+                            android:text="00:00:00"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+
                 <ImageButton
                     android:id="@+id/partyExpandButton"
                     android:layout_width="40dp"
@@ -461,7 +540,8 @@
                             android:layout_alignParentStart="true"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
-                            android:layout_marginBottom="16dp" />
+                            android:layout_marginBottom="16dp"
+                            android:nestedScrollingEnabled="true" />
 
                         <!-- Dropdown menu called new_partyGameModeSelect -->
                         <Spinner
