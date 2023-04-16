@@ -1,9 +1,14 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.AlertDialog
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -16,7 +21,17 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.ListView
+import android.widget.RelativeLayout
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +44,13 @@ import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -38,7 +59,7 @@ import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
-import java.util.*
+import java.util.Locale
 
 class LiveStatsFragment : Fragment() {
     lateinit var playerName: String
@@ -71,7 +92,7 @@ class LiveStatsFragment : Fragment() {
     lateinit var assetsDB: AssetsDatabase
 
     private lateinit var agentPreGameRecyclerView: RecyclerView
-    val storeTimerScope = CoroutineScope(Dispatchers.IO)
+    var storeTimer: CountDownTimer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -951,35 +972,28 @@ class LiveStatsFragment : Fragment() {
         }
     }
 
-    private fun setStoreTimer(seconds: Int, scope: CoroutineScope? = null) {
+    private fun setStoreTimer(seconds: Int) {
         val timer = requireView().findViewById<TextView>(R.id.playerStoreTimer)
-        // format as HH:MM:SS
-        val hours = seconds / 3600
-        val minutes = (seconds % 3600) / 60
-        val secs = seconds % 60
-        val time = String.format("%02d:%02d:%02d", hours, minutes, secs)
-        timer.text = time
+        if (storeTimer != null) return
 
-//        if (seconds <= 0) {
-//            // stop the coroutine
-//            scope?.cancel()
-//            // hide the timer
-//            timer.visibility = View.GONE
-//        }
-//
-//        if (scope == null)
-//        {
-//            val NEWscope = CoroutineScope(Dispatchers.IO)
-//            NEWscope.launch {
-//                while (true) {
-//                    delay((1000))
-//                    // context is the main thread
-//                    withContext(Dispatchers.Main)
-//                    {
-//                        setStoreTimer(seconds - 1, NEWscope)
-//                    }
-//                }
-//            }
+        //Toast.makeText(requireContext(), "Store timer set!", Toast.LENGTH_SHORT).show()
+
+        storeTimer = object : CountDownTimer((seconds * 1000).toLong(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val seconds = millisUntilFinished / 1000
+                val hours = seconds / 3600
+                val minutes = (seconds % 3600) / 60
+                val secs = seconds % 60
+                val time = String.format("%02d:%02d:%02d", hours, minutes, secs)
+                timer.text = time
+            }
+
+            override fun onFinish() {
+                timer.text = "00:00:00"
+            }
+        }
+
+        storeTimer?.start()
     }
 
     private fun getPlayerLoadOuts() {
@@ -1218,7 +1232,7 @@ class LiveStatsFragment : Fragment() {
                 return
             } else if (code == 400 && body.contains("BAD_CLAIMS")) {
                 // auth expired so tell user to restart app
-                timerSeconds = 10000
+                timerSeconds = 100000
                 changePartyStatusText("Auth expired, please restart app")
                 return
             } else if (code == 200) {
@@ -1274,17 +1288,16 @@ class LiveStatsFragment : Fragment() {
         if (members.length() == 1) {
             // only one member so hide the listview
             view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = "Only you in party"
-            view?.findViewById<ListView>(R.id.new_partyMembersListView)?.visibility = View.INVISIBLE
+            partyMemberListView?.visibility = View.INVISIBLE
             // clear the listview
             partyMemberListView?.adapter = null
             return
         } else {
-            view?.findViewById<ListView>(R.id.new_partyMembersListView)?.visibility = View.VISIBLE
+            partyMemberListView?.visibility = View.VISIBLE
             view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
                 members.length().toString() + " members in party"
+            partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
         }
-
-        partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
     }
 
     private fun decodeNameFromSubject(subject: String): String {

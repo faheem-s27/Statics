@@ -12,12 +12,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.SkuDetailsParams
 import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.AboutActivity
@@ -98,65 +92,65 @@ class SettingsFragment : Fragment() {
             activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
-        // Implement a PurchaseUpdateListener to handle purchase updates
-        val purchaseUpdateListener = PurchasesUpdatedListener { billingResult, purchases ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-                // Handle successful purchase
-                // Process the donation and update UI accordingly
-                Toast.makeText(
-                    requireActivity(),
-                    "Thank you for your donation!",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-                // Handle user cancellation
-                Toast.makeText(requireActivity(), "Donation cancelled", Toast.LENGTH_SHORT).show()
-            } else {
-                // Handle other billing errors
-                Toast.makeText(requireActivity(), "Donation failed", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        val billingClient = BillingClient.newBuilder(requireActivity())
-            .setListener(purchaseUpdateListener)
-            .enablePendingPurchases()
-            .build()
-
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    // The BillingClient is ready. You can query purchases here.
-                }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                // Try to restart the connection on the next request to
-                // Google Play by calling the startConnection() method.
-            }
-        })
-
-        val donateButton = view.findViewById<Button>(R.id.new_Donate)
-        donateButton.setOnClickListener {
-            val skuList = ArrayList<String>()
-            skuList.add("statics_donations")
-            val params = SkuDetailsParams.newBuilder()
-            params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
-            billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
-                    for (skuDetails in skuDetailsList) {
-                        val flowParams = BillingFlowParams.newBuilder()
-                            .setSkuDetails(skuDetails)
-                            .build()
-                        billingClient.launchBillingFlow(requireActivity(), flowParams)
-                    }
-                }
-            }
-        }
-
-        val donateTitle = "Dontate to the developer"
-        val donateMsg =
-            "If you enjoy using this app, please consider donating to help me keep it running. Thank you!"
+//        // Implement a PurchaseUpdateListener to handle purchase updates
+//        val purchaseUpdateListener = PurchasesUpdatedListener { billingResult, purchases ->
+//            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+//                // Handle successful purchase
+//                // Process the donation and update UI accordingly
+//                Toast.makeText(
+//                    requireActivity(),
+//                    "Thank you for your donation!",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//
+//            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+//                // Handle user cancellation
+//                Toast.makeText(requireActivity(), "Donation cancelled", Toast.LENGTH_SHORT).show()
+//            } else {
+//                // Handle other billing errors
+//                Toast.makeText(requireActivity(), "Donation failed", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//
+//        val billingClient = BillingClient.newBuilder(requireActivity())
+//            .setListener(purchaseUpdateListener)
+//            .enablePendingPurchases()
+//            .build()
+//
+//        billingClient.startConnection(object : BillingClientStateListener {
+//            override fun onBillingSetupFinished(billingResult: BillingResult) {
+//                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+//                    // The BillingClient is ready. You can query purchases here.
+//                }
+//            }
+//
+//            override fun onBillingServiceDisconnected() {
+//                // Try to restart the connection on the next request to
+//                // Google Play by calling the startConnection() method.
+//            }
+//        })
+//
+//        val donateButton = view.findViewById<Button>(R.id.new_Donate)
+//        donateButton.setOnClickListener {
+//            val skuList = ArrayList<String>()
+//            skuList.add("statics_donations")
+//            val params = SkuDetailsParams.newBuilder()
+//            params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
+//            billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
+//                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
+//                    for (skuDetails in skuDetailsList) {
+//                        val flowParams = BillingFlowParams.newBuilder()
+//                            .setSkuDetails(skuDetails)
+//                            .build()
+//                        billingClient.launchBillingFlow(requireActivity(), flowParams)
+//                    }
+//                }
+//            }
+//        }
+//
+//        val donateTitle = "Dontate to the developer"
+//        val donateMsg =
+//            "If you enjoy using this app, please consider donating to help me keep it running. Thank you!"
 
     }
 
