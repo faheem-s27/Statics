@@ -43,7 +43,8 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription = "- Testing contracts" +
-                "\n- Testing player store"
+                "\n- Testing player store" +
+                "\n- Testing donations"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
