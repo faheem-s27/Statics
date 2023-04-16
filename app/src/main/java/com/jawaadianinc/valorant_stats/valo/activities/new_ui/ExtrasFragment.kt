@@ -152,6 +152,16 @@ class SettingsFragment : Fragment() {
 //        val donateMsg =
 //            "If you enjoy using this app, please consider donating to help me keep it running. Thank you!"
 
+        val donateButton = view.findViewById<Button>(R.id.new_Donate)
+        donateButton.setOnClickListener {
+            // Coming soon
+            Toast.makeText(requireActivity(), "Coming soon!", Toast.LENGTH_SHORT).show()
+        }
+
+        val logs = view.findViewById<Button>(R.id.new_view_logs_button)
+        logs.setOnClickListener {
+            Toast.makeText(requireActivity(), "Coming soon!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun logOut(name: String) {

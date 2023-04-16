@@ -409,7 +409,8 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="16dp"
                             android:layout_marginBottom="16dp"
-                            android:text="Featured Bundle"
+                            android:text="Coming soon"
+                            tools:text="Featured Bundle"
                             android:textColor="#FFFFFF"
                             android:textSize="20dp"
                             android:textStyle="bold" />

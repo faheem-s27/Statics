@@ -42,9 +42,14 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
 
-        val updateDescription = "- Testing contracts" +
-                "\n- Testing player store" +
-                "\n- Testing donations"
+        val updateDescription =
+            "- Added party members to live mode, see who's leader and who's ready!" +
+                    "\n- Added feature to update your sprays!" +
+                    "\n- Player card will now be updated in real time in the live tab!" +
+                    "\n- Redesign of the Extras page" +
+                    "\n- Fixed bugs for LATAM & BR regions" +
+                    "\n- Fixed a ordering bug with the sprays" +
+                    "\n- IN PROGRESS: Adding store to the app!"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
@@ -62,9 +67,26 @@ class StaticsMainActivity : AppCompatActivity() {
             val hasSeen = sharedPref.getBoolean(versionName, false)
             if (!hasSeen) {
                 // show the dialog
-                val dialog = AlertDialog.Builder(this)
+                val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
                 dialog.setTitle("You are using a beta version of the app ($versionName)")
                 dialog.setMessage("This means that the app may not work as intended. If you find any bugs, please report them to the developer. \n\n$updateDescription")
+                dialog.setPositiveButton("Ok") { _, _ -> }
+                dialog.show()
+                with(sharedPref.edit()) {
+                    putBoolean(versionName, true)
+                    apply()
+                }
+            }
+        } else if (versionName.contains("Release")) {
+            // check if they have seen the dialog that says that this is a beta version
+            val sharedPref = getSharedPreferences("release", Context.MODE_PRIVATE)
+            // make hasSeen based off the version name
+            val hasSeen = sharedPref.getBoolean(versionName, false)
+            if (!hasSeen) {
+                // show the dialog
+                val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
+                dialog.setTitle("New features for Statics ($versionName)")
+                dialog.setMessage("This update includes: \n\n$updateDescription")
                 dialog.setPositiveButton("Ok") { _, _ -> }
                 dialog.show()
                 with(sharedPref.edit()) {

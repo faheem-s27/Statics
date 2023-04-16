@@ -972,7 +972,7 @@ class LiveStatsFragment : Fragment() {
         val NightMarket = json.optJSONObject("BonusStore")
         if (NightMarket != null) {
             // show dialog
-            Snackbar.make(requireView(), "Night Market is open!", Snackbar.LENGTH_LONG).show()
+            //Snackbar.make(requireView(), "Night Market is open!", Snackbar.LENGTH_LONG).show()
         }
     }
 
