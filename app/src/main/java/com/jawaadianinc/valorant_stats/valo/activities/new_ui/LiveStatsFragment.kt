@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -23,6 +24,7 @@ import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -184,7 +186,7 @@ class LiveStatsFragment : Fragment() {
 
         val whyPassword = requireView().findViewById<Button>(R.id.continueInit)
         whyPassword.setOnClickListener {
-            val builder = AlertDialog.Builder(requireActivity())
+            val builder = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
                 .setTitle("Why do I need to enter my password?")
                 .setMessage(
                     "Unfortunately, Statics needs your Riot username and password to use the live mode as the password is required to authenticate your account and is used to get the data from Valorant.\n\nThe password is not stored anywhere and is only used to authenticate your account." +
@@ -198,6 +200,7 @@ class LiveStatsFragment : Fragment() {
                             "TL;DR: you'll have to take my word for it. \uD83E\uDD86❤️ " + "\n\n" + "If you're still not comfortable with this, you can use the app without live mode."
                 )
                 .setPositiveButton("OK", null)
+
             builder.show()
         }
 
@@ -353,7 +356,7 @@ class LiveStatsFragment : Fragment() {
                 }
             })
 
-            val builder = AlertDialog.Builder(requireActivity())
+            val builder = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
                 .setView(dialogView)
                 .setTitle("Enter username and password")
                 .setPositiveButton("OK") { _, _ ->
@@ -418,7 +421,7 @@ class LiveStatsFragment : Fragment() {
                     {
                         progressdialog.dismiss()
                         val msg = "Response code: $code\nBody: $body"
-                        val dialog = AlertDialog.Builder(requireContext())
+                        val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
                             .setTitle("Response from Auth Cookies")
                             .setMessage(msg)
                             .setPositiveButton("OK") { dialog, _ ->
@@ -489,17 +492,18 @@ class LiveStatsFragment : Fragment() {
                             progressdialog.dismiss()
                             val msg =
                                 "Response was successful but username or password is incorrect"
-                            val dialog = AlertDialog.Builder(requireContext())
-                                .setTitle("Response from Statics")
-                                .setMessage(msg)
-                                .setPositiveButton("OK") { _, _ ->
-                                    // clear the username and password from authPrefs
-                                    authPreferences.edit().remove("username").apply()
-                                    authPreferences.edit().remove("password").apply()
+                            val dialog =
+                                AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+                                    .setTitle("Response from Statics")
+                                    .setMessage(msg)
+                                    .setPositiveButton("OK") { _, _ ->
+                                        // clear the username and password from authPrefs
+                                        authPreferences.edit().remove("username").apply()
+                                        authPreferences.edit().remove("password").apply()
 
-                                    // clear the cookies from shared preferences
-                                    authPreferences.edit().remove("cookieMFA").apply()
-                                    authPreferences.edit().remove("cookieAuth").apply()
+                                        // clear the cookies from shared preferences
+                                        authPreferences.edit().remove("cookieMFA").apply()
+                                        authPreferences.edit().remove("cookieAuth").apply()
 
                                     // dismiss the dialog
                                     progressdialog.dismiss()
@@ -627,7 +631,7 @@ class LiveStatsFragment : Fragment() {
                 val type = json.getString("type")
                 val email = json.getJSONObject("multifactor").getString("email")
                 if (type == "multifactor") {
-                    val builder = AlertDialog.Builder(context)
+                    val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
                     val inflater = LayoutInflater.from(context)
                     val dialogView = inflater.inflate(R.layout.dialog_multifactor, null)
                     builder.setView(dialogView)
@@ -672,7 +676,7 @@ class LiveStatsFragment : Fragment() {
             val type = json.getString("type")
             val email = json.getJSONObject("multifactor").getString("email")
             if (type == "multifactor") {
-                val builder = AlertDialog.Builder(context)
+                val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
                 val inflater = LayoutInflater.from(context)
                 val dialogView = inflater.inflate(R.layout.dialog_multifactor, null)
                 builder.setView(dialogView)
@@ -893,7 +897,7 @@ class LiveStatsFragment : Fragment() {
         } catch (e: Exception) {
             // Alert the user and ask to send a bug report
             val msg = "An error happened in live mode: ${e.message}"
-            val dialog = AlertDialog.Builder(requireContext())
+            val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle("Send to developer on discord!")
                 .setMessage(msg)
                 .setPositiveButton("Copy & Send") { dialog, which ->
@@ -1048,8 +1052,61 @@ class LiveStatsFragment : Fragment() {
                     updateTitle(titleID)
                 }
                 .setNegativeButton("Cancel", null)
+
+            // set the items text color to white
+            val dialogView = dialog.create()
+            dialogView.show()
+            dialogView.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE)
+            dialogView.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE)
+        }
+    }
+
+    private fun updateSpray(sprayID: String, sprayEquipID: String) {
+        val url =
+            "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
+        val response = APIRequestValorant(url)
+        var body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return
+
+        val json = JSONObject(body)
+        val sprays = json.getJSONArray("Sprays")
+        for (i in 0 until sprays.length()) {
+            val spray = sprays.getJSONObject(i)
+            if (spray.getString("EquipSlotID") == sprayEquipID) {
+                spray.put("SprayID", sprayID)
+            }
+        }
+
+        // convert to string
+        body = json.toString()
+
+        val sprayResponse = APIRequestValorant(url, body, true)
+        val sprayBody = sprayResponse.body.string()
+        val sprayCode = sprayResponse.code
+
+        if (sprayCode == 200) {
+            Snackbar.make(
+                requireView(),
+                "Spray updated successfully",
+                Snackbar.LENGTH_SHORT
+            ).show()
+            val refreshButtonCurrentLoadout =
+                view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
+            refreshButtonCurrentLoadout!!.animate().rotationBy(360f).setDuration(500)
+                .withEndAction {
+                    getPlayerLoadOuts()
+                }
+        } else {
+            // show error
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("Error")
+                .setMessage("Error updating spray: $sprayBody")
+                .setPositiveButton("OK", null)
             dialog.show()
         }
+
     }
 
     private fun updateTitle(titleID: String) {
@@ -1101,22 +1158,28 @@ class LiveStatsFragment : Fragment() {
         val MidRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayMidRound)
         val PostRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayPostRound)
 
+        val PreRoundID = "0814b2fe-4512-60a4-5288-1fbdcec6ca48"
+        val MidRoundID = "04af080a-4071-487b-61c0-5b9c0cfaac74"
+        val PostRoundID = "5863985e-43ac-b05d-cb2d-139e72970014"
+
         for (i in 0 until Sprays.length()) {
             val EquipSlotID = Sprays.getJSONObject(i).getString("EquipSlotID")
             when (EquipSlotID) {
-                "0814b2fe-4512-60a4-5288-1fbdcec6ca48" -> {
+                PreRoundID -> {
                     // Pre Round Spray
                     Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(i).getString("SprayID")])
                         .fit()
                         .centerInside().into(PreRoundSprayView)
                 }
-                "04af080a-4071-487b-61c0-5b9c0cfaac74" -> {
+
+                MidRoundID -> {
                     // Mid Round Spray
                     Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(i).getString("SprayID")])
                         .fit()
                         .centerInside().into(MidRoundSprayView)
                 }
-                "5863985e-43ac-b05d-cb2d-139e72970014" -> {
+
+                PostRoundID -> {
                     // Post Round Spray
                     Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(i).getString("SprayID")])
                         .fit()
@@ -1124,11 +1187,53 @@ class LiveStatsFragment : Fragment() {
                 }
             }
         }
-//        Log.d("LIVE_STATS_SPRAYS", "Pre Round Spray Equip Slot: ${Sprays.getJSONObject(1).getString("EquipSlotID")}")
-//        Log.d("LIVE_STATS_SPRAYS", "Mid Round Spray Equip Slot: ${Sprays.getJSONObject(2).getString("EquipSlotID")}")
-//        Log.d("LIVE_STATS_SPRAYS", "Post Round Spray Equip Slot: ${Sprays.getJSONObject(0).getString("EquipSlotID")}")
 
+        val sprays = getAvailableSprays()
+        var alertDialog: AlertDialog = AlertDialog.Builder(requireActivity()).create()
+        val dialogView =
+            LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_picture_list, null)
+        val listViewPictures = dialogView.findViewById<ListView>(R.id.listViewPictures)
+        listViewPictures.adapter = PictureListAdapter(
+            requireActivity(),
+            sprays,
+            "Spray"
+        ) // Create an adapter for the list of pictures
+
+        alertDialog = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
+            .setTitle("Select a Spray")
+            .setView(dialogView)
+            .setNegativeButton("Cancel") { _, _ ->
+                // Handle cancel button click event, if needed
+            }
+            .create()
         PreRoundSprayView!!.setOnClickListener {
+            listViewPictures.setOnItemClickListener { _, _, position, _ ->
+                val selectedPicture = sprays[position]
+                updateSpray(selectedPicture, PreRoundID)
+                alertDialog.dismiss()
+            }
+
+            alertDialog.show()
+        }
+
+        MidRoundSprayView!!.setOnClickListener {
+            listViewPictures.setOnItemClickListener { _, _, position, _ ->
+                val selectedPicture = sprays[position]
+                updateSpray(selectedPicture, MidRoundID)
+                alertDialog.dismiss()
+            }
+
+            alertDialog.show()
+        }
+
+        PostRoundSprayView!!.setOnClickListener {
+            listViewPictures.setOnItemClickListener { _, _, position, _ ->
+                val selectedPicture = sprays[position]
+                updateSpray(selectedPicture, PostRoundID)
+                alertDialog.dismiss()
+            }
+
+            alertDialog.show()
         }
     }
 
@@ -1182,7 +1287,7 @@ class LiveStatsFragment : Fragment() {
 
         val logOut = view?.findViewById<ImageButton>(R.id.new_partyPlayerLogOut)
         logOut?.setOnClickListener {
-            val dialog = AlertDialog.Builder(requireContext())
+            val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle("Log out")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Yes") { _, _ ->
@@ -1492,7 +1597,7 @@ class LiveStatsFragment : Fragment() {
 
     private fun quitMatch(matchID: String) {
         // Show a dialog to confirm the user wants to quit the match
-        val builder = AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
         builder.setTitle("Quit match")
         builder.setMessage("Are you sure you want to quit the match? (This could result in a penalty)")
         builder.setPositiveButton("Yes") { dialog, which ->
@@ -1648,6 +1753,27 @@ class LiveStatsFragment : Fragment() {
         view.startAnimation(fadeIn)
     }
 
+    private fun getAvailableSprays(): ArrayList<String> {
+        val availableSprays = arrayListOf<String>()
+        val sprayID = "d5f120f8-ff8c-4aac-92ea-f2b5acbe9475"
+        val url = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$sprayID"
+
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return arrayListOf()
+
+        Log.d("LIVE_STATS_AVAILABLE_SPRAYS", body)
+        val sprays = JSONObject(body).getJSONArray("Entitlements")
+        for (i in 0 until sprays.length()) {
+            val sprayObject = sprays.getJSONObject(i)
+            val sprayID = sprayObject.getString("ItemID")
+            availableSprays.add(sprayID)
+        }
+        return availableSprays
+    }
+
     private fun getAvailablePlayerCards(): ArrayList<String> {
         val availablePlayerCards = arrayListOf<String>()
         val playerCardID = "3f296c07-64c3-494c-923b-fe692a4fa1bd\t"
@@ -1796,6 +1922,40 @@ class LiveStatsFragment : Fragment() {
         timerSeconds = 1000
     }
 }
+
+class PictureListAdapter(
+    private val context: Context,
+    private val pictures: List<String>,
+    private val type: String
+) : BaseAdapter() {
+
+    override fun getCount(): Int {
+        return pictures.size
+    }
+
+    override fun getItem(position: Int): Any {
+        return pictures[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val view =
+            LayoutInflater.from(context).inflate(R.layout.image_holder_for_list_view, parent, false)
+        val imageView = view.findViewById<ImageView>(R.id.image_view)
+        val currentImage = pictures[position]
+        var fullURL = ""
+        if (type == "Spray") {
+            fullURL = "https://media.valorant-api.com/sprays/$currentImage/fulltransparenticon.png"
+        }
+
+        Picasso.get().load(fullURL).fit().into(imageView)
+        return view
+    }
+}
+
 
 class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val imageView: ImageView = itemView.findViewById(R.id.image_view)

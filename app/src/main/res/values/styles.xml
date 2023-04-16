@@ -14,6 +14,8 @@
 
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/white</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:background">@color/Valorant_SplashColourBackground</item>
         <item name="android:windowBackground">@color/Valorant_SplashColourBackground</item>
         <item name="android:windowContentTransitions">true</item>
