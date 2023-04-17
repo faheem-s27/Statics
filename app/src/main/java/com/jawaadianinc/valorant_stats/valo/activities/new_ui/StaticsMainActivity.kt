@@ -43,13 +43,7 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription =
-            "- Added party members to live mode, see who's leader and who's ready!" +
-                    "\n- Added feature to update your sprays!" +
-                    "\n- Player card will now be updated in real time in the live tab!" +
-                    "\n- Redesign of the Extras page" +
-                    "\n- Fixed bugs for LATAM & BR regions" +
-                    "\n- Fixed a ordering bug with the sprays" +
-                    "\n- IN PROGRESS: Adding store to the app!"
+            "- Testing player card changing"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)

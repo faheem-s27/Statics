@@ -1303,6 +1303,79 @@ class LiveStatsFragment : Fragment() {
                 .setNegativeButton("No", null)
             dialog.show()
         }
+
+        val avatarPFP = view?.findViewById<ImageView>(R.id.new_playerAvatar)
+        avatarPFP?.setOnClickListener {
+            val pictures = getAvailablePlayerCards()
+            var alertDialog: AlertDialog = AlertDialog.Builder(requireActivity()).create()
+            val dialogView =
+                LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_picture_list, null)
+            val listViewPictures = dialogView.findViewById<ListView>(R.id.listViewPictures)
+            listViewPictures.adapter = PictureListAdapter(
+                requireActivity(),
+                pictures,
+                "PlayerCard"
+            ) // Create an adapter for the list of pictures
+
+            alertDialog = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
+                .setTitle("Select a Player Card")
+                .setView(dialogView)
+                .setNegativeButton("Cancel") { _, _ ->
+                    // Handle cancel button click event, if needed
+                }
+                .create()
+
+            listViewPictures.setOnItemClickListener { _, _, position, _ ->
+                val selectedPicture = pictures[position]
+                updatePlayerCard(selectedPicture)
+                alertDialog.dismiss()
+            }
+
+            alertDialog.show()
+        }
+    }
+
+    private fun updatePlayerCard(selectedPicture: String) {
+        val url =
+            "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
+        val response = APIRequestValorant(url)
+        var body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return
+
+        val json = JSONObject(body)
+        val identity = json.getJSONObject("Identity")
+        identity.put("PlayerCardID", selectedPicture)
+
+        // convert to string
+        body = json.toString()
+
+        val sprayResponse = APIRequestValorant(url, body, true)
+        val sprayBody = sprayResponse.body.string()
+        val sprayCode = sprayResponse.code
+
+        if (sprayCode == 200) {
+            Snackbar.make(
+                requireView(),
+                "Card updated successfully",
+                Snackbar.LENGTH_SHORT
+            ).show()
+            val refreshButtonCurrentLoadout =
+                view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
+            refreshButtonCurrentLoadout!!.animate().rotationBy(360f).setDuration(500)
+                .withEndAction {
+                    getPlayerLoadOuts()
+                }
+        } else {
+            // show error
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("Error")
+                .setMessage("Error updating spray: $sprayBody")
+                .setPositiveButton("OK", null)
+            dialog.show()
+        }
+
     }
 
     private fun joinMatchmaking() {
@@ -1949,6 +2022,8 @@ class PictureListAdapter(
         var fullURL = ""
         if (type == "Spray") {
             fullURL = "https://media.valorant-api.com/sprays/$currentImage/fulltransparenticon.png"
+        } else if (type == "PlayerCard") {
+            fullURL = "https://media.valorant-api.com/playercards/$currentImage/smallart.png"
         }
 
         Picasso.get().load(fullURL).fit().into(imageView)
