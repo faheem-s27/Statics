@@ -29,6 +29,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ListAdapter
 import android.widget.ListView
 import android.widget.RelativeLayout
 import android.widget.Spinner
@@ -63,6 +64,8 @@ import org.json.JSONObject
 import java.net.URL
 import java.util.Locale
 
+data class ValorantPing(val ServerName: String, val PingValue: Int)
+
 class LiveStatsFragment : Fragment() {
     lateinit var playerName: String
     lateinit var region: String
@@ -89,6 +92,7 @@ class LiveStatsFragment : Fragment() {
     private var SpraysIDImage = HashMap<String, String>()
     private var AgentNamesID = HashMap<String, String>()
     private var MapsImagesID = HashMap<String, String>()
+    private var GamePodStrings = HashMap<String, String>()
 
     private var timerSeconds: Long = 500
     lateinit var assetsDB: AssetsDatabase
@@ -169,6 +173,15 @@ class LiveStatsFragment : Fragment() {
                 MapsImagesID[map.getString("mapUrl")] = map.getString("splash")
             }
 
+            val gamePodURL = "https://valorant-api.com/internal/locres/en-US/game-pod"
+            val gamePodJSON = JSONObject(URL(gamePodURL).readText())
+            val gamePodData = gamePodJSON.getJSONObject("data")
+            val gamePodUIStrings = gamePodData.getJSONObject("UI_GamePodStrings")
+            // for each object in the game pod strings get the key and value and add it to the hashmap
+            for (key in gamePodUIStrings.keys()) {
+                GamePodStrings[key] = gamePodUIStrings.getString(key)
+                Log.d("LIVE_STATS_GAMEPODS", "$key: ${gamePodUIStrings.getString(key)}")
+            }
         }
 
         val username = authPreferences.getString("username", null)
@@ -956,13 +969,6 @@ class LiveStatsFragment : Fragment() {
         if (code != 200) return
 
         Log.d("LIVE_STATS_STOREFRONT", "Response code: $code Body: $body")
-        // copy the body to Log so that PC can copy it
-//        val clipboard =
-//            requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-//        val clip = ClipData.newPlainText("Valorant Live Stats", body)
-//        clipboard.setPrimaryClip(clip)
-//        Toast.makeText(requireContext(), "Copied to clipboard!", Toast.LENGTH_SHORT)
-//            .show()
 
         val json = JSONObject(body)
         // see if theres a object called BonusStore
@@ -1033,6 +1039,49 @@ class LiveStatsFragment : Fragment() {
         Picasso.get().load(largeURL).fit().centerCrop().into(bigImg)
     }
 
+    private fun updatePlayerCard(selectedPicture: String) {
+        val url =
+            "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
+        val response = APIRequestValorant(url)
+        var body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return
+
+        val json = JSONObject(body)
+        val identity = json.getJSONObject("Identity")
+        identity.put("PlayerCardID", selectedPicture)
+
+        // convert to string
+        body = json.toString()
+
+        val sprayResponse = APIRequestValorant(url, body, true)
+        val sprayBody = sprayResponse.body.string()
+        val sprayCode = sprayResponse.code
+
+        if (sprayCode == 200) {
+            Snackbar.make(
+                requireView(),
+                "Card updated successfully",
+                Snackbar.LENGTH_SHORT
+            ).show()
+            val refreshButtonCurrentLoadout =
+                view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
+            refreshButtonCurrentLoadout!!.animate().rotationBy(360f).setDuration(500)
+                .withEndAction {
+                    getPlayerLoadOuts()
+                }
+        } else {
+            // show error
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("Error")
+                .setMessage("Error updating spray: $sprayBody")
+                .setPositiveButton("OK", null)
+            dialog.show()
+        }
+
+    }
+
     private fun loadTitle(TitleID: String) {
         val titleName = assetsDB.retrieveName(TitleID)
         view?.findViewById<TextView>(R.id.CurrentLoadoutTitle)?.text = titleName
@@ -1058,6 +1107,50 @@ class LiveStatsFragment : Fragment() {
             dialogView.show()
             dialogView.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE)
             dialogView.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE)
+        }
+    }
+
+    private fun updateTitle(titleID: String) {
+        val url =
+            "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
+        val response = APIRequestValorant(url)
+        var body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return
+
+        val json = JSONObject(body)
+        val identity = json.getJSONObject("Identity")
+        identity.put("PlayerTitleID", titleID)
+
+        // convert to string
+        body = json.toString()
+
+        val titleResponse = APIRequestValorant(url, body, true)
+        val titleBody = titleResponse.body.string()
+        val titleCode = titleResponse.code
+
+        if (titleCode == 200) {
+            // update the title
+            //loadTitle(titleID)
+            Snackbar.make(
+                requireView(),
+                "Title updated successfully",
+                Snackbar.LENGTH_SHORT
+            ).show()
+            val refreshButtonCurrentLoadout =
+                view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
+            refreshButtonCurrentLoadout!!.animate().rotationBy(360f).setDuration(500)
+                .withEndAction {
+                    getPlayerLoadOuts()
+                }
+        } else {
+            // show error
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("Error")
+                .setMessage("Error updating title: $titleBody")
+                .setPositiveButton("OK", null)
+            dialog.show()
         }
     }
 
@@ -1108,51 +1201,6 @@ class LiveStatsFragment : Fragment() {
         }
 
     }
-
-    private fun updateTitle(titleID: String) {
-        val url =
-            "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
-        val response = APIRequestValorant(url)
-        var body = response.body.string()
-        val code = response.code
-
-        if (code != 200) return
-
-        val json = JSONObject(body)
-        val identity = json.getJSONObject("Identity")
-        identity.put("PlayerTitleID", titleID)
-
-        // convert to string
-        body = json.toString()
-
-        val titleResponse = APIRequestValorant(url, body, true)
-        val titleBody = titleResponse.body.string()
-        val titleCode = titleResponse.code
-
-        if (titleCode == 200) {
-            // update the title
-            //loadTitle(titleID)
-            Snackbar.make(
-                requireView(),
-                "Title updated successfully",
-                Snackbar.LENGTH_SHORT
-            ).show()
-            val refreshButtonCurrentLoadout =
-                view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
-            refreshButtonCurrentLoadout!!.animate().rotationBy(360f).setDuration(500)
-                .withEndAction {
-                    getPlayerLoadOuts()
-                }
-        } else {
-            // show error
-            val dialog = AlertDialog.Builder(requireContext())
-                .setTitle("Error")
-                .setMessage("Error updating title: $titleBody")
-                .setPositiveButton("OK", null)
-            dialog.show()
-        }
-    }
-
     private fun loadSprays(Sprays: JSONArray) {
         val PreRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayPreRound)
         val MidRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayMidRound)
@@ -1335,49 +1383,6 @@ class LiveStatsFragment : Fragment() {
         }
     }
 
-    private fun updatePlayerCard(selectedPicture: String) {
-        val url =
-            "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
-        val response = APIRequestValorant(url)
-        var body = response.body.string()
-        val code = response.code
-
-        if (code != 200) return
-
-        val json = JSONObject(body)
-        val identity = json.getJSONObject("Identity")
-        identity.put("PlayerCardID", selectedPicture)
-
-        // convert to string
-        body = json.toString()
-
-        val sprayResponse = APIRequestValorant(url, body, true)
-        val sprayBody = sprayResponse.body.string()
-        val sprayCode = sprayResponse.code
-
-        if (sprayCode == 200) {
-            Snackbar.make(
-                requireView(),
-                "Card updated successfully",
-                Snackbar.LENGTH_SHORT
-            ).show()
-            val refreshButtonCurrentLoadout =
-                view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
-            refreshButtonCurrentLoadout!!.animate().rotationBy(360f).setDuration(500)
-                .withEndAction {
-                    getPlayerLoadOuts()
-                }
-        } else {
-            // show error
-            val dialog = AlertDialog.Builder(requireContext())
-                .setTitle("Error")
-                .setMessage("Error updating spray: $sprayBody")
-                .setPositiveButton("OK", null)
-            dialog.show()
-        }
-
-    }
-
     private fun joinMatchmaking() {
         val url =
             "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${playerPartyID}/matchmaking/join"
@@ -1433,6 +1438,22 @@ class LiveStatsFragment : Fragment() {
         fadeRepeat(partyStatus!!)
     }
 
+    private fun getPings(Pings: JSONArray) {
+        val pingList = ArrayList<ValorantPing>()
+        for (i in 0 until Pings.length()) {
+            val ping = Pings.getJSONObject(i)
+            val pingValue = ping.getInt("Ping")
+            val gamePodID = ping.getString("GamePodID")
+            val translatedGamePodID = GamePodStrings[gamePodID]
+            val pingObject = ValorantPing(translatedGamePodID!!, pingValue)
+            pingList.add(pingObject)
+        }
+
+        val pingListView = view?.findViewById<ListView>(R.id.new_partyPingsListView)
+        pingListView?.visibility = View.VISIBLE
+        pingListView?.adapter = PingListAdapter(requireActivity(), pingList)
+
+    }
 
     private fun handlePartyMembers(members: JSONArray) {
         // A list of PartyMember objects
@@ -1448,7 +1469,10 @@ class LiveStatsFragment : Fragment() {
             val playerReady = member.getBoolean("IsReady")
             val isModerator = member.getBoolean("IsModerator")
 
-            if (subject == PlayerUUID) loadPlayerCard(playerCardID)
+            if (subject == PlayerUUID) {
+                loadPlayerCard(playerCardID)
+                getPings(member.getJSONArray("Pings"))
+            }
 
             if (isModerator) name = "(Leader) $name"
 
@@ -1575,6 +1599,9 @@ class LiveStatsFragment : Fragment() {
         val findMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
         findMatchButton!!.alpha = 0.5f
         findMatchButton.isEnabled = false
+
+        val PingsList = view?.findViewById<ListView>(R.id.new_partyPingsListView)
+        PingsList?.visibility = View.GONE
 
         playerPartyID = null
         partyState = null
@@ -1994,6 +2021,44 @@ class LiveStatsFragment : Fragment() {
         super.onResume()
         timerSeconds = 1000
     }
+}
+
+class PingListAdapter(private val context: Context, private val pingList: ArrayList<ValorantPing>) :
+    ListAdapter {
+    override fun getCount(): Int {
+        return pingList.size
+    }
+
+    override fun getItem(position: Int): Any {
+        return pingList[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val view =
+            LayoutInflater.from(context).inflate(R.layout.ping_list_item, parent, false)
+        val pingName = view.findViewById<TextView>(R.id.ServerName)
+        val pingImage = view.findViewById<ImageView>(R.id.SignalStrength)
+        val pingValue = view.findViewById<TextView>(R.id.ServerPing)
+
+        val currentPing = pingList[position]
+        pingName.text = currentPing.ServerName
+        pingValue.text = currentPing.PingValue.toString()
+
+        if (currentPing.PingValue <= 45) {
+            pingImage.setImageResource(R.drawable.signalstengthfull)
+        } else if (currentPing.PingValue <= 90) {
+            pingImage.setImageResource(R.drawable.signalstengthmedium)
+        } else {
+            pingImage.setImageResource(R.drawable.signalstengthlow)
+        }
+
+        return view
+    }
+
 }
 
 class PictureListAdapter(
