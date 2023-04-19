@@ -41,8 +41,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
@@ -1387,25 +1387,31 @@ class LiveStatsFragment : Fragment() {
             alertDialog.show()
         }
 
-        val readySwitch = requireView().findViewById<MaterialSwitch>(R.id.new_readySwitch)
+        val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
         readySwitch?.setOnClickListener {
             val ready = readySwitch.isChecked
+            if (playerPartyID == null) {
+                // set back to original state
+                readySwitch.isChecked = !ready
+                return@setOnClickListener
+            }
             handleMemberReady(ready)
         }
+
+        // disable the ready switch until the party is ready
+        readySwitch.visibility = View.GONE
     }
 
     private fun handleMemberReady(ready: Boolean) {
-        val readySwitch = requireView().findViewById<MaterialSwitch>(R.id.new_readySwitch)
         if (playerPartyID == null) return
         val url =
             "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${playerPartyID}/members/${PlayerUUID}/setReady"
         val body = "{\"ready\": $ready}"
         val response = APIRequestValorant(url, body)
-        if (response.code == 200) {
-            readySwitch?.isChecked = ready
-        } else {
-            readySwitch?.isChecked = !ready
-        }
+        val code = response.code
+        val bodyString = response.body
+        Log.d("LIVE_STATS_PLAYER_READY_SWITCH", "code: $code body: ${bodyString.string()}}")
+
     }
 
     private fun joinMatchmaking() {
@@ -1471,7 +1477,7 @@ class LiveStatsFragment : Fragment() {
             requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = 1
         val channelID = "statics_live"
-        val channelName = "channel_name"
+        val channelName = channel_name
         val importance = NotificationManager.IMPORTANCE_HIGH
         val mChannel = NotificationChannel(channelID, channelName, importance)
         notificationManager.createNotificationChannel(mChannel)
@@ -1508,7 +1514,7 @@ class LiveStatsFragment : Fragment() {
             return
         }
 
-        pingListView?.visibility = View.VISIBLE
+        //pingListView?.visibility = View.VISIBLE
         pingListView?.adapter = PingListAdapter(requireActivity(), pingList)
 
     }
@@ -1621,6 +1627,7 @@ class LiveStatsFragment : Fragment() {
         handlePartyState(partyState!!, previousState, isReady)
         Log.d("LIVE_STATS_PARTY_STATUS", "Party state: $body")
 
+
     }
 
     private fun handlePartyState(
@@ -1635,10 +1642,14 @@ class LiveStatsFragment : Fragment() {
             joinMatchButton.text = "Cancel queue"
             changePartyStatusText("Matchmaking...")
             hideLayoutsMatch()
+            val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+            readySwitch.visibility = View.VISIBLE
         } else if (state == "DEFAULT" && previousState == "LEAVING_MATCHMAKING" || previousState == "DEFAULT") {
             joinMatchButton.text = "Join queue"
             hideLayoutsMatch()
             changePartyStatusText("In Lobby")
+            val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+            readySwitch.visibility = View.VISIBLE
         } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING" && !isReady!!) {
             changePartyStatusText("Party is not ready")
             joinMatchButton.text = "Not ready"
@@ -1649,6 +1660,8 @@ class LiveStatsFragment : Fragment() {
             joinMatchButton.text = "Join queue"
             hideLayoutsMatch()
             changePartyStatusText("In Lobby")
+            val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+            readySwitch.visibility = View.VISIBLE
         }
     }
 
@@ -1664,6 +1677,9 @@ class LiveStatsFragment : Fragment() {
         val new_partyMembersText = view?.findViewById<TextView>(R.id.new_partyMembersText)
         new_partyMembersText?.text = "Not in game!"
 
+        val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+        readySwitch.visibility = View.GONE
+
         playerPartyID = null
         partyState = null
     }
@@ -1677,12 +1693,16 @@ class LiveStatsFragment : Fragment() {
         val code = response.code
         val body = response.body.string()
 
+        val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+        readySwitch.visibility = View.GONE
+
         if (code == 200) {
             val preGameJSON = JSONObject(body)
             val matchID = preGameJSON.getString("MatchID")
             PreGameLayout?.visibility = View.VISIBLE
             playerPreGame(matchID)
         } else if (code == 404) {
+            notificationSent = false
             PreGameLayout?.visibility = View.GONE
             val coreGameURL =
                 "https://glz-${region}-1.${shard}.a.pvp.net/core-game/v1/players/${PlayerUUID}"
@@ -1713,10 +1733,7 @@ class LiveStatsFragment : Fragment() {
 
         val code = response.code
         val body = response.body.string()
-        if (code != 200) {
-            notificationSent = false
-            return
-        }
+        if (code != 200) return
 
         val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
         lockInButton!!.setOnClickListener {

@@ -43,8 +43,12 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription =
-            "- Testing player card changing" +
-                    "\n-Testing player pings"
+            "- Testing player card changing (may not appear instantly)" +
+                    "\n- Testing player pings (disabled for now)" +
+                    "\n- Added notification when joining a match" +
+                    "\n- Testing ready switch, may not work as intended sometimes" +
+                    "\n- Donations are now available (if it works)" +
+                    "\n- Gekko voicelines added"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)

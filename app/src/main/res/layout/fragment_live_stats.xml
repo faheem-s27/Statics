@@ -578,6 +578,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/new_partyGameModeSelect"
                             android:layout_alignParentStart="true"
+                            android:visibility="gone"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
@@ -609,22 +610,16 @@
                             android:layout_alignBottom="@+id/new_findMatchButton"
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="16dp"
-                            android:thumbTint="@color/Valorant_Red"
-                            android:trackTint="@color/Valorant_Red" />
-
-                        <!-- Text saying "Ready" -->
-                        <TextView
-                            android:id="@+id/new_readyText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/new_readySwitch"
-                            android:layout_alignBottom="@+id/new_readySwitch"
-                            android:layout_toStartOf="@+id/new_readySwitch"
+                            android:checked="true"
                             android:fontFamily="@font/lalezar"
-                            android:gravity="center"
                             android:text="Ready"
+                            android:textOff="Not ready"
                             android:textColor="#FFFFFF"
-                            android:textSize="18dp" />
+                            android:textOn="Ready"
+                            android:textSize="18dp"
+                            app:switchPadding="8dp"
+                            app:thumbTint="@color/switch_thumb_selector"
+                            app:trackTint="@color/Valorant_Red" />
 
                         <!-- have a new relative layout underneath the button -->
                         <RelativeLayout
