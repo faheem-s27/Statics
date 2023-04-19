@@ -589,7 +589,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/new_partyPingsListView"
-                            android:layout_centerHorizontal="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="32dp"
                             android:backgroundTint="@color/Valorant_Red"
@@ -598,6 +599,32 @@
                             android:textColor="@color/white"
                             android:textSize="16dp"
                             app:cornerRadius="50dp" />
+
+                        <!-- Switch on the right side of the screen saying ready -->
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/new_readySwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@+id/new_findMatchButton"
+                            android:layout_alignBottom="@+id/new_findMatchButton"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="16dp"
+                            android:thumbTint="@color/Valorant_Red"
+                            android:trackTint="@color/Valorant_Red" />
+
+                        <!-- Text saying "Ready" -->
+                        <TextView
+                            android:id="@+id/new_readyText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@+id/new_readySwitch"
+                            android:layout_alignBottom="@+id/new_readySwitch"
+                            android:layout_toStartOf="@+id/new_readySwitch"
+                            android:fontFamily="@font/lalezar"
+                            android:gravity="center"
+                            android:text="Ready"
+                            android:textColor="#FFFFFF"
+                            android:textSize="18dp" />
 
                         <!-- have a new relative layout underneath the button -->
                         <RelativeLayout

@@ -1,6 +1,8 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.AlertDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -29,16 +31,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.ListAdapter
 import android.widget.ListView
 import android.widget.RelativeLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
@@ -93,6 +96,8 @@ class LiveStatsFragment : Fragment() {
     private var AgentNamesID = HashMap<String, String>()
     private var MapsImagesID = HashMap<String, String>()
     private var GamePodStrings = HashMap<String, String>()
+
+    private var notificationSent = false
 
     private var timerSeconds: Long = 500
     lateinit var assetsDB: AssetsDatabase
@@ -173,7 +178,7 @@ class LiveStatsFragment : Fragment() {
                 MapsImagesID[map.getString("mapUrl")] = map.getString("splash")
             }
 
-            val gamePodURL = "https://valorant-api.com/internal/locres/en-US/game-pod"
+            val gamePodURL = "https://valorant-api.com/internal/locres/en-US"
             val gamePodJSON = JSONObject(URL(gamePodURL).readText())
             val gamePodData = gamePodJSON.getJSONObject("data")
             val gamePodUIStrings = gamePodData.getJSONObject("UI_GamePodStrings")
@@ -1381,6 +1386,26 @@ class LiveStatsFragment : Fragment() {
 
             alertDialog.show()
         }
+
+        val readySwitch = requireView().findViewById<MaterialSwitch>(R.id.new_readySwitch)
+        readySwitch?.setOnClickListener {
+            val ready = readySwitch.isChecked
+            handleMemberReady(ready)
+        }
+    }
+
+    private fun handleMemberReady(ready: Boolean) {
+        val readySwitch = requireView().findViewById<MaterialSwitch>(R.id.new_readySwitch)
+        if (playerPartyID == null) return
+        val url =
+            "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${playerPartyID}/members/${PlayerUUID}/setReady"
+        val body = "{\"ready\": $ready}"
+        val response = APIRequestValorant(url, body)
+        if (response.code == 200) {
+            readySwitch?.isChecked = ready
+        } else {
+            readySwitch?.isChecked = !ready
+        }
     }
 
     private fun joinMatchmaking() {
@@ -1438,7 +1463,33 @@ class LiveStatsFragment : Fragment() {
         fadeRepeat(partyStatus!!)
     }
 
+    private fun sendNotification(title: String, message: String, channel_name: String) {
+        // check if the notification has been sent
+        if (notificationSent) return
+
+        val notificationManager =
+            requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationID = 1
+        val channelID = "statics_live"
+        val channelName = "channel_name"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val mChannel = NotificationChannel(channelID, channelName, importance)
+        notificationManager.createNotificationChannel(mChannel)
+        val mBuilder = NotificationCompat.Builder(requireActivity(), channelID)
+            .setSmallIcon(R.drawable.just_statics_alot_smaller)
+            .setContentTitle(title)
+            .setContentText(message)
+        notificationManager.notify(notificationID, mBuilder.build())
+
+        notificationSent = true
+    }
+
     private fun getPings(Pings: JSONArray) {
+        val pingListView = view?.findViewById<ListView>(R.id.new_partyPingsListView)
+        // get previous pings from ping list view
+        val previousPings = pingListView?.adapter as PingListAdapter?
+        val previousPingsList = previousPings?.pingList
+
         val pingList = ArrayList<ValorantPing>()
         for (i in 0 until Pings.length()) {
             val ping = Pings.getJSONObject(i)
@@ -1449,7 +1500,14 @@ class LiveStatsFragment : Fragment() {
             pingList.add(pingObject)
         }
 
-        val pingListView = view?.findViewById<ListView>(R.id.new_partyPingsListView)
+        // sort the list by ping value
+        pingList.sortBy { it.PingValue }
+
+        // if the ping list is the same as the previous ping list then don't update the list view
+        if (previousPingsList == pingList) {
+            return
+        }
+
         pingListView?.visibility = View.VISIBLE
         pingListView?.adapter = PingListAdapter(requireActivity(), pingList)
 
@@ -1603,6 +1661,9 @@ class LiveStatsFragment : Fragment() {
         val PingsList = view?.findViewById<ListView>(R.id.new_partyPingsListView)
         PingsList?.visibility = View.GONE
 
+        val new_partyMembersText = view?.findViewById<TextView>(R.id.new_partyMembersText)
+        new_partyMembersText?.text = "Not in game!"
+
         playerPartyID = null
         partyState = null
     }
@@ -1652,8 +1713,10 @@ class LiveStatsFragment : Fragment() {
 
         val code = response.code
         val body = response.body.string()
-
-        if (code != 200) return
+        if (code != 200) {
+            notificationSent = false
+            return
+        }
 
         val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
         lockInButton!!.setOnClickListener {
@@ -1689,6 +1752,12 @@ class LiveStatsFragment : Fragment() {
         if (currentModeSelectedCapital == "Onefa") currentModeSelectedCapital = "Replication"
         val textViewMode = view?.findViewById<TextView>(R.id.new_partyPreGameTitle)
         textViewMode?.text = "Playing $currentModeSelectedCapital"
+
+        sendNotification(
+            "Match Found! $currentModeSelectedCapital",
+            "Select your agent!",
+            "match_found"
+        )
 
         val mapName = preGameJSON.getString("MapID")
         val pregameBackground = view?.findViewById<ImageView>(R.id.new_partyPreGameMapImage)
@@ -2023,8 +2092,9 @@ class LiveStatsFragment : Fragment() {
     }
 }
 
-class PingListAdapter(private val context: Context, private val pingList: ArrayList<ValorantPing>) :
-    ListAdapter {
+class PingListAdapter(private val context: Context, pingList: ArrayList<ValorantPing>) :
+    BaseAdapter() {
+    val pingList: ArrayList<ValorantPing> = pingList
     override fun getCount(): Int {
         return pingList.size
     }

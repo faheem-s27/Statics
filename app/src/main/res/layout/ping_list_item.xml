@@ -9,7 +9,6 @@
         android:id="@+id/ServerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:textColor="#FFFFFF"
         android:textSize="20dp"
@@ -23,8 +22,6 @@
         android:id="@+id/SignalStrength"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_baseline_signal_wifi_4_bar_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/ServerName"
         app:srcCompat="@drawable/signalstength" />
@@ -33,12 +30,13 @@
         android:id="@+id/ServerPing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:textColor="#FFFFFF"
-        android:textSize="16dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/SignalStrength"
         app:layout_constraintEnd_toStartOf="@+id/SignalStrength"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/SignalStrength"
         tools:text="24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
