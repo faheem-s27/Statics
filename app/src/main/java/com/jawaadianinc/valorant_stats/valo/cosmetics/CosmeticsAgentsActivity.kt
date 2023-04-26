@@ -1,5 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.cosmetics
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.graphics.Color.parseColor
 import android.graphics.drawable.GradientDrawable
 import android.media.AudioManager
@@ -61,7 +63,6 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
             Toast.makeText(this, "No data for $data", Toast.LENGTH_SHORT).show()
         }
 
-
         progressDialog.dismiss()
     }
 
@@ -93,21 +94,56 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         try {
             val gradBg = findViewById<View>(R.id.gradientView)
             val backgroundColours = backgroundGradientColors[position].split(",")
-            val gdView = GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(
-                    parseColor(backgroundColours[0]),
-                    parseColor(backgroundColours[1]),
-                    parseColor(backgroundColours[2]),
-                    parseColor(backgroundColours[3])
+            var startingColours: GradientDrawable? = null
+            startingColours = if (gradBg.background != null) gradBg.background as GradientDrawable
+            else {
+                // int array of colours of grey
+                val greyColours = intArrayOf(
+                    parseColor("#BDBDBD"),
+                    parseColor("#BDBDBD"),
+                    parseColor("#BDBDBD"),
+                    parseColor("#BDBDBD")
                 )
+                GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    greyColours
+                )
+            }
+            val startColours = startingColours.colors
+            val endColours = intArrayOf(
+                parseColor(backgroundColours[0]),
+                parseColor(backgroundColours[1]),
+                parseColor(backgroundColours[2]),
+                parseColor(backgroundColours[3])
             )
-            gdView.cornerRadius = 0f
-            gradBg.background = gdView
+
+            val endingColours = GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                endColours
+            )
+
+// Create a value animator for the color animation
+            val colorAnimator = ValueAnimator.ofFloat(0f, 1f)
+            colorAnimator.addUpdateListener { animator ->
+                val fraction = animator.animatedFraction
+                val colors = IntArray(startColours!!.size)
+                for (i in startColours.indices) {
+                    colors[i] =
+                        ArgbEvaluator().evaluate(fraction, startColours[i], endColours[i]) as Int
+                }
+                val gdView = GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    colors
+                )
+                gdView.cornerRadius = 0f
+                gradBg.background = gdView
+            }
+            colorAnimator.duration = 500 // Set the duration of the animation in milliseconds
+            colorAnimator.start() // Start the color animation
         } catch (e: Exception) {
             // set background to null
             val gradBg = findViewById<View>(R.id.gradientView)
-            gradBg.background = null
+            //gradBg.background = null
             Log.e("Gradient", "Error: ${e.message}")
         }
 
@@ -167,7 +203,6 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         imageSlider.setCurrentPageListener {
             // Set the slider text background
             imageSliderText.currentPagePosition = it
-
             agentVoicePlayer.reset()
             voiceLinePlayer.reset()
             setAgentInfo(it)
