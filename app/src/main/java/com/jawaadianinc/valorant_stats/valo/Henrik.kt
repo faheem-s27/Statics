@@ -1,9 +1,6 @@
 package com.jawaadianinc.valorant_stats.valo
 
 import android.content.Context
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
@@ -17,13 +14,6 @@ class Henrik(val context: Context) {
     }
 
     private fun executeRequest(playerURL: String): JSONObject {
-        val database = Firebase.database
-        val playersRef = database.getReference("VALORANT/henrikCalls")
-        val playerName = PlayerDatabase(context).getPlayerName()
-        val time = System.currentTimeMillis()
-        playersRef.child(playerName!!.split("#")[0]).child("Calls").child(time.toString())
-            .setValue(playerURL)
-
         val client = OkHttpClient()
         val urlBuilder: HttpUrl.Builder =
             playerURL.toHttpUrlOrNull()!!.newBuilder()

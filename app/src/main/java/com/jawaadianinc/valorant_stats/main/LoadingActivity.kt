@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
@@ -243,8 +244,8 @@ class LoadingActivity : AppCompatActivity() {
                         valoName.split("#")[1]
                     }"
                 val json = Henrik(this@LoadingActivity).henrikAPI(url)
-                val IDCard = json.getJSONObject("data").getJSONObject("card").getString("id")
-                return@runBlocking IDCard
+                val playerAccount = Gson().fromJson(json.toString(), Account::class.java)
+                return@runBlocking playerAccount.data.card.id
             } catch (e: Exception) {
                 Log.d("LoadingActivity", "Error getting player image: $e")
                 return@runBlocking "9fb348bc-41a0-91ad-8a3e-818035c4e561"
