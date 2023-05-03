@@ -1370,15 +1370,7 @@ class LiveStatsFragment : Fragment() {
         }
 
         val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
-        readySwitch?.setOnClickListener {
-            val ready = readySwitch.isChecked
-            if (playerPartyID == null) {
-                // set back to original state
-                readySwitch.isChecked = !ready
-                return@setOnClickListener
-            }
-            handleMemberReady(ready)
-        }
+        readySwitch?.setOnCheckedChangeListener { _, isChecked -> handleMemberReady(isChecked) }
 
         // disable the ready switch until the party is ready
         readySwitch.visibility = View.GONE
@@ -1563,24 +1555,19 @@ class LiveStatsFragment : Fragment() {
             )
         }
 
-        partyMemberListView?.visibility = View.VISIBLE
-        view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
-            members.length().toString() + " members in party"
-        partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
-
-//        if (members.length() == 1) {
-//            // only one member so hide the listview
-//            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = "Only you in party"
-//            partyMemberListView?.visibility = View.INVISIBLE
-//            // clear the listview
-//            partyMemberListView?.adapter = null
-//            return
-//        } else {
-//            partyMemberListView?.visibility = View.VISIBLE
-//            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
-//                members.length().toString() + " members in party"
-//            partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
-//        }
+        if (members.length() == 1) {
+            // only one member so hide the listview
+            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = "Only you in party"
+            partyMemberListView?.visibility = View.INVISIBLE
+            // clear the listview
+            partyMemberListView?.adapter = null
+            return
+        } else {
+            partyMemberListView?.visibility = View.VISIBLE
+            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
+                members.length().toString() + " members in party"
+            partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
+        }
     }
 
     private fun decodeNameFromSubject(subject: String): String {
