@@ -31,8 +31,11 @@
             android:id="@+id/new_partyPlayerTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="16dp"
+            android:layout_alignTop="@+id/new_playerRank"
+            android:layout_alignBottom="@+id/new_playerRank"
+            android:layout_marginEnd="16dp"
+            android:layout_toStartOf="@+id/new_playerRank"
+            android:gravity="center"
             android:fontFamily="@font/lalezar"
             android:textColor="@color/white"
             android:textSize="18dp"
@@ -77,11 +80,17 @@
             android:layout_marginBottom="16dp"
             android:scaleType="fitCenter" />
 
-        <!-- Dropdown menu called new_partyGameModeSelect -->
 
-        <!-- Button that says Find Match -->
-
-        <!-- have a new relative layout underneath the button -->
+        <!-- An image view to show the player's rank -->
+        <ImageView
+            android:id="@+id/new_playerRank"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="16dp"
+            android:scaleType="fitCenter"
+            tools:srcCompat="@tools:sample/avatars" />
 
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1036,12 +1036,15 @@ class LiveStatsFragment : Fragment() {
     private fun loadPlayerCard(titleID: String) {
         val largeURL = "https://media.valorant-api.com/playercards/${titleID}/largeart.png"
         val smallURL = "https://media.valorant-api.com/playercards/${titleID}/smallart.png"
+        val wideURL = "https://media.valorant-api.com/playercards/${titleID}/wideart.png"
 
         val smolImg = view?.findViewById<ImageView>(R.id.new_playerAvatar)
         val bigImg = view?.findViewById<ImageView>(R.id.new_LiveStatsBackground)
+        val currentPlayerCardLoadout = view?.findViewById<ImageView>(R.id.CurrentLoadoutPlayerCard)
 
         Picasso.get().load(smallURL).fit().centerCrop().into(smolImg)
         Picasso.get().load(largeURL).fit().centerCrop().into(bigImg)
+        Picasso.get().load(wideURL).fit().centerCrop().into(currentPlayerCardLoadout)
     }
 
     private fun updatePlayerCard(selectedPicture: String) {
@@ -1358,33 +1361,12 @@ class LiveStatsFragment : Fragment() {
         }
 
         val avatarPFP = view?.findViewById<ImageView>(R.id.new_playerAvatar)
+        val CurrentLoadoutPlayerCard = view?.findViewById<ImageView>(R.id.CurrentLoadoutPlayerCard)
+        CurrentLoadoutPlayerCard?.setOnClickListener {
+            showPlayerCardsDialog()
+        }
         avatarPFP?.setOnClickListener {
-            val pictures = getAvailablePlayerCards()
-            var alertDialog: AlertDialog = AlertDialog.Builder(requireActivity()).create()
-            val dialogView =
-                LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_picture_list, null)
-            val listViewPictures = dialogView.findViewById<ListView>(R.id.listViewPictures)
-            listViewPictures.adapter = PictureListAdapter(
-                requireActivity(),
-                pictures,
-                "PlayerCard"
-            ) // Create an adapter for the list of pictures
-
-            alertDialog = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
-                .setTitle("Select a Player Card")
-                .setView(dialogView)
-                .setNegativeButton("Cancel") { _, _ ->
-                    // Handle cancel button click event, if needed
-                }
-                .create()
-
-            listViewPictures.setOnItemClickListener { _, _, position, _ ->
-                val selectedPicture = pictures[position]
-                updatePlayerCard(selectedPicture)
-                alertDialog.dismiss()
-            }
-
-            alertDialog.show()
+            showPlayerCardsDialog()
         }
 
         val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
@@ -1400,6 +1382,35 @@ class LiveStatsFragment : Fragment() {
 
         // disable the ready switch until the party is ready
         readySwitch.visibility = View.GONE
+    }
+
+    private fun showPlayerCardsDialog() {
+        val pictures = getAvailablePlayerCards()
+        var alertDialog: AlertDialog = AlertDialog.Builder(requireActivity()).create()
+        val dialogView =
+            LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_picture_list, null)
+        val listViewPictures = dialogView.findViewById<ListView>(R.id.listViewPictures)
+        listViewPictures.adapter = PictureListAdapter(
+            requireActivity(),
+            pictures,
+            "PlayerCard"
+        ) // Create an adapter for the list of pictures
+
+        alertDialog = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
+            .setTitle("Select a Player Card")
+            .setView(dialogView)
+            .setNegativeButton("Cancel") { _, _ ->
+                // Handle cancel button click event, if needed
+            }
+            .create()
+
+        listViewPictures.setOnItemClickListener { _, _, position, _ ->
+            val selectedPicture = pictures[position]
+            updatePlayerCard(selectedPicture)
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
     }
 
     private fun handleMemberReady(ready: Boolean) {
@@ -1666,7 +1677,7 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun notInGame() {
-        changePartyStatusText("Not in game!")
+        changePartyStatusText("Valorant not open!")
         val findMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
         findMatchButton!!.alpha = 0.5f
         findMatchButton.isEnabled = false
@@ -1675,7 +1686,7 @@ class LiveStatsFragment : Fragment() {
         PingsList?.visibility = View.GONE
 
         val new_partyMembersText = view?.findViewById<TextView>(R.id.new_partyMembersText)
-        new_partyMembersText?.text = "Not in game!"
+        new_partyMembersText?.text = "Not in a party!"
 
         val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
         readySwitch.visibility = View.GONE
@@ -2099,8 +2110,7 @@ class LiveStatsFragment : Fragment() {
     // override when application is not in focus
     override fun onPause() {
         super.onPause()
-        Log.d("LIVE_STATS", "onPause")
-        timerSeconds = 10000
+        timerSeconds = 1000
     }
 
     override fun onResume() {

@@ -305,6 +305,44 @@
                             app:srcCompat="@drawable/edit_icon"
                             app:tint="@color/white" />
 
+                        <!-- Big text saying Card -->
+                        <TextView
+                            android:id="@+id/CurrentLoadoutCardText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/CurrentLoadoutTitle"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Card"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <!-- players actual card underneath it in the center that stretches to the edges-->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_below="@+id/CurrentLoadoutCardText"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:elevation="10dp"
+                            app:cardCornerRadius="20dp">
+
+                            <ImageView
+                                android:id="@+id/CurrentLoadoutPlayerCard"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerHorizontal="true"
+                                android:scaleType="centerCrop"
+                                tools:srcCompat="@drawable/valorant_dawn_card" />
+                        </androidx.cardview.widget.CardView>
+
+
                     </RelativeLayout>
 
 
