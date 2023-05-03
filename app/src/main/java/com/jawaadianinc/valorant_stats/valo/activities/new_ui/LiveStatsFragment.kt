@@ -1557,24 +1557,30 @@ class LiveStatsFragment : Fragment() {
                     name.split("#")[1],
                     playerTitleID,
                     playerCardID,
-                    playerReady
+                    playerReady,
+                    region
                 )
             )
         }
 
-        if (members.length() == 1) {
-            // only one member so hide the listview
-            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = "Only you in party"
-            partyMemberListView?.visibility = View.INVISIBLE
-            // clear the listview
-            partyMemberListView?.adapter = null
-            return
-        } else {
-            partyMemberListView?.visibility = View.VISIBLE
-            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
-                members.length().toString() + " members in party"
-            partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
-        }
+        partyMemberListView?.visibility = View.VISIBLE
+        view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
+            members.length().toString() + " members in party"
+        partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
+
+//        if (members.length() == 1) {
+//            // only one member so hide the listview
+//            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = "Only you in party"
+//            partyMemberListView?.visibility = View.INVISIBLE
+//            // clear the listview
+//            partyMemberListView?.adapter = null
+//            return
+//        } else {
+//            partyMemberListView?.visibility = View.VISIBLE
+//            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
+//                members.length().toString() + " members in party"
+//            partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
+//        }
     }
 
     private fun decodeNameFromSubject(subject: String): String {

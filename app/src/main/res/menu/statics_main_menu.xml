@@ -16,7 +16,7 @@
     <item
         android:id="@+id/new_Esports"
         android:icon="@drawable/valorantesports"
-        android:title="ESports" />
+        android:title="Premier" />
     <item
         android:id="@+id/new_Settings"
         android:icon="@drawable/newcrosshair"

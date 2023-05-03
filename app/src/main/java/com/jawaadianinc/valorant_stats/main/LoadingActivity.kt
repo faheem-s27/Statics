@@ -204,19 +204,34 @@ class LoadingActivity : AppCompatActivity() {
 
     private fun valoAccountStats(valoName: String?, key: String) {
         if (valoName == null) {
-            videoPlayer.visibility = View.VISIBLE
-            val videoPath = "android.resource://" + packageName + "/" + R.raw.staticsintro
-            // set the path of the video to be played
-            videoPlayer.setVideoPath(videoPath)
-            videoPlayer.setOnCompletionListener {
+            // check if video is already played
+            val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
+            val firstStart = prefs.getBoolean("firstStart", true)
+            if (firstStart) {
+                val editor = prefs.edit()
+                editor.putBoolean("firstStart", false)
+                editor.apply()
+                // play video
+                videoPlayer.visibility = View.VISIBLE
+                val videoPath = "android.resource://" + packageName + "/" + R.raw.staticsintro
+                // set the path of the video to be played
+                videoPlayer.setVideoPath(videoPath)
+                videoPlayer.setOnCompletionListener {
+                    val intent = Intent(this, LoggingInActivityRSO::class.java)
+                    intent.putExtra("key", key)
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                    finish()
+                }
+                videoPlayer.setOnPreparedListener {
+                    videoPlayer.start()
+                }
+            } else {
                 val intent = Intent(this, LoggingInActivityRSO::class.java)
                 intent.putExtra("key", key)
                 startActivity(intent)
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout)
                 finish()
-            }
-            videoPlayer.setOnPreparedListener {
-                videoPlayer.start()
             }
 
         } else {
