@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import com.google.firebase.database.ktx.database
@@ -79,7 +80,7 @@ fun updateAppWidget(
         val pendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE)
         } else {
-            PendingIntent.getActivity(context, 0, intent, 0)
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         }
 
         views.setOnClickPendingIntent(R.id.appwidget_mapImage, pendingIntent)
@@ -101,7 +102,7 @@ fun updateAppWidget(
             val pendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE)
             } else {
-                PendingIntent.getActivity(context, 0, intent, 0)
+                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             }
             views.setOnClickPendingIntent(R.id.appwidget_mapImage, pendingIntent)
             views.setImageViewBitmap(R.id.appwidget_mapImage, null)
@@ -114,14 +115,13 @@ fun updateAppWidget(
                 views.setViewVisibility(R.id.appwidget_timePlayed, View.VISIBLE)
                 views.setViewVisibility(R.id.appwidget_gameMode, View.VISIBLE)
 
-                val jsonMatch = JSONObject(matchJSON).getJSONObject("data")
+                val jsonMatch = JSONObject(matchJSON).getJSONArray("data").getJSONObject(0)
                 val metadata = jsonMatch.getJSONObject("metadata")
                 val map = metadata.getString("map")
                 val mode = metadata.getString("mode")
                 val matchID = metadata.getString("matchid")
 
                 views.setTextViewText(R.id.appwidget_gameMode, mode)
-
 
                 val unixTimeStart = metadata.getInt("game_start")
                 val date = Date(unixTimeStart * 1000L)
@@ -232,7 +232,7 @@ fun updateAppWidget(
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE)
                     } else {
-                        PendingIntent.getActivity(context, 0, intent, 0)
+                        PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
                     }
                 views.setOnClickPendingIntent(R.id.appwidget_mapImage, pendingIntent)
 
@@ -264,6 +264,8 @@ fun updateAppWidget(
                 views.setViewVisibility(R.id.appwidget_timePlayed, View.GONE)
                 views.setImageViewBitmap(R.id.appwidget_agentImage, null)
                 views.setViewVisibility(R.id.appwidget_gameMode, View.GONE)
+
+                Log.e("Widget", "Error: ${e.message}")
             }
         }
     }

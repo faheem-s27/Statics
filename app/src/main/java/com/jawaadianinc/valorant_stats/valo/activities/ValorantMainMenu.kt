@@ -23,6 +23,9 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -838,13 +841,13 @@ class ValorantMainMenu : AppCompatActivity() {
         startActivity(intent)
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        FirebaseApp.initializeApp(/*context=*/this)
-//        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
-//            SafetyNetAppCheckProviderFactory.getInstance()
-//        )
-//    }
+    override fun onResume() {
+        super.onResume()
+        FirebaseApp.initializeApp(/*context=*/this)
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance()
+        )
+    }
 
     private fun getPlayerCards(RiotName: String, RiotID: String) {
         val playerProfile: ImageView = findViewById(R.id.chatPlayerProfile)

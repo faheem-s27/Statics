@@ -430,7 +430,8 @@ class StaticsMainMenu : Fragment() {
         val matchesDB = MatchDatabase(requireActivity())
         matchesDB.deleteMatch()
         matchesDB.insertMatch(
-            matchData.getJSONArray("data").getJSONObject(0).getString("matchid"),
+            matchData.getJSONArray("data").getJSONObject(0).getJSONObject("metadata")
+                .getString("matchid"),
             matchData.toString()
         )
         val widgetIntent = Intent(requireActivity(), LastMatchWidget::class.java)
