@@ -1,7 +1,10 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.AlertDialog
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -9,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityStaticsMainBinding
 
@@ -141,15 +145,28 @@ class StaticsMainActivity : AppCompatActivity() {
                     changeFragment(SettingsFragment)
                     true
                 }
+
                 R.id.new_Esports -> {
                     changeFragment(ESportsFragment)
                     true
                 }
+
                 else -> {
                     false
                 }
             }
         }
+
+        // update the widget
+        val intent =
+            Intent(this, LastMatchWidget::class.java)
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
+            ComponentName(applicationContext, LastMatchWidget::class.java)
+        )
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        sendBroadcast(intent)
+
     }
 
     private fun changeFragment(fragment: Fragment) {

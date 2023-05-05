@@ -20,7 +20,9 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 
 /**
@@ -81,7 +83,6 @@ fun updateAppWidget(
         }
 
         views.setOnClickPendingIntent(R.id.appwidget_mapImage, pendingIntent)
-
         views.setImageViewBitmap(R.id.appwidget_mapImage, null)
         views.setViewVisibility(R.id.appwidget_timePlayed, View.GONE)
         views.setImageViewBitmap(R.id.appwidget_agentImage, null)

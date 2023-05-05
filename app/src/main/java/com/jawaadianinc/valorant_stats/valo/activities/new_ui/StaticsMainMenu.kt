@@ -4,6 +4,8 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -29,6 +31,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.firebase.database.FirebaseDatabase
+import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.Henrik
@@ -37,6 +40,7 @@ import com.jawaadianinc.valorant_stats.valo.activities.TrackerGGScraper
 import com.jawaadianinc.valorant_stats.valo.activities.TrackerGG_Activity
 import com.jawaadianinc.valorant_stats.valo.activities.ViewMatches
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
+import com.jawaadianinc.valorant_stats.valo.databases.MatchDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.TrackerDB
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
@@ -227,7 +231,6 @@ class StaticsMainMenu : Fragment() {
             activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
 
-        Log.d("newMainMenu", "Loading Stats Button")
         val StatsButton: Button = view?.findViewById(R.id.new_StatsButton)!!
         StatsButton.setOnClickListener {
             // show a dialog to say that these stats are updated once a day
@@ -253,7 +256,6 @@ class StaticsMainMenu : Fragment() {
                 checkForTrackerGG(nameSplit[0], nameSplit[1])
             }
         }
-        Log.d("newMainMenu", "Loaded Stats Button")
 
         //loadFromDatabase(playerName, region)
         try {
@@ -358,6 +360,8 @@ class StaticsMainMenu : Fragment() {
             return
         }
 
+        updateWidget(matchData)
+
         try {
             matchDataArray = matchData.getJSONArray("data").getJSONObject(0)
             val playersArray = matchDataArray.getJSONObject("players").getJSONArray("all_players")
@@ -420,6 +424,22 @@ class StaticsMainMenu : Fragment() {
                 newPlayerPositionText?.setTextColor(Color.parseColor("#FFFFFF"))
             }
         }
+    }
+
+    private fun updateWidget(matchData: JSONObject) {
+        val matchesDB = MatchDatabase(requireActivity())
+        matchesDB.deleteMatch()
+        matchesDB.insertMatch(
+            matchData.getJSONArray("data").getJSONObject(0).getString("matchid"),
+            matchData.toString()
+        )
+        val widgetIntent = Intent(requireActivity(), LastMatchWidget::class.java)
+        widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        val ids = AppWidgetManager.getInstance(requireActivity().application).getAppWidgetIds(
+            ComponentName(requireActivity().applicationContext, LastMatchWidget::class.java)
+        )
+        widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        requireActivity().sendBroadcast(widgetIntent)
     }
 
     private fun loadPlayerDetails(currentPlayer: JSONObject) {
