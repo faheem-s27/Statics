@@ -81,8 +81,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/LiveView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -91,7 +90,7 @@
         <ScrollView
             android:id="@+id/scrollView3"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:fillViewport="true"
             android:nestedScrollingEnabled="true"
             android:visibility="visible"
@@ -127,7 +126,6 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="48dp"
                     app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="80dp"
@@ -447,10 +445,10 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="16dp"
                             android:layout_marginBottom="16dp"
-                            android:text="Coming soon"
-                            tools:text="Featured Bundle"
+                            android:fontFamily="@font/lalezar"
+                            android:text="Daily Offers"
                             android:textColor="#FFFFFF"
-                            android:textSize="20dp"
+                            android:textSize="30dp"
                             android:textStyle="bold" />
 
                         <!-- A timer in the top right corner that counts down -->
@@ -463,6 +461,83 @@
                             android:layout_marginEnd="16dp"
                             android:fontFamily="@font/baloo_bhai"
                             android:text="00:00:00"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <!-- A listview under textView33 for Daily store items -->
+                        <ListView
+                            android:id="@+id/playerStoreListView"
+                            android:layout_width="match_parent"
+                            android:layout_height="300dp"
+                            android:layout_below="@+id/textView33"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="@color/Valorant_SplashColourBackground"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
+                            android:scrollbars="none" />
+
+                        <!-- A text says that says Current Balance -->
+                        <TextView
+                            android:id="@+id/textView34"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/playerStoreListView"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Current Balance:"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <!-- An imageview on the very right hand side called "RPImage" -->
+                        <ImageView
+                            android:id="@+id/RPImage"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignTop="@+id/textView34"
+                            android:layout_alignBottom="@+id/textView34"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="16dp" />
+
+                        <!-- A textview thats next to the imageview -->
+                        <TextView
+                            android:id="@+id/RPTextBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@+id/RPImage"
+                            android:layout_alignBottom="@+id/RPImage"
+                            android:layout_marginEnd="4dp"
+                            android:layout_toStartOf="@+id/RPImage"
+                            android:text="0"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <!-- Another imageview next to that called "VPImage" -->
+                        <ImageView
+                            android:id="@+id/VPImage"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignTop="@+id/RPTextBalance"
+                            android:layout_alignBottom="@+id/RPTextBalance"
+                            android:layout_marginEnd="16dp"
+                            android:layout_toStartOf="@+id/RPTextBalance" />
+
+                        <!-- A textview next to that called "VPText" -->
+                        <TextView
+                            android:id="@+id/VPTextBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@+id/VPImage"
+                            android:layout_alignBottom="@+id/VPImage"
+                            android:layout_marginEnd="4dp"
+                            android:layout_toStartOf="@+id/VPImage"
+                            android:text="0"
                             android:textColor="#FFFFFF"
                             android:textSize="20dp"
                             android:textStyle="bold" />
@@ -616,11 +691,11 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/new_partyGameModeSelect"
                             android:layout_alignParentStart="true"
-                            android:visibility="gone"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
-                            android:nestedScrollingEnabled="true" />
+                            android:nestedScrollingEnabled="true"
+                            android:visibility="gone" />
 
                         <!-- Button that says Find Match -->
                         <Button
@@ -651,8 +726,8 @@
                             android:checked="true"
                             android:fontFamily="@font/lalezar"
                             android:text="Ready"
-                            android:textOff="Not ready"
                             android:textColor="#FFFFFF"
+                            android:textOff="Not ready"
                             android:textOn="Ready"
                             android:textSize="18dp"
                             app:switchPadding="8dp"

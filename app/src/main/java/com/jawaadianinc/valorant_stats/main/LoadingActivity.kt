@@ -155,7 +155,7 @@ class LoadingActivity : AppCompatActivity() {
 
                 assetsDB.checkAndAddData(UUID, type, name, bitmap!!, assetsDB)
                 withContext(Dispatchers.Main) {
-                    updateText.text = "Loading $type: $name"
+                    //updateText.text = "Loading $type: $name"
                 }
                 // Log.d("AssetsDatabase", "Got type: $type, name: $name, UUID: $UUID, imageString: $imageString and bitmap: $bitmap")
             }
@@ -173,7 +173,7 @@ class LoadingActivity : AppCompatActivity() {
             // write me a toast message
             Toast.makeText(
                 this@LoadingActivity,
-                "Loading resources (first time load)",
+                "(first time load)",
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -185,18 +185,21 @@ class LoadingActivity : AppCompatActivity() {
             // make a hashmap of the URLs and the type of data
             val hashData = hashMapOf(agentURL to "Agent", mapURL to "Map", titlesURL to "Title")
             // create a list of jobs with the hashmap
+            val progress = 100 / hashData.size
             val jobs = hashData.map { (url, type) ->
                 async(Dispatchers.IO) {
                     val json = JSONObject(URL(url).readText())
                     val data = json.getJSONArray("data")
                     addAssetsFromJson(data, type)
+                    withContext(Dispatchers.Main) {
+                        loadingProgressBar.progress += progress
+                    }
                 }
             }
             jobs.awaitAll()
             assetsDB.close()
 
             updateText.text = "Starting"
-            delay(500)
             val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
             valoAccountStats(valoName, key)
         }
@@ -243,9 +246,25 @@ class LoadingActivity : AppCompatActivity() {
             intent.putExtra("playerName", valoName)
             val image = getPlayerImage(valoName)
             intent.putExtra("playerImageID", image)
-            startActivity(intent)
-            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            finish()
+
+            backgroundIMG.animate().setDuration(1000).alpha(0f).translationY(-100f)
+                .setInterpolator {
+                    it * it * it * (it * (it * 6 - 15) + 10)
+                }.start()
+            updateText.text = "Loading $valoName's stats"
+            updateText.animate().setDuration(1000).alpha(0f).translationY(-100f)
+                .setInterpolator {
+                    it * it * it * (it * (it * 6 - 15) + 10)
+                }.start()
+            // fade away the progressbar with velocity upwards
+            loadingProgressBar.animate().setDuration(1000).alpha(0f).translationY(-100f)
+                .setInterpolator {
+                    it * it * it * (it * (it * 6 - 15) + 10)
+                }.withEndAction {
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                    finish()
+                }
         }
     }
 

@@ -973,18 +973,107 @@ class LiveStatsFragment : Fragment() {
 
         if (code != 200) return
 
-        Log.d("LIVE_STATS_STOREFRONT", "Response code: $code Body: $body")
+        //Log.d("LIVE_STATS_STOREFRONT", "Response code: $code Body: $body")
 
         val json = JSONObject(body)
         // see if theres a object called BonusStore
         val timerSeconds =
-            json.getJSONObject("FeaturedBundle").getInt("BundleRemainingDurationInSeconds")
+            json.getJSONObject("SkinsPanelLayout")
+                .getInt("SingleItemOffersRemainingDurationInSeconds")
         setStoreTimer(timerSeconds)
         val NightMarket = json.optJSONObject("BonusStore")
         if (NightMarket != null) {
-            // show dialog
-            //Snackbar.make(requireView(), "Night Market is open!", Snackbar.LENGTH_LONG).show()
+            //show dialog
+            Snackbar.make(requireView(), "Night Market is open!", Snackbar.LENGTH_LONG).show()
         }
+        val dailyOffersSkins = json.getJSONObject("SkinsPanelLayout")
+        getWallet()
+        handleDailyOffers(dailyOffersSkins)
+    }
+
+    private fun handleDailyOffers(dailyOffersSkins: JSONObject) {
+        val weaponsSkins = ArrayList<WeaponSkinOffer>()
+
+        val offers = dailyOffersSkins.getJSONArray("SingleItemStoreOffers")
+        for (i in 0 until offers.length()) {
+            val currentOffer = offers.getJSONObject(i)
+            val offerID = currentOffer.getString("OfferID")
+            val cost =
+                currentOffer.getJSONObject("Cost").getInt("85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741")
+            val jsonWeapon = getNameAndImageFromOffer(offerID)
+            val displayName = jsonWeapon.getJSONObject("data").getString("displayName")
+            val displayIcon = jsonWeapon.getJSONObject("data").getString("displayIcon")
+
+            val rarity = getRarity(offerID)
+
+            val weaponSkinOffer = WeaponSkinOffer(displayName, displayIcon, cost, rarity)
+            weaponsSkins.add(weaponSkinOffer)
+
+            Log.d(
+                "LIVE_STATS_STOREFRONT",
+                "OfferID: $offerID Cost: $cost Name: $displayName Image: $displayIcon"
+            )
+        }
+
+        val adapter = WeaponSkinOfferAdapter(requireActivity(), weaponsSkins)
+        val listView = requireView().findViewById<ListView>(R.id.playerStoreListView)
+        listView.adapter = adapter
+    }
+
+    private fun getRarity(offerID: String): JSONObject {
+        val url = "https://valorant-api.com/v1/weapons"
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return JSONObject()
+
+        val json = JSONObject(body)
+        val data = json.getJSONArray("data")
+        for (i in 0 until data.length()) {
+            val weapon = data.getJSONObject(i)
+            val skins = weapon.getJSONArray("skins")
+            for (j in 0 until skins.length()) {
+                val skin = skins.getJSONObject(j)
+                val contentTierUUID = skin.getString("contentTierUuid")
+                val levels = skin.getJSONArray("levels")
+                for (k in 0 until levels.length()) {
+                    val level = levels.getJSONObject(k)
+                    val skinID = level.getString("uuid")
+                    if (skinID == offerID) {
+                        return getContentTier(contentTierUUID)
+                    }
+                }
+            }
+        }
+        return JSONObject()
+    }
+
+    private fun getContentTier(contentID: String): JSONObject {
+        val url = "https://valorant-api.com/v1/contenttiers/$contentID"
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+
+        val json = JSONObject(body)
+        val displayIcon = json.getJSONObject("data").getString("displayIcon")
+        val highlightColour = json.getJSONObject("data").getString("highlightColor")
+
+        // make a json object with the displayIcon and highlightColour
+        val contentTier = JSONObject()
+        contentTier.put("displayIcon", displayIcon)
+        contentTier.put("highlightColour", highlightColour)
+        return contentTier
+    }
+
+    private fun getNameAndImageFromOffer(offerID: String): JSONObject {
+        // run a coroutine to get the name and image from https://valorant-api.com/v1/weapons/skinlevels/${offerID} and return the json
+        // then use the json to get the name and image
+        val url = "https://valorant-api.com/v1/weapons/skinlevels/${offerID}"
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+        val code = response.code
+        if (code != 200) return JSONObject()
+        return JSONObject(body)
     }
 
     private fun setStoreTimer(seconds: Int) {
@@ -1731,6 +1820,34 @@ class LiveStatsFragment : Fragment() {
         lockInButton.text = "Select Agents"
     }
 
+    private fun getWallet() {
+        val url = "https://pd.${shard}.a.pvp.net/store/v1/wallet/${PlayerUUID}"
+        val response = APIRequestValorant(url)
+        val code = response.code
+        val body = response.body.string()
+
+        if (code != 200) return
+
+        val walletJSON = JSONObject(body).getJSONObject("Balances")
+        val VP = walletJSON.getInt("85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741")
+        val RadiantePoints = walletJSON.getInt("e59aa87c-4cbf-517a-5983-6e81511be9b7")
+
+        val VPText = view?.findViewById<TextView>(R.id.VPTextBalance)
+        val RadiantePointsText = view?.findViewById<TextView>(R.id.RPTextBalance)
+
+        VPText?.text = VP.toString()
+        RadiantePointsText?.text = RadiantePoints.toString()
+
+        Picasso.get()
+            .load("https://media.valorant-api.com/currencies/85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741/displayicon.png")
+            .into(view?.findViewById<ImageView>(R.id.VPImage))
+        Picasso.get()
+            .load("https://media.valorant-api.com/currencies/e59aa87c-4cbf-517a-5983-6e81511be9b7/displayicon.png")
+            .into(view?.findViewById<ImageView>(R.id.RPImage))
+
+        //Log.d("LIVE_STATS_WALLET", "Wallet: $body")
+    }
+
     private fun playerPreGame(matchID: String) {
         val url = "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}"
         val response = APIRequestValorant(url)
@@ -1879,13 +1996,11 @@ class LiveStatsFragment : Fragment() {
 
     private fun getAgentImages(): ArrayList<String> {
         val agentImages = ArrayList<String>()
-
         // go thru hashmap
         for (agent in AgentNamesID.keys) {
             agentImages.add(agent)
         }
         return agentImages
-
     }
 
     private fun changeQueue(mode: String) {
