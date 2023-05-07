@@ -27,6 +27,7 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/lalezar"
         android:text="Reaver Vandal"
+        android:paddingBottom="8dp"
         android:textColor="#FFFFFF"
         android:textSize="17dp"
         android:textStyle="bold"

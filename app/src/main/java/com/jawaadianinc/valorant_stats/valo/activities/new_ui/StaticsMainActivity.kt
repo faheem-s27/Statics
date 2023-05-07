@@ -47,8 +47,17 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription =
-            "- Testing widget changes"
-
+            "- Reduced load up times as you've probably seen! :D" +
+                    "- Last match widget working again!" +
+                    "- Added daily shop items! See your current balance and what skins are available in the shop! (with night market support coming soon)" +
+                    "- Added the player card to the live load outs!" +
+                    "- See your team rates ranking in the party lobby!"
+        "- Agent gradients now smoothly transition when swiping through agents!" +
+                "- Get a notification on your device when a match has been found" +
+                "- Added Gekko voicelines" +
+                "- Intro video will only be shown once as requested by many users" +
+                "- ESports tab has been replaced with Premier Tournaments" +
+                "- Changed a few texts around the app to make it more clearer (ie 'Valorant not open' instead of 'Not in party')"
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         with(update.edit()) {

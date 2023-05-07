@@ -353,7 +353,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/baloo_bhai"
-                    android:text="PARTY DETAILS"
+                    android:text="LIVE"
                     android:textColor="#FFFFFF"
                     android:textSize="20dp"
                     android:textStyle="bold"
@@ -367,7 +367,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="32dp"
                     android:fontFamily="@font/baloo_bhai"
-                    android:text="CURRENT LOADOUT"
+                    android:text="LOADOUT"
                     android:textColor="#FFFFFF"
                     android:textSize="20dp"
                     android:textStyle="bold"
@@ -381,7 +381,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="32dp"
                     android:fontFamily="@font/baloo_bhai"
-                    android:text="PLAYER STORE"
+                    android:text="STORE"
                     android:textColor="#FFFFFF"
                     android:textSize="20dp"
                     android:textStyle="bold"
@@ -448,7 +448,7 @@
                             android:fontFamily="@font/lalezar"
                             android:text="Daily Offers"
                             android:textColor="#FFFFFF"
-                            android:textSize="30dp"
+                            android:textSize="25dp"
                             android:textStyle="bold" />
 
                         <!-- A timer in the top right corner that counts down -->
@@ -466,26 +466,36 @@
                             android:textStyle="bold" />
 
                         <!-- A listview under textView33 for Daily store items -->
-                        <ListView
-                            android:id="@+id/playerStoreListView"
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/playerStoreListView_circle"
                             android:layout_width="match_parent"
                             android:layout_height="300dp"
                             android:layout_below="@+id/textView33"
                             android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
-                            android:background="@color/Valorant_SplashColourBackground"
-                            android:divider="@null"
-                            android:dividerHeight="0dp"
-                            android:scrollbars="none" />
+                            android:layout_centerHorizontal="true"
+                            android:elevation="12dp"
+                            app:cardCornerRadius="20dp">
+
+                            <ListView
+                                android:id="@+id/playerStoreListView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@color/Valorant_SplashColourBackground"
+                                android:divider="@null"
+                                android:dividerHeight="0dp"
+                                android:nestedScrollingEnabled="true"
+                                android:scrollbars="none" />
+
+                        </androidx.cardview.widget.CardView>
 
                         <!-- A text says that says Current Balance -->
                         <TextView
                             android:id="@+id/textView34"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/playerStoreListView"
+                            android:layout_below="@+id/playerStoreListView_circle"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="16dp"
                             android:layout_marginBottom="16dp"

@@ -1,6 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.Activity
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -8,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
+
 
 class WeaponSkinOfferAdapter(
     private var context: Activity,
@@ -42,7 +44,10 @@ class WeaponSkinOfferAdapter(
         val colour = weaponSkinOffer.rarity.getString("highlightColour")
         // remove the last two characters from the string
         var colourHex = colour.substring(0, colour.length - 2)
-        colourHex = "#$colourHex"
+        colourHex = darkenColor(colourHex)
+
+        Log.d("LIVE_STATS_COLOUR", colourHex)
+
         val layout = row.findViewById(R.id.background) as View
         layout.setBackgroundColor(android.graphics.Color.parseColor(colourHex))
 
@@ -61,5 +66,20 @@ class WeaponSkinOfferAdapter(
             .into(VPImage)
 
         return row
+    }
+
+    private fun darkenColor(hexColor: String): String {
+        // Convert hex color to RGB values
+        val red = hexColor.substring(0, 2).toInt(16)
+        val green = hexColor.substring(2, 4).toInt(16)
+        val blue = hexColor.substring(4, 6).toInt(16)
+
+        // Shift each color component towards black by 50%
+        val darkerRed = (red shr 1) and 0x7F
+        val darkerGreen = (green shr 1) and 0x7F
+        val darkerBlue = (blue shr 1) and 0x7F
+
+        // Convert the darker RGB values back to hex
+        return String.format("#%02X%02X%02X", darkerRed, darkerGreen, darkerBlue)
     }
 }
