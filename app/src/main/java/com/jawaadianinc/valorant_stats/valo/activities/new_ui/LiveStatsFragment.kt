@@ -105,6 +105,9 @@ class LiveStatsFragment : Fragment() {
     private lateinit var agentPreGameRecyclerView: RecyclerView
     var storeTimer: CountDownTimer? = null
 
+    private lateinit var weaponsJSONObject: JSONObject
+    private lateinit var contenttierJSONObject: JSONObject
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -187,6 +190,12 @@ class LiveStatsFragment : Fragment() {
                 GamePodStrings[key] = gamePodUIStrings.getString(key)
                 Log.d("LIVE_STATS_GAMEPODS", "$key: ${gamePodUIStrings.getString(key)}")
             }
+
+            val weaponsURL = "https://valorant-api.com/v1/weapons"
+            weaponsJSONObject = JSONObject(URL(weaponsURL).readText())
+
+            val contenttierURL = "https://valorant-api.com/v1/contenttiers"
+            contenttierJSONObject = JSONObject(URL(contenttierURL).readText())
         }
 
         val username = authPreferences.getString("username", null)
@@ -1021,15 +1030,7 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun getRarity(offerID: String): JSONObject {
-        val url = "https://valorant-api.com/v1/weapons"
-        val response = APIRequestValorant(url)
-        val body = response.body.string()
-        val code = response.code
-
-        if (code != 200) return JSONObject()
-
-        val json = JSONObject(body)
-        val data = json.getJSONArray("data")
+        val data = weaponsJSONObject.getJSONArray("data")
         for (i in 0 until data.length()) {
             val weapon = data.getJSONObject(i)
             val skins = weapon.getJSONArray("skins")
@@ -1050,19 +1051,24 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun getContentTier(contentID: String): JSONObject {
-        val url = "https://valorant-api.com/v1/contenttiers/$contentID"
-        val response = APIRequestValorant(url)
-        val body = response.body.string()
+        val data = contenttierJSONObject.getJSONArray("data")
+        for (i in 0 until data.length())
+        {
+            val contentTierData = data.getJSONObject(i)
+            val contentTierID = contentTierData.getString("uuid")
+            if (contentTierID == contentID)
+            {
+                val displayIcon = contentTierData.getString("displayIcon")
+                val highlightColour = contentTierData.getString("highlightColor")
 
-        val json = JSONObject(body)
-        val displayIcon = json.getJSONObject("data").getString("displayIcon")
-        val highlightColour = json.getJSONObject("data").getString("highlightColor")
-
-        // make a json object with the displayIcon and highlightColour
-        val contentTier = JSONObject()
-        contentTier.put("displayIcon", displayIcon)
-        contentTier.put("highlightColour", highlightColour)
-        return contentTier
+                // make a json object with the displayIcon and highlightColour
+                val contentTier = JSONObject()
+                contentTier.put("displayIcon", displayIcon)
+                contentTier.put("highlightColour", highlightColour)
+                return contentTier
+            }
+        }
+        return JSONObject()
     }
 
     private fun getNameAndImageFromOffer(offerID: String): JSONObject {

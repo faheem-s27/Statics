@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
@@ -81,25 +82,13 @@ class RSOActivity : AppCompatActivity() {
         }
         handler.postDelayed(runnable, 500)
 
-        progressBar.progress = 10
+        progressBar.progress = 25
+        secret = BuildConfig.RIOT_SECRET
+        val toBeEncoded = "statics:$secret"
+        base64encode = Base64.encodeToString(toBeEncoded.toByteArray(), Base64.NO_WRAP)
+        updateText.text = "Giving you gun buddies"
+        getToken()
 
-
-        val database = Firebase.database.getReference("VALORANT/SuperSecret")
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                progressBar.progress = 25
-                secret = dataSnapshot.value as String?
-                val toBeEncoded = "statics:$secret"
-                base64encode = Base64.encodeToString(toBeEncoded.toByteArray(), Base64.NO_WRAP)
-                updateText.text = "Giving you gun buddies"
-                logFireBase.child("RSO").child(code!!)
-                getToken()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
     }
 
     private fun getToken() {
@@ -141,7 +130,6 @@ class RSOActivity : AppCompatActivity() {
 
                 progressBar.progress = 40
                 uiThread {
-                    logFireBase.child("RSO").child(code!!).setValue(accessToken)
                     updateText.text = "Setting your account to Iron"
                     getUserInfo(accessToken)
                 }
@@ -165,52 +153,32 @@ class RSOActivity : AppCompatActivity() {
                 .addHeader("Authorization", "Bearer $token")
                 .build()
 
-            val database = Firebase.database.getReference("VALORANT/key")
-            database.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    secret = dataSnapshot.value as String?
+            secret = BuildConfig.RIOT_API_KEY
+
+            doAsync {
+                val call = client.newCall(request).execute()
+                val json = JSONObject(call.body.string())
+                val puuid = json.getString("puuid")
+
+                val regionURL =
+                    "https://europe.api.riotgames.com/riot/account/v1/active-shards/by-game/val/by-puuid/$puuid?api_key=$secret"
+                val regionRequest = Request.Builder()
+                    .url(regionURL)
+                    .build()
+
+                val regionCall = client.newCall(regionRequest).execute()
+                val regionJson = JSONObject(regionCall.body.string())
+                val region = regionJson.getString("activeShard")
+                val gameName = json.getString("gameName")
+                val gameTag = json.getString("tagLine")
+
+
+                uiThread {
+                    progressBar.progress = 90
+                    updateText.text = "Click the button to prove your alive"
+                    confirmUser(puuid, gameName, gameTag, region, secret!!)
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-
-            val playersRef = Firebase.database.getReference("VALORANT/key")
-            playersRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val key = (dataSnapshot.value as String?).toString()
-                    doAsync {
-                        val call = client.newCall(request).execute()
-                        val json = JSONObject(call.body.string())
-                        val puuid = json.getString("puuid")
-
-                        val regionURL =
-                            "https://europe.api.riotgames.com/riot/account/v1/active-shards/by-game/val/by-puuid/$puuid?api_key=$secret"
-                        val regionRequest = Request.Builder()
-                            .url(regionURL)
-                            .build()
-
-                        val regionCall = client.newCall(regionRequest).execute()
-                        val regionJson = JSONObject(regionCall.body.string())
-                        val region = regionJson.getString("activeShard")
-                        val gameName = json.getString("gameName")
-                        val gameTag = json.getString("tagLine")
-
-                        logFireBase.child("RSO").child(code!!).child("GameName").setValue(gameName)
-                        logFireBase.child("RSO").child(code!!).child("GameTag").setValue(gameTag)
-
-                        uiThread {
-                            progressBar.progress = 90
-                            updateText.text = "Click the button to prove your alive"
-                            confirmUser(puuid, gameName, gameTag, region, key)
-                        }
-                    }
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                }
-            })
+            }
         } catch (e: Exception) {
             val updateText: TextView = findViewById(R.id.infoText)
             updateText.text = "Error: $e"
@@ -230,13 +198,6 @@ class RSOActivity : AppCompatActivity() {
         confirmButton.animate().alpha(1f).translationYBy(-50f).duration = 500
 
         confirmButton.setOnClickListener {
-            //save data to firebase
-            val database = Firebase.database
-            val playersRef = database.getReference("VALORANT/newSignedInPlayers")
-            playersRef.child(gameName).child("Puuid").setValue(puuid)
-            playersRef.child(gameName).child("GameTag").setValue(gameTag)
-            playersRef.child(gameName).child("Region").setValue(region)
-
             //save name to database
             val playerdb = PlayerDatabase(this)
             if (playerdb.addPlayer(gameName, gameTag, puuid, region)) {

@@ -18,10 +18,19 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        buildConfigField "String", "RIOT_API_KEY", "\"RGAPI-77322163-520c-492f-aabe-6c29a39f44ff\"" // Riot API Key
+        buildConfigField "String", "RIOT_SECRET", "\"dGFFT6GQpqKXphDfovzDEbCvRz7apGxf3ZmNOKrG8XM\"" // Riot API Secret
     }
 
     buildTypes {
+        debug {
+            buildConfigField "String", "RIOT_API_KEY", "\"RGAPI-77322163-520c-492f-aabe-6c29a39f44ff\"" // Riot API Key
+            buildConfigField "String", "RIOT_SECRET", "\"dGFFT6GQpqKXphDfovzDEbCvRz7apGxf3ZmNOKrG8XM\"" // Riot API Secret
+        }
         release {
+            buildConfigField "String", "RIOT_API_KEY", "\"RGAPI-77322163-520c-492f-aabe-6c29a39f44ff\"" // Riot API Key
+            buildConfigField "String", "RIOT_SECRET", "\"dGFFT6GQpqKXphDfovzDEbCvRz7apGxf3ZmNOKrG8XM\"" // Riot API Secret
             minifyEnabled = false
             shrinkResources = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

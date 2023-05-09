@@ -210,10 +210,15 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
     }
 
     private fun loadAgentImage() {
+        // get the language from shared preferences
+        val sharedPref = getSharedPreferences("UserLocale", MODE_PRIVATE)
+        var LANGUAGE = sharedPref.getString("locale", "").toString()
+        LANGUAGE = "&language=$LANGUAGE"
+        val url = "https://valorant-api.com/v1/agents?isPlayableCharacter=true$LANGUAGE"
         val imageSlider = findViewById<SliderView>(R.id.imageSlider)
         doAsync {
             agentJSON =
-                JSONObject(URL("https://valorant-api.com/v1/agents?isPlayableCharacter=true").readText()).getJSONArray(
+                JSONObject(URL(url).readText()).getJSONArray(
                     "data"
                 )
             for (i in 0 until agentJSON.length()) {
@@ -266,6 +271,10 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
                     // add the string to the arraylist
                     backgroundGradientColors.add(backgroundColourGradientString)
                     Log.d("backgroundGradientColors", backgroundGradientColors.toString())
+
+                    Log.d("AgentDetails", "Agent Name: $name" +
+                            "\nAgent Role: ${agentJSON.getJSONObject(i).getJSONObject("role").getString("displayName")}" +
+                            "\nAgent Description: ${agentJSON.getJSONObject(i).getString("description")}")
 
                 } catch (e: Exception) {
                     Log.d("AgentCosmetics", e.toString())

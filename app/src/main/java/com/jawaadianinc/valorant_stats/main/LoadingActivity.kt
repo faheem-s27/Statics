@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
+import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
@@ -55,6 +56,8 @@ class LoadingActivity : AppCompatActivity() {
         backgroundIMG = findViewById(R.id.imageView7)
         videoPlayer = findViewById(R.id.videoView3)
 
+        key = BuildConfig.RIOT_API_KEY
+
         loadUI()
 
         // check if network is available, if not, show a dialog box to the user that will have an option to retry
@@ -71,26 +74,28 @@ class LoadingActivity : AppCompatActivity() {
             builder.setCancelable(false)
             builder.show()
         } else {
+            addAssetsToDatabase()
+
             FirebaseApp.initializeApp(/*context=*/this)
             FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
                 SafetyNetAppCheckProviderFactory.getInstance()
             )
-            val database = Firebase.database
-            val playersRef = database.getReference("VALORANT/key")
-
-            playersRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    // Log.d("Statics", "Key is: " + dataSnapshot.value)
-                    key = (dataSnapshot.value as String?).toString()
-                    addAssetsToDatabase()
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    //loadingProgressBar.visibility = View.GONE
-                    updateText.text = "An error occurred while connecting to Statics :("
-                }
-
-            })
+//            val database = Firebase.database
+//            val playersRef = database.getReference("VALORANT/key")
+//
+//            playersRef.addValueEventListener(object : ValueEventListener {
+//                override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                    // Log.d("Statics", "Key is: " + dataSnapshot.value)
+//                    key = (dataSnapshot.value as String?).toString()
+//
+//                }
+//
+//                override fun onCancelled(databaseError: DatabaseError) {
+//                    //loadingProgressBar.visibility = View.GONE
+//                    updateText.text = "An error occurred while connecting to Statics :("
+//                }
+//
+//            })
         }
     }
 
@@ -244,8 +249,7 @@ class LoadingActivity : AppCompatActivity() {
             intent.putExtra("key", key)
             intent.putExtra("region", PlayerDatabase(this).getRegion(PUUID))
             intent.putExtra("playerName", valoName)
-            val image = getPlayerImage(valoName)
-            intent.putExtra("playerImageID", image)
+            intent.putExtra("playerImageID", getPlayerImage(valoName))
 
             backgroundIMG.animate().setDuration(1000).alpha(0f).translationY(-100f)
                 .setInterpolator {
