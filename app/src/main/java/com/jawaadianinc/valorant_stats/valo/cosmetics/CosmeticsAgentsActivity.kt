@@ -15,8 +15,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.storage.FirebaseStorage
+import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.agentValorantAPI.Agent
 import com.jawaadianinc.valorant_stats.valo.adapters.AgentAbilityAdapter
 import com.jawaadianinc.valorant_stats.valo.adapters.MySliderImageAdapter
 import com.jawaadianinc.valorant_stats.valo.adapters.VoiceLineAdapter
@@ -27,6 +29,7 @@ import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+
 
 class CosmeticsAgentsActivity : AppCompatActivity() {
     private val bustPortrait = arrayListOf<String>()
@@ -87,76 +90,61 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
                 start()
             }
         }
+
+        val gradBg = findViewById<View>(R.id.gradientView)
+        val backgroundColours = backgroundGradientColors[position].split(",")
+        var startingColours: GradientDrawable? = null
+        startingColours = if (gradBg.background != null) gradBg.background as GradientDrawable
+        else {
+            // int array of colours of grey
+            val greyColours = intArrayOf(
+                parseColor("#BDBDBD"),
+                parseColor("#BDBDBD"),
+                parseColor("#BDBDBD"),
+                parseColor("#BDBDBD")
+            )
+            GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                greyColours
+            )
+        }
+        val startColours = startingColours.colors
+        val endColours = intArrayOf(
+            parseColor(backgroundColours[0]),
+            parseColor(backgroundColours[1]),
+            parseColor(backgroundColours[2]),
+            parseColor(backgroundColours[3])
+        )
+
+// Create a value animator for the color animation
+        val colorAnimator = ValueAnimator.ofFloat(0f, 1f)
+        colorAnimator.addUpdateListener { animator ->
+            val fraction = animator.animatedFraction
+            val colors = IntArray(startColours!!.size)
+            for (i in startColours.indices) {
+                colors[i] =
+                    ArgbEvaluator().evaluate(fraction, startColours[i], endColours[i]) as Int
+            }
+            val gdView = GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                colors
+            )
+            gdView.cornerRadius = 0f
+            gradBg.background = gdView
+        }
+        colorAnimator.duration = 500 // Set the duration of the animation in milliseconds
+        colorAnimator.start() // Start the color animation
+
+        val agent = Gson().fromJson(agentJSON.getJSONObject(position).toString(), Agent::class.java)
+
         val abilityNames = ArrayList<String>()
         val abilityDesc = ArrayList<String>()
         val abilityIcons = ArrayList<String>()
 
-        try {
-            val gradBg = findViewById<View>(R.id.gradientView)
-            val backgroundColours = backgroundGradientColors[position].split(",")
-            var startingColours: GradientDrawable? = null
-            startingColours = if (gradBg.background != null) gradBg.background as GradientDrawable
-            else {
-                // int array of colours of grey
-                val greyColours = intArrayOf(
-                    parseColor("#BDBDBD"),
-                    parseColor("#BDBDBD"),
-                    parseColor("#BDBDBD"),
-                    parseColor("#BDBDBD")
-                )
-                GradientDrawable(
-                    GradientDrawable.Orientation.TOP_BOTTOM,
-                    greyColours
-                )
-            }
-            val startColours = startingColours.colors
-            val endColours = intArrayOf(
-                parseColor(backgroundColours[0]),
-                parseColor(backgroundColours[1]),
-                parseColor(backgroundColours[2]),
-                parseColor(backgroundColours[3])
-            )
-
-            val endingColours = GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                endColours
-            )
-
-// Create a value animator for the color animation
-            val colorAnimator = ValueAnimator.ofFloat(0f, 1f)
-            colorAnimator.addUpdateListener { animator ->
-                val fraction = animator.animatedFraction
-                val colors = IntArray(startColours!!.size)
-                for (i in startColours.indices) {
-                    colors[i] =
-                        ArgbEvaluator().evaluate(fraction, startColours[i], endColours[i]) as Int
-                }
-                val gdView = GradientDrawable(
-                    GradientDrawable.Orientation.TOP_BOTTOM,
-                    colors
-                )
-                gdView.cornerRadius = 0f
-                gradBg.background = gdView
-            }
-            colorAnimator.duration = 500 // Set the duration of the animation in milliseconds
-            colorAnimator.start() // Start the color animation
-        } catch (e: Exception) {
-            // set background to null
-            val gradBg = findViewById<View>(R.id.gradientView)
-            //gradBg.background = null
-            Log.e("Gradient", "Error: ${e.message}")
-        }
-
-        for (i in 0 until agentJSON.getJSONObject(position).getJSONArray("abilities").length()) {
-            abilityNames += agentJSON.getJSONObject(position).getJSONArray("abilities")
-                .getJSONObject(i)
-                .getString("displayName")
-            abilityDesc += agentJSON.getJSONObject(position).getJSONArray("abilities")
-                .getJSONObject(i)
-                .getString("description")
-            abilityIcons += agentJSON.getJSONObject(position).getJSONArray("abilities")
-                .getJSONObject(i)
-                .getString("displayIcon")
+        for (ability in agent.abilities) {
+            abilityNames.add(ability.displayName)
+            abilityDesc.add(ability.description)
+            abilityIcons.add(ability.displayIcon)
         }
 
         val abilityList = AgentAbilityAdapter(this, abilityNames, abilityDesc, abilityIcons)
@@ -165,10 +153,7 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
 
         val voiceLinesListView = findViewById<ListView>(R.id.voiceLines)
         val listRef = storageRef.child("Valorant VoiceLines/${agentName[position]}/")
-        // text adapter list/
         val voiceLinesArray = ArrayList<String>()
-        val voiceLinesLinks = ArrayList<String>()
-
         val voiceLineAdapter = VoiceLineAdapter(
             this,
             voiceLinesArray,
@@ -222,63 +207,49 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
                     "data"
                 )
             for (i in 0 until agentJSON.length()) {
-                try {
-                    agentRole.add(
-                        agentJSON.getJSONObject(i).getJSONObject("role")
-                            .getString("displayName")
-                    )
-                    roleDescription.add(
-                        agentJSON.getJSONObject(i).getJSONObject("role")
-                            .getString("description")
-                    )
-                    roleIcon.add(
-                        agentJSON.getJSONObject(i).getJSONObject("role")
-                            .getString("displayIcon")
-                    )
-                    agentDesc.add(agentJSON.getJSONObject(i).getString("description"))
-                    voiceLines.add(
-                        agentJSON.getJSONObject(i).getJSONObject("voiceLine")
-                            .getJSONArray("mediaList").getJSONObject(0).getString("wave")
-                    )
-                    bustPortrait.add(agentJSON.getJSONObject(i).getString("fullPortrait"))
-                    agentTextBackgrounds.add(agentJSON.getJSONObject(i).getString("background"))
-                    agentBackground.add(agentJSON.getJSONObject(i).getString("bustPortrait"))
-
-                    val name = agentJSON.getJSONObject(i).getString("displayName")
-                    // replace any / with -
-                    agentName.add(name.replace("/", "-"))
-
-                    // the background gradient colors are an array of hex colours for each agent
-                    // the first colour is the top colour and the second colour is the bottom colour
-                    val backgroundGradientColorsJSONArray =
-                        agentJSON.getJSONObject(i).getJSONArray("backgroundGradientColors")
-                    // iterate through the array and add each colour to the arraylist
-                    var backgroundColourGradientString = ""
-                    for (j in 0 until backgroundGradientColorsJSONArray.length()) {
-                        val currentColour = backgroundGradientColorsJSONArray.getString(j)
-                        // remove the 2 "ff" from the end of the colour
-                        val colour = currentColour.substring(0, currentColour.length - 2)
-                        // add a hash at the start
-                        val colourWithHash = "#$colour"
-                        // add the colour to the string
-                        backgroundColourGradientString += "$colourWithHash,"
-                    }
-                    // remove the last comma
-                    backgroundColourGradientString = backgroundColourGradientString.substring(
-                        0,
-                        backgroundColourGradientString.length - 1
-                    )
-                    // add the string to the arraylist
-                    backgroundGradientColors.add(backgroundColourGradientString)
-                    Log.d("backgroundGradientColors", backgroundGradientColors.toString())
-
-                    Log.d("AgentDetails", "Agent Name: $name" +
-                            "\nAgent Role: ${agentJSON.getJSONObject(i).getJSONObject("role").getString("displayName")}" +
-                            "\nAgent Description: ${agentJSON.getJSONObject(i).getString("description")}")
-
-                } catch (e: Exception) {
-                    Log.d("AgentCosmetics", e.toString())
+                val currentAgent = agentJSON.getJSONObject(i)
+                val agent = Gson().fromJson(currentAgent.toString(), Agent::class.java)
+                agentRole.add(agent.role.displayName)
+                Log.d("Agent", agent.role.displayName)
+                roleDescription.add(agent.role.description)
+                Log.d("Agent", agent.role.description)
+                roleIcon.add(agent.role.displayIcon)
+                Log.d("Agent", agent.role.displayIcon)
+                agentDesc.add(agent.description)
+                Log.d("Agent", agent.description)
+                // check if the agent voice line is null
+                if (!currentAgent.isNull("voiceLine")) {
+                    voiceLines.add(agent.voiceLine.mediaList[0].wave)
+                    Log.d("Agent", agent.voiceLine.mediaList[0].wave)
+                } else {
+                    voiceLines.add("")
+                    Log.d("Agent", "EMPTY")
                 }
+                bustPortrait.add(agent.fullPortrait)
+                Log.d("Agent", agent.fullPortrait)
+                agentTextBackgrounds.add(agent.background)
+                Log.d("Agent", agent.background)
+                agentBackground.add(agent.bustPortrait)
+                Log.d("Agent", agent.bustPortrait)
+                agentName.add(agent.displayName.replace("/", "-"))
+                Log.d("Agent", agent.displayName.replace("/", "-"))
+
+                val backgroundColours = agent.backgroundGradientColors
+                var backgroundColourGradientString = ""
+                for (element in backgroundColours) {
+                    // remove the 2 "ff" from the end of the colour
+                    val colour = element.substring(0, element.length - 2)
+                    // add a hash at the start
+                    val colourWithHash = "#$colour"
+                    // add the colour to the string
+                    backgroundColourGradientString += "$colourWithHash,"
+                }
+                // remove the last comma
+                backgroundColourGradientString = backgroundColourGradientString.substring(
+                    0,
+                    backgroundColourGradientString.length - 1
+                )
+                backgroundGradientColors.add(backgroundColourGradientString)
             }
             uiThread {
                 setImageInSlider(
