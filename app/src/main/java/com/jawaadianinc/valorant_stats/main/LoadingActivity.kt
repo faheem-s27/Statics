@@ -11,14 +11,8 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.FirebaseApp
-import com.google.firebase.appcheck.FirebaseAppCheck
-import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.R
@@ -47,7 +41,8 @@ class LoadingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        FirebaseApp.initializeApp(/*context=*/this)
 
         assetsDB = AssetsDatabase(this)
 
@@ -75,27 +70,6 @@ class LoadingActivity : AppCompatActivity() {
             builder.show()
         } else {
             addAssetsToDatabase()
-
-            FirebaseApp.initializeApp(/*context=*/this)
-            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
-                SafetyNetAppCheckProviderFactory.getInstance()
-            )
-//            val database = Firebase.database
-//            val playersRef = database.getReference("VALORANT/key")
-//
-//            playersRef.addValueEventListener(object : ValueEventListener {
-//                override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                    // Log.d("Statics", "Key is: " + dataSnapshot.value)
-//                    key = (dataSnapshot.value as String?).toString()
-//
-//                }
-//
-//                override fun onCancelled(databaseError: DatabaseError) {
-//                    //loadingProgressBar.visibility = View.GONE
-//                    updateText.text = "An error occurred while connecting to Statics :("
-//                }
-//
-//            })
         }
     }
 
@@ -117,7 +91,6 @@ class LoadingActivity : AppCompatActivity() {
         backgroundIMG.animate().setDuration(1500).alpha(1f).setInterpolator {
             it * it * it * (it * (it * 6 - 15) + 10)
         }.start()
-        updateText.text = "Checking connection"
     }
 
     private fun isNetworkAvailable(): Boolean {
