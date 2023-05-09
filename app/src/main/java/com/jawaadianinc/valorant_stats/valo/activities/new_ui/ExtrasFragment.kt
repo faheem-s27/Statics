@@ -2,15 +2,13 @@ package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -56,6 +54,8 @@ class SettingsFragment : Fragment() {
             alert.setNegativeButton("No") { _, _ -> }
             alert.show()
         }
+
+        setupLanguage()
 
         // Get the player image
         val pfp = view.findViewById<ImageView>(R.id.Extras_PlayerPFP)
@@ -157,6 +157,90 @@ class SettingsFragment : Fragment() {
         val logs = view.findViewById<Button>(R.id.new_view_logs_button)
         logs.setOnClickListener {
             Toast.makeText(requireActivity(), "Coming soon!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setupLanguage()
+    {
+        val languageSpinner = view?.findViewById<Spinner>(R.id.language_selector)
+        val languageCodes = arrayOf(
+            "ar-AE",
+            "de-DE",
+            "en-US",
+            "es-ES",
+            "es-MX",
+            "fr-FR",
+            "id-ID",
+            "it-IT",
+            "ja-JP",
+            "ko-KR",
+            "pl-PL",
+            "pt-BR",
+            "ru-RU",
+            "th-TH",
+            "tr-TR",
+            "vi-VN",
+            "zh-CN",
+            "zh-TW"
+        )
+
+        val languageNames = arrayOf(
+            "Arabic",
+            "German",
+            "English",
+            "Spanish (Spain)",
+            "Spanish (Mexico)",
+            "French",
+            "Indonesian",
+            "Italian",
+            "Japanese",
+            "Korean",
+            "Polish",
+            "Portuguese (Brazil)",
+            "Russian",
+            "Thai",
+            "Turkish",
+            "Vietnamese",
+            "Chinese (Simplified)",
+            "Chinese (Traditional)"
+        )
+
+        val languageAdapter = ArrayAdapter(
+            requireActivity(),
+            android.R.layout.simple_spinner_item,
+            languageNames
+        )
+
+        languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        languageSpinner?.adapter = languageAdapter
+
+        val sharedPref = requireActivity().getSharedPreferences("UserLocale", Context.MODE_PRIVATE)
+        val locale = sharedPref.getString("locale", "en-US")
+        if (locale in languageCodes) {
+            val localeIndex = languageCodes.indexOf(locale)
+            languageSpinner?.setSelection(localeIndex)
+        } else {
+            val localeIndex = languageCodes.indexOf("en-US")
+            languageSpinner?.setSelection(localeIndex)
+        }
+
+        languageSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val language = languageCodes[position]
+                val sharedPref = requireActivity().getSharedPreferences("UserLocale", Context.MODE_PRIVATE)
+                val editor = sharedPref.edit()
+                editor.putString("locale", language)
+                editor.apply()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Another interface callback
+            }
         }
     }
 

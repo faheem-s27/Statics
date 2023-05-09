@@ -33,6 +33,8 @@ import java.net.URL
 class CosmeticsListActivity : AppCompatActivity() {
     private var cosmetic: String? = null
     private lateinit var searchView: SearchView
+    private var BASE_URL = "https://valorant-api.com/v1/"
+    private var LANGUAGE = ""
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +46,11 @@ class CosmeticsListActivity : AppCompatActivity() {
         if (cosmetic == null) {
             startActivity(Intent(this, ValorantMainMenu::class.java))
         }
+
+        // get the language from shared preferences
+        val sharedPref = getSharedPreferences("UserLocale", MODE_PRIVATE)
+        LANGUAGE = sharedPref.getString("locale", "").toString()
+        LANGUAGE = "?language=$LANGUAGE"
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar3)
         setSupportActionBar(toolbar)
@@ -139,7 +146,7 @@ class CosmeticsListActivity : AppCompatActivity() {
         val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
         progressDialog.show()
 
-        val url = "https://valorant-api.com/v1/levelborders"
+        val url = BASE_URL + "levelborders" + LANGUAGE
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
@@ -286,7 +293,7 @@ class CosmeticsListActivity : AppCompatActivity() {
     private fun getRanks() {
         val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
         progressDialog.show()
-        val url = "https://valorant-api.com/v1/competitivetiers"
+        val url = BASE_URL + "competitivetiers" + LANGUAGE
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
@@ -442,7 +449,7 @@ class CosmeticsListActivity : AppCompatActivity() {
         val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
         progressDialog.show()
 
-        val url = "https://valorant-api.com/v1/maps"
+        val url = BASE_URL + "maps" + LANGUAGE
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
@@ -592,7 +599,7 @@ class CosmeticsListActivity : AppCompatActivity() {
         val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
         progressDialog.show()
 
-        val url = "https://valorant-api.com/v1/buddies"
+        val url = BASE_URL + "buddies" + LANGUAGE
         val names = ArrayList<String>()
         val images = ArrayList<String>()
         val listView: ListView = findViewById(R.id.cosmeticListView)
@@ -833,7 +840,7 @@ class CosmeticsListActivity : AppCompatActivity() {
             }
         })
 
-        val url = "https://valorant-api.com/v1/sprays"
+        val url =  BASE_URL + "sprays" + LANGUAGE
         doAsync {
             val result = URL(url).readText()
             val jsonObject = JSONObject(result)
@@ -940,7 +947,7 @@ class CosmeticsListActivity : AppCompatActivity() {
             }
         })
 
-        val url = "https://valorant-api.com/v1/weapons"
+        val url = BASE_URL + "weapons" + LANGUAGE
         doAsync {
             val result = JSONObject(URL(url).readText())
             val weapons = result.getJSONArray("data")
@@ -973,7 +980,7 @@ class CosmeticsListActivity : AppCompatActivity() {
     }
 
     private fun getCards() {
-        val url = "https://valorant-api.com/v1/playercards"
+        val url = BASE_URL + "playercards" + LANGUAGE
         val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
         progressDialog.show()
         val names = ArrayList<String>()

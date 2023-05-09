@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -27,7 +28,6 @@ class StaticsMainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStaticsMainBinding
     private lateinit var bottomNavBar: BottomNavigationView
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStaticsMainBinding.inflate(layoutInflater)
@@ -46,18 +46,25 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
 
+        // check if userlocale is stored in shared preferences
+        val sharedPref = getSharedPreferences("UserLocale", Context.MODE_PRIVATE)
+        val storedLocale = sharedPref.getString("locale", "")
+        if (storedLocale == "") {
+            // update the user locale
+            val locale = resources.configuration.locales.get(0)
+            val language = "${locale.language}-${locale.country}"
+            with(sharedPref.edit()) {
+                putString("locale", language)
+                apply()
+            }
+        }
+
+        // get the value from shared preferences
+        UserLocale = sharedPref.getString("locale", "")!!
+        Toast.makeText(this, "Device language: $UserLocale", Toast.LENGTH_SHORT).show()
+
         val updateDescription =
-            "- Reduced load up times as you've probably seen! :D" +
-                    "- Last match widget working again!" +
-                    "- Added daily shop items! See your current balance and what skins are available in the shop! (with night market support coming soon)" +
-                    "- Added the player card to the live load outs!" +
-                    "- See your team rates ranking in the party lobby!"
-        "- Agent gradients now smoothly transition when swiping through agents!" +
-                "- Get a notification on your device when a match has been found" +
-                "- Added Gekko voicelines" +
-                "- Intro video will only be shown once as requested by many users" +
-                "- ESports tab has been replaced with Premier Tournaments" +
-                "- Changed a few texts around the app to make it more clearer (ie 'Valorant not open' instead of 'Not in party')"
+            "- Testing language selector in Extras for Assets"
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         with(update.edit()) {
@@ -203,5 +210,6 @@ class StaticsMainActivity : AppCompatActivity() {
         var playerCardLarge = ""
         var playerCardSmall = ""
         var playerCardID = ""
+        var UserLocale = ""
     }
 }
