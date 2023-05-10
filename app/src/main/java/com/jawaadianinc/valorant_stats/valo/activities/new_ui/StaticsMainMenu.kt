@@ -87,7 +87,10 @@ class StaticsMainMenu : Fragment() {
         toolbar = view.findViewById(R.id.new_mainMenuToolBar)
         //activity.setSupportActionBar(toolbar)
         progressDialog =
-            ProgressDialogStatics().setProgressDialog(requireActivity(), "Loading data...")
+            ProgressDialogStatics().setProgressDialog(
+                requireActivity(),
+                getString(R.string.loading_data)
+            )
         //progressDialog.show()
 
         playerName = activity?.intent?.getStringExtra("playerName") ?: return
@@ -184,7 +187,7 @@ class StaticsMainMenu : Fragment() {
         //toolbar = (activity as AppCompatActivity).findViewById(R.id.new_mainMenuToolBar2) as MaterialToolbar
         toolbar.setTitleTextColor(resources.getColor(android.R.color.white))
         toolbar.title = playerName.split("#")[0]
-        toolbar.subtitle = "Loading..."
+        toolbar.subtitle = getString(R.string.loading)
 
         // inflate menu
         toolbar.inflateMenu(R.menu.menu_valorant)
@@ -241,15 +244,15 @@ class StaticsMainMenu : Fragment() {
                 androidx.appcompat.app.AlertDialog.Builder(
                     requireActivity(),
                     R.style.AlertDialogTheme
-                ).setTitle("Disclaimer!")
-                    .setMessage("These stats are updated only once a day, so they may not be accurate.")
+                ).setTitle(getString(R.string.s102))
+                    .setMessage(getString(R.string.s101))
                     .setPositiveButton("Ok") { _, _ ->
                         editor.putBoolean("shown", true)
                         editor.apply()
                         checkForTrackerGG(nameSplit[0], nameSplit[1])
                     }
                     .setNegativeButton("Cancel") { _, _ ->
-                        Toast.makeText(requireActivity(), "Cancelled", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(requireActivity(), "Cancelled", Toast.LENGTH_SHORT).show()
                     }
                     .setIcon(android.R.drawable.ic_dialog_alert).show()
             } else {
@@ -533,7 +536,6 @@ class StaticsMainMenu : Fragment() {
             Picasso.get().load(findPeakRankImage(peakTitle)).fit().centerInside()
                 .into(newPeakRankImage)
 
-
         } catch (e: Exception) {
             Log.d("newMainMenu", "Error for rank: ${e.message}")
             try {
@@ -642,7 +644,7 @@ class StaticsMainMenu : Fragment() {
         val newCurrentSeasonText = view?.findViewById<TextView>(R.id.new_currentSeason)
         val newCurrentSeasonEndingText = view?.findViewById<TextView>(R.id.new_currentSeasonEnding)
 
-        Log.d("newMainMenu", "Getting current season")
+        //Log.d("newMainMenu", "Getting current season")
 
         doAsync {
             val seasonsJSON = JSONObject(URL(URL).readText()).getJSONArray("data")
@@ -656,7 +658,7 @@ class StaticsMainMenu : Fragment() {
             val seasonEnd = currentSeason.getString("endTime")
             val parentUUID = currentSeason.getString("parentUuid")
 
-            Log.d("newMainMenu", "Current season is $seasonName")
+            // Log.d("newMainMenu", "Current season is $seasonName")
 
             // find the parent season
             for (i in 0 until seasonsJSON.length()) {
@@ -697,7 +699,7 @@ class StaticsMainMenu : Fragment() {
         timer = object : CountDownTimer(60000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 if (ISACTIVE) toolbar.subtitle =
-                    "Next update in ${millisUntilFinished / 1000} seconds"
+                    "${getString(R.string.s20)} ${millisUntilFinished / 1000}"
                 else {
                     timer?.cancel()
                 }
@@ -705,8 +707,7 @@ class StaticsMainMenu : Fragment() {
 
             override fun onFinish() {
                 if (ISACTIVE) {
-                    toolbar.subtitle =
-                        "Updating..."
+                    toolbar.subtitle = getString(R.string.s100)
                     getLatestDetails()
                 } else {
                     timer?.cancel()
@@ -719,7 +720,7 @@ class StaticsMainMenu : Fragment() {
     private fun stopTimer() {
         REFRESHING = true
         timer?.cancel()
-        if (ISACTIVE) toolbar.subtitle = "Refreshing..."
+        if (ISACTIVE) toolbar.subtitle = getString(R.string.s99)
     }
 
     private fun loadMatchDetails(lastMatchData: JSONObject) {

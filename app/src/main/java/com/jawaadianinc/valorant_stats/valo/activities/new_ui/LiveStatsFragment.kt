@@ -202,7 +202,7 @@ class LiveStatsFragment : Fragment() {
         val password = authPreferences.getString("password", null)
 
         val usernamepassword: Button = requireView().findViewById(R.id.continueInit2)
-        usernamepassword.text = "Get started"
+        usernamepassword.text = getString(R.string.s32)
         usernamepassword.setOnClickListener {
             if (username != null && password != null) {
                 authenticateUser(username, password)
@@ -214,17 +214,9 @@ class LiveStatsFragment : Fragment() {
         val whyPassword = requireView().findViewById<Button>(R.id.continueInit)
         whyPassword.setOnClickListener {
             val builder = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
-                .setTitle("Why do I need to enter my password?")
+                .setTitle(getString(R.string.s33))
                 .setMessage(
-                    "Unfortunately, Statics needs your Riot username and password to use the live mode as the password is required to authenticate your account and is used to get the data from Valorant.\n\nThe password is not stored anywhere and is only used to authenticate your account." +
-                            "\n\nI won't sugarcoat things. Due to the way Statics uses the API, I believe there's no other way to sign in than to have people enter their credentials directly. \n" +
-                            "Under those circumstances, there's really no good way for anyone to be sure their credentials remain safe. \n" +
-                            "\nFor what it's worth:\n" +
-                            "• Your credentials only ever leave your device in the form of a login request directly to Riot. They are never stored or sent anywhere else.\n" +
-                            "• You can enable 2-factor authentication, so you'd at least have another layer of security if it went bad.\n" +
-                            "\n" +
-                            "The code is open-source and visible on GitHub (pending); you can build it yourself if you want to be sure of what's running.\n" +
-                            "TL;DR: you'll have to take my word for it. \uD83E\uDD86❤️ " + "\n\n" + "If you're still not comfortable with this, you can use the app without live mode."
+                    getString(R.string.s34)
                 )
                 .setPositiveButton("OK", null)
 
@@ -348,7 +340,7 @@ class LiveStatsFragment : Fragment() {
 
     private fun INITMode() {
         val usernamepassword: Button = requireView().findViewById(R.id.continueInit2)
-        usernamepassword.text = "Username/Password"
+        usernamepassword.text = getString(R.string.s36)
         usernamepassword.setOnClickListener {
             val dialogView = LayoutInflater.from(requireActivity())
                 .inflate(R.layout.dialog_username_password, null)
@@ -376,7 +368,7 @@ class LiveStatsFragment : Fragment() {
                         // show a toast to tell the user that the character # is not allowed
                         Toast.makeText(
                             requireContext(),
-                            "The character # is not allowed",
+                            getString(R.string.s39),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -385,7 +377,7 @@ class LiveStatsFragment : Fragment() {
 
             val builder = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
                 .setView(dialogView)
-                .setTitle("Enter username and password")
+                .setTitle(getString(R.string.s37))
                 .setPositiveButton("OK") { _, _ ->
                     val username = editTextUsername.text.toString()
                     val password = editTextPassword.text.toString()
@@ -393,7 +385,7 @@ class LiveStatsFragment : Fragment() {
                     if (username.isEmpty() || password.isEmpty()) {
                         Toast.makeText(
                             requireContext(),
-                            "Please enter a username and password",
+                            getString(R.string.s40),
                             Toast.LENGTH_SHORT
                         ).show()
                         return@setPositiveButton
@@ -410,7 +402,7 @@ class LiveStatsFragment : Fragment() {
                         Base64.encodeToString(password.toByteArray(), Base64.DEFAULT)
                     authenticateUser(username, passwordBase64)
                 }
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.s51), null)
             builder.show()
         }
     }
@@ -418,7 +410,7 @@ class LiveStatsFragment : Fragment() {
     private fun authenticateUser(username: String, password: String) {
         // show the Statics Dialog Progress Bar
         val progressdialog =
-            ProgressDialogStatics().setProgressDialog(requireActivity(), "Authenticating...")
+            ProgressDialogStatics().setProgressDialog(requireActivity(), getString(R.string.s38))
         progressdialog.show()
 
         // create a new coroutine scope
@@ -449,7 +441,7 @@ class LiveStatsFragment : Fragment() {
                         progressdialog.dismiss()
                         val msg = "Response code: $code\nBody: $body"
                         val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-                            .setTitle("Response from Auth Cookies")
+                            .setTitle(getString(R.string.s41))
                             .setMessage(msg)
                             .setPositiveButton("OK") { dialog, _ ->
                                 // clear username and password from shared preferences
@@ -518,7 +510,7 @@ class LiveStatsFragment : Fragment() {
                         if (jsonAuthBody.getString("error") == "auth_failure") {
                             progressdialog.dismiss()
                             val msg =
-                                "Response was successful but username or password is incorrect"
+                                getString(R.string.s42)
                             val dialog =
                                 AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
                                     .setTitle("Response from Statics")
@@ -710,7 +702,7 @@ class LiveStatsFragment : Fragment() {
 
                 // Add any other dialog box configuration here (e.g. title, buttons)
                 builder.setTitle("2FA Code for $email")
-                builder.setPositiveButton("Send") { _, _ ->
+                builder.setPositiveButton(getString(R.string.s45)) { _, _ ->
                     val code =
                         dialogView.findViewById<EditText>(R.id.multifactor_code_input).text.toString()
                     send2FAcode(code, cookieHeader)
@@ -763,7 +755,7 @@ class LiveStatsFragment : Fragment() {
                     val json = JSONObject(body)
                     val error = json.optString("error", "")
                     if (error.isNotEmpty()) {
-                        val msg = "Incorrect 2FA code"
+                        val msg = getString(R.string.s46)
                         val dialog = AlertDialog.Builder(requireContext())
                             .setTitle("Response from Statics")
                             .setMessage(msg)
@@ -923,23 +915,23 @@ class LiveStatsFragment : Fragment() {
 
         } catch (e: Exception) {
             // Alert the user and ask to send a bug report
-            val msg = "An error happened in live mode: ${e.message}"
+            val msg = "${getString(R.string.s47)} ${e.message}"
             val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-                .setTitle("Send to developer on discord!")
+                .setTitle(getString(R.string.s48))
                 .setMessage(msg)
-                .setPositiveButton("Copy & Send") { dialog, which ->
+                .setPositiveButton(getString(R.string.s50)) { dialog, which ->
                     // copy to clipboard and send to discord
                     val clipboard =
                         requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("Valorant Live Stats", msg)
                     clipboard.setPrimaryClip(clip)
-                    Toast.makeText(requireContext(), "Copied to clipboard!", Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), getString(R.string.s49), Toast.LENGTH_SHORT)
                         .show()
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse("https://discord.gg/jwfJUQMPP7")
                     startActivity(intent)
                 }
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.s51), null)
             dialog.show()
         }
     }
@@ -993,7 +985,7 @@ class LiveStatsFragment : Fragment() {
         val NightMarket = json.optJSONObject("BonusStore")
         if (NightMarket != null) {
             //show dialog
-            Snackbar.make(requireView(), "Night Market is open!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(requireView(), getString(R.string.s52), Snackbar.LENGTH_LONG).show()
         }
         val dailyOffersSkins = json.getJSONObject("SkinsPanelLayout")
         getWallet()
@@ -1160,7 +1152,7 @@ class LiveStatsFragment : Fragment() {
         if (sprayCode == 200) {
             Snackbar.make(
                 requireView(),
-                "Card updated successfully",
+                getString(R.string.s57),
                 Snackbar.LENGTH_SHORT
             ).show()
             val refreshButtonCurrentLoadout =
@@ -1191,14 +1183,14 @@ class LiveStatsFragment : Fragment() {
             val titlesCharSequence = titles.map { it }.toTypedArray()
             // show a dialog with all of the titles
             val dialog = AlertDialog.Builder(requireContext())
-                .setTitle("Select a Title")
+                .setTitle(getString(R.string.s58))
                 .setItems(titlesCharSequence) { _, which ->
                     // get the title id from the selected item
                     val titleID = assetsDB.retrieveIDTitle(titles[which])
                     // update the title
                     updateTitle(titleID)
                 }
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.s51), null)
 
             // set the items text color to white
             val dialogView = dialog.create()
@@ -1233,7 +1225,7 @@ class LiveStatsFragment : Fragment() {
             //loadTitle(titleID)
             Snackbar.make(
                 requireView(),
-                "Title updated successfully",
+                getString(R.string.s57),
                 Snackbar.LENGTH_SHORT
             ).show()
             val refreshButtonCurrentLoadout =
@@ -1280,7 +1272,7 @@ class LiveStatsFragment : Fragment() {
         if (sprayCode == 200) {
             Snackbar.make(
                 requireView(),
-                "Spray updated successfully",
+                getString(R.string.s57),
                 Snackbar.LENGTH_SHORT
             ).show()
             val refreshButtonCurrentLoadout =
@@ -1346,9 +1338,9 @@ class LiveStatsFragment : Fragment() {
         ) // Create an adapter for the list of pictures
 
         alertDialog = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
-            .setTitle("Select a Spray")
+            .setTitle(getString(R.string.s58))
             .setView(dialogView)
-            .setNegativeButton("Cancel") { _, _ ->
+            .setNegativeButton(getString(R.string.s51)) { _, _ ->
                 // Handle cancel button click event, if needed
             }
             .create()
@@ -1434,8 +1426,8 @@ class LiveStatsFragment : Fragment() {
         val logOut = view?.findViewById<ImageButton>(R.id.new_partyPlayerLogOut)
         logOut?.setOnClickListener {
             val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-                .setTitle("Log out")
-                .setMessage("Are you sure you want to log out?")
+                .setTitle(getString(R.string.s92))
+                .setMessage(getString(R.string.s56))
                 .setPositiveButton("Yes") { _, _ ->
                     // log out
                     // clear the shared preferences from auth
@@ -1479,9 +1471,9 @@ class LiveStatsFragment : Fragment() {
         ) // Create an adapter for the list of pictures
 
         alertDialog = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
-            .setTitle("Select a Player Card")
+            .setTitle(getString(R.string.s58))
             .setView(dialogView)
-            .setNegativeButton("Cancel") { _, _ ->
+            .setNegativeButton(getString(R.string.s51)) { _, _ ->
                 // Handle cancel button click event, if needed
             }
             .create()
@@ -1514,9 +1506,9 @@ class LiveStatsFragment : Fragment() {
         val code = response.code
         if (code == 200) {
             val partyStatus = view?.findViewById<TextView>(R.id.new_playerPartyStatus)
-            partyStatus?.text = "Matchmaking..."
+            partyStatus?.text = getString(R.string.s59)
             val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
-            joinMatchButton?.text = "Cancel queue"
+            joinMatchButton?.text = getString(R.string.s60)
         }
     }
 
@@ -1540,7 +1532,7 @@ class LiveStatsFragment : Fragment() {
             } else if (code == 400 && body.contains("BAD_CLAIMS")) {
                 // auth expired so tell user to restart app
                 timerSeconds = 100000
-                changePartyStatusText("Auth expired, please restart app")
+                changePartyStatusText(getString(R.string.s61))
                 return
             } else if (code == 200) {
                 timerSeconds = 1000
@@ -1647,7 +1639,7 @@ class LiveStatsFragment : Fragment() {
 
         if (members.length() == 1) {
             // only one member so hide the listview
-            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = "Only you in party"
+            view?.findViewById<TextView>(R.id.new_partyMembersText)?.text = getString(R.string.s62)
             partyMemberListView?.visibility = View.INVISIBLE
             // clear the listview
             partyMemberListView?.adapter = null
@@ -1655,7 +1647,7 @@ class LiveStatsFragment : Fragment() {
         } else {
             partyMemberListView?.visibility = View.VISIBLE
             view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
-                members.length().toString() + " members in party"
+                "${members.length()} ${getString(R.string.s63)} "
             partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
         }
     }

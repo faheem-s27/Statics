@@ -1,47 +1,190 @@
 <resources>
-    <string name="app_name">Statics</string>
-    <string name="title_activity_stats">StatsActivity</string>
-    <string name="title_activity_valorant_updates">ValorantUpdatesActivity</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name" translatable="false">Statics</string>
+    <string name="title_activity_stats" translatable="false">StatsActivity</string>
+    <string name="title_activity_valorant_updates" translatable="false">ValorantUpdatesActivity</string>
+    <string name="action_settings" translatable="false">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_brawl_find_account">BrawlFindAccount</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="title_activity_brawl_find_account" translatable="false">BrawlFindAccount</string>
+    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
+
+    <string name="title_activity_weapon_info" translatable="false">WeaponInfo</string>
+    <string name="tab_text_1" translatable="false">Tab 1</string>
+    <string name="tab_text_2" translatable="false">Tab 2</string>
+
+    <string name="welcome" translatable="false">"Welcome to Statics!"</string>
+    <string name="RSO_URL" translatable="false">https://auth.riotgames.com/authorize?client_id=statics&amp;redirect_uri=https://statics-fd699.web.app/authorize.html&amp;response_type=code&amp;scope=openid+offline_access&amp;prompt=login</string>
+    <string name="title_activity_cross_hair" translatable="false">CrossHairActivity</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+
+    <string name="menu_home" translatable="false">Home</string>
+    <string name="menu_gallery" translatable="false">Gallery</string>
+    <string name="menu_slideshow" translatable="false">Slideshow</string>
+
+    <string name="Share_Profile_URL" translatable="false">Anyone with access to the link can view your matches and rank. If you are not sure if you want to share your profile, please do not share it!</string>
+    <string name="appwidget_text" translatable="false">EXAMPLE</string>
+    <string name="configure" translatable="false">Configure</string>
+    <string name="add_widget" translatable="false">Add widget</string>
+    <string name="app_widget_description" translatable="false">This is an app widget description</string>
+
+    <string name="long_shortcut" translatable="false">See your rank history!</string>
+    <string name="short_shortcut" translatable="false">Past ranks</string>
+    <string name="title_activity_tracker_gg" translatable="false">TrackerGG_Activity</string>
+    <string name="title_home" translatable="false">Home</string>
+    <string name="title_dashboard" translatable="false">Dashboard</string>
+    <string name="title_notifications" translatable="false">Notifications</string>
+    <string name="current_rank" translatable="false">Current Rank:</string>
+    <string name="title_activity_statics_main" translatable="false">StaticsMainActivity</string>
 
 
+    <!-- LOGGING IN FOR THE FIRST TIME SCREEN -->
     <string name="hyperlink">Learn more about the\n<a href="https://statics-fd699.web.app/privacy.html">Statics privacy policy</a></string>
-    <string name="title_activity_weapon_info">WeaponInfo</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-
-
-    <string name="welcome">"Welcome to Statics!"</string>
-    <string name="RSO_URL">https://auth.riotgames.com/authorize?client_id=statics&amp;redirect_uri=https://statics-fd699.web.app/authorize.html&amp;response_type=code&amp;scope=openid+offline_access&amp;prompt=login</string>
-    <string name="title_activity_cross_hair">CrossHairActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-
-    <string name="Share_Profile_URL">Anyone with access to the link can view your matches and rank. If you are not sure if you want to share your profile, please do not share it!</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="configure">Configure</string>
-    <string name="add_widget">Add widget</string>
-    <string name="app_widget_description">This is an app widget description</string>
-
-    <string name="long_shortcut">See your rank history!</string>
-    <string name="short_shortcut">Past ranks</string>
-    <string name="title_activity_tracker_gg">TrackerGG_Activity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="current_rank">Current Rank:</string>
-    <string name="title_activity_statics_main">StaticsMainActivity</string>
     <string name="statics_riot_endorsement">Statics isn\'t endorsed by Riot Games and doesn\'t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</string>
     <string name="read_TCs"><![CDATA[I have read and agree to the T&C\'s linked below]]></string>
     <string name="sign_in_with_riot">Sign in with Riot</string>
     <string name="the_first_app_with_a_minimap">The first app with a minimap</string>
     <string name="riot_token_description">When signing in with Riot, your credentials are sent to Riot\'s servers and a token is returned. This token is then used to get your account details like your name.\nThe token is then deleted from the server and is not stored anywhere. The server only stores your account information, which is used to display your stats in the app.\n\nStatics does not store any passwords!</string>
+    <string name="acceptTermsConditions">Please accept the terms and conditions to continue</string>
+    <string name="ConnectingToRiot">Connecting to Riot…</string>
+    <string name="starting">Starting</string>
+    <string name="how_it_works">How it works</string>
 
+    <!-- WHEN SIGNING IN BACK FROM RIOT LOGIN -->
+    <string name="ClickButtonToProveAlive">Click the button to prove you are alive</string>
+    <string name="TimeToStealData">Time to steal your date</string>
+    <string name="giving_you_gun_buddies">Giving you gun buddies</string>
+    <string name="setting_your_account_to_iron">Setting your account to Iron</string>
+    <string name="you_did_it">"You did it "</string>
+    <string name="welcome_gamename">"Welcome "</string>
+    <string name="error_occurred_while_saving">Error occurred while saving :(</string>
+
+    <!-- WHEN SIGNED IN AND OPENING STATICS IN MAIN MENU -->
+    <string name="BetaDisclaimerTitle">You are using a beta version of the app</string>
+    <string name="BetaDisclaimerDesc">This means that the app may not work as intended. If you find any bugs, please report them to the developer</string>
+    <string name="NewFeaturesForStatics">New features for Statics</string>
+    <string name="NewFeaturesIncludes">This update includes:</string>
+    <string name="menu_stats">Stats</string>
+    <string name="menu_live">Live</string>
+    <string name="menu_assets">Assets</string>
+    <string name="menu_premier">Premier</string>
+    <string name="menu_extras">Extras</string>
+
+    <string name="s20">Next update in </string>
+    <string name="s22">Player Details</string>
+    <string name="s23">Rank Summary</string>
+    <string name="s24">Last Match</string>
+    <string name="s29">History</string>
+    <string name="s30">xx days ago/weeks ago</string>
+    <string name="s31">Welcome to Live!</string>
+    <string name="s32">Get Started</string>
+    <string name="s33">Why Password?</string>
+    <string name="s34">Unfortunately, Statics needs your Riot username and password to use the live mode as the password is required to authenticate your account and is used to get the data from Valorant. The password is not stored anywhere and is only used to authenticate your account. I won't sugarcoat things. Due to the way Statics uses the API, I believe there's no other way to sign in than to have people enter their credentials directly. Under those circumstances, there's really no good way for anyone to be sure their credentials remain safe.\n\nFor what it's worth: • Your credentials only ever leave your device in the form of a login request directly to Riot. They are never stored or sent anywhere else. • You can enable 2-factor authentication, so you'd at least have another layer of security if it went bad. The code is open-source and visible on GitHub (pending); you can build it yourself if you want to be sure of what's running. TL;DR: you'll have to take my word for it. 🦆❤️ If you're still not comfortable with this, you can use the app without live mode.</string>
+    <string name="s35">Why do I need to enter my password</string>
+    <string name="s36">Username/password</string>
+    <string name="s37">Enter username and password</string>
+    <string name="s38">Authenticating</string>
+    <string name="s39">The character # is not allowed</string>
+    <string name="s40">Please enter a username and password</string>
+    <string name="s41">Response from Auth Cookies</string>
+    <string name="s42">Response was successful but username or password is incorrect</string>
+    <string name="s43">An error occurred when signing in\n\n\nError message:</string>
+    <string name="s44">2FA Code for %s</string>
+    <string name="s45">Send</string>
+    <string name="s46">Incorrect 2FA code</string>
+    <string name="s47">An error happened in live mode: </string>
+    <string name="s48">Send to developer on discord!</string>
+    <string name="s49">Copied to clipboard!</string>
+    <string name="s50">Copy &amp; Send</string>
+    <string name="s51">Cancel</string>
+    <string name="s52">Night Market is open!</string>
+    <string name="s53">Valorant not open!</string>
+    <string name="s54">Not in a party!</string>
+    <string name="s55">Log out</string>
+    <string name="s56">Are you sure you want to log out?</string>
+    <string name="s57">Card/Title/Spray updated successfully</string>
+    <string name="s58">Select a Player Card/Title/Spray</string>
+    <string name="s59">Matchmaking</string>
+    <string name="s60">Cancel queue</string>
+    <string name="s61">Auth expired, please restart app</string>
+    <string name="s62">Only you in party</string>
+    <string name="s63"> members in party</string>
+    <string name="s64">Join queue</string>
+    <string name="s65">In Lobby</string>
+    <string name="s66">Party is not ready</string>
+    <string name="s67">Not ready</string>
+    <string name="s68">Select Agents</string>
+    <string name="s69">Match Found!</string>
+    <string name="s70">Select your agent!</string>
+    <string name="s71">Are you sure you want to quit the match? (This could result in a penalty)</string>
+    <string name="s72">Quit match</string>
+    <string name="s73">Selected</string>
+    <string name="s74">Lock in</string>
+    <string name="s75">Locked in</string>
+    <string name="s76">Queue changed to x</string>
+    <string name="s77">In Lobby</string>
+    <string name="s78">Find your favourite asset</string>
+    <string name="s79">Agents</string>
+    <string name="s80">Buddies</string>
+    <string name="s81">Bundles</string>
+    <string name="s82">Tiers</string>
+    <string name="s83">Modes</string>
+    <string name="s84">Borders</string>
+    <string name="s85">Maps</string>
+    <string name="s86">Cards</string>
+    <string name="s87">Titles</string>
+    <string name="s88">Sprays</string>
+    <string name="s89">Weapons</string>
+    <string name="s90">Premier Support coming soon</string>
+    <string name="s91">Signed in as</string>
+    <string name="s92">Log out</string>
+    <string name="s93">Select language</string>
+    <string name="s94">Leaderboards</string>
+    <string name="s95">Chat</string>
+    <string name="s96">About</string>
+    <string name="s97">Donate</string>
+    <string name="s98">View logs</string>
+    <string name="s99">Refreshing</string>
+    <string name="s100">Updating</string>
+    <string name="s101">These stats are updated only once a day, so they may not be accurate</string>
+    <string name="s102">Disclaimer!</string>
+    <string name="s103">Loading rank history</string>
+    <string name="s104">Enable dates</string>
+    <string name="s105">Searching for match</string>
+    <string name="s106">Processing Match</string>
+    <string name="s107">Overview</string>
+    <string name="s108">Details</string>
+    <string name="s109">Players</string>
+    <string name="s110">Rounds</string>
+    <string name="s111">Spike map</string>
+    <string name="s112">Kill map</string>
+    <string name="s113">Kill feed</string>
+    <string name="s114">Round X</string>
+    <string name="s115">All rounds</string>
+    <string name="s116">Coming soon</string>
+    <string name="s117">Eliminated, Bomb defused, Time expired, Draw</string>
+    <string name="s118">See defused map</string>
+    <string name="s119">Blue/Red won</string>
+    <string name="s120">Planted by X</string>
+    <string name="s121">See agents</string>
+    <string name="s122">Killed using X</string>
+    <string name="s123">Getting recent matches</string>
+    <string name="s124">Match History</string>
+    <string name="s125">Processed x/X matches</string>
+    <string name="s126">Request limit has been reached, please try again in a few minutes</string>
+    <string name="s127">Your matches have been saved! They will load faster next time</string>
+    <string name="s128">Your matches cache has exceeded 100 matches.\n\nStatics will delete the oldest matches to save space!</string>
+    <string name="s129">Matches Database size</string>
+    <string name="s130">Storage has been freed up! Your newest matches are still saved</string>
+    <string name="s131">Statics requires an active internet connection!</string>
+    <string name="s132">Retry</string>
+    <string name="s133">Exit</string>
+    <string name="s134">Please accept the terms and conditions</string>
+    <string name="loading_data">Loading data…</string>
+    <string name="loading">Loading...</string>
+    <string name="s21">Stats</string>
+    <string name="s25">Live</string>
 </resources>

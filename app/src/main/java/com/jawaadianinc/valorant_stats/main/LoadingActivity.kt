@@ -156,7 +156,7 @@ class LoadingActivity : AppCompatActivity() {
             ).show()
         }
 
-        updateText.text = "Connecting to Riot"
+        updateText.text = getString(R.string.ConnectingToRiot)
 
         val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         coroutineScope.launch {
@@ -177,7 +177,7 @@ class LoadingActivity : AppCompatActivity() {
             jobs.awaitAll()
             assetsDB.close()
 
-            updateText.text = "Starting"
+            updateText.text = getString(R.string.starting)
             val valoName = PlayerDatabase(this@LoadingActivity).getPlayerName()
             valoAccountStats(valoName, key)
         }
@@ -228,7 +228,7 @@ class LoadingActivity : AppCompatActivity() {
                 .setInterpolator {
                     it * it * it * (it * (it * 6 - 15) + 10)
                 }.start()
-            updateText.text = "Loading $valoName's stats"
+            "Loading $valoName's stats".also { updateText.text = it }
             updateText.animate().setDuration(1000).alpha(0f).translationY(-100f)
                 .setInterpolator {
                     it * it * it * (it * (it * 6 - 15) + 10)

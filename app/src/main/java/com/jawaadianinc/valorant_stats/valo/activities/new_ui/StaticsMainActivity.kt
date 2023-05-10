@@ -6,7 +6,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -82,8 +81,8 @@ class StaticsMainActivity : AppCompatActivity() {
             if (!hasSeen) {
                 // show the dialog
                 val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
-                dialog.setTitle("You are using a beta version of the app ($versionName)")
-                dialog.setMessage("This means that the app may not work as intended. If you find any bugs, please report them to the developer. \n\n$updateDescription")
+                dialog.setTitle("${getString(R.string.BetaDisclaimerTitle)} ($versionName)")
+                dialog.setMessage("${getString(R.string.BetaDisclaimerDesc)} \n\n$updateDescription")
                 dialog.setPositiveButton("Ok") { _, _ -> }
                 dialog.show()
                 with(sharedPref.edit()) {
@@ -99,8 +98,8 @@ class StaticsMainActivity : AppCompatActivity() {
             if (!hasSeen) {
                 // show the dialog
                 val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
-                dialog.setTitle("New features for Statics ($versionName)")
-                dialog.setMessage("This update includes: \n\n$updateDescription")
+                dialog.setTitle("${getString(R.string.NewFeaturesForStatics)} ($versionName)")
+                dialog.setMessage("${getString(R.string.NewFeaturesIncludes)} \n\n$updateDescription")
                 dialog.setPositiveButton("Ok") { _, _ -> }
                 dialog.show()
                 with(sharedPref.edit()) {

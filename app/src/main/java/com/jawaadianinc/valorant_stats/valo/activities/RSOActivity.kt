@@ -46,7 +46,6 @@ class RSOActivity : AppCompatActivity() {
     private lateinit var runnable: Runnable
     private lateinit var progressBar: ProgressBar
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rsoactivity)
@@ -58,9 +57,7 @@ class RSOActivity : AppCompatActivity() {
         code = data!!.getQueryParameter("code")
         updateText.text = getString(R.string.TimeToStealData)
 
-        val confirmUserText: TextView = findViewById(R.id.confirmUserText)
         val confirmButton: Button = findViewById(R.id.confirmUserButton)
-        confirmUserText.alpha = 0f
         confirmButton.alpha = 0f
         confirmButton.translationY = 50f
 
@@ -74,7 +71,6 @@ class RSOActivity : AppCompatActivity() {
                 imagesURL.add(imageURL["largeArt"].toString())
             }
         }
-
 
         progressBar = findViewById(R.id.progressBar3)
         imagebackground = findViewById(R.id.imageView5)

@@ -353,7 +353,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/baloo_bhai"
-                    android:text="LIVE"
+                    android:text="@string/s25"
                     android:textColor="#FFFFFF"
                     android:textSize="20dp"
                     android:textStyle="bold"
@@ -448,7 +448,7 @@
                             android:fontFamily="@font/lalezar"
                             android:text="Daily Offers"
                             android:textColor="#FFFFFF"
-                            android:textSize="25dp"
+                            android:textSize="16dp"
                             android:textStyle="bold" />
 
                         <!-- A timer in the top right corner that counts down -->
@@ -462,7 +462,7 @@
                             android:fontFamily="@font/baloo_bhai"
                             android:text="00:00:00"
                             android:textColor="#FFFFFF"
-                            android:textSize="20dp"
+                            android:textSize="16dp"
                             android:textStyle="bold" />
 
                         <!-- A listview under textView33 for Daily store items -->
@@ -478,7 +478,7 @@
                             android:elevation="12dp"
                             app:cardCornerRadius="20dp">
 
-                            <ListView
+                            <com.jawaadianinc.valorant_stats.valo.activities.new_ui.WrapContentListView
                                 android:id="@+id/playerStoreListView"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -501,7 +501,7 @@
                             android:layout_marginBottom="16dp"
                             android:text="Current Balance:"
                             android:textColor="#FFFFFF"
-                            android:textSize="20dp"
+                            android:textSize="16dp"
                             android:textStyle="bold" />
 
                         <!-- An imageview on the very right hand side called "RPImage" -->
@@ -671,7 +671,7 @@
                             android:textColor="#FFFFFF"
                             android:textSize="18dp" />
 
-                        <ListView
+                        <com.jawaadianinc.valorant_stats.valo.activities.new_ui.WrapContentListView
                             android:id="@+id/new_partyMembersListView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
