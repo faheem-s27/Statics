@@ -37,8 +37,8 @@ import java.net.URL
 
 class RSOActivity : AppCompatActivity() {
     private var code: String? = null
-    var secret: String? = null
-    var base64encode: String? = null
+    private var secret: String? = null
+    private var base64encode: String? = null
     private var redirectURL = "https://statics-fd699.web.app/authorize.html"
     private lateinit var imagebackground: ImageView
     private val imagesURL = java.util.ArrayList<String>()
@@ -56,7 +56,7 @@ class RSOActivity : AppCompatActivity() {
         val data: Uri? = intent?.data
         val updateText: TextView = findViewById(R.id.infoText)
         code = data!!.getQueryParameter("code")
-        updateText.text = "Time to steal your data"
+        updateText.text = getString(R.string.TimeToStealData)
 
         val confirmUserText: TextView = findViewById(R.id.confirmUserText)
         val confirmButton: Button = findViewById(R.id.confirmUserButton)
@@ -89,7 +89,7 @@ class RSOActivity : AppCompatActivity() {
         secret = BuildConfig.RIOT_SECRET
         val toBeEncoded = "statics:$secret"
         base64encode = Base64.encodeToString(toBeEncoded.toByteArray(), Base64.NO_WRAP)
-        updateText.text = "Giving you gun buddies"
+        updateText.text = getString(R.string.giving_you_gun_buddies)
         getToken()
     }
 
@@ -97,7 +97,7 @@ class RSOActivity : AppCompatActivity() {
         val updateText: TextView = findViewById(R.id.infoText)
         try {
             val sharedPreferences = this.getSharedPreferences("auth", Context.MODE_PRIVATE)
-            val BearerToken = Credentials.basic("statics", secret!!)
+            val bearerToken = Credentials.basic("statics", secret!!)
 
             val client = OkHttpClient()
             val urlBuilder: HttpUrl.Builder =
@@ -112,7 +112,7 @@ class RSOActivity : AppCompatActivity() {
 
             val request = Request.Builder()
                 .url(url)
-                .addHeader("Authorization", BearerToken)
+                .addHeader("Authorization", bearerToken)
                 .post(formBody)
                 .build()
 
@@ -124,7 +124,7 @@ class RSOActivity : AppCompatActivity() {
                 val idToken = json.getString("id_token")
 
                 val editor = sharedPreferences.edit()
-                editor.putString("bearerToken", BearerToken)
+                editor.putString("bearerToken", bearerToken)
                 editor.putString("accessToken", accessToken)
                 editor.putString("refreshToken", refreshToken)
                 editor.putString("idToken", idToken)
@@ -132,7 +132,7 @@ class RSOActivity : AppCompatActivity() {
 
                 progressBar.progress = 40
                 uiThread {
-                    updateText.text = "Setting your account to Iron"
+                    updateText.text = getString(R.string.setting_your_account_to_iron)
                     getUserInfo(accessToken)
                 }
             }
@@ -177,8 +177,8 @@ class RSOActivity : AppCompatActivity() {
 
                 uiThread {
                     progressBar.progress = 90
-                    updateText.text = "Click the button to prove your alive"
-                    confirmUser(puuid, gameName, gameTag, region, secret!!)
+                    updateText.text = getString(R.string.ClickButtonToProveAlive)
+                    confirmUser(puuid, gameName, gameTag, region)
                 }
             }
         } catch (e: Exception) {
@@ -191,12 +191,11 @@ class RSOActivity : AppCompatActivity() {
         puuid: String,
         gameName: String,
         gameTag: String,
-        region: String,
-        key: String
+        region: String
     ) {
         val updateText: TextView = findViewById(R.id.infoText)
         val confirmButton: Button = findViewById(R.id.confirmUserButton)
-        confirmButton.text = "$gameName#$gameTag"
+        "$gameName#$gameTag".also { confirmButton.text = it }
         confirmButton.animate().alpha(1f).translationYBy(-50f).duration = 500
 
         confirmButton.setOnClickListener {
@@ -204,9 +203,13 @@ class RSOActivity : AppCompatActivity() {
             val playerdb = PlayerDatabase(this)
             if (playerdb.addPlayer(gameName, gameTag, puuid, region)) {
                 progressBar.progress = 100
-                updateText.text = "You did it $gameName!"
+                "${this.getString(R.string.you_did_it)}$gameName!".also { updateText.text = it }
                 //take user to main valorant screen
-                Toast.makeText(this, "Welcome $gameName!", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "${getString(R.string.welcome_gamename)} $gameName!",
+                    Toast.LENGTH_LONG
+                ).show()
 
                 val widgetIntent = Intent(this, LastMatchWidget::class.java)
                 widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
@@ -221,7 +224,11 @@ class RSOActivity : AppCompatActivity() {
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout)
                 finish()
             } else {
-                Toast.makeText(this, "Error occurred while saving :(", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.error_occurred_while_saving),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

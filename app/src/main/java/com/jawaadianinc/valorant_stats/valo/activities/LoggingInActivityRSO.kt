@@ -96,7 +96,7 @@ class LoggingInActivityRSO : AppCompatActivity() {
             } else {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Error")
-                builder.setMessage("Please accept the terms and conditions to continue")
+                builder.setMessage(getString(R.string.acceptTermsConditions))
                 builder.setPositiveButton("OK") { dialog, _ ->
                     dialog.dismiss()
                 }
@@ -111,7 +111,7 @@ class LoggingInActivityRSO : AppCompatActivity() {
         howitworks.setOnClickListener {
             // show an alert dialog that explains the process of RSO taking in the token and how it does not store any passwords
             val alertDialog = AlertDialog.Builder(this)
-            alertDialog.setTitle("How it works")
+            alertDialog.setTitle(getString(R.string.how_it_works))
             alertDialog.setMessage(msg)
             alertDialog.setPositiveButton("OK") { dialog, which ->
                 dialog.dismiss()
