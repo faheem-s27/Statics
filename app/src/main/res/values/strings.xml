@@ -24,16 +24,11 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-
     <string name="Share_Profile_URL">Anyone with access to the link can view your matches and rank. If you are not sure if you want to share your profile, please do not share it!</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
-
 
     <string name="long_shortcut">See your rank history!</string>
     <string name="short_shortcut">Past ranks</string>
@@ -43,4 +38,10 @@
     <string name="title_notifications">Notifications</string>
     <string name="current_rank">Current Rank:</string>
     <string name="title_activity_statics_main">StaticsMainActivity</string>
+    <string name="statics_riot_endorsement">Statics isn\'t endorsed by Riot Games and doesn\'t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</string>
+    <string name="read_TCs"><![CDATA[I have read and agree to the T&C\'s linked below]]></string>
+    <string name="sign_in_with_riot">Sign in with Riot</string>
+    <string name="the_first_app_with_a_minimap">The first app with a minimap</string>
+    <string name="riot_token_description">When signing in with Riot, your credentials are sent to Riot\'s servers and a token is returned. This token is then used to get your account details like your name.\nThe token is then deleted from the server and is not stored anywhere. The server only stores your account information, which is used to display your stats in the app.\n\nStatics does not store any passwords!</string>
+
 </resources>

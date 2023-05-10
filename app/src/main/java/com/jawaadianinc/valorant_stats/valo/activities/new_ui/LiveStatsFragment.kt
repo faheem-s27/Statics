@@ -1725,8 +1725,6 @@ class LiveStatsFragment : Fragment() {
         spinner?.setSelection(currentModeSelectedIndex)
         handlePartyState(partyState!!, previousState, isReady)
         Log.d("LIVE_STATS_PARTY_STATUS", "Party state: $body")
-
-
     }
 
     private fun handlePartyState(

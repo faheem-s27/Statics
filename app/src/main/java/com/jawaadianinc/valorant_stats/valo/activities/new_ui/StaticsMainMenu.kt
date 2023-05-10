@@ -308,14 +308,17 @@ class StaticsMainMenu : Fragment() {
 
                     // send this error to the firebase database
                     val error = hashMapOf(
-                        "errorCode" to "Error Code: ${lastMatchData.getInt("status")}",
-                        "errorMessage" to "JSON: $lastMatchData",
+                        "errorCode" to "Error Code: ${lastMatchData.getInt("status")} ${
+                            ranksData.getInt(
+                                "status"
+                            )
+                        }",
+                        "errorMessage" to "JSON: $lastMatchData \n $ranksData",
                         "playerName" to playerName,
                         "region" to region,
-                        "key" to key,
                         "time" to convertTime(System.currentTimeMillis()),
-
-                        )
+                        "url" to allmatches + "\n" + ranksURL
+                    )
                     FirebaseDatabase.getInstance().reference.child("Statics/Errors/")
                         .child("NewMainMenu").push().setValue(error)
 

@@ -105,12 +105,14 @@ class LoggingInActivityRSO : AppCompatActivity() {
             }
         }
 
+        val msg = getString(R.string.riot_token_description)
+
         val howitworks: FloatingActionButton = findViewById(R.id.howitworksBT)
         howitworks.setOnClickListener {
             // show an alert dialog that explains the process of RSO taking in the token and how it does not store any passwords
             val alertDialog = AlertDialog.Builder(this)
             alertDialog.setTitle("How it works")
-            alertDialog.setMessage("When signing in with Riot, your credentials are sent to Riot's servers and a token is returned. This token is then used to get your account details like your name.\nThe token is then deleted from the server and is not stored anywhere. The server only stores your account information, which is used to display your stats in the app.\n\nStatics does not store any passwords!")
+            alertDialog.setMessage(msg)
             alertDialog.setPositiveButton("OK") { dialog, which ->
                 dialog.dismiss()
             }
