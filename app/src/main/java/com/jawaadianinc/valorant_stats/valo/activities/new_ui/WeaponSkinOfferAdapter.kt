@@ -48,8 +48,11 @@ class WeaponSkinOfferAdapter(
 
         Log.d("LIVE_STATS_COLOUR", colourHex)
 
-        val layout = row.findViewById(R.id.background) as View
+        val layout = row.findViewById(R.id.playerStoreListView_circle) as View
         layout.setBackgroundColor(android.graphics.Color.parseColor(colourHex))
+
+        // make displayname colour the same colour
+        displayName.setTextColor(android.graphics.Color.parseColor("#${colour.substring(0, colour.length - 2)}"))
 
         Picasso
             .get()
@@ -74,10 +77,10 @@ class WeaponSkinOfferAdapter(
         val green = hexColor.substring(2, 4).toInt(16)
         val blue = hexColor.substring(4, 6).toInt(16)
 
-        // Shift each color component towards black by 50%
-        val darkerRed = (red shr 1) and 0x7F
-        val darkerGreen = (green shr 1) and 0x7F
-        val darkerBlue = (blue shr 1) and 0x7F
+        // Shift each color component towards black by 75%
+        val darkerRed = (red * 0.25).toInt()
+        val darkerGreen = (green * 0.25).toInt()
+        val darkerBlue = (blue * 0.25).toInt()
 
         // Convert the darker RGB values back to hex
         return String.format("#%02X%02X%02X", darkerRed, darkerGreen, darkerBlue)
