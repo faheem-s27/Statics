@@ -1017,11 +1017,6 @@ class LiveStatsFragment : Fragment() {
 
             val weaponSkinOffer = WeaponSkinOffer(displayName, displayIcon, cost, rarity)
             weaponsSkins.add(weaponSkinOffer)
-
-            Log.d(
-                "LIVE_STATS_STOREFRONT",
-                "OfferID: $offerID Cost: $cost Name: $displayName Image: $displayIcon"
-            )
         }
 
         val adapter = WeaponSkinOfferAdapter(requireActivity(), weaponsSkins)

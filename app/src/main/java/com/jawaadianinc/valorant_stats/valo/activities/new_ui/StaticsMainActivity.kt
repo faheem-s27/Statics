@@ -61,7 +61,7 @@ class StaticsMainActivity : AppCompatActivity() {
 
         // get the value from shared preferences
         UserLocale = sharedPref.getString("locale", "")!!
-        Toast.makeText(this, "Device language: $UserLocale", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, "Device language: $UserLocale", Toast.LENGTH_SHORT).show()
 
         val updateDescription =
             "- Testing language selector in Extras for Assets"

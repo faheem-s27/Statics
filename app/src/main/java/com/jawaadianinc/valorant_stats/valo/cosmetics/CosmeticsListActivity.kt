@@ -52,7 +52,7 @@ class CosmeticsListActivity : AppCompatActivity() {
         LANGUAGE = sharedPref.getString("locale", "").toString()
         LANGUAGE = "?language=$LANGUAGE"
 
-        Toast.makeText(this, "Language: $LANGUAGE", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, "Language: $LANGUAGE", Toast.LENGTH_SHORT).show()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar3)
         setSupportActionBar(toolbar)
