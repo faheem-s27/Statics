@@ -177,7 +177,7 @@ class MatchDetailsFragment : Fragment() {
                     val progress: ProgressBar = view.findViewById(R.id.progress)
                     progress.visibility = View.INVISIBLE
                     AlertDialog.Builder(requireActivity()).setTitle("Error!")
-                        .setMessage("There was an an error loading the match due to an unsupported game mode. Please try a different match.")
+                        .setMessage("This game mode is not fully supported yet! But you can still view some details!")
                         .setPositiveButton(android.R.string.ok) { _, _ -> }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }
