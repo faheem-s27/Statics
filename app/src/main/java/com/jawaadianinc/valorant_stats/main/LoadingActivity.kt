@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats.main
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -37,7 +36,6 @@ class LoadingActivity : AppCompatActivity() {
 
     lateinit var assetsDB: AssetsDatabase
 
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)
@@ -59,11 +57,11 @@ class LoadingActivity : AppCompatActivity() {
         if (!isNetworkAvailable()) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Error!")
-            builder.setMessage("Statics requires an active internet connection!")
-            builder.setPositiveButton("Retry") { _, _ ->
+            builder.setMessage(getString(R.string.s131))
+            builder.setPositiveButton(getString(R.string.s132)) { _, _ ->
                 recreate()
             }
-            builder.setNegativeButton("Exit") { _, _ ->
+            builder.setNegativeButton(getString(R.string.s133)) { _, _ ->
                 finish()
             }
             builder.setCancelable(false)
@@ -105,24 +103,24 @@ class LoadingActivity : AppCompatActivity() {
             // for each json
             for (i in 0 until jsonArray.length()) {
                 val jsonObject = jsonArray.getJSONObject(i)
-                var UUID = ""
+                var uuid = ""
                 var name = ""
                 var imageString = ""
                 var bitmap: Bitmap? = null
 
                 if (type == "Agent") {
                     name = jsonObject.getString("displayName")
-                    UUID = jsonObject.getString("uuid")
+                    uuid = jsonObject.getString("uuid")
                     imageString = jsonObject.getString("displayIcon")
                 }
                 if (type == "Map") {
                     name = jsonObject.getString("displayName")
-                    UUID = jsonObject.getString("uuid")
+                    uuid = jsonObject.getString("uuid")
                     imageString = jsonObject.getString("listViewIcon")
                 }
                 if (type == "Title") {
                     name = jsonObject.getString("titleText")
-                    UUID = jsonObject.getString("uuid")
+                    uuid = jsonObject.getString("uuid")
                     bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
                 }
 
@@ -131,7 +129,7 @@ class LoadingActivity : AppCompatActivity() {
                     bitmap = Picasso.get().load(imageString).get()
                 }
 
-                assetsDB.checkAndAddData(UUID, type, name, bitmap!!, assetsDB)
+                assetsDB.checkAndAddData(uuid, type, name, bitmap!!, assetsDB)
                 withContext(Dispatchers.Main) {
                     //updateText.text = "Loading $type: $name"
                 }
@@ -216,11 +214,11 @@ class LoadingActivity : AppCompatActivity() {
             }
 
         } else {
-            val PUUID =
+            val puuid =
                 PlayerDatabase(this).getPUUID(valoName.split("#")[0], valoName.split("#")[1])
             val intent = Intent(this, StaticsMainActivity::class.java)
             intent.putExtra("key", key)
-            intent.putExtra("region", PlayerDatabase(this).getRegion(PUUID))
+            intent.putExtra("region", PlayerDatabase(this).getRegion(puuid))
             intent.putExtra("playerName", valoName)
             intent.putExtra("playerImageID", getPlayerImage(valoName))
 
