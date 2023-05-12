@@ -216,7 +216,7 @@ class LiveStatsFragment : Fragment() {
             val builder = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.s33))
                 .setMessage(
-                    getString(R.string.s34)
+                    getString(R.string.s34) + " 🦆❤️"
                 )
                 .setPositiveButton("OK", null)
 

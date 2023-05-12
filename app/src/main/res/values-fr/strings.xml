@@ -36,7 +36,7 @@
     <string name="s31">Bienvenue dans Live ! </string>
     <string name="s32">Démarrer" </string>
     <string name="s33">Pourquoi un mot de passe ? </string>
-    <string name="s34">Malheureusement, Statics a besoin de votre nom d\'utilisateur et de votre mot de passe Riot pour utiliser le mode en direct, car le mot de passe est nécessaire pour authentifier votre compte et est utilisé pour obtenir les données de Valorant Le mot de passe n\'est stocké nulle part et n\'est utilisé que pour authentifier votre compte. Je ne vais pas m\'étendre sur le sujet. En raison de la manière dont Statics utilise l\'API, je pense qu\'il n\'y a pas d\'autre moyen de s\'identifier que de demander aux gens d\'entrer directement leurs informations d\'identification. Dans ces conditions, il n\'y a pas vraiment de bon moyen pour quiconque de s'assurer que ses informations d'identification restent en sécurité. Pour ce que cela vaut : - Vos informations d'identification ne quittent jamais votre appareil que sous la forme d'une demande de connexion directe à Riot. Elles ne sont jamais stockées ou envoyées ailleurs. - Vous pouvez activer l'authentification à deux facteurs, afin de disposer d'une couche de sécurité supplémentaire en cas de problème. Le code est open-source et visible sur GitHub (en attente) ; vous pouvez le construire vous-même si vous voulez être sûr de ce qui fonctionne. TL; DR : vous devrez me croire sur parole. 🦆❤️ </string>
+    <string name="s34">Malheureusement, Statics a besoin de votre nom d\'utilisateur et de votre mot de passe Riot pour utiliser le mode en direct, car le mot de passe est nécessaire pour authentifier votre compte et est utilisé pour obtenir les données de Valorant Le mot de passe n\'est stocké nulle part et n\'est utilisé que pour authentifier votre compte. Je ne vais pas m\'étendre sur le sujet. En raison de la manière dont Statics utilise l\'API, je pense qu\'il n\'y a pas d\'autre moyen de s\'identifier que de demander aux gens d\'entrer directement leurs informations d\'identification. Dans ces conditions, il n\'y a pas vraiment de bon moyen pour quiconque de \'assurer que ses informations \'identification restent en sécurité. Pour ce que cela vaut : - Vos informations \'identification ne quittent jamais votre appareil que sous la forme \'une demande de connexion directe à Riot. Elles ne sont jamais stockées ou envoyées ailleurs. - Vous pouvez activer \'authentification à deux facteurs, afin de disposer \'une couche de sécurité supplémentaire en cas de problème. Le code est open-source et visible sur GitHub (en attente) ; vous pouvez le construire vous-même si vous voulez être sûr de ce qui fonctionne. TL; DR : vous devrez me croire sur parole. 🦆❤️ </string>
     <string name="s35">Pourquoi dois-je saisir mon mot de passe ?" </string>
     <string name="s36">Nom d\'utilisateur/mot de passe" </string>
     <string name="s37">Saisir le nom d\'utilisateur et le mot de passe" </string>
@@ -103,7 +103,7 @@
     <string name="s98">Voir les logs" </string>
     <string name="s99">Rafraîchir" </string>
     <string name="s100">Mise à jour" </string>
-    <string name="s101">Ces statistiques ne sont mises à jour qu\'une fois par jour, il est donc possible qu'elles ne soient pas exactes</string>
+    <string name="s101">Ces statistiques ne sont mises à jour qu\'une fois par jour, il est donc possible qu\'elles ne soient pas exactes</string>
     <string name="s102">Avis de non-responsabilité" </string>
     <string name="s103">Chargement de l\'historique du classement" </string>
     <string name="s104">Activer les dates" </string>
@@ -130,7 +130,7 @@
     <string name="s125">Correspondances x/X traitées </string>
     <string name="s126">La limite de la demande a été atteinte, veuillez réessayer dans quelques minutes" </string>
     <string name="s127">Vos matchs ont été sauvegardés ! Ils se chargeront plus rapidement la prochaine fois" </string>
-    <string name="s128">Votre cache de matchs a dépassé les 100 matchs.\NStatics va supprimer les matchs les plus anciens pour économiser de l'espace !" </string>
+    <string name="s128">Votre cache de matchs a dépassé les 100 matchs.\NStatics va supprimer les matchs les plus anciens pour économiser de \'espace !" </string>
     <string name="s129">Taille de la base de données des correspondances" </string>
     <string name="s130">L\'espace de stockage a été libéré ! Vos dernières correspondances sont toujours sauvegardées" </string>
     <string name="s131">Statics nécessite une connexion internet active !" </string>
