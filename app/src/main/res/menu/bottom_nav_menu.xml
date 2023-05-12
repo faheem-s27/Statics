@@ -4,16 +4,16 @@
     <item
         android:id="@+id/navigation_maps"
         android:icon="@drawable/map"
-        android:title="Maps" />
+        android:title="@string/s192" />
 
     <item
         android:id="@+id/navigation_agents"
         android:icon="@drawable/buddiesicon"
-        android:title="Agents" />
+        android:title="@string/s193" />
 
     <item
         android:id="@+id/navigation_weapons"
         android:icon="@drawable/gunicon"
-        android:title="Weapons" />
+        android:title="@string/s194" />
 
 </menu>

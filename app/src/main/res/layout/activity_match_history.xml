@@ -26,7 +26,7 @@
             android:gravity="center"
             android:minHeight="?actionBarSize"
             android:padding="@dimen/appbar_padding"
-            android:text="Processing Match"
+            android:text="@string/s106"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
             android:textColor="#FFFFFF"

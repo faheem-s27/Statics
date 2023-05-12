@@ -16,7 +16,8 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONObject
 import java.net.URL
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 
 class AssetsFragment : Fragment() {
     private lateinit var assetsTextView: TextView
@@ -38,17 +39,17 @@ class AssetsFragment : Fragment() {
         assetListView = view.findViewById(R.id.new_AssetsListView)
         assetsTextView.text = "Assets"
         assets = ArrayList()
-        assets.add("Agents")
-        assets.add("Buddies")
-        assets.add("Bundles")
-        assets.add("Competitive Tiers")
-        assets.add("Game Modes")
-        assets.add("Level Borders")
-        assets.add("Maps")
-        assets.add("Player Cards")
-        assets.add("Player Titles")
-        assets.add("Sprays")
-        assets.add("Weapons")
+        assets.add(getString(R.string.s79))
+        assets.add(getString(R.string.s80))
+        assets.add(getString(R.string.s81))
+        assets.add(getString(R.string.s82))
+        assets.add(getString(R.string.s83))
+        assets.add(getString(R.string.s84))
+        assets.add(getString(R.string.s85))
+        assets.add(getString(R.string.s86))
+        assets.add(getString(R.string.s87))
+        assets.add(getString(R.string.s88))
+        assets.add(getString(R.string.s89))
         getAssets(assets)
 
         val bg = view.findViewById<ImageView>(R.id.new_AssetsBackground)

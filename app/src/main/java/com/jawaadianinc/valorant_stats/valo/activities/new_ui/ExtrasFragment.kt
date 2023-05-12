@@ -8,7 +8,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -105,16 +111,18 @@ class SettingsFragment : Fragment() {
                 // Process the donation and update UI accordingly
                 Toast.makeText(
                     requireActivity(),
-                    "Thank you for your donation!",
+                    getString(R.string.s162),
                     Toast.LENGTH_SHORT
                 ).show()
 
             } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
                 // Handle user cancellation
-                Toast.makeText(requireActivity(), "Donation cancelled", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), getString(R.string.s163), Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 // Handle other billing errors
-                Toast.makeText(requireActivity(), "Donation failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), getString(R.string.s164), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -258,9 +266,9 @@ class SettingsFragment : Fragment() {
             startActivity(Intent(requireActivity(), LoggingInActivityRSO::class.java))
             activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             activity?.finish()
-            Toast.makeText(requireActivity(), "Logged out!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), getString(R.string.s160), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(requireActivity(), "Error logging out O_o", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), getString(R.string.s161), Toast.LENGTH_SHORT).show()
         }
     }
 

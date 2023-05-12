@@ -115,7 +115,7 @@
     <string name="s111">Карта спайка</string>
     <string name="s112">Карта убийств</string>
     <string name="s113">Строка убийств</string>
-    <string name="s114">Раунд X</string>
+    <string name="s114">Раунд</string>
     <string name="s115">Все раунды</string>
     <string name="s116">Скоро…</string>
     <string name="s117">Устранены, Бомба разминирована, Время вышло, Ничья</string>
@@ -123,7 +123,7 @@
     <string name="s119">Синие/Красные выиграли</string>
     <string name="s120">Спайк установлен X</string>
     <string name="s121">Просмотреть агентов</string>
-    <string name="s122">Убит используя X"</string>
+    <string name="s122">Убит используя</string>
     <string name="s123">Получение последних матчей</string>
     <string name="s124">История матчей</string>
     <string name="s125">Обработано x/X матчей"</string>

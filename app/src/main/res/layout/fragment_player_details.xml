@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Team"
+                android:text="@string/s207"
                 android:textColor="#FFFFFF" />
 
             <RadioButton
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Score"
+                android:text="@string/s208"
                 android:textColor="#FFFFFF" />
 
             <RadioButton
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Kills"
+                android:text="@string/s209"
                 android:textColor="#FFFFFF" />
 
             <RadioButton
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Deaths"
+                android:text="@string/s210"
                 android:textColor="#FFFFFF" />
 
             <RadioButton
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Assists"
+                android:text="@string/s211"
                 android:textColor="#FFFFFF" />
 
             <RadioButton
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Names"
+                android:text="@string/s212"
                 android:textColor="#FFFFFF" />
 
             <RadioButton
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Levels"
+                android:text="@string/s213"
                 android:textColor="#FFFFFF" />
 
             <RadioButton
@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Rank"
+                android:text="@string/s214"
                 android:textColor="#FFFFFF" />
 
         </RadioGroup>
@@ -119,10 +119,12 @@
 
     <TextView
         android:id="@+id/textView20"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:fontFamily="@font/baloo_bhai"
-        android:text="Processing player stats"
+        android:text="@string/s215"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="20dp"

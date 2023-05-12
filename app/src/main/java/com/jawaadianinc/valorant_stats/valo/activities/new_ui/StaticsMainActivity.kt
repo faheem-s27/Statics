@@ -63,7 +63,13 @@ class StaticsMainActivity : AppCompatActivity() {
         //Toast.makeText(this, "Device language: $UserLocale", Toast.LENGTH_SHORT).show()
 
         val updateDescription =
-            "- Testing language selector in Extras for Assets"
+            "- Testing languages in: - French" +
+                    "\n- Portuguese" +
+                    "\n- Portuguese (Brazil)" +
+                    "\n- Russian" +
+                    "\nThey may not be accurate so please let Dev Duckie know when that happens 🦆❤️" +
+                    "\n\n- Fixed getting stuck on 'Checking connection'" +
+                    "\n- Updated shop data visuals"
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         with(update.edit()) {

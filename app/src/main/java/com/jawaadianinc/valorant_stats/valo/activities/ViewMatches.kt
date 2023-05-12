@@ -48,7 +48,7 @@ class ViewMatches : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.title = "Match History"
+        supportActionBar?.title = getString(R.string.s124)
         toolbar.setNavigationOnClickListener {
             finish()
         }
@@ -188,7 +188,10 @@ class ViewMatches : AppCompatActivity() {
                     }
 
                     runOnUiThread {
-                        matchText.text = "Processed ${i + 1}/$numberOfMatches matches"
+                        val msg = getString(R.string.s125)
+                        val firstWord = msg.split(" ").toTypedArray()[0]
+                        val lastWord = msg.split(" ").toTypedArray()[2]
+                        matchText.text = "${firstWord} ${i + 1}/$numberOfMatches ${lastWord}"
                         progessBar.progress = i + 1
 
                         playerAgentImage += agentImage
@@ -228,7 +231,7 @@ class ViewMatches : AppCompatActivity() {
                 runOnUiThread {
                     Toast.makeText(
                         this@ViewMatches,
-                        "Request limit has been reached, please try again in a few minutes",
+                        getString(R.string.s126),
                         Toast.LENGTH_LONG
                     ).show()
 
@@ -248,7 +251,7 @@ class ViewMatches : AppCompatActivity() {
                 if (!cached) {
                     Toast.makeText(
                         this@ViewMatches,
-                        "Your matches have been saved! They will load faster next time",
+                        getString(R.string.s127),
                         Toast.LENGTH_LONG
                     ).show()
                     // set the shared preference to true so that the user doesn't get the toast message again
@@ -267,8 +270,8 @@ class ViewMatches : AppCompatActivity() {
                     val alerted = sharedPref.getBoolean("alerted", false)
                     if (!alerted) {
                         val builder = AlertDialog.Builder(this@ViewMatches)
-                        builder.setTitle("Matches Database Size")
-                        builder.setMessage("Your matches cache has exceeded 100 matches.\n\nStatics will delete the oldest matches to save space!")
+                        builder.setTitle(getString(R.string.s129))
+                        builder.setMessage(getString(R.string.s128))
                         builder.setPositiveButton("OK") { _, _ ->
                             // if it has, delete the database until it goes to 40MB
                             // set the shared preference to true so that the user doesn't get the alert message again
@@ -284,7 +287,7 @@ class ViewMatches : AppCompatActivity() {
                             // show the toast message
                             Toast.makeText(
                                 this@ViewMatches,
-                                "Storage has been freed up! Your newest matches are still saved",
+                                getString(R.string.s130),
                                 Toast.LENGTH_LONG
                             ).show()
                         }

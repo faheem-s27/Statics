@@ -80,7 +80,7 @@
             android:layout_height="match_parent"
             android:backgroundTint="#00FFFFFF"
             android:ems="10"
-            android:hint="Send a message..."
+            android:hint="@string/s183"
             android:inputType="textPersonName"
             android:paddingStart="15dp"
             android:textColor="#FFFFFF" />
@@ -116,7 +116,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:fontFamily="@font/lalezar"
-        android:text="Speaking as:"
+        android:text="@string/s174"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"

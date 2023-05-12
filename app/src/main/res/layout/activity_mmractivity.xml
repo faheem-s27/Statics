@@ -150,7 +150,7 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/lalezar"
         android:minHeight="48dp"
-        android:text="Enable dates"
+        android:text="@string/s104"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="16dp"

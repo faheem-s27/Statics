@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
+import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.R.*
 import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
 import com.jawaadianinc.valorant_stats.valo.Henrik
@@ -86,47 +87,47 @@ class MatchHistoryActivity : AppCompatActivity() {
                 tabLayout?.tabGravity = TabLayout.GRAVITY_FILL
                 tabLayout?.tabMode = TabLayout.MODE_AUTO
 
-                tabLayout?.newTab()?.setText("Overview")
+                tabLayout?.newTab()?.setText(getString(R.string.s107))
                     ?.setIcon(drawable.live).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
 
-                tabLayout?.newTab()?.setText("Details")
+                tabLayout?.newTab()?.setText(getString(R.string.s108))
                     ?.setIcon(drawable.details).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
-                tabLayout?.newTab()?.setText("Players")
+                tabLayout?.newTab()?.setText(getString(R.string.s109))
                     ?.setIcon(drawable.buddiesicon).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
-                tabLayout?.newTab()?.setText("Rounds")
+                tabLayout?.newTab()?.setText(getString(R.string.s110))
                     ?.setIcon(drawable.rounds_icno).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
 
-                tabLayout?.newTab()?.setText("Spike Map")
+                tabLayout?.newTab()?.setText(getString(R.string.s111))
                     ?.setIcon(drawable.spikeicon).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
 
-                tabLayout?.newTab()?.setText("Kill Map")
+                tabLayout?.newTab()?.setText(getString(R.string.s112))
                     ?.setIcon(drawable.killmapicon).let {
                         if (it != null) {
                             tabLayout?.addTab(it)
                         }
                     }
 
-                tabLayout?.newTab()?.setText("Kill Feed")
+                tabLayout?.newTab()?.setText(getString(R.string.s113))
                     ?.setIcon(drawable.killicon).let {
                         if (it != null) {
                             tabLayout?.addTab(it)

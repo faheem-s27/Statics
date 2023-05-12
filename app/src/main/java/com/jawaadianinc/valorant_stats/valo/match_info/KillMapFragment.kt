@@ -3,7 +3,13 @@ package com.jawaadianinc.valorant_stats.valo.match_info
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -12,7 +18,12 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
@@ -119,13 +130,13 @@ class KillMapFragment : Fragment() {
                         view.findViewById(R.id.RoundSelectorKillsSpinner)
 
                     // add "All rounds" to the top of the spinner
-                    arrayAdapter.add("All rounds")
+                    arrayAdapter.add(getString(R.string.s115))
 
                     val rounds: JSONArray =
                         jsonDetails.getJSONObject("data").getJSONArray("rounds")
                     for (i in 0 until rounds.length()) {
                         val roundNumnber = i + 1
-                        arrayAdapter.add("Round $roundNumnber")
+                        arrayAdapter.add("${getString(R.string.s114)} $roundNumnber")
                     }
 
                     spinner.adapter = arrayAdapter

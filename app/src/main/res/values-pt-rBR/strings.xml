@@ -116,7 +116,7 @@
     <string name="s111">Mapa da Spike</string>
     <string name="s112">Mapa de Kills</string>
     <string name="s113">Feed de Kills</string>
-    <string name="s114">Round X</string>
+    <string name="s114">Round</string>
     <string name="s115">Todas as rodadas</string>
     <string name="s116">Em breve</string>
     <string name="s117">Eliminado, Bomba desarmada, Tempo esgotado, Empate</string>
@@ -124,10 +124,10 @@
     <string name="s119">Azul/Vermelho ganhou</string>
     <string name="s120">Plantado por X</string>
     <string name="s121">Ver agentes</string>
-    <string name="s122">Morto usando X</string>
+    <string name="s122">Morto usando</string>
     <string name="s123">Obtendo partidas recentes</string>
     <string name="s124">Histórico de partidas</string>
-    <string name="s125">x/X Partidas processadas</string>
+    <string name="s125">Partidas x/X processadas</string>
     <string name="s126">Limite de solicitações foi atingido, por favor tente novamente em alguns minutos.</string>
     <string name="s127">Suas partidas foram salvas! Elas vão carregar mais rápido da próxima vez</string>
     <string name="s128">Seu cache de partidas excedeu 100 partidas. O Statics irá excluir as partidas mais antigas para economizar espaço!</string>

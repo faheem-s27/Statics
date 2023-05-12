@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Latest"
+                android:text="@string/s195"
                 android:textColor="#FFFFFF" />
 
             <RadioButton
@@ -56,7 +56,7 @@
                 android:layout_weight="1"
                 android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Oldest"
+                android:text="@string/s196"
                 android:textColor="#FFFFFF" />
 
             <RadioButton
@@ -136,11 +136,13 @@
         android:id="@+id/textView10"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:background="@color/ic_launcher_background"
         android:fontFamily="@font/lalezar"
         android:gravity="center"
-        android:text="Getting recent matches"
+        android:text="@string/s123"
         android:textColor="#FFFFFF"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/progressBar6"

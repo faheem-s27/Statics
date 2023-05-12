@@ -509,12 +509,10 @@ class LiveStatsFragment : Fragment() {
                     {
                         if (jsonAuthBody.getString("error") == "auth_failure") {
                             progressdialog.dismiss()
-                            val msg =
-                                getString(R.string.s42)
                             val dialog =
                                 AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-                                    .setTitle("Response from Statics")
-                                    .setMessage(msg)
+                                    .setTitle(getString(R.string.s140))
+                                    .setMessage(getString(R.string.s42))
                                     .setPositiveButton("OK") { _, _ ->
                                         // clear the username and password from authPrefs
                                         authPreferences.edit().remove("username").apply()
@@ -542,7 +540,7 @@ class LiveStatsFragment : Fragment() {
                             val msg =
                                 "An error occurred when signing in\n\n\nError message: $jsonAuthBody"
                             val dialog = AlertDialog.Builder(requireContext())
-                                .setTitle("Response from Statics")
+                                .setTitle(getString(R.string.s140))
                                 .setMessage(msg)
                                 .setPositiveButton("OK") { _, _ ->
                                     // clear the username and password from authPrefs
@@ -584,7 +582,7 @@ class LiveStatsFragment : Fragment() {
                     progressdialog.dismiss()
                     val msg = "An error occurred\n\n\nError message: $e"
                     val dialog = AlertDialog.Builder(requireContext())
-                        .setTitle("Response from Statics")
+                        .setTitle(getString(R.string.s140))
                         .setMessage(msg)
                         .setPositiveButton("OK") { _, _ ->
                             // clear the username and password from authPrefs
@@ -657,7 +655,7 @@ class LiveStatsFragment : Fragment() {
 
                     // Add any other dialog box configuration here (e.g. title, buttons)
                     builder.setTitle("2FA Code for $email")
-                    builder.setPositiveButton("Send") { _, _ ->
+                    builder.setPositiveButton(getString(R.string.s45)) { _, _ ->
                         val code =
                             dialogView.findViewById<EditText>(R.id.multifactor_code_input).text.toString()
                         send2FAcode(code, authCookieHeader, true)
@@ -747,7 +745,7 @@ class LiveStatsFragment : Fragment() {
                 if (responseMFA.code != 200) {
                     val msg = "Response code: $code\nBody: $body"
                     val dialog = AlertDialog.Builder(requireContext())
-                        .setTitle("Response from Statics 2FA")
+                        .setTitle(getString(R.string.s140))
                         .setMessage(msg)
                         .setPositiveButton("OK", null)
                     dialog.show()
@@ -757,7 +755,7 @@ class LiveStatsFragment : Fragment() {
                     if (error.isNotEmpty()) {
                         val msg = getString(R.string.s46)
                         val dialog = AlertDialog.Builder(requireContext())
-                            .setTitle("Response from Statics")
+                            .setTitle(getString(R.string.s140))
                             .setMessage(msg)
                             .setPositiveButton("OK", null)
                         dialog.show()
@@ -831,7 +829,7 @@ class LiveStatsFragment : Fragment() {
                     val body = response.body.string()
                     val msg = "Response code: $code\nBody: $body"
                     val dialog = AlertDialog.Builder(requireContext())
-                        .setTitle("Response from Entitlement Token")
+                        .setTitle(getString(R.string.s140))
                         .setMessage(msg)
                         .setPositiveButton("OK", null)
                     dialog.show()
@@ -867,7 +865,7 @@ class LiveStatsFragment : Fragment() {
                     val body = userInfoResponse.body.string()
                     val msg = "Response code: $userInfoResponseCode\nBody: $body"
                     val dialog = AlertDialog.Builder(requireContext())
-                        .setTitle("Response from User Info")
+                        .setTitle(getString(R.string.s140))
                         .setMessage(msg)
                         .setPositiveButton("OK", null)
                     dialog.show()
@@ -1702,10 +1700,14 @@ class LiveStatsFragment : Fragment() {
         // add a capital letter to the current mode selected
         var currentModeSelectedCapital =
             currentModeSelected[0].uppercaseChar() + currentModeSelected.substring(1)
-        if (currentModeSelectedCapital == "Spikerush") currentModeSelectedCapital = "Spike Rush"
-        if (currentModeSelectedCapital == "Swiftplay") currentModeSelectedCapital = "Swift Play"
-        if (currentModeSelectedCapital == "Ggteam") currentModeSelectedCapital = "Escalation"
-        if (currentModeSelectedCapital == "Onefa") currentModeSelectedCapital = "Replication"
+        if (currentModeSelectedCapital == "Spikerush") currentModeSelectedCapital =
+            getString(R.string.s147)
+        if (currentModeSelectedCapital == "Swiftplay") currentModeSelectedCapital =
+            getString(R.string.s152)
+        if (currentModeSelectedCapital == "Ggteam") currentModeSelectedCapital =
+            getString(R.string.s151)
+        if (currentModeSelectedCapital == "Onefa") currentModeSelectedCapital =
+            getString(R.string.s150)
 
         val spinner = view?.findViewById<Spinner>(R.id.new_partyGameModeSelect)
         val currentModeSelectedIndex = gameModes.indexOf(currentModeSelectedCapital)
@@ -1723,34 +1725,34 @@ class LiveStatsFragment : Fragment() {
         joinMatchButton!!.alpha = 1.0f
         joinMatchButton.isEnabled = true
         if (state == "MATCHMAKING") {
-            joinMatchButton.text = "Cancel queue"
-            changePartyStatusText("Matchmaking...")
+            joinMatchButton.text = getString(R.string.s60)
+            changePartyStatusText(getString(R.string.s59))
             hideLayoutsMatch()
             val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
             readySwitch.visibility = View.VISIBLE
         } else if (state == "DEFAULT" && previousState == "LEAVING_MATCHMAKING" || previousState == "DEFAULT") {
-            joinMatchButton.text = "Join queue"
+            joinMatchButton.text = getString(R.string.s64)
             hideLayoutsMatch()
-            changePartyStatusText("In Lobby")
+            changePartyStatusText(getString(R.string.s65))
             val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
             readySwitch.visibility = View.VISIBLE
         } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING" && !isReady!!) {
-            changePartyStatusText("Party is not ready")
-            joinMatchButton.text = "Not ready"
+            changePartyStatusText(getString(R.string.s66))
+            joinMatchButton.text = getString(R.string.s67)
             joinMatchButton.alpha = 0.5f
             joinMatchButton.isEnabled = false
             getGameInfoPlayer()
         } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING" && isReady!!) {
-            joinMatchButton.text = "Join queue"
+            joinMatchButton.text = getString(R.string.s64)
             hideLayoutsMatch()
-            changePartyStatusText("In Lobby")
+            changePartyStatusText(getString(R.string.s65))
             val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
             readySwitch.visibility = View.VISIBLE
         }
     }
 
     private fun notInGame() {
-        changePartyStatusText("Valorant not open!")
+        changePartyStatusText(getString(R.string.s53))
         val findMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
         findMatchButton!!.alpha = 0.5f
         findMatchButton.isEnabled = false
@@ -1759,7 +1761,7 @@ class LiveStatsFragment : Fragment() {
         PingsList?.visibility = View.GONE
 
         val new_partyMembersText = view?.findViewById<TextView>(R.id.new_partyMembersText)
-        new_partyMembersText?.text = "Not in a party!"
+        new_partyMembersText?.text = getString(R.string.s54)
 
         val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
         readySwitch.visibility = View.GONE
@@ -1808,7 +1810,7 @@ class LiveStatsFragment : Fragment() {
         val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
         lockInButton!!.alpha = 1.0f
         lockInButton.isEnabled = true
-        lockInButton.text = "Select Agents"
+        lockInButton.text = getString(R.string.s68)
     }
 
     private fun getWallet() {
@@ -1883,8 +1885,8 @@ class LiveStatsFragment : Fragment() {
         textViewMode?.text = "Playing $currentModeSelectedCapital"
 
         sendNotification(
-            "Match Found! $currentModeSelectedCapital",
-            "Select your agent!",
+            "${getString(R.string.s69)} $currentModeSelectedCapital",
+            getString(R.string.s70),
             "match_found"
         )
 
@@ -1896,8 +1898,8 @@ class LiveStatsFragment : Fragment() {
     private fun quitMatch(matchID: String) {
         // Show a dialog to confirm the user wants to quit the match
         val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
-        builder.setTitle("Quit match")
-        builder.setMessage("Are you sure you want to quit the match? (This could result in a penalty)")
+        builder.setTitle(getString(R.string.s72))
+        builder.setMessage(getString(R.string.s71))
         builder.setPositiveButton("Yes") { dialog, which ->
             // get the match ID
             val url =
@@ -1942,9 +1944,9 @@ class LiveStatsFragment : Fragment() {
 
         if (code == 200) {
             val agentName = AgentNamesID[agentID]
-            changePartyStatusText("Selected $agentName")
+            changePartyStatusText("${getString(R.string.s73)} $agentName")
             val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
-            agentButton?.text = "Lock in $agentName"
+            agentButton?.text = "${getString(R.string.s74)} $agentName"
         }
     }
 
@@ -1973,11 +1975,11 @@ class LiveStatsFragment : Fragment() {
 
         if (code == 200) {
             val agentName = AgentNamesID[agentID]
-            changePartyStatusText("Selected $agentName")
+            changePartyStatusText("${getString(R.string.s73)} $agentName")
             val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
             lockInButton?.isEnabled = false
             lockInButton?.alpha = 0.5f
-            lockInButton?.text = "Locked in $agentName"
+            lockInButton?.text = "${getString(R.string.s75)} $agentName"
         }
     }
 
@@ -2007,13 +2009,13 @@ class LiveStatsFragment : Fragment() {
         val response = APIRequestValorant(url, body)
         val code = response.code
         if (code == 200) {
-            changePartyStatusText("Queue changed to $mode")
+            changePartyStatusText("${getString(R.string.s76)} $mode")
             // delay coroutine to allow time for party state to change
             GlobalScope.launch {
                 delay(1000)
                 withContext(Dispatchers.Main)
                 {
-                    changePartyStatusText("In Lobby")
+                    changePartyStatusText(getString(R.string.s65))
                 }
             }
         }

@@ -7,7 +7,12 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.ListView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
@@ -20,7 +25,7 @@ import org.json.JSONObject
 import java.net.URL
 import java.time.Duration
 import java.time.Instant
-import java.util.*
+import java.util.Date
 
 
 class MatchDetailsFragment : Fragment() {
@@ -145,6 +150,7 @@ class MatchDetailsFragment : Fragment() {
                             timeInHours > 0 -> {
                                 mAdapter.add("Played $timeInHours hours ago")
                             }
+
                             else -> {
                                 mAdapter.add("Played ${d.toMinutes()} minutes ago")
                             }
@@ -152,12 +158,12 @@ class MatchDetailsFragment : Fragment() {
                     } catch (e: Exception) {
                     }
 
-                    mAdapter.add("Rounds Played: $roundsPlayed")
+                    mAdapter.add("${getString(R.string.s206)}: $roundsPlayed")
                     mAdapter.add("Map: $map")
-                    mAdapter.add("Mode: $mode")
-                    mAdapter.add("Server: $server")
-                    mAdapter.add("Started: $gameStarted")
-                    mAdapter.add("Duration: $inMinutes minutes")
+                    mAdapter.add("${getString(R.string.s201)}: $mode")
+                    mAdapter.add("${getString(R.string.s202)}: $server")
+                    mAdapter.add("${getString(R.string.s203)}: $gameStarted")
+                    mAdapter.add("${getString(R.string.s204)}: $inMinutes minutes")
 
 
                     val mapImage: ImageView = view.findViewById(R.id.mapURL)
@@ -177,7 +183,7 @@ class MatchDetailsFragment : Fragment() {
                     val progress: ProgressBar = view.findViewById(R.id.progress)
                     progress.visibility = View.INVISIBLE
                     AlertDialog.Builder(requireActivity()).setTitle("Error!")
-                        .setMessage("This game mode is not fully supported yet! But you can still view some details!")
+                        .setMessage(getString(R.string.s205))
                         .setPositiveButton(android.R.string.ok) { _, _ -> }
                         .setIcon(android.R.drawable.ic_dialog_alert).show()
                 }

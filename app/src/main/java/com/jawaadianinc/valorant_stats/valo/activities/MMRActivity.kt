@@ -2,7 +2,12 @@ package com.jawaadianinc.valorant_stats.valo.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.*
+import android.widget.ImageView
+import android.widget.ListView
+import android.widget.ProgressBar
+import android.widget.Switch
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.FirebaseApp
@@ -72,7 +77,7 @@ class MMRActivity : AppCompatActivity() {
 
         // show loading dialog
         val progressDialog =
-            ProgressDialogStatics().setProgressDialog(this, "Loading rank history...")
+            ProgressDialogStatics().setProgressDialog(this, getString(R.string.s103))
         progressDialog.show()
 
         val tierURL = "https://valorant-api.com/v1/competitivetiers"
@@ -355,7 +360,7 @@ class MMRActivity : AppCompatActivity() {
 
     private fun trytoFindMatch(gameStarting: Int) {
         val progressDialog =
-            ProgressDialogStatics().setProgressDialog(this, "Searching for match...")
+            ProgressDialogStatics().setProgressDialog(this, getString(R.string.s105))
         progressDialog.show()
 
         try {

@@ -54,7 +54,7 @@ class KillFeedAdapter(
         Picasso.get().load(killerURL[position]).into(killerImage)
         Picasso.get().load(victimURL[position]).into(victimImage)
         Picasso.get().load(weaponIcon[position]).into(weaponImage)
-        gunName.text = "Killed using " + weapon[position]
+        gunName.text = "${context.getString(R.string.s122)} " + weapon[position]
         return row
     }
 }
