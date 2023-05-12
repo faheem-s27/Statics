@@ -85,7 +85,7 @@
     <string name="s35">Why do I need to enter my password</string>
     <string name="s36">Username/password</string>
     <string name="s37">Enter username and password</string>
-    <string name="s38">Authenticating</string>
+    <string name="s38">Authenticating…</string>
     <string name="s39">The character # is not allowed</string>
     <string name="s40">Please enter a username and password</string>
     <string name="s41">Response from Auth Cookies</string>
@@ -212,7 +212,7 @@
     <string name="s162">Thank you for your donation!</string>
     <string name="s163">Donation cancelled</string>
     <string name="s164">Donation failed</string>
-    <string name="s165">Loading...</string>
+    <string name="s165">Loading…</string>
     <string name="s166">Loadout</string>
     <string name="s167">Store</string>
     <string name="s168">Current balance:</string>

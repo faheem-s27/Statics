@@ -27,8 +27,8 @@
     <string name="menu_premier">Premier</string>
     <string name="menu_extras">Дополнительно</string>
     <string name="s20">Следующие обновление через</string>
-    <string name="s22">Детали игрока</string>
-    <string name="s23">Сумма рангов</string>
+    <string name="s22">Информация игрока</string>
+    <string name="s23">Статистика ранга</string>
     <string name="s24">Последний матч</string>
     <string name="s29">История</string>
     <string name="s30">xx дней назад/недель назад</string>
@@ -56,6 +56,7 @@
     <string name="s52">Ночной маркет открыт!</string>
     <string name="s53">Valorant не открыт!</string>
     <string name="s54">Не в лобби!</string>
+    <string name="s175">Ваш наивысший ранг</string>
     <string name="s55">Выйти</string>
     <string name="s56">Вы уверены, что хотите выйти с аккаунта?</string>
     <string name="s57">Баннер/Звание/Граффити обновлены!</string>
