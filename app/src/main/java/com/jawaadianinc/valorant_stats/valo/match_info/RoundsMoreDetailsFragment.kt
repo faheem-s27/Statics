@@ -142,7 +142,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                                     spikeStats.setTextColor(Color.parseColor("#18e4b7"))
                                 }
                                 spikeStats.text =
-                                    "Planted By: ${matchDetails[6]}" +
+                                    "${getString(R.string.s231)}: ${matchDetails[6]}" +
                                             ", ${matchDetails[0]} won"
                             }
 

@@ -83,9 +83,17 @@ class RoundsDetailsFragment : Fragment() {
                         timelineView.addView(button)
                         timelineView.addView(transparentButton)
                         val ending = roundDetails.getString("end_type")
+                        val roundText = when (ending) {
+                            "Eliminated" -> getString(R.string.s225)
+                            "Bomb defused" -> getString(R.string.s229)
+                            "Bomb detonated" -> getString(R.string.s230)
+                            else -> {
+                                ending
+                            }
+                        }
                         val number = i + 1
                         teamWon += winningTeam
-                        endingType += ending
+                        endingType += roundText
                         roundNumber += number.toString()
                     }
                     progressBar.visibility = View.GONE

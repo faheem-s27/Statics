@@ -124,8 +124,6 @@ class PlayerDetailsFragment : Fragment() {
                     players.add(player)
 
                     uiThread {
-                        view.findViewById<TextView>(R.id.textView20).text =
-                            "Processed ${players.size} players"
                         playersAdapter.notifyDataSetChanged()
                     }
                 }
@@ -301,14 +299,14 @@ class PlayerDetailsFragment : Fragment() {
             val assists = currentPlayer.assists
 
             if (tier.name == "Unrated") {
-                playerstats.text = "${getString(R.string.s213)}: $level" +
+                playerstats.text = "${getString(R.string.s233)}: $level" +
                         "\n${getString(R.string.s220)}: $score" +
                         "\n${getString(R.string.s209)}: $kills" +
                         "\n${getString(R.string.s210)}: $deaths" +
                         "\n${getString(R.string.s211)}: $assists"
             } else {
                 playerstats.text =
-                    "${getString(R.string.s214)}: ${tier.name}\n${getString(R.string.s213)}: $level" +
+                    "${getString(R.string.s234)}: ${tier.name}\n${getString(R.string.s233)}: $level" +
                             "\n${getString(R.string.s220)}: $score" +
                             "\n${getString(R.string.s209)}: $kills" +
                             "\n${getString(R.string.s210)}: $deaths" +

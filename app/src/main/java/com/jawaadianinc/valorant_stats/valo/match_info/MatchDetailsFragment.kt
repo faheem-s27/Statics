@@ -126,16 +126,16 @@ class MatchDetailsFragment : Fragment() {
                             Instant.now()
                         )
                     if (didredWin) {
-                        mAdapter.add("Red won!")
+                        mAdapter.add(getString(R.string.s219))
                         val score = teams.getJSONObject("red").getString("rounds_won")
                         val lost: String = teams.getJSONObject("red").getString("rounds_lost")
-                        mAdapter.add("Score: $score : $lost")
+                        mAdapter.add("${getString(R.string.s220)}: $score : $lost")
                     } else {
-                        mAdapter.add("Blue won!")
+                        mAdapter.add(getString(R.string.s218))
                         try {
                             val score = teams.getJSONObject("blue").getString("rounds_won")
                             val lost = teams.getJSONObject("blue").getString("rounds_lost")
-                            mAdapter.add("Score: $score : $lost")
+                            mAdapter.add("${getString(R.string.s220)}: $score : $lost")
                         } catch (e: Exception) {
                         }
                     }
@@ -145,21 +145,21 @@ class MatchDetailsFragment : Fragment() {
                         val timeInHours = d.toHours()
                         when {
                             timeinDays > 0 -> {
-                                mAdapter.add("Played $timeinDays days ago")
+                                mAdapter.add("${getString(R.string.s224)} $timeinDays ${getString(R.string.s223)}")
                             }
                             timeInHours > 0 -> {
-                                mAdapter.add("Played $timeInHours hours ago")
+                                mAdapter.add("${getString(R.string.s224)} $timeInHours ${getString(R.string.s221)}")
                             }
 
                             else -> {
-                                mAdapter.add("Played ${d.toMinutes()} minutes ago")
+                                mAdapter.add("${getString(R.string.s224)} ${d.toMinutes()} ${getString(R.string.s222)}")
                             }
                         }
                     } catch (e: Exception) {
                     }
 
                     mAdapter.add("${getString(R.string.s206)}: $roundsPlayed")
-                    mAdapter.add("Map: $map")
+                    mAdapter.add("${getString(R.string.s192)}: $map")
                     mAdapter.add("${getString(R.string.s201)}: $mode")
                     mAdapter.add("${getString(R.string.s202)}: $server")
                     mAdapter.add("${getString(R.string.s203)}: $gameStarted")

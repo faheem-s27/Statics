@@ -124,7 +124,7 @@
     <string name="s122">Tué avec X</string>
     <string name="s123">Obtention des dernières parties</string>
     <string name="s124">Historique des parties</string>
-    <string name="s125">parties traitées</string>
+    <string name="s125">parties x/X traitées</string>
     <string name="s126">La limite de requêtes a été atteinte, merci de réessayer dans quelques minutes</string>
     <string name="s127">Vos parties ont été sauvegardé ! Elles chargeront plus rapidement la prochaine fois</string>
     <string name="s128">Votre cache de partie à dépasser les 100 parties. Statics va supprimer les plus récentes pour libérer de l’espace !</string>
@@ -215,5 +215,27 @@
     <string name="s213">Niveaux</string>
     <string name="s214">Ranks</string>
     <string name="s215">Traitement des statistiques du joueu</string>
+
+    <string name="s216">Choisissez un mode de jeu</string>
+    <string name="s217">Compilation des statistiques…</string>
+    <string name="s218">L’équipe Bleu a gagné !</string>
+    <string name="s219">L’équipe rouge a gagné !</string>
+    <string name="s220">Score</string>
+    <string name="s221">Il y a x heures</string>
+    <string name="s222">Il y a x minutes</string>
+    <string name="s223">Il y a x jours</string>
+    <string name="s224">Joué</string>
+    <string name="s225">Éliminé</string>
+    <string name="s226">Copier le nom</string>
+    <string name="s227">Détails du rank</string>
+    <string name="s228">Rejeter</string>
+    <string name="s229">Spike désamorcé</string>
+    <string name="s230">Le Spike a explosé</string>
+    <string name="s231">Planté par</string>
+    <string name="s232">Voir la map de désamorçage</string>
+    <string name="s233">Niveau</string>
+    <string name="s234">Rank</string>
+    <string name="s235">Il y a x semaine</string>
+
 
 </resources>

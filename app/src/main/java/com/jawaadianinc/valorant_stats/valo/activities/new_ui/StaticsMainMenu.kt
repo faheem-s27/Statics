@@ -902,7 +902,7 @@ class StaticsMainMenu : Fragment() {
     private fun loadTrackerGG(gameName: String, gameTag: String, mode: String) {
         val progressDoalog = ProgressDialog(requireActivity())
         progressDoalog.max = 5
-        progressDoalog.setMessage("Compiling stats...")
+        progressDoalog.setMessage(getString(R.string.s217))
         progressDoalog.setTitle("$gameName#$gameTag's $mode stats")
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
         progressDoalog.show()

@@ -10,7 +10,7 @@
     <string name="hyperlink">Tìm hiểu thêm về chính sách quyền riêng tư của Statics</string>
     <string name="riot_token_description">Khi đăng nhập bằng Riot, các thông tin đăng nhập của bạn được gửi đến server của Riot và một token được gửi về. Token này sau đó sẽ được dùng để lấy những thông tin như tên và chỉ số. Sau đó token sẽ bị xóa khỏi server và sẽ không được lưu trữ ở bất kì đâu. Server chỉ lưu trữ những thông tin về tài khoản của bạn, sau này được dùng để hiện chỉ số của bạn trong app. Statics sẽ không lưu lại bất kì mật khẩu nào!</string>
     <string name="how_it_works">Cách ứng dụng này hoạt động</string>
-    <string name="ClickButtonToProveAlive">Bấm nút này để nếu bạn còn sống</string>
+    <string name="ClickButtonToProveAlive">Bấm nút nếu bạn đẹp chai</string>
     <string name="TimeToStealData">Đang đánh cắp dữ liệu của bạn</string>
     <string name="giving_you_gun_buddies">Đang thêm gun buddy</string>
     <string name="setting_your_account_to_iron">Biến tài khoản của bạn thành rank Sắt</string>
@@ -24,7 +24,7 @@
     <string name="s20">Làm mới sau xx giây</string>
     <string name="menu_stats">Chỉ số</string>
     <string name="s22">Thông tin người chơi</string>
-    <string name="s23">Tổng kết rank</string>
+    <string name="s23">Xếp hạng</string>
     <string name="s24">Trận đấu gần nhất</string>
     <string name="menu_live">Trực tiếp</string>
     <string name="menu_assets">Đồ họa</string>
@@ -126,7 +126,7 @@
     <string name="s122">Hạ gục bằng</string>
     <string name="s123">Đang tải trận đấu gần đây</string>
     <string name="s124">Lịch sử đấu</string>
-    <string name="s125">Đã tải x/X trận</string>
+    <string name="s125">Đã tải x/X trận đấu</string>
     <string name="s126">Đã đạt giới hạn yêu cầu, thử lại sau vài phút</string>
     <string name="s127">Các trận đấu đã được lưu! Những lần sau load sẽ nhanh hơn</string>
     <string name="s128">Bộ nhớ trận đấu của bạn đã vượt quá 100 trận. Statics sẽ xóa bớt những trận đấu gần nhất để lấy không gian</string>
@@ -171,7 +171,7 @@
     <string name="s172">phút trước</string>
     <string name="s173">một giờ trước</string>
     <string name="s174">Trò chuyện với tư cách</string>
-    <string name="s175">Rank cao nhất của bạn</string>
+    <string name="s175">Rank cao nhất</string>
     <string name="s176">ngày trước</string>
     <string name="s177">Đầu round</string>
     <string name="s178">Trong round</string>

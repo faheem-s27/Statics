@@ -172,7 +172,7 @@
     <string name="s122">Killed using</string>
     <string name="s123">Getting recent matches</string>
     <string name="s124">Match History</string>
-    <string name="s125">Processed matches</string>
+    <string name="s125">Processed x/X matches</string>
     <string name="s126">Request limit has been reached, please try again in a few minutes</string>
     <string name="s127">Your matches have been saved! They will load faster next time</string>
     <string name="s128">Your matches cache has exceeded 100 matches.\n\nStatics will delete the oldest matches to save space!</string>

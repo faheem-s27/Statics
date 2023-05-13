@@ -135,7 +135,7 @@ Se mesmo assim você não se sentir confortável em inserir as suas credenciais 
     <string name="s122">Eliminado por uma X"</string>
     <string name="s123">A obter partidas mais recentes.</string>
     <string name="s124">Histórico de partidas</string>
-    <string name="s125">Foram processadas_partidas</string>
+    <string name="s125">Foram processadas x/X partidas</string>
     <string name="s126">O limite de solicitações foi alcançado. Por favor, tente novamente dentro de alguns minutos</string>
     <string name="s127">As suas partidas foram guardadas! Elas vão carregar mais depressa para a próxima</string>
     <string name="s128">A cache das suas partidas excedeu o limite de 100.A Statics irá excluir as partidas mais antigas para economizar o seu espaço!</string>
