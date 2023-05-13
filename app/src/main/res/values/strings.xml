@@ -183,7 +183,7 @@
     <string name="s133">Exit</string>
     <string name="s134">Please accept the terms and conditions</string>
     <string name="loading_data">Loading data…</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="s21">Stats</string>
     <string name="s25">Live</string>
 
@@ -263,4 +263,26 @@
     <string name="s213">Levels</string>
     <string name="s214">Ranks</string>
     <string name="s215">Processing player stat</string>
+
+    <string name="s216">Choose a game mode</string>
+    <string name="s217">Compiling stats…</string>
+    <string name="s218">Blue won!</string>
+    <string name="s219">Red won!</string>
+    <string name="s220">Score</string>
+    <string name="s221">hours ago</string>
+    <string name="s222">minutes ago</string>
+    <string name="s223">days ago</string>
+    <string name="s224">Played</string>
+    <string name="s225">Eliminated"</string>
+    <string name="s226">Copy name</string>
+    <string name="s227">Rank Details</string>
+    <string name="s228">Dismiss</string>
+    <string name="s229">Bomb defused</string>
+    <string name="s230">Bomb detonated</string>
+    <string name="s231">Planted by</string>
+    <string name="s232">See defused map</string>
+    <string name="s233">Level</string>
+    <string name="s234">Rank</string>
+    <string name="s235">weeks ag</string>
+
 </resources>

@@ -30,7 +30,7 @@ class ValorantUpdatesActivity : AppCompatActivity() {
         binding = ActivityValorantUpdatesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setSupportActionBar(findViewById(R.id.new_about_toolbar))
         binding.toolbarLayout.title = "Latest Updates!"
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Made By Faheem Saleem", Snackbar.LENGTH_LONG).show()
@@ -131,4 +131,3 @@ class ValorantUpdatesActivity : AppCompatActivity() {
         }
     }
 }
-

@@ -872,8 +872,9 @@ class StaticsMainMenu : Fragment() {
         // show an alert dialog with options to choose which game mode to view stats on
         val builder =
             androidx.appcompat.app.AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
-        builder.setTitle("Choose a game mode for $gameName#$gameTag")
-        val gameModes = arrayOf("Competitive", "Unrated", "Spike Rush")
+        builder.setTitle("${getString(R.string.s216)} $gameName#$gameTag")
+        val gameModes =
+            arrayOf(getString(R.string.s149), getString(R.string.s148), getString(R.string.s147))
         var mode = ""
         builder.setItems(gameModes) { _, which ->
             when (which) {
@@ -882,6 +883,7 @@ class StaticsMainMenu : Fragment() {
                     mode = "competitive"
                     loadTrackerGG(gameName, gameTag, mode)
                 }
+
                 1 -> {
                     // unrated
                     mode = "unrated"

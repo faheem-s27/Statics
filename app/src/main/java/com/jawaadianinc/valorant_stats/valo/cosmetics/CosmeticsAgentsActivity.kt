@@ -197,7 +197,8 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
     private fun loadAgentImage() {
         // get the language from shared preferences
         val sharedPref = getSharedPreferences("UserLocale", MODE_PRIVATE)
-        val LANGUAGE = sharedPref.getString("locale", "").toString()
+        var LANGUAGE = sharedPref.getString("locale", "en-US").toString()
+        if (LANGUAGE == "pt-PT") LANGUAGE = "pt-BR"
         //Toast.makeText(this, LANGUAGE, Toast.LENGTH_SHORT).show()
         val url = "https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=$LANGUAGE"
         val imageSlider = findViewById<SliderView>(R.id.imageSlider)

@@ -50,6 +50,9 @@ class CosmeticsListActivity : AppCompatActivity() {
         // get the language from shared preferences
         val sharedPref = getSharedPreferences("UserLocale", MODE_PRIVATE)
         LANGUAGE = sharedPref.getString("locale", "").toString()
+        if (LANGUAGE == "") {
+            LANGUAGE = "en-US"
+        } else if (LANGUAGE == "pt-PT") LANGUAGE = "pt-BR"
         LANGUAGE = "?language=$LANGUAGE"
 
         //Toast.makeText(this, "Language: $LANGUAGE", Toast.LENGTH_SHORT).show()

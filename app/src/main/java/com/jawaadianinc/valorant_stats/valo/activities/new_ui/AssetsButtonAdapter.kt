@@ -28,10 +28,6 @@ class AssetsButtonAdapter(
 
         assetNameTextView?.text = assetName[position]
 
-
-
-
-
         return row!!
     }
 

@@ -9,7 +9,15 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.PopupWindow
+import android.widget.ProgressBar
+import android.widget.RadioGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
@@ -223,7 +231,6 @@ class PlayerDetailsFragment : Fragment() {
             popupView.alpha = 0f
             popupView.animate().alpha(1f).setDuration(500).start()
 
-
             // get current Player from the list
             val currentPlayer = playersAdapter.getItem(position) as Player
 
@@ -294,17 +301,18 @@ class PlayerDetailsFragment : Fragment() {
             val assists = currentPlayer.assists
 
             if (tier.name == "Unrated") {
-                playerstats.text = "Level: $level" +
-                        "\nScore: $score" +
-                        "\nKills: $kills" +
-                        "\nDeaths: $deaths" +
-                        "\nAssists: $assists"
+                playerstats.text = "${getString(R.string.s213)}: $level" +
+                        "\n${getString(R.string.s220)}: $score" +
+                        "\n${getString(R.string.s209)}: $kills" +
+                        "\n${getString(R.string.s210)}: $deaths" +
+                        "\n${getString(R.string.s211)}: $assists"
             } else {
-                playerstats.text = "Rank: ${tier.name}\nLevel: $level" +
-                        "\nScore: $score" +
-                        "\nKills: $kills" +
-                        "\nDeaths: $deaths" +
-                        "\nAssists: $assists"
+                playerstats.text =
+                    "${getString(R.string.s214)}: ${tier.name}\n${getString(R.string.s213)}: $level" +
+                            "\n${getString(R.string.s220)}: $score" +
+                            "\n${getString(R.string.s209)}: $kills" +
+                            "\n${getString(R.string.s210)}: $deaths" +
+                            "\n${getString(R.string.s211)}: $assists"
             }
 
             dismissbutton.setOnClickListener {

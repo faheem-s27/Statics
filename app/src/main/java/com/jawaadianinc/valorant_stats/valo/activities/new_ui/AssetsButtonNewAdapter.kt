@@ -30,11 +30,7 @@ class AssetsButtonNewAdapter(
         val assetNameTextView: Button? = row?.findViewById(R.id.new_AssetListButton)
         val assetImage: ImageView? = row?.findViewById(R.id.new_AssetListImage)
 
-        // if the asset name has two words, then only show the second word
-        if (assetName[position].contains(" ")) {
-            val assetNameSplit = assetName[position].split(" ")
-            assetNameTextView?.text = assetNameSplit[1]
-        } else assetNameTextView?.text = assetName[position]
+        assetNameTextView?.text = assetName[position]
 
         val images = ArrayList<String>()
 
@@ -46,47 +42,79 @@ class AssetsButtonNewAdapter(
         }
 
         assetNameTextView?.setOnClickListener {
-            if (position == 0) {
-                val intent = Intent(context.requireActivity(), CosmeticsAgentsActivity::class.java)
-                intent.putExtra("data", "agent")
-                context.requireActivity().startActivity(intent)
-                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (position == 1) {
-                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
-                intent.putExtra("cosmetic", "buddies")
-                context.requireActivity().startActivity(intent)
-                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (position == 2) {
-                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
-                intent.putExtra("cosmetic", "ranks")
-                context.requireActivity().startActivity(intent)
-                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (position == 4) {
-                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
-                intent.putExtra("cosmetic", "maps")
-                context.requireActivity().startActivity(intent)
-                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (position == 3) {
-                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
-                intent.putExtra("cosmetic", "borders")
-                context.requireActivity().startActivity(intent)
-                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (position == 5) {
-                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
-                intent.putExtra("cosmetic", "cards")
-                intent.putExtra("size", "large")
-                context.requireActivity().startActivity(intent)
-                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (position == 7) {
-                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
-                intent.putExtra("cosmetic", "weapons")
-                context.requireActivity().startActivity(intent)
-                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (position == 6) {
-                val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
-                intent.putExtra("cosmetic", "sprays")
-                context.requireActivity().startActivity(intent)
-                context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+            when (position) {
+                0 -> {
+                    val intent =
+                        Intent(context.requireActivity(), CosmeticsAgentsActivity::class.java)
+                    intent.putExtra("data", "agent")
+                    context.requireActivity().startActivity(intent)
+                    context.requireActivity()
+                        .overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                }
+
+                1 -> {
+                    val intent =
+                        Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                    intent.putExtra("cosmetic", "buddies")
+                    context.requireActivity().startActivity(intent)
+                    context.requireActivity()
+                        .overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                }
+
+                2 -> {
+                    val intent =
+                        Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                    intent.putExtra("cosmetic", "ranks")
+                    context.requireActivity().startActivity(intent)
+                    context.requireActivity()
+                        .overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                }
+
+                4 -> {
+                    val intent =
+                        Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                    intent.putExtra("cosmetic", "maps")
+                    context.requireActivity().startActivity(intent)
+                    context.requireActivity()
+                        .overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                }
+
+                3 -> {
+                    val intent =
+                        Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                    intent.putExtra("cosmetic", "borders")
+                    context.requireActivity().startActivity(intent)
+                    context.requireActivity()
+                        .overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                }
+
+                5 -> {
+                    val intent =
+                        Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                    intent.putExtra("cosmetic", "cards")
+                    intent.putExtra("size", "large")
+                    context.requireActivity().startActivity(intent)
+                    context.requireActivity()
+                        .overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                }
+
+                7 -> {
+                    val intent =
+                        Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                    intent.putExtra("cosmetic", "weapons")
+                    context.requireActivity().startActivity(intent)
+                    context.requireActivity()
+                        .overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                }
+
+                6 -> {
+                    val intent =
+                        Intent(context.requireActivity(), CosmeticsListActivity::class.java)
+                    intent.putExtra("cosmetic", "sprays")
+                    context.requireActivity().startActivity(intent)
+                    context.requireActivity()
+                        .overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                }
             }
         }
 
