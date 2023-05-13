@@ -81,7 +81,7 @@
     <string name="s31">Welcome to Live!</string>
     <string name="s32">Get Started</string>
     <string name="s33">Why Password?</string>
-    <string name="s34">Unfortunately, Statics needs your Riot username and password to use the live mode as the password is required to authenticate your account and is used to get the data from Valorant. The password is not stored anywhere and is only used to authenticate your account. I will not sugarcoat things. Due to the way Statics uses the API, I believe there is no other way to sign in than to have people enter their credentials directly. Under those circumstances, there is really no good way for anyone to be sure their credentials remain safe.\n\nFor what it is worth: - Your credentials only ever leave your device in the form of a login request directly to Riot. They are never stored or sent anywhere else. - You can enable 2-factor authentication, so you would at least have another layer of security if it went bad. The code is open-source and visible on GitHub (pending); you can build it yourself if you want to be sure of what is running. TL;DR: you\'ll have to take my word for it. If you are still not comfortable with this, you can use the app without live mode.</string>
+    <string name="s34">Unfortunately, Statics needs your Riot username and password to use the live mode as the password is required to authenticate your account and is used to get the data from Valorant. The password is not stored anywhere and is only used to authenticate your account. I will not sugarcoat things. Due to the way Statics uses the API, I believe there is no other way to sign in than to have people enter their credentials directly. Under those circumstances, there is really no good way for anyone to be sure their credentials remain safe.\n\nFor what it is worth: - Your credentials only ever leave your device in the form of a login request directly to Riot. They are never stored or sent anywhere else. - You can enable 2-factor authentication, so you would at least have another layer of security if it went bad. The code is open-source and visible on GitHub (pending); you can build it yourself if you want to be sure of what is running. TL;DR: you\'ll have to take my word for it 🦆❤️. If you are still not comfortable with this, you can use the app without live mode.</string>
     <string name="s35">Why do I need to enter my password</string>
     <string name="s36">Username/password</string>
     <string name="s37">Enter username and password</string>
@@ -172,7 +172,7 @@
     <string name="s122">Killed using</string>
     <string name="s123">Getting recent matches</string>
     <string name="s124">Match History</string>
-    <string name="s125">Processed x/X matches</string>
+    <string name="s125">Processed matches</string>
     <string name="s126">Request limit has been reached, please try again in a few minutes</string>
     <string name="s127">Your matches have been saved! They will load faster next time</string>
     <string name="s128">Your matches cache has exceeded 100 matches.\n\nStatics will delete the oldest matches to save space!</string>

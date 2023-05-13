@@ -13,7 +13,7 @@ import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import org.json.JSONObject
-import java.util.*
+import java.util.Locale
 
 class LeaderboardsV2 : AppCompatActivity() {
     lateinit var region: String
@@ -55,7 +55,11 @@ class LeaderboardsV2 : AppCompatActivity() {
                 val lastUpdate = json.getLong("last_update")
                 val nextUpdate = json.getLong("next_update")
                 val msg =
-                    "Last updated: ${timeAgo(lastUpdate)}\nNext update: ${timeAgo(nextUpdate)}"
+                    "${getString(R.string.s170)}: ${timeAgo(lastUpdate)}\n${getString(R.string.s171)}: ${
+                        timeAgo(
+                            nextUpdate
+                        )
+                    }"
                 val tv = findViewById<TextView>(R.id.textView42)
                 tv.text = msg
 

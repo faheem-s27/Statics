@@ -43,49 +43,46 @@ class AssetsButtonNewAdapter(
             if (i != "") {
                 images.add(i)
             }
-            //Log.d("AssetsButtonAdapter", "Got Asset Image: $i")
         }
 
         assetNameTextView?.setOnClickListener {
-            if (assetName[position] == "Agents") {
+            if (position == 0) {
                 val intent = Intent(context.requireActivity(), CosmeticsAgentsActivity::class.java)
                 intent.putExtra("data", "agent")
                 context.requireActivity().startActivity(intent)
                 context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (assetName[position] == "Buddies") {
+            } else if (position == 1) {
                 val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
                 intent.putExtra("cosmetic", "buddies")
                 context.requireActivity().startActivity(intent)
                 context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (assetName[position] == "Competitive Tiers") {
+            } else if (position == 2) {
                 val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
                 intent.putExtra("cosmetic", "ranks")
                 context.requireActivity().startActivity(intent)
                 context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            }
-            // do the same for "Maps", "Level Borders", "Player Cards", "Weapons"
-            else if (assetName[position] == "Maps") {
+            } else if (position == 4) {
                 val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
                 intent.putExtra("cosmetic", "maps")
                 context.requireActivity().startActivity(intent)
                 context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (assetName[position] == "Level Borders") {
+            } else if (position == 3) {
                 val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
                 intent.putExtra("cosmetic", "borders")
                 context.requireActivity().startActivity(intent)
                 context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (assetName[position] == "Player Cards") {
+            } else if (position == 5) {
                 val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
                 intent.putExtra("cosmetic", "cards")
                 intent.putExtra("size", "large")
                 context.requireActivity().startActivity(intent)
                 context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (assetName[position] == "Weapons") {
+            } else if (position == 7) {
                 val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
                 intent.putExtra("cosmetic", "weapons")
                 context.requireActivity().startActivity(intent)
                 context.requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            } else if (assetName[position] == "Sprays") {
+            } else if (position == 6) {
                 val intent = Intent(context.requireActivity(), CosmeticsListActivity::class.java)
                 intent.putExtra("cosmetic", "sprays")
                 context.requireActivity().startActivity(intent)

@@ -118,7 +118,7 @@ class RoundsMoreDetailsFragment : Fragment() {
                         val dataofSpike = rounds[i] as JSONObject
                         val wasSpikePlanted = dataofSpike["bomb_planted"].toString()
                         if (wasSpikePlanted == "true") {
-                            arrayAdapter.add("Round $number")
+                            arrayAdapter.add("${getString(R.string.s114)} $number")
                         }
                     }
 

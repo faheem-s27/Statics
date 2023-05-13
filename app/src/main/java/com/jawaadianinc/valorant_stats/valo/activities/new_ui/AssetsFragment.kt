@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
@@ -41,13 +40,10 @@ class AssetsFragment : Fragment() {
         assets = ArrayList()
         assets.add(getString(R.string.s79))
         assets.add(getString(R.string.s80))
-        assets.add(getString(R.string.s81))
         assets.add(getString(R.string.s82))
-        assets.add(getString(R.string.s83))
         assets.add(getString(R.string.s84))
         assets.add(getString(R.string.s85))
         assets.add(getString(R.string.s86))
-        assets.add(getString(R.string.s87))
         assets.add(getString(R.string.s88))
         assets.add(getString(R.string.s89))
         getAssets(assets)
@@ -61,8 +57,18 @@ class AssetsFragment : Fragment() {
     private fun getAssets(assets: ArrayList<String>) {
         val images = ArrayList<String>()
 
+        val assetsList = ArrayList<String>()
+        assetsList.add("agents")
+        assetsList.add("buddies")
+        assetsList.add("competitivetiers")
+        assetsList.add("levelborders")
+        assetsList.add("maps")
+        assetsList.add("playercards")
+        assetsList.add("sprays")
+        assetsList.add("weapons")
+
         doAsync {
-            for (i in assets) {
+            for (i in assetsList) {
                 var imageString: String = ""
                 // format i to be the correct format for the api, remove spaces and replace with no spaces and lowercase
                 val formattedAssetName = i.replace(" ", "").lowercase()
@@ -89,13 +95,7 @@ class AssetsFragment : Fragment() {
                 val adapter = AssetsButtonNewAdapter(this@AssetsFragment, assets, images)
                 assetListView.adapter = adapter
                 assetListView.setOnItemClickListener { _, _, position, _ ->
-                    Toast.makeText(
-                        requireActivity(),
-                        "Clicked on ${assets[position]}",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
-                //Toast.makeText(requireActivity(), "Assets Loaded", Toast.LENGTH_SHORT).show()
                 changeText()
             }
         }

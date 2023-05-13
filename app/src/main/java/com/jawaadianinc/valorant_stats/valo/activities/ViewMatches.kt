@@ -190,7 +190,7 @@ class ViewMatches : AppCompatActivity() {
                     runOnUiThread {
                         val msg = getString(R.string.s125)
                         val firstWord = msg.split(" ").toTypedArray()[0]
-                        val lastWord = msg.split(" ").toTypedArray()[2]
+                        val lastWord = msg.split(" ").toTypedArray()[1]
                         matchText.text = "${firstWord} ${i + 1}/$numberOfMatches ${lastWord}"
                         progessBar.progress = i + 1
 

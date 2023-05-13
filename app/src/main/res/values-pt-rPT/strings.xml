@@ -63,7 +63,7 @@
     <string name="s60">Cancelar fila</string>
     <string name="s61">A autentificação expirou, reinicie o aplicativo</string>
     <string name="s62">Apenas você no grupo</string>
-    <string name="s63">X members in party</string>
+    <string name="s63">members in party</string>
     <string name="s64">Entrar na fila</string>
     <string name="s65">No lobby</string>
     <string name="s66">Grupo não está pronto</string>
@@ -76,7 +76,7 @@
     <string name="s73">Selecionado</string>
     <string name="s74">Confirmar</string>
     <string name="s75">Confirmado</string>
-    <string name="s76">Modo de jogo alterado para x</string>
+    <string name="s76">Modo de jogo alterado para</string>
     <string name="s77">No Lobby</string>
     <string name="s78">Encontre o seu asset favorito</string>
     <string name="s79">Agentes</string>
@@ -114,7 +114,7 @@
     <string name="s111">Mapa da spike</string>
     <string name="s112">Mapa de kills</string>
     <string name="s113">Feed de kills</string>
-    <string name="s114">Ronda X</string>
+    <string name="s114">Ronda</string>
     <string name="s115">Todas as rodadas</string>
     <string name="s116">Em breve</string>
     <string name="s117">Eliminado,Spike desarmada.,Tempo expirado, Empate</string>
@@ -125,7 +125,7 @@
     <string name="s122">Eliminado por uma X"</string>
     <string name="s123">Obtendo partidas mais recentes.</string>
     <string name="s124">Histórico de partidas</string>
-    <string name="s125">Foram processadas x/X partidas</string>
+    <string name="s125">Foram processadas_partidas</string>
     <string name="s126">O limite de solicitações foi alcançado. Por favor, tente novamente dentro de alguns minutos</string>
     <string name="s127">As suas partidas foram guardadas! Elas vão carregar mais depressa para a próxima</string>
     <string name="s128">A cache das suas partidas excedeu 100 partidas.O Statics irá excluir as partidas mais antigas para economizar o seu espaço!</string>

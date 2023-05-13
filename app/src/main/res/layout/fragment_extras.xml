@@ -68,7 +68,7 @@
         android:id="@+id/new_Leaderboards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@color/Valorant_Red"
         android:fontFamily="@font/lalezar_reg"
         android:gravity="center"
@@ -84,7 +84,7 @@
         app:iconTintMode="src_in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/language_selector" />
+        app:layout_constraintTop_toBottomOf="@+id/divider9" />
 
     <Button
         android:id="@+id/new_Chats"
@@ -174,6 +174,28 @@
         app:layout_constraintStart_toStartOf="@+id/new_Leaderboards"
         app:layout_constraintTop_toBottomOf="@+id/new_Donate" />
 
+    <Button
+        android:id="@+id/new_reset_language"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/Valorant_Red"
+        android:fontFamily="@font/lalezar_reg"
+        android:gravity="center"
+        android:text="Reset language"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:cornerRadius="33px"
+        app:icon="@drawable/common_full_open_on_phone"
+        app:iconSize="36dp"
+        app:iconTint="@color/light_blue_50"
+        app:iconTintMode="src_in"
+        app:layout_constraintEnd_toEndOf="@+id/new_Leaderboards"
+        app:layout_constraintStart_toStartOf="@+id/new_Leaderboards"
+        app:layout_constraintTop_toBottomOf="@+id/new_view_logs_button" />
+
     <TextView
         android:id="@+id/Extras_PlayerName"
         android:layout_width="wrap_content"
@@ -213,26 +235,5 @@
         app:layout_constraintTop_toBottomOf="@+id/new_SignOutButton" />
 
     <!-- A drop down menu under divider9 called language selector -->
-    <Spinner
-        android:id="@+id/language_selector"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/Valorant_Red"
-        android:fontFamily="@font/lalezar_reg"
-        android:gravity="center"
-        android:text="Language"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:cornerRadius="33px"
-        app:icon="@drawable/about_icon_email"
-        app:iconSize="36dp"
-        app:iconTint="@color/light_blue_50"
-        app:iconTintMode="src_in"
-        app:layout_constraintEnd_toEndOf="@+id/new_Leaderboards"
-        app:layout_constraintStart_toStartOf="@+id/new_Leaderboards"
-        app:layout_constraintTop_toBottomOf="@+id/divider9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -237,7 +237,7 @@ class LoadingActivity : AppCompatActivity() {
                 .setInterpolator {
                     it * it * it * (it * (it * 6 - 15) + 10)
                 }.start()
-            "Loading $valoName's stats".also { updateText.text = it }
+            updateText.text = getString(R.string.s165)
             updateText.animate().setDuration(1000).alpha(0f).translationY(-100f)
                 .setInterpolator {
                     it * it * it * (it * (it * 6 - 15) + 10)

@@ -46,7 +46,7 @@
     <string name="s41">Resposta dos Cookies de Autenticação</string>
     <string name="s42">A ação funcionou, porém o nome de usuário ou a senha está incorreta!</string>
     <string name="s43">An error occurred when signing inError message</string>
-    <string name="s44">Código de 2FA de" + (email</string>
+    <string name="s44">Código de 2FA de</string>
     <string name="s45">Enviar</string>
     <string name="s46">Código 2FA incorreto!</string>
     <string name="s47">Ocorreu um erro no modo liv</string>
@@ -65,7 +65,7 @@
     <string name="s60">Cancelar busca</string>
     <string name="s61">Autenticação expirou, por favor reinicie o aplicativo</string>
     <string name="s62">Somente você no grupo</string>
-    <string name="s63"> membros no grupo</string>
+    <string name="s63">membros no grupo</string>
     <string name="s64">Entrar na fila</string>
     <string name="s65">No Lobby</string>
     <string name="s66">O Grupo não está pronto</string>
@@ -78,7 +78,7 @@
     <string name="s73">Selecionado</string>
     <string name="s74">Confirmar</string>
     <string name="s75">Confirmado</string>
-    <string name="s76">Fila alterada para x</string>
+    <string name="s76">Fila alterada para</string>
     <string name="s77">No Lobby</string>
     <string name="s78">Encontre seu asset favorito</string>
     <string name="s79">Agentes</string>
@@ -127,7 +127,7 @@
     <string name="s122">Morto usando</string>
     <string name="s123">Obtendo partidas recentes</string>
     <string name="s124">Histórico de partidas</string>
-    <string name="s125">Partidas x/X processadas</string>
+    <string name="s125">Partidas processadas</string>
     <string name="s126">Limite de solicitações foi atingido, por favor tente novamente em alguns minutos.</string>
     <string name="s127">Suas partidas foram salvas! Elas vão carregar mais rápido da próxima vez</string>
     <string name="s128">Seu cache de partidas excedeu 100 partidas. O Statics irá excluir as partidas mais antigas para economizar espaço!</string>
@@ -147,7 +147,7 @@
     <string name="s142">Títulos</string>
     <string name="s143">Cards (Cards de jogador)</string>
     <string name="s144">Selecione </string>
-    <string name="s145 "> atualizado com sucesso!</string>
+    <string name="s145"> atualizado com sucesso!</string>
     <string name="s146">Erro atualizan</string>
     <string name="s147">Disputa da Spike</string>
     <string name="s148">Sem Classificação</string>

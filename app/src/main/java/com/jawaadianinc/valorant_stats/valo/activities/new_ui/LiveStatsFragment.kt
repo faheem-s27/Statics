@@ -206,6 +206,7 @@ class LiveStatsFragment : Fragment() {
         usernamepassword.setOnClickListener {
             if (username != null && password != null) {
                 authenticateUser(username, password)
+                authenticateUser(username, password)
             } else {
                 loadUI("INIT")
             }
@@ -216,7 +217,7 @@ class LiveStatsFragment : Fragment() {
             val builder = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.s33))
                 .setMessage(
-                    getString(R.string.s34) + " 🦆❤️"
+                    getString(R.string.s34)
                 )
                 .setPositiveButton("OK", null)
 
@@ -347,6 +348,9 @@ class LiveStatsFragment : Fragment() {
 
             val editTextUsername = dialogView.findViewById<EditText>(R.id.editTextUsername)
             val editTextPassword = dialogView.findViewById<EditText>(R.id.editTextPassword)
+
+            editTextUsername.hint = getString(R.string.s36).split("/")[0]
+            editTextPassword.hint = getString(R.string.s36).split("/")[1]
 
             // set a listener on the username to detect the character # and remove it
             editTextUsername.addTextChangedListener(object : TextWatcher {
@@ -654,7 +658,7 @@ class LiveStatsFragment : Fragment() {
                     builder.setView(dialogView)
 
                     // Add any other dialog box configuration here (e.g. title, buttons)
-                    builder.setTitle("2FA Code for $email")
+                    builder.setTitle("${getString(R.string.s44)} $email")
                     builder.setPositiveButton(getString(R.string.s45)) { _, _ ->
                         val code =
                             dialogView.findViewById<EditText>(R.id.multifactor_code_input).text.toString()
@@ -1645,7 +1649,7 @@ class LiveStatsFragment : Fragment() {
         } else {
             partyMemberListView?.visibility = View.VISIBLE
             view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
-                "${members.length()} ${getString(R.string.s63)} "
+                "${members.length()} ${getString(R.string.s63)}"
             partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
         }
     }

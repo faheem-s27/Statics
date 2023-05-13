@@ -223,7 +223,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
-                            android:text="Mid Round"
+                            android:text="@string/s178"
                             android:textColor="@color/white"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -252,7 +252,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
-                            android:text="Post Round"
+                            android:text="@string/s179"
                             android:textColor="@color/white"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -719,7 +719,7 @@
                             android:layout_marginBottom="32dp"
                             android:backgroundTint="@color/Valorant_Red"
                             android:fontFamily="@font/lalezar"
-                            android:text="FIND MATCH"
+                            android:text="@string/s64"
                             android:textColor="@color/white"
                             android:textSize="16dp"
                             app:cornerRadius="50dp" />
@@ -737,7 +737,7 @@
                             android:fontFamily="@font/lalezar"
                             android:text="Ready"
                             android:textColor="#FFFFFF"
-                            android:textOff="Not ready"
+                            android:textOff="@string/s67"
                             android:textOn="Ready"
                             android:textSize="18dp"
                             app:switchPadding="8dp"
@@ -789,7 +789,7 @@
                                 android:layout_marginStart="16dp"
                                 android:layout_marginBottom="16dp"
                                 android:fontFamily="@font/lalezar"
-                                android:text="Select your agent"
+                                android:text="@string/s70"
                                 android:textColor="@color/white"
                                 android:textSize="24dp" />
 
@@ -817,7 +817,7 @@
                                 android:layout_marginBottom="16dp"
                                 android:backgroundTint="@color/Valorant_Red"
                                 android:fontFamily="@font/lalezar"
-                                android:text="Select an agent"
+                                android:text="@string/s144"
                                 android:textColor="@color/white"
                                 android:textSize="16dp"
                                 app:cornerRadius="50dp" />
@@ -833,7 +833,7 @@
                                 android:layout_marginBottom="16dp"
                                 android:backgroundTint="@color/Valorant_Red"
                                 android:fontFamily="@font/lalezar"
-                                android:text="Quit"
+                                android:text="@string/s72"
                                 android:textColor="@color/white"
                                 android:textSize="16dp"
                                 app:cornerRadius="50dp" />

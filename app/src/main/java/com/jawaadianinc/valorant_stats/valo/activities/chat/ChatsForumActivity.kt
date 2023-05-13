@@ -1,10 +1,18 @@
 package com.jawaadianinc.valorant_stats.valo.activities.chat
 
 import android.os.Bundle
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ListView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityChatsForumBinding
 import com.squareup.picasso.Picasso
@@ -53,7 +61,7 @@ class ChatsForumActivity : AppCompatActivity() {
             .transform(BlurTransformation(this)).into(backGround)
 
         speakerText = binding.chatSpeaker
-        speakerText.text = "Speaking as: $playerName"
+        speakerText.text = "${getString(R.string.s174)}: $playerName"
         speakerImage = binding.chatSpeakerIcon
         Picasso
             .get()

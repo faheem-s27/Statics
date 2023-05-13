@@ -40,36 +40,26 @@ class StaticsMainActivity : AppCompatActivity() {
         key = intent.getStringExtra("key").toString()
         playerImageID = intent.getStringExtra("playerImageID").toString()
 
+        val UserLocalePrefs = getSharedPreferences("UserLocale", Context.MODE_PRIVATE)
+        locale = UserLocalePrefs.getString("locale", "").toString()
+
         playerCardSmall = "https://media.valorant-api.com/playercards/$playerImageID/smallart.png"
         playerCardLarge = "https://media.valorant-api.com/playercards/$playerImageID/largeart.png"
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
 
-        // check if userlocale is stored in shared preferences
-        val sharedPref = getSharedPreferences("UserLocale", Context.MODE_PRIVATE)
-        val storedLocale = sharedPref.getString("locale", "")
-        if (storedLocale == "") {
-            // update the user locale
-            val locale = resources.configuration.locales.get(0)
-            val language = "${locale.language}-${locale.country}"
-            with(sharedPref.edit()) {
-                putString("locale", language)
-                apply()
-            }
-        }
-
-        // get the value from shared preferences
-        UserLocale = sharedPref.getString("locale", "")!!
-        //Toast.makeText(this, "Device language: $UserLocale", Toast.LENGTH_SHORT).show()
-
         val updateDescription =
-            "- Testing languages in: - French" +
+            "- Testing languages in:" +
+                    "\n- French" +
                     "\n- Portuguese" +
                     "\n- Portuguese (Brazil)" +
                     "\n- Russian" +
+                    "\n- Vietnamese" +
                     "\nThey may not be accurate so please let Dev Duckie know when that happens 🦆❤️" +
                     "\n\n- Fixed getting stuck on 'Checking connection'" +
-                    "\n- Updated shop data visuals"
+                    "\n- Updated shop data visuals" +
+                    "\n- Fixed assets page" +
+                    "\n- Updated agent abilities visuals"
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         with(update.edit()) {
@@ -215,6 +205,6 @@ class StaticsMainActivity : AppCompatActivity() {
         var playerCardLarge = ""
         var playerCardSmall = ""
         var playerCardID = ""
-        var UserLocale = ""
+        var locale = ""
     }
 }

@@ -251,7 +251,7 @@ class StaticsMainMenu : Fragment() {
                         editor.apply()
                         checkForTrackerGG(nameSplit[0], nameSplit[1])
                     }
-                    .setNegativeButton("Cancel") { _, _ ->
+                    .setNegativeButton(getString(R.string.s51)) { _, _ ->
                         //Toast.makeText(requireActivity(), "Cancelled", Toast.LENGTH_SHORT).show()
                     }
                     .setIcon(android.R.drawable.ic_dialog_alert).show()
@@ -623,7 +623,7 @@ class StaticsMainMenu : Fragment() {
         } else if (diff < 48 * HOUR_MILLIS) {
             "Yesterday"
         } else {
-            (diff / DAY_MILLIS).toString() + " days ago"
+            (diff / DAY_MILLIS).toString() + " ${getString(R.string.s176)}"
         }
     }
 
@@ -698,19 +698,23 @@ class StaticsMainMenu : Fragment() {
 
         timer = object : CountDownTimer(60000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                if (ISACTIVE) toolbar.subtitle =
-                    "${getString(R.string.s20)} ${millisUntilFinished / 1000}"
-                else {
-                    timer?.cancel()
+                if (isAdded) {
+                    if (ISACTIVE) toolbar.subtitle =
+                        "${getString(R.string.s20)} ${millisUntilFinished / 1000}"
+                    else {
+                        timer?.cancel()
+                    }
                 }
             }
 
             override fun onFinish() {
-                if (ISACTIVE) {
-                    toolbar.subtitle = getString(R.string.s100)
-                    getLatestDetails()
-                } else {
-                    timer?.cancel()
+                if (isAdded) {
+                    if (ISACTIVE) {
+                        toolbar.subtitle = getString(R.string.s100)
+                        getLatestDetails()
+                    } else {
+                        timer?.cancel()
+                    }
                 }
             }
         }

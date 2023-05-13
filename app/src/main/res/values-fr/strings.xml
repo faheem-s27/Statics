@@ -62,7 +62,7 @@
     <string name="s60">Quitter la file</string>
     <string name="s61">Le jeton a expiré, veuillez redémarrer l’application</string>
     <string name="s62">Vous êtes seul dans ce groupe</string>
-    <string name="s63">X membres dans le groupe</string>
+    <string name="s63">membres dans le groupe</string>
     <string name="s64">Rejoindre la file</string>
     <string name="s65">Dans le salon</string>
     <string name="s66">Partie non prête</string>
@@ -75,7 +75,7 @@
     <string name="s73">Sélectionné</string>
     <string name="s74">Verrouiller</string>
     <string name="s75">Verrouillé</string>
-    <string name="s76">File changée à x</string>
+    <string name="s76">File changée à</string>
     <string name="s77">Dans le lobby</string>
     <string name="s78">Trouvez votre asset favori</string>
     <string name="s79">Agents</string>
@@ -113,7 +113,7 @@
     <string name="s111">Carte de Spike</string>
     <string name="s112">Carte des kills</string>
     <string name="s113">Résumé des kills</string>
-    <string name="s114">Manche X</string>
+    <string name="s114">Manche</string>
     <string name="s115">Toutes les manches</string>
     <string name="s116">Bientôt</string>
     <string name="s117">Éliminé, Bombe désamorcée, Temps écoulé, Égalité</string>
@@ -124,7 +124,7 @@
     <string name="s122">Tué avec X</string>
     <string name="s123">Obtention des dernières parties</string>
     <string name="s124">Historique des parties</string>
-    <string name="s125">x/X parties traitées</string>
+    <string name="s125">parties traitées</string>
     <string name="s126">La limite de requêtes a été atteinte, merci de réessayer dans quelques minutes</string>
     <string name="s127">Vos parties ont été sauvegardé ! Elles chargeront plus rapidement la prochaine fois</string>
     <string name="s128">Votre cache de partie à dépasser les 100 parties. Statics va supprimer les plus récentes pour libérer de l’espace !</string>
