@@ -218,6 +218,26 @@
     <string name="s213">Níveis</string>
     <string name="s214">Ranks</string>
     <string name="s215">Processando estatísticas de jogador</string>
+    <string name="s216">Escolha um modo de jogo</string>
+    <string name="s217">Coletando dados...</string>
+    <string name="s218">Azul Venceu!</string>
+    <string name="s219">Vermelho Venceu!</string>
+    <string name="s220">Score</string>
+    <string name="s221">horas atrás</string>
+    <string name="s222">minutos atrás</string>
+    <string name="s223">dias atrás</string>
+    <string name="s224">Jogou</string>
+    <string name="s225">Eliminado"</string>
+    <string name="s226">Copiar Nick</string>
+    <string name="s227">Detalhes de Rank</string>
+    <string name="s228">Ignorar</string>
+    <string name="s229">Spike Desarmada</string>
+    <string name="s230">Spike Detonada</string>
+    <string name="s231">Plantado por</string>
+    <string name="s232">Ver Mapa de Desarme</string>
+    <string name="s233">Level</string>
+    <string name="s234">Rank</string>
+    <string name="s235">semanas atrá</string>
 
 
 </resources>

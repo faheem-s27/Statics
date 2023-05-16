@@ -132,7 +132,7 @@ Se mesmo assim você não se sentir confortável em inserir as suas credenciais 
     <string name="s119">Azul/Vermelho ganhou</string>
     <string name="s120">Plantada por X</string>
     <string name="s121">Ver agentes</string>
-    <string name="s122">Eliminado por uma X"</string>
+    <string name="s122">Eliminado por uma</string>
     <string name="s123">A obter partidas mais recentes.</string>
     <string name="s124">Histórico de partidas</string>
     <string name="s125">Foram processadas x/X partidas</string>
@@ -221,5 +221,25 @@ Se mesmo assim você não se sentir confortável em inserir as suas credenciais 
     <string name="s213">Níveis</string>
     <string name="s214">Ranks</string>
     <string name="s215">A processar as estatísticas do jogador</string>
+    <string name="s216">Escolha um modo de jogo</string>
+    <string name="s217">A compilar estatísticas…</string>
+    <string name="s218">Azul ganhou!</string>
+    <string name="s219">Vermelho ganhou!</string>
+    <string name="s220">Resultado</string>
+    <string name="s221">horas atrás</string>
+    <string name="s222">minutos atrás</string>
+    <string name="s223">dias atrás</string>
+    <string name="s224">Jogado à</string>
+    <string name="s225">Eliminado"</string>
+    <string name="s226">Copiar nome</string>
+    <string name="s227">Detalhes do rank</string>
+    <string name="s228">Fechar</string>
+    <string name="s229">Bomba defusada</string>
+    <string name="s230">Bomb plantada</string>
+    <string name="s231">Plantada por</string>
+    <string name="s232">Ver o mapa de defuses</string>
+    <string name="s233">Nivel</string>
+    <string name="s234">Rank</string>
+    <string name="s235">semanas atrás</string>
 
 </resources>

@@ -1,5 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name" translatable="false">Statics</string>
+    <string name="title_activity_stats" translatable="false">StatsActivity</string>
+    <string name="title_activity_valorant_updates" translatable="false">ValorantUpdatesActivity</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="title_activity_brawl_find_account" translatable="false">BrawlFindAccount</string>
+    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
+
+    <string name="title_activity_weapon_info" translatable="false">WeaponInfo</string>
+    <string name="tab_text_1" translatable="false">Tab 1</string>
+    <string name="tab_text_2" translatable="false">Tab 2</string>
+
+    <string name="welcome" translatable="false">"Welcome to Statics!"</string>
+    <string name="RSO_URL" translatable="false">https://auth.riotgames.com/authorize?client_id=statics&amp;redirect_uri=https://statics-fd699.web.app/authorize.html&amp;response_type=code&amp;scope=openid+offline_access&amp;prompt=login</string>
+    <string name="title_activity_cross_hair" translatable="false">CrossHairActivity</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+
+    <string name="menu_home" translatable="false">Home</string>
+    <string name="menu_gallery" translatable="false">Gallery</string>
+    <string name="menu_slideshow" translatable="false">Slideshow</string>
+
+    <string name="Share_Profile_URL" translatable="false">Anyone with access to the link can view your matches and rank. If you are not sure if you want to share your profile, please do not share it!</string>
+    <string name="appwidget_text" translatable="false">EXAMPLE</string>
+    <string name="configure" translatable="false">Configure</string>
+    <string name="add_widget" translatable="false">Add widget</string>
+    <string name="app_widget_description" translatable="false">This is an app widget description</string>
+
+    <string name="long_shortcut" translatable="false">See your rank history!</string>
+    <string name="short_shortcut" translatable="false">Past ranks</string>
+    <string name="title_activity_tracker_gg" translatable="false">TrackerGG_Activity</string>
+    <string name="title_home" translatable="false">Home</string>
+    <string name="title_dashboard" translatable="false">Dashboard</string>
+    <string name="title_notifications" translatable="false">Notifications</string>
+    <string name="current_rank" translatable="false">Current Rank:</string>
+    <string name="title_activity_statics_main" translatable="false">StaticsMainActivity</string>
+
+
+    <!-- LOGGING IN FOR THE FIRST TIME SCREEN -->
     <string name="hyperlink">Узнать больше об\n<a href="https://statics-fd699.web.app/privacy.html">политике конфиденциальности Statics</a></string>
     <string name="statics_riot_endorsement">Компания Riot Games не поддерживает Statics и не отражает взгляды или мнения Riot Games или любых официально участвующих в производстве или управлении свойствами Riot Games. Riot Games и все связанные с ней свойства являются торговыми марками или зарегистрированными торговыми марками Riot Games, Inc.</string>
     <string name="read_TCs"><![CDATA[Я прочитал и согласен с <a href="%s">Условиями использования</a>, указанными ниже.]]></string>
@@ -10,13 +52,17 @@
     <string name="ConnectingToRiot">Подключение к Riot…</string>
     <string name="starting">Запуск</string>
     <string name="how_it_works">Как это работает</string>
+
+    <!-- WHEN SIGNING IN BACK FROM RIOT LOGIN -->
+    <string name="ClickButtonToProveAlive">Нажмите на кнопку чтобы проверить, живы ли вы</string>
     <string name="TimeToStealData">Время украсть ваши пароли :)))</string>
     <string name="giving_you_gun_buddies">Даю вам приятелей с оружием</string>
     <string name="setting_your_account_to_iron">Покормите переводчиков..</string>
     <string name="you_did_it">Вы сделали это!</string>
     <string name="welcome_gamename">"Приветствую, "</string>
     <string name="error_occurred_while_saving">Произошла ошибка при сохранении :(</string>
-    <string name="ClickButtonToProveAlive">Нажмите на кнопку чтобы проверить, живы ли вы</string>
+
+    <!-- WHEN SIGNED IN AND OPENING STATICS IN MAIN MENU -->
     <string name="BetaDisclaimerTitle">Вы используете бету версию приложения</string>
     <string name="BetaDisclaimerDesc">Это означает, что приложение может работать не так, как задумано. Если вы обнаружили какие-либо ошибки, пожалуйста, сообщите о них разработчику.</string>
     <string name="NewFeaturesForStatics">Новые возможности в Statics</string>
@@ -217,6 +263,26 @@
     <string name="s213">Уровни</string>
     <string name="s214">Ранги</string>
     <string name="s215">Получаем статистику игрок</string>
+    <string name="s216">Выберите режим игры</string>
+    <string name="s217">Загружаем информацию…</string>
+    <string name="s218">Синие выиграли!</string>
+    <string name="s219">Красные выиграли!</string>
+    <string name="s220">Счет</string>
+    <string name="s221">часов назад</string>
+    <string name="s222">минут назад</string>
+    <string name="s223">дне назад</string>
+    <string name="s224">Сыграно</string>
+    <string name="s225">Уничтожено"</string>
+    <string name="s226">Скопировать имя" </string>
+    <string name="s227">Детали ранга</string>
+    <string name="s228">Отклонить</string>
+    <string name="s229">Бомба разминирована</string>
+    <string name="s230">Бомба взорвана</string>
+    <string name="s231">Бомба установле</string>
+    <string name="s232">Посмотреть карту разминирований спайка</string>
+    <string name="s233">Уровень</string>
+    <string name="s234">Ранг</string>
+    <string name="s235">недель наза</string>
 
 
 </resources>

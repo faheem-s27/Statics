@@ -21,8 +21,9 @@
     <string name="BetaDisclaimerDesc">Điều này có nghĩa là ứng dụng có thể hoạt động không như mong đợi. Nếu bạn tìm thấy bất kì lỗi nào, hãy báo cáo cho nhà phát triển</string>
     <string name="NewFeaturesForStatics">Những tính năng mới của Statics</string>
     <string name="NewFeaturesIncludes">Cập nhật này gồm có:</string>
-    <string name="s20">Làm mới sau xx giây</string>
+    <string name="s20">Làm mới sau giây</string>
     <string name="menu_stats">Chỉ số</string>
+    <string name="s21">Chỉ số</string>
     <string name="s22">Thông tin người chơi</string>
     <string name="s23">Xếp hạng</string>
     <string name="s24">Trận đấu gần nhất</string>

@@ -1,5 +1,48 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name" translatable="false">Statics</string>
+    <string name="title_activity_stats" translatable="false">StatsActivity</string>
+    <string name="title_activity_valorant_updates" translatable="false">ValorantUpdatesActivity</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="title_activity_brawl_find_account" translatable="false">BrawlFindAccount</string>
+    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
+
+    <string name="title_activity_weapon_info" translatable="false">WeaponInfo</string>
+    <string name="tab_text_1" translatable="false">Tab 1</string>
+    <string name="tab_text_2" translatable="false">Tab 2</string>
+
+    <string name="welcome" translatable="false">"Welcome to Statics!"</string>
+    <string name="RSO_URL" translatable="false">https://auth.riotgames.com/authorize?client_id=statics&amp;redirect_uri=https://statics-fd699.web.app/authorize.html&amp;response_type=code&amp;scope=openid+offline_access&amp;prompt=login</string>
+    <string name="title_activity_cross_hair" translatable="false">CrossHairActivity</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+
+    <string name="menu_home" translatable="false">Home</string>
+    <string name="menu_gallery" translatable="false">Gallery</string>
+    <string name="menu_slideshow" translatable="false">Slideshow</string>
+
+    <string name="Share_Profile_URL" translatable="false">Anyone with access to the link can view your matches and rank. If you are not sure if you want to share your profile, please do not share it!</string>
+    <string name="appwidget_text" translatable="false">EXAMPLE</string>
+    <string name="configure" translatable="false">Configure</string>
+    <string name="add_widget" translatable="false">Add widget</string>
+    <string name="app_widget_description" translatable="false">This is an app widget description</string>
+
+    <string name="long_shortcut" translatable="false">See your rank history!</string>
+    <string name="short_shortcut" translatable="false">Past ranks</string>
+    <string name="title_activity_tracker_gg" translatable="false">TrackerGG_Activity</string>
+    <string name="title_home" translatable="false">Home</string>
+    <string name="title_dashboard" translatable="false">Dashboard</string>
+    <string name="title_notifications" translatable="false">Notifications</string>
+    <string name="current_rank" translatable="false">Current Rank:</string>
+    <string name="title_activity_statics_main" translatable="false">StaticsMainActivity</string>
+
+
+    <!-- LOGGING IN FOR THE FIRST TIME SCREEN -->
+    <string name="hyperlink">En savoir plus sur \n<a href="https://statics-fd699.web.app/privacy.html">la politique de confidentialité de Statics</a></string>
     <string name="statics_riot_endorsement">Statics n\'est pas approuvé par Riot Games et ne reflète pas les points de vue ou les opinions de Riot Games ou de toute personne officiellement impliquée dans la production ou la gestion des propriétés de Riot Games. Riot Games et toutes les propriétés associées sont des marques commerciales ou des marques déposées de Riot Games, Inc.</string>
     <string name="read_TCs">J\'ai lu et j\'accepte les termes et conditions ci-dessous</string>
     <string name="sign_in_with_riot">Se connecter à Riot</string>
@@ -9,7 +52,8 @@
     <string name="ConnectingToRiot">connexion à Riot</string>
     <string name="starting">départ</string>
     <string name="how_it_works">Comment ça marche</string>
-    <string name="hyperlink">En savoir plus sur \n<a href="https://statics-fd699.web.app/privacy.html">la politique de confidentialité de Statics</a></string>
+
+    <!-- WHEN SIGNING IN BACK FROM RIOT LOGIN -->
     <string name="ClickButtonToProveAlive">Appuyez sur le bouton pour prouver que vous n’êtes pas un robot</string>
     <string name="TimeToStealData">Vol de vos données en cours</string>
     <string name="giving_you_gun_buddies">Ajout de porte-bonheurs à votre compte</string>
@@ -17,6 +61,8 @@
     <string name="you_did_it">Vous avez réuss</string>
     <string name="welcome_gamename">Bienvenue</string>
     <string name="error_occurred_while_saving">Une erreur est survenue durant l’enregistrement :(</string>
+
+    <!-- WHEN SIGNED IN AND OPENING STATICS IN MAIN MENU -->
     <string name="BetaDisclaimerTitle">Vous utilisez une version bêta de l\'application</string>
     <string name="BetaDisclaimerDesc">Cela signifie que l\'application peut ne pas fonctionner comme prévu. Si vous trouvez des bugs, veuillez les signaler au développeur.</string>
     <string name="NewFeaturesForStatics">Nouvelles fonctionnalités pour Statics</string>
@@ -26,7 +72,6 @@
     <string name="menu_assets">Atouts</string>
     <string name="menu_premier">Premier</string>
     <string name="menu_extras">Extras</string>
-
     <string name="s20">Prochaine mise à jour dans</string>
     <string name="s22">Détails du joueur</string>
     <string name="s23">Résumé de rang</string>
@@ -56,8 +101,11 @@
     <string name="s51">Annuler</string>
     <string name="s52">Le Marché Nocturne est ouvert!</string>
     <string name="s53">Le client Valorant n’est pas ouvert!</string>
-    <string name="s54">Se déconnecter</string>
+    <string name="s54">Pas à une fête!</string>
+    <string name="s55">Se déconnecter</string>
     <string name="s56">Êtes-vous sûr de vouloir vous déconnecter?</string>
+    <string name="s57">Carte/Titre/Spray mis à jour avec succès</string>
+    <string name="s58">Sélectionnez une carte de joueur/titre/spray</string>
     <string name="s59">Recherche d’une partie</string>
     <string name="s60">Quitter la file</string>
     <string name="s61">Le jeton a expiré, veuillez redémarrer l’application</string>
@@ -121,7 +169,7 @@
     <string name="s119">L’équipe Bleu/Rouge a gagné</string>
     <string name="s120">Planté par X</string>
     <string name="s121">Voir les agents</string>
-    <string name="s122">Tué avec X</string>
+    <string name="s122">Tué avec</string>
     <string name="s123">Obtention des dernières parties</string>
     <string name="s124">Historique des parties</string>
     <string name="s125">parties x/X traitées</string>
@@ -236,6 +284,5 @@
     <string name="s233">Niveau</string>
     <string name="s234">Rank</string>
     <string name="s235">Il y a x semaine</string>
-
 
 </resources>
