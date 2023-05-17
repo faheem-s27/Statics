@@ -1,6 +1,8 @@
 package com.jawaadianinc.valorant_stats.valo.activities
 
 import android.appwidget.AppWidgetManager
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -22,6 +24,11 @@ import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Credentials
 import okhttp3.FormBody
 import okhttp3.HttpUrl
@@ -137,6 +144,7 @@ class RSOActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun getUserInfo(token: String) {
         try {
             val updateText: TextView = findViewById(R.id.infoText)
@@ -151,13 +159,30 @@ class RSOActivity : AppCompatActivity() {
                 .addHeader("Authorization", "Bearer $token")
                 .build()
 
-            secret = BuildConfig.RIOT_API_KEY
-
-            doAsync {
+            //secret = BuildConfig.RIOT_API_KEY
+            secret = "RGAPI-77322163-520c-492f-aabe-6c29a39f44ff"
+            GlobalScope.launch {
                 val call = client.newCall(request).execute()
+                val code = call.code
                 val json = JSONObject(call.body.string())
-                val puuid = json.getString("puuid")
+                // copy the json to the clipboard
+                val clipboard: ClipboardManager =
+                    getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText(
+                    "json",
+                    "$json\n\nURL: $url\n\nToken: $token\n\nSecret: $secret"
+                )
+                clipboard.setPrimaryClip(clip)
 
+                // check if status is 200
+                if (code != 200) {
+                    withContext(Dispatchers.Main) {
+                        updateText.text = "Error: $code"
+                    }
+                    return@launch
+                }
+
+                val puuid = json.getString("puuid")
                 val regionURL =
                     "https://europe.api.riotgames.com/riot/account/v1/active-shards/by-game/val/by-puuid/$puuid?api_key=$secret"
                 val regionRequest = Request.Builder()
@@ -165,13 +190,24 @@ class RSOActivity : AppCompatActivity() {
                     .build()
 
                 val regionCall = client.newCall(regionRequest).execute()
+                val regionCode = regionCall.code
                 val regionJson = JSONObject(regionCall.body.string())
+                // copy the json to the clipboard
+                val regionClip = ClipData.newPlainText("json", "$regionJson\n\nURL: $regionURL")
+                clipboard.setPrimaryClip(regionClip)
+
+                if (regionCode != 200) {
+                    withContext(Dispatchers.Main) {
+                        updateText.text = "Error: $regionCode"
+                    }
+                    return@launch
+                }
+
                 val region = regionJson.getString("activeShard")
                 val gameName = json.getString("gameName")
                 val gameTag = json.getString("tagLine")
-
-
-                uiThread {
+                withContext(Dispatchers.Main)
+                {
                     progressBar.progress = 90
                     updateText.text = getString(R.string.s9)
                     confirmUser(puuid, gameName, gameTag, region)
