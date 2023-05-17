@@ -42,31 +42,31 @@
 
 
     <!-- LOGGING IN FOR THE FIRST TIME SCREEN -->
-    <string name="hyperlink">En savoir plus sur \n<a href="https://statics-fd699.web.app/privacy.html">la politique de confidentialité de Statics</a></string>
-    <string name="statics_riot_endorsement">Statics n\'est pas approuvé par Riot Games et ne reflète pas les points de vue ou les opinions de Riot Games ou de toute personne officiellement impliquée dans la production ou la gestion des propriétés de Riot Games. Riot Games et toutes les propriétés associées sont des marques commerciales ou des marques déposées de Riot Games, Inc.</string>
-    <string name="read_TCs">J\'ai lu et j\'accepte les termes et conditions ci-dessous</string>
-    <string name="sign_in_with_riot">Se connecter à Riot</string>
-    <string name="the_first_app_with_a_minimap">La première application avec une minimap</string>
-    <string name="riot_token_description">Lorsque vous vous connectez à Riot, vos informations d\'identification sont envoyées aux serveurs de Riot qui vous renvoient un jeton. Ce jeton est ensuite utilisé pour obtenir les détails de votre compte, comme votre nom. Le jeton est ensuite supprimé du serveur et n\'est stocké nulle part. Le serveur ne stocke que les informations de votre compte, qui sont utilisées pour afficher vos statistiques dans l\'application.\n\n Statics ne stocke aucun mot de passe !</string>
+    <string name="s6">En savoir plus sur \n<a href="https://statics-fd699.web.app/privacy.html">la politique de confidentialité de Statics</a></string>
+    <string name="s5">Statics n\'est pas approuvé par Riot Games et ne reflète pas les points de vue ou les opinions de Riot Games ou de toute personne officiellement impliquée dans la production ou la gestion des propriétés de Riot Games. Riot Games et toutes les propriétés associées sont des marques commerciales ou des marques déposées de Riot Games, Inc.</string>
+    <string name="s4">J\'ai lu et j\'accepte les termes et conditions ci-dessous</string>
+    <string name="s3">Se connecter à Riot</string>
+    <string name="s2">La première application avec une minimap</string>
+    <string name="s7">Lorsque vous vous connectez à Riot, vos informations d\'identification sont envoyées aux serveurs de Riot qui vous renvoient un jeton. Ce jeton est ensuite utilisé pour obtenir les détails de votre compte, comme votre nom. Le jeton est ensuite supprimé du serveur et n\'est stocké nulle part. Le serveur ne stocke que les informations de votre compte, qui sont utilisées pour afficher vos statistiques dans l\'application.\n\n Statics ne stocke aucun mot de passe !</string>
     <string name="acceptTermsConditions">Veuillez accepter les termes et conditions pour continuer</string>
-    <string name="ConnectingToRiot">connexion à Riot</string>
+    <string name="s1">connexion à Riot</string>
     <string name="starting">départ</string>
-    <string name="how_it_works">Comment ça marche</string>
+    <string name="s8">Comment ça marche</string>
 
     <!-- WHEN SIGNING IN BACK FROM RIOT LOGIN -->
-    <string name="ClickButtonToProveAlive">Appuyez sur le bouton pour prouver que vous n’êtes pas un robot</string>
-    <string name="TimeToStealData">Vol de vos données en cours</string>
-    <string name="giving_you_gun_buddies">Ajout de porte-bonheurs à votre compte</string>
-    <string name="setting_your_account_to_iron">Réglage de votre rang à \"Argent\"</string>
-    <string name="you_did_it">Vous avez réuss</string>
-    <string name="welcome_gamename">Bienvenue</string>
-    <string name="error_occurred_while_saving">Une erreur est survenue durant l’enregistrement :(</string>
+    <string name="s9">Appuyez sur le bouton pour prouver que vous n’êtes pas un robot</string>
+    <string name="s10">Vol de vos données en cours</string>
+    <string name="s11">Ajout de porte-bonheurs à votre compte</string>
+    <string name="s12">Réglage de votre rang à \"Argent\"</string>
+    <string name="s13">Vous avez réuss</string>
+    <string name="s14">Bienvenue</string>
+    <string name="s15">Une erreur est survenue durant l’enregistrement :(</string>
 
     <!-- WHEN SIGNED IN AND OPENING STATICS IN MAIN MENU -->
-    <string name="BetaDisclaimerTitle">Vous utilisez une version bêta de l\'application</string>
-    <string name="BetaDisclaimerDesc">Cela signifie que l\'application peut ne pas fonctionner comme prévu. Si vous trouvez des bugs, veuillez les signaler au développeur.</string>
-    <string name="NewFeaturesForStatics">Nouvelles fonctionnalités pour Statics</string>
-    <string name="NewFeaturesIncludes">Cette mise à jour inclut :</string>
+    <string name="s16">Vous utilisez une version bêta de l\'application</string>
+    <string name="s17">Cela signifie que l\'application peut ne pas fonctionner comme prévu. Si vous trouvez des bugs, veuillez les signaler au développeur.</string>
+    <string name="s18">Nouvelles fonctionnalités pour Statics</string>
+    <string name="s19">Cette mise à jour inclut :</string>
     <string name="menu_stats">Statistiques</string>
     <string name="menu_live">En direct</string>
     <string name="menu_assets">Atouts</string>

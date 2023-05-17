@@ -39,126 +39,50 @@ class SplashActivity : AppCompatActivity() {
             val languages = arrayOf(
                 "English",
                 "French",
+                "Indonesian",
                 "Portuguese",
                 "Portuguese (Brazil)",
                 "Russian",
+                "Turkish",
                 "Vietnamese"
             )
+            val languageCodes = arrayOf(
+                "en-US",
+                "fr-FR",
+                "id-ID",
+                "pt-PT",
+                "pt-BR",
+                "ru-RU",
+                "tr-TR",
+                "vi-VN"
+            )
+
             dialog.setItems(languages) { _, which ->
-                when (which) {
-                    0 -> {
-                        val locale = java.util.Locale("en", "US")
-                        with(localPrefs.edit()) {
-                            putString("locale", "en-US")
-                            apply()
-                        }
-                        java.util.Locale.setDefault(locale)
-                        val config = android.content.res.Configuration()
-                        config.locale = locale
-                        baseContext.resources.updateConfiguration(
-                            config,
-                            baseContext.resources.displayMetrics
-                        )
-                        startActivity(Intent(this, LoadingActivity::class.java))
-                        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-                        finish()
-                    }
-
-                    1 -> {
-                        val locale = java.util.Locale("fr", "FR")
-                        java.util.Locale.setDefault(locale)
-                        val config = android.content.res.Configuration()
-                        config.locale = locale
-                        baseContext.resources.updateConfiguration(
-                            config,
-                            baseContext.resources.displayMetrics
-                        )
-                        with(localPrefs.edit()) {
-                            putString("locale", "fr-FR")
-                            apply()
-                        }
-                        startActivity(Intent(this, LoadingActivity::class.java))
-                        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-                        finish()
-                    }
-
-                    2 -> {
-                        val locale = java.util.Locale("pt", "PT")
-                        java.util.Locale.setDefault(locale)
-                        val config = android.content.res.Configuration()
-                        config.locale = locale
-                        baseContext.resources.updateConfiguration(
-                            config,
-                            baseContext.resources.displayMetrics
-                        )
-                        with(localPrefs.edit()) {
-                            putString("locale", "pt-PT")
-                            apply()
-                        }
-                        startActivity(Intent(this, LoadingActivity::class.java))
-                        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-                        finish()
-                    }
-
-                    3 -> {
-                        val locale = java.util.Locale("pt", "BR")
-                        java.util.Locale.setDefault(locale)
-                        val config = android.content.res.Configuration()
-                        config.locale = locale
-                        baseContext.resources.updateConfiguration(
-                            config,
-                            baseContext.resources.displayMetrics
-                        )
-                        with(localPrefs.edit()) {
-                            putString("locale", "pt-BR")
-                            apply()
-                        }
-                        startActivity(Intent(this, LoadingActivity::class.java))
-                        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-                        finish()
-                    }
-
-                    4 -> {
-                        val locale = java.util.Locale("ru", "RU")
-                        java.util.Locale.setDefault(locale)
-                        val config = android.content.res.Configuration()
-                        config.locale = locale
-                        baseContext.resources.updateConfiguration(
-                            config,
-                            baseContext.resources.displayMetrics
-                        )
-                        with(localPrefs.edit()) {
-                            putString("locale", "ru-RU")
-                            apply()
-                        }
-                        startActivity(Intent(this, LoadingActivity::class.java))
-                        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-                        finish()
-                    }
-
-                    5 -> {
-                        val locale = java.util.Locale("vi", "VN")
-                        java.util.Locale.setDefault(locale)
-                        val config = android.content.res.Configuration()
-                        config.locale = locale
-                        baseContext.resources.updateConfiguration(
-                            config,
-                            baseContext.resources.displayMetrics
-                        )
-                        with(localPrefs.edit()) {
-                            putString("locale", "vi-VN")
-                            apply()
-                        }
-                        startActivity(Intent(this, LoadingActivity::class.java))
-                        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-                        finish()
-                    }
-                }
+                val language = languageCodes[which].split("-")[0]
+                val country = languageCodes[which].split("-")[1]
+                setLanguage(language, country)
             }
             dialog.setCancelable(false)
             dialog.show()
         }
+    }
 
-
+    private fun setLanguage(language: String, country: String) {
+        val localPrefs = getSharedPreferences("UserLocale", MODE_PRIVATE)
+        val locale = java.util.Locale(language, country)
+        java.util.Locale.setDefault(locale)
+        val config = android.content.res.Configuration()
+        config.locale = locale
+        baseContext.resources.updateConfiguration(
+            config,
+            baseContext.resources.displayMetrics
+        )
+        with(localPrefs.edit()) {
+            putString("locale", "$language-$country")
+            apply()
+        }
+        startActivity(Intent(this, LoadingActivity::class.java))
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        finish()
     }
 }

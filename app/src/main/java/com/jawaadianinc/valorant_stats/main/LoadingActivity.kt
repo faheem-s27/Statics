@@ -165,7 +165,7 @@ class LoadingActivity : AppCompatActivity() {
             ).show()
         }
 
-        updateText.text = getString(R.string.ConnectingToRiot)
+        updateText.text = getString(R.string.s1)
 
         val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         coroutineScope.launch {

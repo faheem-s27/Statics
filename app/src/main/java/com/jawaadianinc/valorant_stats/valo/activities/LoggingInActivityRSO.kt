@@ -105,13 +105,13 @@ class LoggingInActivityRSO : AppCompatActivity() {
             }
         }
 
-        val msg = getString(R.string.riot_token_description)
+        val msg = getString(R.string.s7)
 
         val howitworks: FloatingActionButton = findViewById(R.id.howitworksBT)
         howitworks.setOnClickListener {
             // show an alert dialog that explains the process of RSO taking in the token and how it does not store any passwords
             val alertDialog = AlertDialog.Builder(this)
-            alertDialog.setTitle(getString(R.string.how_it_works))
+            alertDialog.setTitle(getString(R.string.s8))
             alertDialog.setMessage(msg)
             alertDialog.setPositiveButton("OK") { dialog, which ->
                 dialog.dismiss()

@@ -42,31 +42,31 @@
 
 
     <!-- LOGGING IN FOR THE FIRST TIME SCREEN -->
-    <string name="hyperlink">Learn more about the\n<a href="https://statics-fd699.web.app/privacy.html">Statics privacy policy</a></string>
-    <string name="statics_riot_endorsement">Statics isn\'t endorsed by Riot Games and doesn\'t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</string>
-    <string name="read_TCs"><![CDATA[I have read and agree to the T&C\'s linked below]]></string>
-    <string name="sign_in_with_riot">Sign in with Riot</string>
-    <string name="the_first_app_with_a_minimap">The first app with a minimap</string>
-    <string name="riot_token_description">When signing in with Riot, your credentials are sent to Riot\'s servers and a token is returned. This token is then used to get your account details like your name.\nThe token is then deleted from the server and is not stored anywhere. The server only stores your account information, which is used to display your stats in the app.\n\nStatics does not store any passwords!</string>
+    <string name="s6">Learn more about the\n<a href="https://statics-fd699.web.app/privacy.html">Statics privacy policy</a></string>
+    <string name="s5">Statics isn\'t endorsed by Riot Games and doesn\'t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</string>
+    <string name="s4"><![CDATA[I have read and agree to the T&C\'s linked below]]></string>
+    <string name="s3">Sign in with Riot</string>
+    <string name="s2">The first app with a minimap</string>
+    <string name="s7">When signing in with Riot, your credentials are sent to Riot\'s servers and a token is returned. This token is then used to get your account details like your name.\nThe token is then deleted from the server and is not stored anywhere. The server only stores your account information, which is used to display your stats in the app.\n\nStatics does not store any passwords!</string>
     <string name="acceptTermsConditions">Please accept the terms and conditions to continue</string>
-    <string name="ConnectingToRiot">Connecting to Riot…</string>
+    <string name="s1">Connecting to Riot…</string>
     <string name="starting">Starting</string>
-    <string name="how_it_works">How it works</string>
+    <string name="s8">How it works</string>
 
     <!-- WHEN SIGNING IN BACK FROM RIOT LOGIN -->
-    <string name="ClickButtonToProveAlive">Click the button to prove you are alive</string>
-    <string name="TimeToStealData">Time to steal your date</string>
-    <string name="giving_you_gun_buddies">Giving you gun buddies</string>
-    <string name="setting_your_account_to_iron">Setting your account to Iron</string>
-    <string name="you_did_it">You did it</string>
-    <string name="welcome_gamename">Welcome</string>
-    <string name="error_occurred_while_saving">Error occurred while saving :(</string>
+    <string name="s9">Click the button to prove you are alive</string>
+    <string name="s10">Time to steal your date</string>
+    <string name="s11">Giving you gun buddies</string>
+    <string name="s12">Setting your account to Iron</string>
+    <string name="s13">You did it</string>
+    <string name="s14">Welcome</string>
+    <string name="s15">Error occurred while saving :(</string>
 
     <!-- WHEN SIGNED IN AND OPENING STATICS IN MAIN MENU -->
-    <string name="BetaDisclaimerTitle">You are using a beta version of the app</string>
-    <string name="BetaDisclaimerDesc">This means that the app may not work as intended. If you find any bugs, please report them to the developer</string>
-    <string name="NewFeaturesForStatics">New features for Statics</string>
-    <string name="NewFeaturesIncludes">This update includes:</string>
+    <string name="s16">You are using a beta version of the app</string>
+    <string name="s17">This means that the app may not work as intended. If you find any bugs, please report them to the developer</string>
+    <string name="s18">New features for Statics</string>
+    <string name="s19">This update includes:</string>
     <string name="menu_stats">Stats</string>
     <string name="menu_live">Live</string>
     <string name="menu_assets">Assets</string>

@@ -42,31 +42,31 @@
 
 
     <!-- LOGGING IN FOR THE FIRST TIME SCREEN -->
-    <string name="hyperlink">Узнать больше об\n<a href="https://statics-fd699.web.app/privacy.html">политике конфиденциальности Statics</a></string>
-    <string name="statics_riot_endorsement">Компания Riot Games не поддерживает Statics и не отражает взгляды или мнения Riot Games или любых официально участвующих в производстве или управлении свойствами Riot Games. Riot Games и все связанные с ней свойства являются торговыми марками или зарегистрированными торговыми марками Riot Games, Inc.</string>
-    <string name="read_TCs"><![CDATA[Я прочитал и согласен с <a href="%s">Условиями использования</a>, указанными ниже.]]></string>
-    <string name="sign_in_with_riot">Войти через Riot</string>
-    <string name="the_first_app_with_a_minimap">Первое приложение с миникартой</string>
-    <string name="riot_token_description">При входе в систему Riot ваши учетные данные отправляются на серверы Riot, после чего возвращается токен. Этот токен используется для получения информации о вашем аккаунте, например, вашего имени.\nТокен затем удаляется с сервера и нигде не хранится. Сервер хранит только информацию о вашем аккаунте, которая используется для отображения вашей статистики в приложении.\n\nStatics не хранит никаких паролей!</string>
+    <string name="s6">Узнать больше об\n<a href="https://statics-fd699.web.app/privacy.html">политике конфиденциальности Statics</a></string>
+    <string name="s5">Компания Riot Games не поддерживает Statics и не отражает взгляды или мнения Riot Games или любых официально участвующих в производстве или управлении свойствами Riot Games. Riot Games и все связанные с ней свойства являются торговыми марками или зарегистрированными торговыми марками Riot Games, Inc.</string>
+    <string name="s4"><![CDATA[Я прочитал и согласен с <a href="%s">Условиями использования</a>, указанными ниже.]]></string>
+    <string name="s3">Войти через Riot</string>
+    <string name="s2">Первое приложение с миникартой</string>
+    <string name="s7">При входе в систему Riot ваши учетные данные отправляются на серверы Riot, после чего возвращается токен. Этот токен используется для получения информации о вашем аккаунте, например, вашего имени.\nТокен затем удаляется с сервера и нигде не хранится. Сервер хранит только информацию о вашем аккаунте, которая используется для отображения вашей статистики в приложении.\n\nStatics не хранит никаких паролей!</string>
     <string name="acceptTermsConditions">Пожалуйста, примите условия использования, чтобы продолжить</string>
-    <string name="ConnectingToRiot">Подключение к Riot…</string>
+    <string name="s1">Подключение к Riot…</string>
     <string name="starting">Запуск</string>
-    <string name="how_it_works">Как это работает</string>
+    <string name="s8">Как это работает</string>
 
     <!-- WHEN SIGNING IN BACK FROM RIOT LOGIN -->
-    <string name="ClickButtonToProveAlive">Нажмите на кнопку чтобы проверить, живы ли вы</string>
-    <string name="TimeToStealData">Время украсть ваши пароли :)))</string>
-    <string name="giving_you_gun_buddies">Даю вам приятелей с оружием</string>
-    <string name="setting_your_account_to_iron">Покормите переводчиков..</string>
-    <string name="you_did_it">Вы сделали это!</string>
-    <string name="welcome_gamename">"Приветствую, "</string>
-    <string name="error_occurred_while_saving">Произошла ошибка при сохранении :(</string>
+    <string name="s9">Нажмите на кнопку чтобы проверить, живы ли вы</string>
+    <string name="s10">Время украсть ваши пароли :)))</string>
+    <string name="s11">Даю вам приятелей с оружием</string>
+    <string name="s12">Покормите переводчиков..</string>
+    <string name="s13">Вы сделали это!</string>
+    <string name="s14">"Приветствую, "</string>
+    <string name="s15">Произошла ошибка при сохранении :(</string>
 
     <!-- WHEN SIGNED IN AND OPENING STATICS IN MAIN MENU -->
-    <string name="BetaDisclaimerTitle">Вы используете бету версию приложения</string>
-    <string name="BetaDisclaimerDesc">Это означает, что приложение может работать не так, как задумано. Если вы обнаружили какие-либо ошибки, пожалуйста, сообщите о них разработчику.</string>
-    <string name="NewFeaturesForStatics">Новые возможности в Statics</string>
-    <string name="NewFeaturesIncludes">"Что нового в обновлении: "</string>
+    <string name="s16">Вы используете бету версию приложения</string>
+    <string name="s17">Это означает, что приложение может работать не так, как задумано. Если вы обнаружили какие-либо ошибки, пожалуйста, сообщите о них разработчику.</string>
+    <string name="s18">Новые возможности в Statics</string>
+    <string name="s19">"Что нового в обновлении: "</string>
     <string name="menu_stats">Статистика</string>
     <string name="menu_live">Онлайн</string>
     <string name="menu_assets">Ассеты</string>

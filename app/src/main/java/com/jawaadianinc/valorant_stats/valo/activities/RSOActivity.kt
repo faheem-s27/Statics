@@ -55,7 +55,7 @@ class RSOActivity : AppCompatActivity() {
         val data: Uri? = intent?.data
         val updateText: TextView = findViewById(R.id.infoText)
         code = data!!.getQueryParameter("code")
-        updateText.text = getString(R.string.TimeToStealData)
+        updateText.text = getString(R.string.s10)
 
         val confirmButton: Button = findViewById(R.id.confirmUserButton)
         confirmButton.alpha = 0f
@@ -85,7 +85,7 @@ class RSOActivity : AppCompatActivity() {
         secret = BuildConfig.RIOT_SECRET
         val toBeEncoded = "statics:$secret"
         base64encode = Base64.encodeToString(toBeEncoded.toByteArray(), Base64.NO_WRAP)
-        updateText.text = getString(R.string.giving_you_gun_buddies)
+        updateText.text = getString(R.string.s11)
         getToken()
     }
 
@@ -128,7 +128,7 @@ class RSOActivity : AppCompatActivity() {
 
                 progressBar.progress = 40
                 uiThread {
-                    updateText.text = getString(R.string.setting_your_account_to_iron)
+                    updateText.text = getString(R.string.s12)
                     getUserInfo(accessToken)
                 }
             }
@@ -173,7 +173,7 @@ class RSOActivity : AppCompatActivity() {
 
                 uiThread {
                     progressBar.progress = 90
-                    updateText.text = getString(R.string.ClickButtonToProveAlive)
+                    updateText.text = getString(R.string.s9)
                     confirmUser(puuid, gameName, gameTag, region)
                 }
             }
@@ -199,11 +199,11 @@ class RSOActivity : AppCompatActivity() {
             val playerdb = PlayerDatabase(this)
             if (playerdb.addPlayer(gameName, gameTag, puuid, region)) {
                 progressBar.progress = 100
-                "${this.getString(R.string.you_did_it)}$gameName!".also { updateText.text = it }
+                "${this.getString(R.string.s13)}$gameName!".also { updateText.text = it }
                 //take user to main valorant screen
                 Toast.makeText(
                     this,
-                    "${getString(R.string.welcome_gamename)} $gameName!",
+                    "${getString(R.string.s14)} $gameName!",
                     Toast.LENGTH_LONG
                 ).show()
 
@@ -222,7 +222,7 @@ class RSOActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(
                     this,
-                    getString(R.string.error_occurred_while_saving),
+                    getString(R.string.s15),
                     Toast.LENGTH_SHORT
                 ).show()
             }

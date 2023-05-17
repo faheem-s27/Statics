@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Statics</string>
-    <string name="ConnectingToRiot">Menghubungkan ke Riot</string>
+    <string name="s1">Menghubungkan ke Riot</string>
     <string name="s2">Aplikasi pertama dengan peta minimap</string>
     <string name="s3">Masuk dengan Riot</string>
     <string name="s4">Saya telah membaca dan menyetujui S&amp;K(syarat &amp; ketentuan) yang terkait di bawah</string>
@@ -26,9 +26,9 @@
     <string name="s23">Ringkasan peringkat</string>
     <string name="s24">Pertandingan terakhir</string>
     <string name="s25">Siaran Langsung</string>
-    <string name="s26">Aset</string>
-    <string name="s27">Permier</string>
-    <string name="s28">Extra</string>
+    <string name="menu_assets">Aset</string>
+    <string name="menu_premier">Permier</string>
+    <string name="menu_extras">Extra</string>
     <string name="s29">Sejarah</string>
     <string name="s30">hari yang lalu/Minggu yang lalu</string>
     <string name="s31">Selamat Datang di mode live</string>
@@ -133,7 +133,7 @@
     <string name="s131">Statics memerlukan koneksi internet aktif!"</string>
     <string name="s132">Coba lagi"</string>
     <string name="s133">Keluar"</string>
-    <string name="s134">Harap terima syarat dan ketentuan untuk melanjutkan"</string>
+    <string name="acceptTermsConditions">Harap terima syarat dan ketentuan untuk melanjutkan"</string>
     <string name="s140">Respon dari Statics"</string>
     <string name="s141">Spray"</string>
     <string name="s142">Judul"</string>

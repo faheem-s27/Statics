@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="statics_riot_endorsement">Statics não é propriedade de Riot Games e não reflete os pontos de vista e opiniões da Riot Games ou de quaisquer pessoas oficialmente envolvidas na produção ou gerenciamento das propriedades da Riot Games. Riot Games, e todas as propriedades associadas são marcas registradas ou marcas registradas da {própria} Riot Games, Inc.</string>
-    <string name="read_TCs"><![CDATA[Eu li e concordo com os Termos e condições abaixo]]></string>
-    <string name="sign_in_with_riot">Iniciar sessão com a Riot</string>
-    <string name="the_first_app_with_a_minimap">O primeiro aplicativo com um minimapa</string>
-    <string name="riot_token_description">Quando entrando com sua conta Riot, suas credenciais são enviadas aos servidores da Riot então um token é recebido. Este token é usado para obter detalhes da sua conta como seu nome. O token é deletado e não fica armazenado em nenhum servidor. O servidor apenas armazena as informações da sua conta, que são usadas para. Statics não armazena nenhuma senha!</string>
+    <string name="s5">Statics não é propriedade de Riot Games e não reflete os pontos de vista e opiniões da Riot Games ou de quaisquer pessoas oficialmente envolvidas na produção ou gerenciamento das propriedades da Riot Games. Riot Games, e todas as propriedades associadas são marcas registradas ou marcas registradas da {própria} Riot Games, Inc.</string>
+    <string name="s4"><![CDATA[Eu li e concordo com os Termos e condições abaixo]]></string>
+    <string name="s3">Iniciar sessão com a Riot</string>
+    <string name="s2">O primeiro aplicativo com um minimapa</string>
+    <string name="s7">Quando entrando com sua conta Riot, suas credenciais são enviadas aos servidores da Riot então um token é recebido. Este token é usado para obter detalhes da sua conta como seu nome. O token é deletado e não fica armazenado em nenhum servidor. O servidor apenas armazena as informações da sua conta, que são usadas para. Statics não armazena nenhuma senha!</string>
     <string name="acceptTermsConditions">Por favor, aceite os termos e condições para continuar</string>
-    <string name="ConnectingToRiot">Conectando à Riot…</string>
+    <string name="s1">Conectando à Riot…</string>
     <string name="starting">Iniciando</string>
-    <string name="hyperlink">Saiba mais sobre a\n<a href="https://statics-fd699.web.app/privacy.html">política de privacidade do Statics</a></string>
-    <string name="how_it_works">Como funciona</string>
-    <string name="ClickButtonToProveAlive">Clique no botão para provar que está vivo</string>
-    <string name="TimeToStealData">Hora de roubar seus dados</string>
-    <string name="giving_you_gun_buddies">Te dando chaveiros</string>
-    <string name="setting_your_account_to_iron">Mudando seu rank para Ferro</string>
-    <string name="you_did_it">Você conseguiu!</string>
-    <string name="welcome_gamename">Bem-vindo(a)</string>
-    <string name="error_occurred_while_saving">Ocorreu um erro ao salvar :(</string>
-    <string name="BetaDisclaimerTitle">Você está usando uma versão beta do app</string>
-    <string name="BetaDisclaimerDesc">Isso significa que o app pode não funcionar corretamente. Se você encontrar algum bug, informe-o ao desenvolvedor</string>
-    <string name="NewFeaturesForStatics">Novas funções do Statics</string>
-    <string name="NewFeaturesIncludes">"Esse update inclui: "</string>
+    <string name="s6">Saiba mais sobre a\n<a href="https://statics-fd699.web.app/privacy.html">política de privacidade do Statics</a></string>
+    <string name="s8">Como funciona</string>
+    <string name="s9">Clique no botão para provar que está vivo</string>
+    <string name="s10">Hora de roubar seus dados</string>
+    <string name="s11">Te dando chaveiros</string>
+    <string name="s12">Mudando seu rank para Ferro</string>
+    <string name="s13">Você conseguiu!</string>
+    <string name="s14">Bem-vindo(a)</string>
+    <string name="s15">Ocorreu um erro ao salvar :(</string>
+    <string name="s16">Você está usando uma versão beta do app</string>
+    <string name="s17">Isso significa que o app pode não funcionar corretamente. Se você encontrar algum bug, informe-o ao desenvolvedor</string>
+    <string name="s18">Novas funções do Statics</string>
+    <string name="s19">"Esse update inclui: "</string>
     <string name="menu_stats">Estatísticas</string>
     <string name="menu_live">Live</string>
     <string name="menu_assets">Assets</string>

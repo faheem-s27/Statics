@@ -49,17 +49,19 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription =
-            "- Testing languages in:" +
+            "- New languages in:" +
                     "\n- French" +
+                    "\n- Indonesian" +
                     "\n- Portuguese" +
                     "\n- Portuguese (Brazil)" +
                     "\n- Russian" +
+                    "\n- Turkish" +
                     "\n- Vietnamese" +
                     "\nThey may not be accurate so please let Dev Duckie know when that happens 🦆❤️" +
                     "\n\n- Fixed getting stuck on 'Checking connection'" +
                     "\n- Updated shop data visuals" +
-                    "\n- Fixed assets page" +
-                    "\n- Updated agent abilities visuals"
+                    "\n- Updated agent abilities visuals" +
+                    "\n\n- Agent voicelines and chat are currently not working. I will add it when it is available."
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         with(update.edit()) {
@@ -77,8 +79,8 @@ class StaticsMainActivity : AppCompatActivity() {
             if (!hasSeen) {
                 // show the dialog
                 val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
-                dialog.setTitle("${getString(R.string.BetaDisclaimerTitle)} ($versionName)")
-                dialog.setMessage("${getString(R.string.BetaDisclaimerDesc)} \n\n$updateDescription")
+                dialog.setTitle("${getString(R.string.s16)} ($versionName)")
+                dialog.setMessage("${getString(R.string.s17)} \n\n$updateDescription")
                 dialog.setPositiveButton("Ok") { _, _ -> }
                 dialog.show()
                 with(sharedPref.edit()) {
@@ -94,8 +96,8 @@ class StaticsMainActivity : AppCompatActivity() {
             if (!hasSeen) {
                 // show the dialog
                 val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
-                dialog.setTitle("${getString(R.string.NewFeaturesForStatics)} ($versionName)")
-                dialog.setMessage("${getString(R.string.NewFeaturesIncludes)} \n\n$updateDescription")
+                dialog.setTitle("${getString(R.string.s18)} ($versionName)")
+                dialog.setMessage("${getString(R.string.s19)} \n\n$updateDescription")
                 dialog.setPositiveButton("Ok") { _, _ -> }
                 dialog.show()
                 with(sharedPref.edit()) {

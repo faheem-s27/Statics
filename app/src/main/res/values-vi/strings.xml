@@ -2,25 +2,25 @@
 <resources>
     <string name="app_name">Statics</string>
 
-    <string name="ConnectingToRiot">Đang kết nối với Riot</string>
-    <string name="the_first_app_with_a_minimap">Ứng dụng đầu tiên có minimap!</string>
-    <string name="sign_in_with_riot">Đăng nhập vào Riot</string>
-    <string name="read_TCs">Tôi đã đọc và đồng ý với điều khoản sử dụng bên dưới</string>
-    <string name="statics_riot_endorsement">Statics chưa được kiểm chứng bởi Riot Games và không phản ánh góc nhìn hay ý kiến của Riot Games hay bất kì ai tham gia vào việc sản xuất hoặc quản lí ở Riot Games. Riot Games, và tất cả các bên hợp tác sở hữu đã được sở hữu và đăng kí sở hữu bởi Riot Games, Inc</string>
-    <string name="hyperlink">Tìm hiểu thêm về chính sách quyền riêng tư của Statics</string>
-    <string name="riot_token_description">Khi đăng nhập bằng Riot, các thông tin đăng nhập của bạn được gửi đến server của Riot và một token được gửi về. Token này sau đó sẽ được dùng để lấy những thông tin như tên và chỉ số. Sau đó token sẽ bị xóa khỏi server và sẽ không được lưu trữ ở bất kì đâu. Server chỉ lưu trữ những thông tin về tài khoản của bạn, sau này được dùng để hiện chỉ số của bạn trong app. Statics sẽ không lưu lại bất kì mật khẩu nào!</string>
-    <string name="how_it_works">Cách ứng dụng này hoạt động</string>
-    <string name="ClickButtonToProveAlive">Bấm nút nếu bạn đẹp chai</string>
-    <string name="TimeToStealData">Đang đánh cắp dữ liệu của bạn</string>
-    <string name="giving_you_gun_buddies">Đang thêm gun buddy</string>
-    <string name="setting_your_account_to_iron">Biến tài khoản của bạn thành rank Sắt</string>
-    <string name="you_did_it">Xong rồi!</string>
-    <string name="welcome_gamename">Chào mừng</string>
-    <string name="error_occurred_while_saving">Đã có lỗi xảy ra :(</string>
-    <string name="BetaDisclaimerTitle">Bạn đang sử dụng phiên bản beta</string>
-    <string name="BetaDisclaimerDesc">Điều này có nghĩa là ứng dụng có thể hoạt động không như mong đợi. Nếu bạn tìm thấy bất kì lỗi nào, hãy báo cáo cho nhà phát triển</string>
-    <string name="NewFeaturesForStatics">Những tính năng mới của Statics</string>
-    <string name="NewFeaturesIncludes">Cập nhật này gồm có:</string>
+    <string name="s1">Đang kết nối với Riot</string>
+    <string name="s2">Ứng dụng đầu tiên có minimap!</string>
+    <string name="s3">Đăng nhập vào Riot</string>
+    <string name="s4">Tôi đã đọc và đồng ý với điều khoản sử dụng bên dưới</string>
+    <string name="s5">Statics chưa được kiểm chứng bởi Riot Games và không phản ánh góc nhìn hay ý kiến của Riot Games hay bất kì ai tham gia vào việc sản xuất hoặc quản lí ở Riot Games. Riot Games, và tất cả các bên hợp tác sở hữu đã được sở hữu và đăng kí sở hữu bởi Riot Games, Inc</string>
+    <string name="s6">Tìm hiểu thêm về chính sách quyền riêng tư của Statics</string>
+    <string name="s7">Khi đăng nhập bằng Riot, các thông tin đăng nhập của bạn được gửi đến server của Riot và một token được gửi về. Token này sau đó sẽ được dùng để lấy những thông tin như tên và chỉ số. Sau đó token sẽ bị xóa khỏi server và sẽ không được lưu trữ ở bất kì đâu. Server chỉ lưu trữ những thông tin về tài khoản của bạn, sau này được dùng để hiện chỉ số của bạn trong app. Statics sẽ không lưu lại bất kì mật khẩu nào!</string>
+    <string name="s8">Cách ứng dụng này hoạt động</string>
+    <string name="s9">Bấm nút nếu bạn đẹp chai</string>
+    <string name="s10">Đang đánh cắp dữ liệu của bạn</string>
+    <string name="s11">Đang thêm gun buddy</string>
+    <string name="s12">Biến tài khoản của bạn thành rank Sắt</string>
+    <string name="s13">Xong rồi!</string>
+    <string name="s14">Chào mừng</string>
+    <string name="s15">Đã có lỗi xảy ra :(</string>
+    <string name="s16">Bạn đang sử dụng phiên bản beta</string>
+    <string name="s17">Điều này có nghĩa là ứng dụng có thể hoạt động không như mong đợi. Nếu bạn tìm thấy bất kì lỗi nào, hãy báo cáo cho nhà phát triển</string>
+    <string name="s18">Những tính năng mới của Statics</string>
+    <string name="s19">Cập nhật này gồm có:</string>
     <string name="s20">Làm mới sau giây</string>
     <string name="menu_stats">Chỉ số</string>
     <string name="s21">Chỉ số</string>
@@ -213,6 +213,27 @@
     <string name="s213">Levels</string>
     <string name="s214">Ranks</string>
     <string name="s215">Đang tải chỉ só của người chơ</string>
+
+    <string name="s216">Chọn 1 chế độ</string>
+    <string name="s217">Đang soạn chỉ số…</string>
+    <string name="s218">Xanh thắng!</string>
+    <string name="s219">Đỏ thắng!</string>
+    <string name="s220">Tỉ số</string>
+    <string name="s221">giờ trước</string>
+    <string name="s222">phút trước</string>
+    <string name="s223">ngày trước</string>
+    <string name="s224">Chơi vào</string>
+    <string name="s225">Bị hạ gục</string>
+    <string name="s226">Sao chép tên</string>
+    <string name="s227">Chi tiết rank</string>
+    <string name="s228">Bỏ qua</string>
+    <string name="s229">Gỡ được bom</string>
+    <string name="s230">Bom nổ</string>
+    <string name="s231">Bom đặt bởi</string>
+    <string name="s232">Xem bản đồ gỡ bom</string>
+    <string name="s233">Level</string>
+    <string name="s234">Rank</string>
+    <string name="s235">tuần trướ</string>
 
 
 </resources>
