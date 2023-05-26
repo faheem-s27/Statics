@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.NewLogInUI
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
                 config,
                 baseContext.resources.displayMetrics
             )
-            startActivity(Intent(this, LoadingActivity::class.java))
+            startActivity(Intent(this, NewLogInUI::class.java))
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             finish()
         } else {

@@ -159,8 +159,7 @@ class RSOActivity : AppCompatActivity() {
                 .addHeader("Authorization", "Bearer $token")
                 .build()
 
-            //secret = BuildConfig.RIOT_API_KEY
-            secret = "RGAPI-77322163-520c-492f-aabe-6c29a39f44ff"
+            secret = BuildConfig.RIOT_API_KEY
             GlobalScope.launch {
                 val call = client.newCall(request).execute()
                 val code = call.code

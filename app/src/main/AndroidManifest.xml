@@ -18,6 +18,9 @@
         android:theme="@style/Theme.VALORANT_stats"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".valo.activities.new_ui.NewLogInUI"
+            android:exported="false" />
+        <activity
             android:name=".valo.activities.new_ui.NewAbout"
             android:exported="false" />
         <activity
