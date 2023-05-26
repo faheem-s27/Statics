@@ -850,7 +850,6 @@ class LiveStatsFragment : Fragment() {
             val userInfoRequest = Request.Builder()
                 .url("https://auth.riotgames.com/userinfo")
                 .addHeader("Content-Type", "application/json")
-                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
                 .addHeader("Authorization", "Bearer $access")
                 .addHeader("X-Riot-ClientVersion", riotClientVersion)
                 .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
