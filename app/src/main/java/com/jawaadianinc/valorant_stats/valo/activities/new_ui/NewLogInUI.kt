@@ -14,6 +14,7 @@ import android.view.View
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -51,7 +52,7 @@ class NewLogInUI : AppCompatActivity() {
 
         webView.settings.javaScriptEnabled = true
         //val url = "https://auth.riotgames.com/authorize?client_id=statics&redirect_uri=https://statics-fd699.web.app/authorize.html&response_type=code&scope=openid+offline_access&prompt=login"
-        val RiotURL = "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1"
+        val RiotURL = "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid&prompt=login"
         // track cookies
         CookieManager.getInstance().setAcceptCookie(true)
         webView.loadUrl(RiotURL)
@@ -109,7 +110,7 @@ class NewLogInUI : AppCompatActivity() {
             }
             val RiotVersion = getRiotClientVersion()
             withContext(Dispatchers.Main) {
-                addStringToTextView("Got Riot client version 📦")
+                addStringToTextView("Got Riot's latest version 📦")
             }
             val entitlement = getEntitlement(accessToken, RiotVersion.first, RiotVersion.second)
             withContext(Dispatchers.Main) {
@@ -130,11 +131,26 @@ class NewLogInUI : AppCompatActivity() {
                     return@withContext
                 }
                 else{
-                    addStringToTextView("Got user info 👤")
+                    addStringToTextView("Decrypting User 👤")
                 }
             }
+            val name = userInfo.split(":")[1]
+            delay(200)
+            withContext(Dispatchers.Main) {
+                addStringToTextView("Hello $name 👋")
+            }
 
-            val partyTest = getPartyTest(accessToken, entitlement, userInfo, RiotVersion.first, RiotVersion.second)
+            delay(200)
+
+            withContext(Dispatchers.Main) {
+                val buttonStarted = findViewById<Button>(R.id.RSO_confirmUserButton)
+                buttonStarted.alpha=0f
+                buttonStarted.text = "Let's get started!"
+                buttonStarted.visibility=View.VISIBLE
+                buttonStarted.animate().alpha(1f).setDuration(1000).start()
+            }
+
+            //val partyTest = getPartyTest(accessToken, entitlement, userInfo, RiotVersion.first, RiotVersion.second)
         }
     }
 
@@ -166,16 +182,16 @@ class NewLogInUI : AppCompatActivity() {
             }
             val json = JSONObject(body)
             Log.d("RSO", "User info: $body")
-            json.getString("sub")
+            val sub =  json.getString("sub")
 
             // check if json has object "acct"
-//            if (!json.has("acct"))
-//            {
-//                return@runBlocking "Error"
-//            }
-//            val gameName = json.getJSONObject("acct").getString("game_name")
-//            val tagLine = json.getJSONObject("acct").getString("tag_line")
-//            return@runBlocking "$sub:$gameName:$tagLine"
+            if (!json.has("acct"))
+            {
+                return@runBlocking "Error"
+            }
+            val gameName = json.getJSONObject("acct").getString("game_name")
+            val tagLine = json.getJSONObject("acct").getString("tag_line")
+            return@runBlocking "$sub:$gameName:$tagLine"
         }
     }
 

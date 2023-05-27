@@ -31,6 +31,25 @@
         app:layout_constraintTop_toBottomOf="@+id/progressBar2"
         tools:text="Testing" />
 
+    <Button
+        android:id="@+id/RSO_confirmUserButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/ic_launcher_background"
+        android:fontFamily="@font/valorant"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:cornerRadius="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statusText"
+        app:strokeColor="#EB0029"
+        app:strokeWidth="1dp"
+        tools:text="SprinkledRainbow#1593" />
+
     <WebView
         android:id="@+id/riotSignInWebVIEW"
         android:layout_width="0dp"
