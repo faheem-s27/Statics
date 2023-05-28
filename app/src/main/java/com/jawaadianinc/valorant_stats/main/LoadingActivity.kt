@@ -21,6 +21,7 @@ import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.NewLogInUI
 import com.jawaadianinc.valorant_stats.valo.activities.new_ui.StaticsMainActivity
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
@@ -207,8 +208,9 @@ class LoadingActivity : AppCompatActivity() {
                 // set the path of the video to be played
                 videoPlayer.setVideoPath(videoPath)
                 videoPlayer.setOnCompletionListener {
-                    val intent = Intent(this, LoggingInActivityRSO::class.java)
+                    val intent = Intent(this, NewLogInUI::class.java)
                     intent.putExtra("key", key)
+                    intent.putExtra("login", "login")
                     startActivity(intent)
                     overridePendingTransition(R.anim.fadein, R.anim.fadeout)
                     finish()
@@ -217,7 +219,7 @@ class LoadingActivity : AppCompatActivity() {
                     videoPlayer.start()
                 }
             } else {
-                val intent = Intent(this, LoggingInActivityRSO::class.java)
+                val intent = Intent(this, NewLogInUI::class.java)
                 intent.putExtra("key", key)
                 startActivity(intent)
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout)

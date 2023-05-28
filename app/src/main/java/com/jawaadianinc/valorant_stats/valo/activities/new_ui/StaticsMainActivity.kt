@@ -21,6 +21,12 @@ class StaticsMainActivity : AppCompatActivity() {
     lateinit var region: String
     lateinit var key: String
     lateinit var playerImageID: String
+    lateinit var puuid : String
+    lateinit var accessToken : String
+    lateinit var entitlementToken: String
+    lateinit var cookies : String
+    lateinit var build: String
+    lateinit var clientVersion: String
 
     private lateinit var activeFragment: Fragment
 
@@ -39,6 +45,12 @@ class StaticsMainActivity : AppCompatActivity() {
         region = intent.getStringExtra("region").toString()
         key = intent.getStringExtra("key").toString()
         playerImageID = intent.getStringExtra("playerImageID").toString()
+        puuid = intent.getStringExtra("puuid").toString()
+        accessToken = intent.getStringExtra("accessToken").toString()
+        entitlementToken = intent.getStringExtra("entitlement").toString()
+        cookies = intent.getStringExtra("cookies").toString()
+        build = intent.getStringExtra("build").toString()
+        clientVersion = intent.getStringExtra("clientVersion").toString()
 
         val UserLocalePrefs = getSharedPreferences("UserLocale", Context.MODE_PRIVATE)
         locale = UserLocalePrefs.getString("locale", "").toString()
@@ -49,19 +61,7 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription =
-            "- New languages in:" +
-                    "\n- French" +
-                    "\n- Indonesian" +
-                    "\n- Portuguese" +
-                    "\n- Portuguese (Brazil)" +
-                    "\n- Russian" +
-                    "\n- Turkish" +
-                    "\n- Vietnamese" +
-                    "\nThey may not be accurate so please let Dev Duckie know when that happens 🦆❤️" +
-                    "\n\n- Fixed getting stuck on 'Checking connection'" +
-                    "\n- Updated shop data visuals" +
-                    "\n- Updated agent abilities visuals" +
-                    "\n\n- Agent voicelines and chat are currently not working. I will add it when it is available."
+            "- A new login system! Only need to sign in once"
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         with(update.edit()) {

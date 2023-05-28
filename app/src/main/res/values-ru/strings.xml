@@ -283,6 +283,7 @@
     <string name="s233">Уровень</string>
     <string name="s234">Ранг</string>
     <string name="s235">недель наза</string>
-
+    <string name="s236">Важно</string>
+    <string name="s237">Убедитесь, что Вы нажали \'Оставаться в системе\' когда войдете в аккаунт</string>
 
 </resources>

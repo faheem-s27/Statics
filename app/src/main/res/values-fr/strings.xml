@@ -284,5 +284,6 @@
     <string name="s233">Niveau</string>
     <string name="s234">Rank</string>
     <string name="s235">Il y a x semaine</string>
-
+    <string name="s236">Important</string>
+    <string name="s237">Veuillez cocher "Rester connecté" pendant la connexion</string>
 </resources>

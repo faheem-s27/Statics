@@ -29,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
                 config,
                 baseContext.resources.displayMetrics
             )
-            startActivity(Intent(this, NewLogInUI::class.java))
+            startActivity(Intent(this, LoadingActivity::class.java))
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             finish()
         } else {

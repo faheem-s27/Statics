@@ -284,5 +284,7 @@
     <string name="s233">Level</string>
     <string name="s234">Rank</string>
     <string name="s235">weeks ago</string>
+    <string name="s236">Important</string>
+    <string name="s237">Make sure to click on \'Stay signed in\' when logging in</string>
 
 </resources>

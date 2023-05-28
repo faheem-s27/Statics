@@ -241,5 +241,7 @@ Se mesmo assim você não se sentir confortável em inserir as suas credenciais 
     <string name="s233">Nivel</string>
     <string name="s234">Rank</string>
     <string name="s235">semanas atrás</string>
+    <string name="s236">Importante</string>
+    <string name="s237">Certifique-se de clicar em \'Manter sessão iniciada\' ao iniciar sessão</string>
 
 </resources>
