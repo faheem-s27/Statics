@@ -107,6 +107,9 @@ class LiveStatsFragment : Fragment() {
 
     private lateinit var weaponsJSONObject: JSONObject
     private lateinit var contenttierJSONObject: JSONObject
+    private lateinit var weaponsSkinLevels: JSONObject
+
+    private lateinit var loadingDialogStatics: androidx.appcompat.app.AlertDialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -122,12 +125,16 @@ class LiveStatsFragment : Fragment() {
         region = activity?.intent?.getStringExtra("region") ?: return
         authPreferences = requireActivity().getSharedPreferences("auth", Context.MODE_PRIVATE)
 
+        loadingDialogStatics = ProgressDialogStatics().setProgressDialog(requireActivity(), "Getting live data")
+
         shard =
             if (region.lowercase(Locale.ROOT) == "latam" || region.lowercase(Locale.getDefault()) == "br") {
                 "na"
             } else {
                 region.lowercase(Locale.getDefault())
             }
+
+        loadingDialogStatics.show()
 
         INITVIEW = requireView().findViewById(R.id.InitView)
         LIVEVIEW = requireView().findViewById(R.id.LiveView)
@@ -205,6 +212,9 @@ class LiveStatsFragment : Fragment() {
 
             val contenttierURL = "https://valorant-api.com/v1/contenttiers"
             contenttierJSONObject = JSONObject(URL(contenttierURL).readText())
+
+            val weaponSkinsURL = "https://valorant-api.com/v1/weapons/skinlevels/"
+            weaponsSkinLevels = JSONObject(URL(weaponSkinsURL).readText())
 
             withContext(Dispatchers.Main)
             {
@@ -349,14 +359,14 @@ class LiveStatsFragment : Fragment() {
             liveSetup()
             timerLiveAPI()
             getPlayerLoadOuts()
-
+            loadingDialogStatics.dismiss()
             // Throw an exception as a test
 //            throw Exception("Hello Discord, this is a test so that next time you get an error\n\nYou do the following:\n\n1. Click on 'Copy & Send'\n2. Send it in channel 'bugs and issues'" +
 //                    "\n\nBoom! I'll now be able to help out much more!")
 
         } catch (e: Exception) {
             // Alert the user and ask to send a bug report
-            val msg = "${getString(R.string.s47)} ${e.message}"
+            val msg = "${getString(R.string.s47)} ${e.message} ${e.cause} ${e.toString()}"
             val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.s48))
                 .setMessage(msg)
@@ -443,11 +453,12 @@ class LiveStatsFragment : Fragment() {
             val cost =
                 currentOffer.getJSONObject("Cost").getInt("85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741")
             val jsonWeapon = getNameAndImageFromOffer(offerID)
-            val displayName = jsonWeapon.getJSONObject("data").getString("displayName")
-            val displayIcon = jsonWeapon.getJSONObject("data").getString("displayIcon")
-
+            if (jsonWeapon == JSONObject()) {
+                return
+            }
+            val displayName = jsonWeapon.getString("displayName")
+            val displayIcon = jsonWeapon.getString("displayIcon")
             val rarity = getRarity(offerID)
-
             val weaponSkinOffer = WeaponSkinOffer(displayName, displayIcon, cost, rarity)
             weaponsSkins.add(weaponSkinOffer)
         }
@@ -502,12 +513,23 @@ class LiveStatsFragment : Fragment() {
     private fun getNameAndImageFromOffer(offerID: String): JSONObject {
         // run a coroutine to get the name and image from https://valorant-api.com/v1/weapons/skinlevels/${offerID} and return the json
         // then use the json to get the name and image
-        val url = "https://valorant-api.com/v1/weapons/skinlevels/${offerID}"
-        val response = APIRequestValorant(url)
-        val body = response.body.string()
-        val code = response.code
-        if (code != 200) return JSONObject()
-        return JSONObject(body)
+//        val url = "https://valorant-api.com/v1/weapons/skinlevels/${offerID}"
+//        val response = APIRequestValorant(url)
+//        val body = response.body.string()
+//        val code = response.code
+//        if (code != 200) return JSONObject()
+//        return JSONObject(body)
+
+        val data = weaponsSkinLevels.getJSONArray("data")
+        for (i in 0 until data.length())
+        {
+            val currentSkin = data.getJSONObject(i)
+            if (currentSkin.getString("uuid") == offerID)
+            {
+                return currentSkin
+            }
+        }
+        return JSONObject()
     }
 
     private fun setStoreTimer(seconds: Int) {
@@ -553,7 +575,7 @@ class LiveStatsFragment : Fragment() {
         }
 
         showStoreFront()
-        getContracts()
+        //getContracts()
     }
 
     private fun loadPlayerCard(titleID: String) {

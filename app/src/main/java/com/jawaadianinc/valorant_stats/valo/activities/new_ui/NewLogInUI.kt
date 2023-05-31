@@ -106,15 +106,12 @@ class NewLogInUI : AppCompatActivity() {
     private fun addStringToTextView(text: String)
     {
         // animate the textview
-        updateText.animate().alpha(0f).setDuration(100).withEndAction {
-            updateText.text = updateText.text.toString() + "\n" + text
-            updateText.animate().alpha(1f).setDuration(100).start()
-        }.start()
+        updateText.text = updateText.text.toString() + "\n" + text
     }
 
     fun authoriseUser(accessToken: String, cookies: String, idToken: String)
     {
-        val DURATION = 600L
+        val DURATION = 10L
 
         // hide the webview
         webView.alpha = 0f
@@ -178,11 +175,11 @@ class NewLogInUI : AppCompatActivity() {
             }
             delay(DURATION)
             withContext(Dispatchers.Main) {
-                val buttonStarted = findViewById<Button>(R.id.RSO_confirmUserButton)
-                buttonStarted.alpha=0f
-                buttonStarted.text = "Click here! 🦆❤️"
-                buttonStarted.visibility=View.VISIBLE
-                buttonStarted.animate().alpha(1f).setDuration(1000).start()
+//                val buttonStarted = findViewById<Button>(R.id.RSO_confirmUserButton)
+//                buttonStarted.alpha=0f
+//                buttonStarted.text = "Click here! 🦆❤️"
+//                buttonStarted.visibility=View.VISIBLE
+//                buttonStarted.animate().alpha(1f).setDuration(1000).start()
                 val key = this@NewLogInUI.intent.getStringExtra("key")
                 val puuid = userInfo.split(":")[0]
                 val tag = userInfo.split(":")[2]
@@ -200,9 +197,9 @@ class NewLogInUI : AppCompatActivity() {
                 intent.putExtra("cookies", cookies)
                 intent.putExtra("idToken", idToken)
 
-                buttonStarted.setOnClickListener {
-                    startActivity(intent)
-                }
+                startActivity(intent)
+//                buttonStarted.setOnClickListener {
+//                }
             }
 
             //val partyTest = getPartyTest(accessToken, entitlement, userInfo, RiotVersion.first, RiotVersion.second)
@@ -276,7 +273,7 @@ class NewLogInUI : AppCompatActivity() {
            {
                return@runBlocking "Error"
            }
-           JSONObject(bodyResponse!!).getJSONObject("affinities").getString("live")
+           JSONObject(bodyResponse).getJSONObject("affinities").getString("live")
        }
 
     }
