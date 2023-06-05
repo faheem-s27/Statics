@@ -321,6 +321,7 @@
 
                         <!-- players actual card underneath it in the center that stretches to the edges-->
                         <androidx.cardview.widget.CardView
+                            android:id="@+id/cardViewPlayerCard"
                             android:layout_width="match_parent"
                             android:layout_height="100dp"
                             android:layout_below="@+id/CurrentLoadoutCardText"
@@ -340,6 +341,95 @@
                                 tools:srcCompat="@drawable/valorant_dawn_card" />
                         </androidx.cardview.widget.CardView>
 
+                        <!-- TextView underneath the card saying Vandal -->
+                        <TextView
+                            android:id="@+id/CurrentLoadoutCardName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/cardViewPlayerCard"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Weapons"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <!-- Put a middle divider vertically -->
+                        <View
+                            android:id="@+id/CurrentLoadoutDivider"
+                            android:layout_width="1dp"
+                            android:layout_height="150dp"
+                            android:layout_below="@+id/CurrentLoadoutCardName"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_centerHorizontal="true"
+                            android:visibility="invisible"
+                            android:layout_marginBottom="16dp"
+                            android:background="@color/white" />
+
+                        <!-- TextView on the left side of the divider saying Vandal -->
+                        <TextView
+                            android:id="@+id/CurrentLoadoutWeapon1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/CurrentLoadoutCardName"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:layout_marginBottom="16dp"
+                            android:layout_toStartOf="@+id/CurrentLoadoutDivider"
+                            android:text="Vandal"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <!-- TextView on the right side of the divider saying Phantom -->
+                        <TextView
+                            android:id="@+id/CurrentLoadoutWeapon2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/CurrentLoadoutCardName"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_toEndOf="@+id/CurrentLoadoutDivider"
+                            android:gravity="center"
+                            android:text="Phantom"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <!-- ImageView underneath vandal text -->
+                        <ImageView
+                            android:id="@+id/CurrentLoadoutVandalImage"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_below="@+id/CurrentLoadoutWeapon1"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_toStartOf="@+id/CurrentLoadoutDivider"
+                            android:scaleType="fitCenter"/>
+
+                        <!-- ImageView underneath phantom text -->
+                        <ImageView
+                            android:id="@+id/CurrentLoadoutPhantomImage"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_below="@+id/CurrentLoadoutWeapon2"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_toEndOf="@+id/CurrentLoadoutDivider"
+                            android:scaleType="fitCenter"/>
 
                     </RelativeLayout>
 
@@ -474,7 +564,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
-                            android:layout_marginBottom="16dp"
+                            android:layout_marginBottom="4dp"
                             android:elevation="12dp"
                             app:cardCornerRadius="20dp">
 
@@ -497,7 +587,6 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/playerStoreListView_circle"
                             android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/s168"
                             android:textColor="#FFFFFF"
@@ -508,7 +597,7 @@
                         <ImageView
                             android:id="@+id/RPImage"
                             android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_height="0dp"
                             android:layout_alignTop="@+id/textView34"
                             android:layout_alignBottom="@+id/textView34"
                             android:layout_alignParentEnd="true"
@@ -517,15 +606,18 @@
                         <!-- A textview thats next to the imageview -->
                         <TextView
                             android:id="@+id/RPTextBalance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="30dp"
+                            android:layout_height="0dp"
                             android:layout_alignTop="@+id/RPImage"
                             android:layout_alignBottom="@+id/RPImage"
                             android:layout_marginEnd="4dp"
                             android:layout_toStartOf="@+id/RPImage"
+                            android:gravity="center"
+                            android:textAlignment="center"
                             android:text="0"
+                            android:fontFamily="@font/valorant"
                             android:textColor="#FFFFFF"
-                            android:textSize="20dp"
+                            android:textSize="16dp"
                             android:textStyle="bold" />
 
                         <!-- Another imageview next to that called "VPImage" -->
@@ -541,15 +633,19 @@
                         <!-- A textview next to that called "VPText" -->
                         <TextView
                             android:id="@+id/VPTextBalance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="30dp"
+                            android:layout_height="0dp"
                             android:layout_alignTop="@+id/VPImage"
                             android:layout_alignBottom="@+id/VPImage"
+                            android:layout_marginTop="0dp"
                             android:layout_marginEnd="4dp"
                             android:layout_toStartOf="@+id/VPImage"
+                            android:fontFamily="@font/valorant"
+                            android:gravity="center"
                             android:text="0"
+                            android:textAlignment="center"
                             android:textColor="#FFFFFF"
-                            android:textSize="20dp"
+                            android:textSize="16dp"
                             android:textStyle="bold" />
 
                     </RelativeLayout>

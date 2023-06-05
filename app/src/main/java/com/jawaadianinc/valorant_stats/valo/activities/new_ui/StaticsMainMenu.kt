@@ -219,7 +219,8 @@ class StaticsMainMenu : Fragment() {
 
         val nameSplit = playerName.split("#")
         if (!testing) {
-            puuid = PlayerDatabase(requireActivity()).getPUUID(nameSplit[0], nameSplit[1])
+            puuid = requireActivity().intent.getStringExtra("riotPUUID") ?: return
+        //puuid = PlayerDatabase(requireActivity()).getPUUID(nameSplit[0], nameSplit[1])
         }
 
         seekBar = view?.findViewById(R.id.new_matchesSlider)!!
@@ -829,8 +830,9 @@ class StaticsMainMenu : Fragment() {
     }
 
     private fun seekBarMatches(key: String) {
+        val riotPUUID = requireActivity().intent.getStringExtra("riotPUUID")
         val url =
-            "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${puuid}?api_key=${key}"
+            "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${riotPUUID}?api_key=${key}"
 
         doAsync {
             val number = JSONObject(URL(url).readText()).getJSONArray("history").length()

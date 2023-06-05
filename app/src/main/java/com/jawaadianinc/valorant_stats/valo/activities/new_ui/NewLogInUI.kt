@@ -20,6 +20,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.google.gson.Gson
+import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityNewLogInUiBinding
 import com.jawaadianinc.valorant_stats.main.Account
@@ -169,6 +170,23 @@ class NewLogInUI : AppCompatActivity() {
                     addStringToTextView("Got region 🌎")
                 }
             }
+            val key = this@NewLogInUI.intent.getStringExtra("key")
+            val puuid = userInfo.split(":")[0]
+            val tag = userInfo.split(":")[2]
+            val intent = Intent(this@NewLogInUI, StaticsMainActivity::class.java)
+            intent.putExtra("key", key)
+            intent.putExtra("region", region)
+            intent.putExtra("playerName", "$name#$tag")
+            intent.putExtra("playerImageID", getPlayerImage("$name#$tag"))
+            intent.putExtra("puuid", puuid)
+            intent.putExtra("accessToken", accessToken)
+            intent.putExtra("entitlement", entitlement)
+            intent.putExtra("clientVersion", RiotVersion.first)
+            intent.putExtra("clientPlatform", clientPlatformToken)
+            intent.putExtra("cookies", cookies)
+            intent.putExtra("idToken", idToken)
+            intent.putExtra("riotPUUID", getRiotPUUID(name, tag))
+
             delay(DURATION)
             withContext(Dispatchers.Main) {
                 addStringToTextView("Hello $name 👋")
@@ -180,23 +198,6 @@ class NewLogInUI : AppCompatActivity() {
 //                buttonStarted.text = "Click here! 🦆❤️"
 //                buttonStarted.visibility=View.VISIBLE
 //                buttonStarted.animate().alpha(1f).setDuration(1000).start()
-                val key = this@NewLogInUI.intent.getStringExtra("key")
-                val puuid = userInfo.split(":")[0]
-                val tag = userInfo.split(":")[2]
-
-                val intent = Intent(this@NewLogInUI, StaticsMainActivity::class.java)
-                intent.putExtra("key", key)
-                intent.putExtra("region", region)
-                intent.putExtra("playerName", "$name#$tag")
-                intent.putExtra("playerImageID", getPlayerImage("$name#$tag"))
-                intent.putExtra("puuid", puuid)
-                intent.putExtra("accessToken", accessToken)
-                intent.putExtra("entitlement", entitlement)
-                intent.putExtra("clientVersion", RiotVersion.first)
-                intent.putExtra("clientPlatform", clientPlatformToken)
-                intent.putExtra("cookies", cookies)
-                intent.putExtra("idToken", idToken)
-
                 startActivity(intent)
 //                buttonStarted.setOnClickListener {
 //                }
@@ -368,6 +369,28 @@ class NewLogInUI : AppCompatActivity() {
                 Log.d("LoadingActivity", "Error getting player image: $e")
                 return@runBlocking "9fb348bc-41a0-91ad-8a3e-818035c4e561"
             }
+        }
+    }
+
+    private fun getRiotPUUID(name: String, tag: String): String
+    {
+        val key = BuildConfig.RIOT_API_KEY
+        val url = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/$name/$tag?api_key=$key"
+        val client = OkHttpClient()
+        return runBlocking(Dispatchers.IO) {
+            val request = Request.Builder()
+                .url(url)
+                .get()
+                .build()
+            val response = client.newCall(request).execute()
+            val code = response.code
+            val body = response.body.string()
+            if (code != 200)
+            {
+                return@runBlocking ""
+            }
+            val json = JSONObject(body)
+            json.getString("puuid")
         }
     }
 

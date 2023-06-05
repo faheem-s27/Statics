@@ -14,10 +14,6 @@
         android:icon="@drawable/rioticon"
         android:title="@string/menu_assets" />
     <item
-        android:id="@+id/new_Esports"
-        android:icon="@drawable/valorantesports"
-        android:title="@string/menu_premier" />
-    <item
         android:id="@+id/new_Settings"
         android:icon="@drawable/newcrosshair"
         android:title="@string/menu_extras" />

@@ -78,9 +78,9 @@ class WeaponSkinOfferAdapter(
         val blue = hexColor.substring(4, 6).toInt(16)
 
         // Shift each color component towards black by 75%
-        val darkerRed = (red * 0.25).toInt()
-        val darkerGreen = (green * 0.25).toInt()
-        val darkerBlue = (blue * 0.25).toInt()
+        val darkerRed = (red * 0.50).toInt()
+        val darkerGreen = (green * 0.50).toInt()
+        val darkerBlue = (blue * 0.50).toInt()
 
         // Convert the darker RGB values back to hex
         return String.format("#%02X%02X%02X", darkerRed, darkerGreen, darkerBlue)

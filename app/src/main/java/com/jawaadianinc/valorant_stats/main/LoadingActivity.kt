@@ -142,9 +142,6 @@ class LoadingActivity : AppCompatActivity() {
                 }
 
                 assetsDB.checkAndAddData(uuid, type, name, bitmap!!, assetsDB)
-                withContext(Dispatchers.Main) {
-                    //updateText.text = "Loading $type: $name"
-                }
                 // Log.d("AssetsDatabase", "Got type: $type, name: $name, UUID: $UUID, imageString: $imageString and bitmap: $bitmap")
             }
         }
@@ -221,15 +218,30 @@ class LoadingActivity : AppCompatActivity() {
             } else {
                 val intent = Intent(this, NewLogInUI::class.java)
                 intent.putExtra("key", key)
-                startActivity(intent)
-                overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-                finish()
+                backgroundIMG.animate().setDuration(1000).alpha(0f).translationY(-100f)
+                    .setInterpolator {
+                        it * it * it * (it * (it * 6 - 15) + 10)
+                    }.start()
+                updateText.text = getString(R.string.s165)
+                updateText.animate().setDuration(1000).alpha(0f).translationY(-100f)
+                    .setInterpolator {
+                        it * it * it * (it * (it * 6 - 15) + 10)
+                    }.start()
+                // fade away the progressbar with velocity upwards
+                loadingProgressBar.animate().setDuration(1000).alpha(0f).translationY(-100f)
+                    .setInterpolator {
+                        it * it * it * (it * (it * 6 - 15) + 10)
+                    }.withEndAction {
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                        finish()
+                    }
             }
 
         } else {
             val puuid =
                 PlayerDatabase(this).getPUUID(valoName.split("#")[0], valoName.split("#")[1])
-            val intent = Intent(this, StaticsMainActivity::class.java)
+            val intent = Intent(this, NewLogInUI::class.java)
             intent.putExtra("key", key)
             intent.putExtra("region", PlayerDatabase(this).getRegion(puuid))
             intent.putExtra("playerName", valoName)

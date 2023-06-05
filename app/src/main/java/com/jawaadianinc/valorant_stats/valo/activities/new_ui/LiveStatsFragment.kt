@@ -12,10 +12,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.Editable
-import android.text.TextUtils
-import android.text.TextWatcher
-import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,12 +19,10 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ListView
@@ -43,7 +37,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
@@ -108,6 +101,7 @@ class LiveStatsFragment : Fragment() {
     private lateinit var weaponsJSONObject: JSONObject
     private lateinit var contenttierJSONObject: JSONObject
     private lateinit var weaponsSkinLevels: JSONObject
+    private lateinit var titlesJSON: JSONObject
 
     private lateinit var loadingDialogStatics: androidx.appcompat.app.AlertDialog
 
@@ -215,6 +209,9 @@ class LiveStatsFragment : Fragment() {
 
             val weaponSkinsURL = "https://valorant-api.com/v1/weapons/skinlevels/"
             weaponsSkinLevels = JSONObject(URL(weaponSkinsURL).readText())
+
+            val titlesURL = "https://valorant-api.com/v1/playertitles"
+            titlesJSON = JSONObject(URL(titlesURL).readText())
 
             withContext(Dispatchers.Main)
             {
@@ -366,6 +363,7 @@ class LiveStatsFragment : Fragment() {
 
         } catch (e: Exception) {
             // Alert the user and ask to send a bug report
+            loadingDialogStatics.dismiss()
             val msg = "${getString(R.string.s47)} ${e.message} ${e.cause} ${e.toString()}"
             val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.s48))
@@ -572,16 +570,72 @@ class LiveStatsFragment : Fragment() {
             loadSprays(json.getJSONArray("Sprays"))
             loadTitle(json.getJSONObject("Identity").getString("PlayerTitleID"))
             loadPlayerCard(json.getJSONObject("Identity").getString("PlayerCardID"))
+            loadWeapons(json.getJSONArray("Guns"))
+        }
+
+        else{
+            Toast.makeText(requireContext(), "Could not get your load-outs", Toast.LENGTH_SHORT).show()
         }
 
         showStoreFront()
         //getContracts()
     }
 
-    private fun loadPlayerCard(titleID: String) {
-        val largeURL = "https://media.valorant-api.com/playercards/${titleID}/largeart.png"
-        val smallURL = "https://media.valorant-api.com/playercards/${titleID}/smallart.png"
-        val wideURL = "https://media.valorant-api.com/playercards/${titleID}/wideart.png"
+    private fun loadWeapons(weapons: JSONArray)
+    {
+        // copy the weapons array into clipboard
+        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("weapons", weapons.toString())
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(requireContext(), "Weapons copied to clipboard!", Toast.LENGTH_SHORT).show()
+
+        for (i in 0 until weapons.length())
+        {
+            val dataWeapon = weapons.getJSONObject(i)
+            val weaponID = dataWeapon.getString("ID")
+            val skinID = dataWeapon.getString("SkinID")
+            // find the weapon in the json
+            val image = getWeaponSkinImage(weaponID, skinID)
+            if (weaponID == "9c82e19d-4575-0200-1a81-3eacf00cf872")
+            {
+                val vandalImage = requireActivity().findViewById<ImageView>(R.id.CurrentLoadoutVandalImage)
+                Picasso.get().load(image).into(vandalImage)
+            }
+            else if (weaponID == "ee8e8d15-496b-07ac-e5f6-8fae5d4c7b1a")
+            {
+                val phantomImage = requireActivity().findViewById<ImageView>(R.id.CurrentLoadoutPhantomImage)
+                Picasso.get().load(image).into(phantomImage)
+            }
+        }
+    }
+
+    private fun getWeaponSkinImage(weaponID: String, skinID: String): String
+    {
+        val data = weaponsJSONObject.getJSONArray("data")
+        for (i in 0 until data.length())
+        {
+            val weapon = data.getJSONObject(i)
+            val wID = weapon.getString("uuid")
+            if (wID == weaponID)
+            {
+                val skins = weapon.getJSONArray("skins")
+                for (j in 0 until skins.length())
+                {
+                    val skin = skins.getJSONObject(j)
+                    val sID = skin.getString("uuid")
+                    if (sID == skinID) {
+                        return skin.getJSONArray("chromas").getJSONObject(0).getString("fullRender")
+                    }
+                }
+            }
+        }
+        return ""
+    }
+
+    private fun loadPlayerCard(cardID: String) {
+        val largeURL = "https://media.valorant-api.com/playercards/${cardID}/largeart.png"
+        val smallURL = "https://media.valorant-api.com/playercards/${cardID}/smallart.png"
+        val wideURL = "https://media.valorant-api.com/playercards/${cardID}/wideart.png"
 
         val smolImg = view?.findViewById<ImageView>(R.id.new_playerAvatar)
         val bigImg = view?.findViewById<ImageView>(R.id.new_LiveStatsBackground)
@@ -632,11 +686,10 @@ class LiveStatsFragment : Fragment() {
                 .setPositiveButton("OK", null)
             dialog.show()
         }
-
     }
 
     private fun loadTitle(TitleID: String) {
-        val titleName = assetsDB.retrieveName(TitleID)
+        val titleName = getTitleFromJson(TitleID)
         view?.findViewById<TextView>(R.id.CurrentLoadoutTitle)?.text = titleName
 
         view?.findViewById<ImageView>(R.id.CurrentLoadoutTitleEdit)?.setOnClickListener {
@@ -661,6 +714,19 @@ class LiveStatsFragment : Fragment() {
             dialogView.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE)
             dialogView.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE)
         }
+    }
+
+    private fun getTitleFromJson(titleID: String): String {
+        val data = titlesJSON.getJSONArray("data")
+        for (i in 0 until data.length())
+        {
+            val currentTitle = data.getJSONObject(i)
+            if (currentTitle.getString("uuid") == titleID)
+            {
+                return currentTitle.getString("titleText")
+            }
+        }
+        return ""
     }
 
     private fun updateTitle(titleID: String) {
@@ -996,6 +1062,10 @@ class LiveStatsFragment : Fragment() {
                 // auth expired so tell user to restart app
                 timerSeconds = 100000
                 changePartyStatusText(getString(R.string.s61))
+                // restart app
+                val intent = Intent(requireContext(), LoadingActivity::class.java)
+                startActivity(intent)
+                activity?.finish()
                 return
             } else if (code == 200) {
                 timerSeconds = 1000
@@ -1116,7 +1186,7 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun decodeNameFromSubject(subject: String): String {
-        // check if authpreferences contains the subject
+        // check if auth preferences contains the subject
         if (authPreferences.contains(subject)) {
             // return the name
             return authPreferences.getString(subject, "")!!
@@ -1577,7 +1647,7 @@ class LiveStatsFragment : Fragment() {
             val titleID = titleObject.getString("ItemID")
 
             // convert titleID to title name
-            val converted = assetsDB.retrieveName(titleID)
+            val converted = getTitleFromJson(titleID)
             availableTitles.add(converted)
         }
         // sort titles alphabetically
