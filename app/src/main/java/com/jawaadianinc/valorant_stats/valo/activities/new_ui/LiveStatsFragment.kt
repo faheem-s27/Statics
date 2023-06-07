@@ -104,6 +104,7 @@ class LiveStatsFragment : Fragment() {
     private lateinit var titlesJSON: JSONObject
 
     private lateinit var loadingDialogStatics: androidx.appcompat.app.AlertDialog
+    private lateinit var currentLoadoutWeaponsRecyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -135,6 +136,8 @@ class LiveStatsFragment : Fragment() {
 
         agentPreGameRecyclerView = requireView().findViewById(R.id.new_agentSelectGridRecyclerView)
         agentPreGameRecyclerView.layoutManager = GridLayoutManager(requireContext(), 6)
+
+        currentLoadoutWeaponsRecyclerView = requireView().findViewById(R.id.currentLoadoutWeaponsRecyclerView)
 
         INITVIEW.visibility = View.VISIBLE
         LIVEVIEW.visibility = View.GONE
@@ -487,6 +490,11 @@ class LiveStatsFragment : Fragment() {
         return JSONObject()
     }
 
+    private fun getWeaponsList()
+    {
+
+    }
+
     private fun getContentTier(contentID: String): JSONObject {
         val data = contenttierJSONObject.getJSONArray("data")
         for (i in 0 until data.length())
@@ -507,6 +515,8 @@ class LiveStatsFragment : Fragment() {
         }
         return JSONObject()
     }
+
+    data class Weapon(val weaponID: String, val name: String, val imageString: String)
 
     private fun getNameAndImageFromOffer(offerID: String): JSONObject {
         // run a coroutine to get the name and image from https://valorant-api.com/v1/weapons/skinlevels/${offerID} and return the json
@@ -581,32 +591,65 @@ class LiveStatsFragment : Fragment() {
         //getContracts()
     }
 
-    private fun loadWeapons(weapons: JSONArray)
+    private fun getWeaponName(weaponID: String): String
     {
-        // copy the weapons array into clipboard
-        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("weapons", weapons.toString())
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(requireContext(), "Weapons copied to clipboard!", Toast.LENGTH_SHORT).show()
-
-        for (i in 0 until weapons.length())
+        val data = weaponsJSONObject.getJSONArray("data")
+        for (i in 0 until data.length())
         {
-            val dataWeapon = weapons.getJSONObject(i)
-            val weaponID = dataWeapon.getString("ID")
-            val skinID = dataWeapon.getString("SkinID")
-            // find the weapon in the json
-            val image = getWeaponSkinImage(weaponID, skinID)
-            if (weaponID == "9c82e19d-4575-0200-1a81-3eacf00cf872")
-            {
-                val vandalImage = requireActivity().findViewById<ImageView>(R.id.CurrentLoadoutVandalImage)
-                Picasso.get().load(image).into(vandalImage)
-            }
-            else if (weaponID == "ee8e8d15-496b-07ac-e5f6-8fae5d4c7b1a")
-            {
-                val phantomImage = requireActivity().findViewById<ImageView>(R.id.CurrentLoadoutPhantomImage)
-                Picasso.get().load(image).into(phantomImage)
+            val weapon = data.getJSONObject(i)
+            if (weapon.getString("uuid") == weaponID) {
+                return weapon.getString("displayName")
             }
         }
+        return ""
+    }
+
+    private fun loadWeaponsList(weapons: JSONArray): MutableList<Weapon>
+    {
+        val weaponsList: MutableList<Weapon> = mutableListOf()
+        for(i in 0 until weapons.length())
+        {
+            val weapon = weapons.getJSONObject(i)
+            val weaponID = weapon.getString("ID")
+            val image = getWeaponSkinImage(weaponID, weapon.getString("SkinID"))
+            val name = getWeaponName(weaponID)
+            weaponsList += Weapon(weaponID, name, image)
+        }
+        return weaponsList
+    }
+
+    private fun loadWeapons(weapons: JSONArray)
+    {
+//        // copy the weapons array into clipboard
+//        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+//        val clip = ClipData.newPlainText("weapons", weapons.toString())
+//        clipboard.setPrimaryClip(clip)
+//        Toast.makeText(requireContext(), "Weapons copied to clipboard!", Toast.LENGTH_SHORT).show()
+
+        val weaponsList = loadWeaponsList(weapons)
+        val weaponAdapter = CurrentLoadoutWeapon(weaponsList) // Replace with your own weapon data list
+        currentLoadoutWeaponsRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
+        currentLoadoutWeaponsRecyclerView.adapter = weaponAdapter
+
+//        for (i in 0 until weapons.length())
+//        {
+//            val dataWeapon = weapons.getJSONObject(i)
+//            val weaponID = dataWeapon.getString("ID")
+//            val skinID = dataWeapon.getString("SkinID")
+//            // find the weapon in the json
+//            val image = getWeaponSkinImage(weaponID, skinID)
+//            if (weaponID == "9c82e19d-4575-0200-1a81-3eacf00cf872")
+//            {
+//                val vandalImage = requireActivity().findViewById<ImageView>(R.id.CurrentLoadoutVandalImage)
+//                Picasso.get().load(image).into(vandalImage)
+//            }
+//            else if (weaponID == "ee8e8d15-496b-07ac-e5f6-8fae5d4c7b1a")
+//            {
+//                val phantomImage = requireActivity().findViewById<ImageView>(R.id.CurrentLoadoutPhantomImage)
+//                Picasso.get().load(image).into(phantomImage)
+//            }
+//
+//        }
     }
 
     private fun getWeaponSkinImage(weaponID: String, skinID: String): String

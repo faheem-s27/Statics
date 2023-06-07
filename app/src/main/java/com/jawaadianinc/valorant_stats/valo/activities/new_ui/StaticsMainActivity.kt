@@ -61,10 +61,11 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription =
-            "- A new login system! Only need to sign in once" +
-                    "\n- Fixed the infamous 'index at 0' error :)" +
-                    "\n- Fixed Loading dialog forever running" +
-                    "\n- Made live mode more stable & faster"
+            "- Added weapons to player loadout in the Live tab!" +
+                    "\n- Made daily shop items more vibrant" +
+                    "\n- Removed Premier tab, now 4 clean tabs!" +
+                    "\n- App will automatically refresh after 1 hour of usage!" +
+                    "\n- Will add weapon changing in next beta update!"
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         with(update.edit()) {

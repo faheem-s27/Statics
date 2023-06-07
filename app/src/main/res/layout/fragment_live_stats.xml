@@ -350,86 +350,24 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
                             android:text="Weapons"
                             android:textColor="@color/white"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
-                        <!-- Put a middle divider vertically -->
-                        <View
-                            android:id="@+id/CurrentLoadoutDivider"
-                            android:layout_width="1dp"
-                            android:layout_height="150dp"
-                            android:layout_below="@+id/CurrentLoadoutCardName"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/currentLoadoutWeaponsRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/CurrentLoadoutCardName"
                             android:layout_centerHorizontal="true"
-                            android:visibility="invisible"
-                            android:layout_marginBottom="16dp"
-                            android:background="@color/white" />
-
-                        <!-- TextView on the left side of the divider saying Vandal -->
-                        <TextView
-                            android:id="@+id/CurrentLoadoutWeapon1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/CurrentLoadoutCardName"
-                            android:layout_alignParentStart="true"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center"
-                            android:layout_marginBottom="16dp"
-                            android:layout_toStartOf="@+id/CurrentLoadoutDivider"
-                            android:text="Vandal"
-                            android:textColor="@color/white"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <!-- TextView on the right side of the divider saying Phantom -->
-                        <TextView
-                            android:id="@+id/CurrentLoadoutWeapon2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/CurrentLoadoutCardName"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginBottom="16dp"
-                            android:layout_toEndOf="@+id/CurrentLoadoutDivider"
-                            android:gravity="center"
-                            android:text="Phantom"
-                            android:textColor="@color/white"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <!-- ImageView underneath vandal text -->
-                        <ImageView
-                            android:id="@+id/CurrentLoadoutVandalImage"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_below="@+id/CurrentLoadoutWeapon1"
-                            android:layout_alignParentStart="true"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="16dp"
-                            android:layout_toStartOf="@+id/CurrentLoadoutDivider"
-                            android:scaleType="fitCenter"/>
-
-                        <!-- ImageView underneath phantom text -->
-                        <ImageView
-                            android:id="@+id/CurrentLoadoutPhantomImage"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_below="@+id/CurrentLoadoutWeapon2"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginBottom="16dp"
-                            android:layout_toEndOf="@+id/CurrentLoadoutDivider"
-                            android:scaleType="fitCenter"/>
+                            android:clipToPadding="false"
+                            android:scrollbars="vertical"
+                            android:padding="4dp"
+                            android:clipChildren="false"
+                            android:overScrollMode="ifContentScrolls"
+                            tools:listitem="@layout/live_player_loadout_weapons" />
 
                     </RelativeLayout>
 
@@ -546,13 +484,14 @@
                             android:id="@+id/playerStoreTimer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignTop="@+id/textView33"
+                            android:layout_alignBottom="@+id/textView33"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginTop="16dp"
                             android:layout_marginEnd="16dp"
                             android:fontFamily="@font/baloo_bhai"
                             android:text="00:00:00"
                             android:textColor="#FFFFFF"
-                            android:textSize="16dp"
+                            android:textSize="12dp"
                             android:textStyle="bold" />
 
                         <!-- A listview under textView33 for Daily store items -->
