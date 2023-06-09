@@ -31,6 +31,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -359,6 +360,7 @@ class LiveStatsFragment : Fragment() {
             liveSetup()
             timerLiveAPI()
             getPlayerLoadOuts()
+            showStoreFront()
             loadingDialogStatics.dismiss()
             // Throw an exception as a test
 //            throw Exception("Hello Discord, this is a test so that next time you get an error\n\nYou do the following:\n\n1. Click on 'Copy & Send'\n2. Send it in channel 'bugs and issues'" +
@@ -437,11 +439,15 @@ class LiveStatsFragment : Fragment() {
         val NightMarket = json.optJSONObject("BonusStore")
         if (NightMarket != null) {
             //show dialog
-            Snackbar.make(requireView(), getString(R.string.s52), Snackbar.LENGTH_LONG).show()
+            //Snackbar.make(requireView(), getString(R.string.s52), Snackbar.LENGTH_LONG).show()
+            handleNightMarket(NightMarket)
         }
-        val dailyOffersSkins = json.getJSONObject("SkinsPanelLayout")
+        handleDailyOffers(json.getJSONObject("SkinsPanelLayout"))
         getWallet()
-        handleDailyOffers(dailyOffersSkins)
+    }
+
+    private fun handleNightMarket(data: JSONObject){
+
     }
 
     private fun handleDailyOffers(dailyOffersSkins: JSONObject) {
@@ -488,11 +494,6 @@ class LiveStatsFragment : Fragment() {
             }
         }
         return JSONObject()
-    }
-
-    private fun getWeaponsList()
-    {
-
     }
 
     private fun getContentTier(contentID: String): JSONObject {
@@ -558,6 +559,8 @@ class LiveStatsFragment : Fragment() {
 
             override fun onFinish() {
                 timer.text = "00:00:00"
+                storeTimer = null
+                showStoreFront()
             }
         }
 
@@ -587,7 +590,7 @@ class LiveStatsFragment : Fragment() {
             Toast.makeText(requireContext(), "Could not get your load-outs", Toast.LENGTH_SHORT).show()
         }
 
-        showStoreFront()
+
         //getContracts()
     }
 
@@ -620,36 +623,16 @@ class LiveStatsFragment : Fragment() {
 
     private fun loadWeapons(weapons: JSONArray)
     {
-//        // copy the weapons array into clipboard
-//        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-//        val clip = ClipData.newPlainText("weapons", weapons.toString())
-//        clipboard.setPrimaryClip(clip)
-//        Toast.makeText(requireContext(), "Weapons copied to clipboard!", Toast.LENGTH_SHORT).show()
-
         val weaponsList = loadWeaponsList(weapons)
         val weaponAdapter = CurrentLoadoutWeapon(weaponsList) // Replace with your own weapon data list
         currentLoadoutWeaponsRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
         currentLoadoutWeaponsRecyclerView.adapter = weaponAdapter
 
-//        for (i in 0 until weapons.length())
-//        {
-//            val dataWeapon = weapons.getJSONObject(i)
-//            val weaponID = dataWeapon.getString("ID")
-//            val skinID = dataWeapon.getString("SkinID")
-//            // find the weapon in the json
-//            val image = getWeaponSkinImage(weaponID, skinID)
-//            if (weaponID == "9c82e19d-4575-0200-1a81-3eacf00cf872")
-//            {
-//                val vandalImage = requireActivity().findViewById<ImageView>(R.id.CurrentLoadoutVandalImage)
-//                Picasso.get().load(image).into(vandalImage)
-//            }
-//            else if (weaponID == "ee8e8d15-496b-07ac-e5f6-8fae5d4c7b1a")
-//            {
-//                val phantomImage = requireActivity().findViewById<ImageView>(R.id.CurrentLoadoutPhantomImage)
-//                Picasso.get().load(image).into(phantomImage)
-//            }
-//
-//        }
+        weaponAdapter.setOnWeaponClickListener(object : CurrentLoadoutWeapon.OnWeaponClickListener {
+            override fun onWeaponClick(weapon: Weapon) {
+
+            }
+        })
     }
 
     private fun getWeaponSkinImage(weaponID: String, skinID: String): String
@@ -1109,7 +1092,6 @@ class LiveStatsFragment : Fragment() {
                 val intent = Intent(requireContext(), LoadingActivity::class.java)
                 startActivity(intent)
                 activity?.finish()
-                return
             } else if (code == 200) {
                 timerSeconds = 1000
                 val partyJSON = JSONObject(body)
@@ -1147,7 +1129,6 @@ class LiveStatsFragment : Fragment() {
             .setContentTitle(title)
             .setContentText(message)
         notificationManager.notify(notificationID, mBuilder.build())
-
         notificationSent = true
     }
 
@@ -1648,6 +1629,59 @@ class LiveStatsFragment : Fragment() {
             availableSprays.add(sprayID)
         }
         return availableSprays
+    }
+
+    private fun getAvailableAgents(): ArrayList<String>
+    {
+        val availableAgents = arrayListOf<String>()
+        val agentID = "01bb38e1-da47-4e6a-9b3d-945fe4655707"
+        val url = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$agentID"
+
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return arrayListOf()
+
+        Log.d("LIVE_STATS_AVAILABLE_AGENTS", body)
+        val agents = JSONObject(body).getJSONArray("Entitlements")
+        for (i in 0 until agents.length()) {
+            val agentObject = agents.getJSONObject(i)
+            val agentID = agentObject.getString("ItemID")
+            availableAgents.add(agentID)
+        }
+        return availableAgents
+    }
+
+    private fun getAvailableGunSkins(): ArrayList<String>
+    {
+        val availableGunSkins = arrayListOf<String>()
+        val gunSkinID = "e7c63390-eda7-46e0-bb7a-a6abdacd2433"
+        val url = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$gunSkinID"
+
+        val response = APIRequestValorant(url)
+        val body = response.body.string()
+        val code = response.code
+
+        if (code != 200) return arrayListOf()
+
+        Log.d("LIVE_STATS_AVAILABLE_GUNSKINS", body)
+        copyToClipboard(body, "Gun Skins")
+        val gunSkins = JSONObject(body).getJSONArray("Entitlements")
+        for (i in 0 until gunSkins.length()) {
+            val gunSkinObject = gunSkins.getJSONObject(i)
+            val gunSkinID = gunSkinObject.getString("ItemID")
+            availableGunSkins.add(gunSkinID)
+        }
+        return availableGunSkins
+    }
+
+    private fun copyToClipboard(content: Any, desc: String = "")
+    {
+        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Copied Text", content.toString())
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(requireContext(), "Copied $desc", Toast.LENGTH_SHORT).show()
     }
 
     private fun getAvailablePlayerCards(): ArrayList<String> {
