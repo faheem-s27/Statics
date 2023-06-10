@@ -580,6 +580,7 @@ class LiveStatsFragment : Fragment() {
         if (code == 200) {
             // show dialog
             val json = JSONObject(body)
+            copyToClipboard(json, "PlayerLoadOut")
             loadSprays(json.getJSONArray("Sprays"))
             loadTitle(json.getJSONObject("Identity").getString("PlayerTitleID"))
             loadPlayerCard(json.getJSONObject("Identity").getString("PlayerCardID"))
@@ -630,7 +631,7 @@ class LiveStatsFragment : Fragment() {
 
         weaponAdapter.setOnWeaponClickListener(object : CurrentLoadoutWeapon.OnWeaponClickListener {
             override fun onWeaponClick(weapon: Weapon) {
-
+                val guns = getAvailableGunSkins()
             }
         })
     }
@@ -847,36 +848,44 @@ class LiveStatsFragment : Fragment() {
 
     }
     private fun loadSprays(Sprays: JSONArray) {
-        val PreRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayPreRound)
-        val MidRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayMidRound)
-        val PostRoundSprayView = view?.findViewById<ImageView>(R.id.CurrentLoadoutSprayPostRound)
+        val leftSprayImage = view?.findViewById<ImageView>(R.id.imageViewLeftSpray)
+        val bottomSprayImage = view?.findViewById<ImageView>(R.id.imageViewBottomSpray)
+        val rightSprayImage = view?.findViewById<ImageView>(R.id.imageViewRightSpray)
+        val topSprayImage = view?.findViewById<ImageView>(R.id.imageViewTopSpray)
 
-        val PreRoundID = "0814b2fe-4512-60a4-5288-1fbdcec6ca48"
-        val MidRoundID = "04af080a-4071-487b-61c0-5b9c0cfaac74"
-        val PostRoundID = "5863985e-43ac-b05d-cb2d-139e72970014"
+        val LeftSpray = "0814b2fe-4512-60a4-5288-1fbdcec6ca48"
+        val BottomSpray = "04af080a-4071-487b-61c0-5b9c0cfaac74"
+        val RightSpray = "5863985e-43ac-b05d-cb2d-139e72970014"
+        val TopSpray = "7cdc908e-4f69-9140-a604-899bd879eed1"
 
         for (i in 0 until Sprays.length()) {
-            val EquipSlotID = Sprays.getJSONObject(i).getString("EquipSlotID")
-            when (EquipSlotID) {
-                PreRoundID -> {
+            when (Sprays.getJSONObject(i).getString("EquipSlotID")) {
+                LeftSpray -> {
                     // Pre Round Spray
                     Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(i).getString("SprayID")])
                         .fit()
-                        .centerInside().into(PreRoundSprayView)
+                        .centerInside().into(leftSprayImage)
                 }
 
-                MidRoundID -> {
+                BottomSpray -> {
                     // Mid Round Spray
                     Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(i).getString("SprayID")])
                         .fit()
-                        .centerInside().into(MidRoundSprayView)
+                        .centerInside().into(bottomSprayImage)
                 }
 
-                PostRoundID -> {
+                RightSpray -> {
                     // Post Round Spray
                     Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(i).getString("SprayID")])
                         .fit()
-                        .centerInside().into(PostRoundSprayView)
+                        .centerInside().into(rightSprayImage)
+                }
+
+                TopSpray -> {
+                    // Post Round Spray
+                    Picasso.get().load(SpraysIDImage[Sprays.getJSONObject(i).getString("SprayID")])
+                        .fit()
+                        .centerInside().into(topSprayImage)
                 }
             }
         }
@@ -899,30 +908,40 @@ class LiveStatsFragment : Fragment() {
                 // Handle cancel button click event, if needed
             }
             .create()
-        PreRoundSprayView!!.setOnClickListener {
+        topSprayImage!!.setOnClickListener {
             listViewPictures.setOnItemClickListener { _, _, position, _ ->
                 val selectedPicture = sprays[position]
-                updateSpray(selectedPicture, PreRoundID)
+                updateSpray(selectedPicture, TopSpray)
                 alertDialog.dismiss()
             }
 
             alertDialog.show()
         }
 
-        MidRoundSprayView!!.setOnClickListener {
+        leftSprayImage!!.setOnClickListener {
             listViewPictures.setOnItemClickListener { _, _, position, _ ->
                 val selectedPicture = sprays[position]
-                updateSpray(selectedPicture, MidRoundID)
+                updateSpray(selectedPicture, LeftSpray)
                 alertDialog.dismiss()
             }
 
             alertDialog.show()
         }
 
-        PostRoundSprayView!!.setOnClickListener {
+        rightSprayImage!!.setOnClickListener {
             listViewPictures.setOnItemClickListener { _, _, position, _ ->
                 val selectedPicture = sprays[position]
-                updateSpray(selectedPicture, PostRoundID)
+                updateSpray(selectedPicture, RightSpray)
+                alertDialog.dismiss()
+            }
+
+            alertDialog.show()
+        }
+
+        bottomSprayImage!!.setOnClickListener {
+            listViewPictures.setOnItemClickListener { _, _, position, _ ->
+                val selectedPicture = sprays[position]
+                updateSpray(selectedPicture, BottomSpray)
                 alertDialog.dismiss()
             }
 
@@ -1663,10 +1682,16 @@ class LiveStatsFragment : Fragment() {
         val body = response.body.string()
         val code = response.code
 
-        if (code != 200) return arrayListOf()
+        val skinVarientsID = "3ad1b2b2-acdb-4524-852f-954a76ddae0a"
+        val GunSkinVarientsurl = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$skinVarientsID"
+        val GunSkinVarientsresponse = APIRequestValorant(GunSkinVarientsurl)
+        val GunSkinVarientsbody = GunSkinVarientsresponse.body.string()
+        val GunSkinVarientscode = GunSkinVarientsresponse.code
+
+        if (code != 200 || GunSkinVarientscode != 200) return arrayListOf()
 
         Log.d("LIVE_STATS_AVAILABLE_GUNSKINS", body)
-        copyToClipboard(body, "Gun Skins")
+        copyToClipboard(body + "\n\n" + GunSkinVarientsbody, "Gun Skins")
         val gunSkins = JSONObject(body).getJSONArray("Entitlements")
         for (i in 0 until gunSkins.length()) {
             val gunSkinObject = gunSkins.getJSONObject(i)
