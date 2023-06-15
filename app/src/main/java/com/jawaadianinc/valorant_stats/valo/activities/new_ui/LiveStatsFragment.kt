@@ -59,6 +59,9 @@ import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.Calendar
 import java.util.Locale
 
 data class ValorantPing(val ServerName: String, val PingValue: Int)
@@ -107,6 +110,8 @@ class LiveStatsFragment : Fragment() {
     private lateinit var loadingDialogStatics: androidx.appcompat.app.AlertDialog
     private lateinit var currentLoadoutWeaponsRecyclerView: RecyclerView
 
+    private lateinit var RequestLogsDatabase: RequestLogsDatabase
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -122,6 +127,8 @@ class LiveStatsFragment : Fragment() {
         authPreferences = requireActivity().getSharedPreferences("auth", Context.MODE_PRIVATE)
 
         loadingDialogStatics = ProgressDialogStatics().setProgressDialog(requireActivity(), "Getting live data")
+
+        RequestLogsDatabase = RequestLogsDatabase(requireContext())
 
         shard =
             if (region.lowercase(Locale.ROOT) == "latam" || region.lowercase(Locale.getDefault()) == "br") {
@@ -580,7 +587,6 @@ class LiveStatsFragment : Fragment() {
         if (code == 200) {
             // show dialog
             val json = JSONObject(body)
-            copyToClipboard(json, "PlayerLoadOut")
             loadSprays(json.getJSONArray("Sprays"))
             loadTitle(json.getJSONObject("Identity").getString("PlayerTitleID"))
             loadPlayerCard(json.getJSONObject("Identity").getString("PlayerCardID"))
@@ -595,35 +601,35 @@ class LiveStatsFragment : Fragment() {
         //getContracts()
     }
 
-    private fun getWeaponName(weaponID: String): String
-    {
+    private fun getWeaponName(weaponID: String): String {
         val data = weaponsJSONObject.getJSONArray("data")
-        for (i in 0 until data.length())
+        for (weapon in data)
         {
-            val weapon = data.getJSONObject(i)
-            if (weapon.getString("uuid") == weaponID) {
+            if (weapon.getString("uuid") == weaponID)
+            {
                 return weapon.getString("displayName")
             }
         }
         return ""
     }
 
+    operator fun JSONArray.iterator(): Iterator<JSONObject>
+            = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
+
     private fun loadWeaponsList(weapons: JSONArray): MutableList<Weapon>
     {
         val weaponsList: MutableList<Weapon> = mutableListOf()
-        for(i in 0 until weapons.length())
+        for (weapon in weapons)
         {
-            val weapon = weapons.getJSONObject(i)
             val weaponID = weapon.getString("ID")
-            val image = getWeaponSkinImage(weaponID, weapon.getString("SkinID"))
-            val name = getWeaponName(weaponID)
-            weaponsList += Weapon(weaponID, name, image)
+            weaponsList += Weapon(weaponID, getWeaponName(weaponID), getWeaponSkinImage(weaponID, weapon.getString("SkinID")))
         }
         return weaponsList
     }
 
     private fun loadWeapons(weapons: JSONArray)
     {
+        val availableGunSkins = getAvailableGunSkins()
         val weaponsList = loadWeaponsList(weapons)
         val weaponAdapter = CurrentLoadoutWeapon(weaponsList) // Replace with your own weapon data list
         currentLoadoutWeaponsRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
@@ -631,9 +637,62 @@ class LiveStatsFragment : Fragment() {
 
         weaponAdapter.setOnWeaponClickListener(object : CurrentLoadoutWeapon.OnWeaponClickListener {
             override fun onWeaponClick(weapon: Weapon) {
-                val guns = getAvailableGunSkins()
+                val skins = lookupGunSkins(weapon.weaponID, availableGunSkins)
+                if (skins == null)
+                {
+                    Toast.makeText(requireContext(), "You don't have skins for ${weapon.name} :(", Toast.LENGTH_SHORT).show()
+                    return
+                }
+                else {
+                    copyToClipboard(skins.toString(), "${skins.size} skins for ${weapon.name}")
+                }
+
             }
         })
+    }
+
+    private fun lookupGunSkins(weaponID: String, skinsID: List<String>): List<String>?
+    {
+        val list = mutableListOf<String>()
+        val data = weaponsJSONObject.getJSONArray("data")
+        for (i in 0 until data.length())
+        {
+            val weapon = data.getJSONObject(i)
+            if (weapon.getString("uuid") == weaponID) {
+                val skins = weapon.getJSONArray("skins")
+                for (j in 0 until skins.length())
+                {
+                    var levelsCounter = 0
+                    val skin = skins.getJSONObject(j)
+                    val levels = skin.getJSONArray("levels")
+                    for (k in 0 until levels.length())
+                    {
+                        val level = levels.getJSONObject(k)
+                        if (level.getString("uuid") in skinsID)
+                        {
+                            list += level.getString("uuid")
+                            levelsCounter++
+                        }
+                    }
+
+                    var chromasCounter = 0
+                    val chromas = skin.getJSONArray("chromas")
+                    for (k in 0 until chromas.length())
+                    {
+                        val chroma = chromas.getJSONObject(k)
+                        if (chroma.getString("uuid") in skinsID)
+                        {
+                            list += chroma.getString("uuid")
+                            chromasCounter++
+                        }
+                    }
+
+                    Log.d("LIVE", "Found $levelsCounter levels and $chromasCounter chromas for $weaponID")
+                }
+                return if (list.isEmpty()) null else list
+            }
+        }
+        return null
     }
 
     private fun getWeaponSkinImage(weaponID: String, skinID: String): String
@@ -1675,6 +1734,7 @@ class LiveStatsFragment : Fragment() {
     private fun getAvailableGunSkins(): ArrayList<String>
     {
         val availableGunSkins = arrayListOf<String>()
+
         val gunSkinID = "e7c63390-eda7-46e0-bb7a-a6abdacd2433"
         val url = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$gunSkinID"
 
@@ -1684,20 +1744,33 @@ class LiveStatsFragment : Fragment() {
 
         val skinVarientsID = "3ad1b2b2-acdb-4524-852f-954a76ddae0a"
         val GunSkinVarientsurl = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$skinVarientsID"
+
         val GunSkinVarientsresponse = APIRequestValorant(GunSkinVarientsurl)
         val GunSkinVarientsbody = GunSkinVarientsresponse.body.string()
         val GunSkinVarientscode = GunSkinVarientsresponse.code
 
         if (code != 200 || GunSkinVarientscode != 200) return arrayListOf()
-
-        Log.d("LIVE_STATS_AVAILABLE_GUNSKINS", body)
-        copyToClipboard(body + "\n\n" + GunSkinVarientsbody, "Gun Skins")
+        //copyToClipboard(body + "\n\n" + GunSkinVarientsbody, "Gun Skins")
         val gunSkins = JSONObject(body).getJSONArray("Entitlements")
         for (i in 0 until gunSkins.length()) {
             val gunSkinObject = gunSkins.getJSONObject(i)
             val gunSkinID = gunSkinObject.getString("ItemID")
             availableGunSkins.add(gunSkinID)
         }
+
+        Toast.makeText(requireContext(), "Got ${gunSkins.length()} gun skins", Toast.LENGTH_SHORT).show()
+
+        val gunVarientSkins = JSONObject(GunSkinVarientsbody).getJSONArray("Entitlements")
+        for (i in 0 until gunVarientSkins.length()) {
+            val gunVarientSkinObject = gunVarientSkins.getJSONObject(i)
+            val gunVarientSkinID = gunVarientSkinObject.getString("ItemID")
+            availableGunSkins.add(gunVarientSkinID)
+        }
+
+        Toast.makeText(requireContext(), "Got ${gunVarientSkins
+            .length()} gun variant skins", Toast.LENGTH_SHORT).show()
+
+        //copyToClipboard(availableGunSkins, "Available gun skins")
         return availableGunSkins
     }
 
@@ -1797,6 +1870,11 @@ class LiveStatsFragment : Fragment() {
         body: String? = null,
         put: Boolean? = false
     ): Response {
+
+        // get date in format of YYYY-MM-DD HH:MM:SS
+        val date = Calendar.getInstance().time
+        val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date)
+
         if (body == null) {
             val request = Request.Builder()
                 .url(url)
@@ -1810,6 +1888,18 @@ class LiveStatsFragment : Fragment() {
 
             // return main thread blocking
             return runBlocking(Dispatchers.IO) {
+                val response = client.newCall(request).execute()
+                val responseCode = response.code
+                val responseBody = response.body.string()
+                val success = RequestLogsDatabase.addLog(url, "GET", dateTime, responseCode, responseBody)
+                if (success)
+                {
+                    Log.d("LIVE_STATS_API_REQUEST", "Successfully added log to database, $url")
+                }
+                else
+                {
+                    Log.d("LIVE_STATS_API_REQUEST", "Failed to add log to database, $url")
+                }
                 return@runBlocking client.newCall(request).execute()
             }
         } else if (put == false) {

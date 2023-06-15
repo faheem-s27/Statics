@@ -61,7 +61,7 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription =
-            "- Added weapons to player loadout in the Live tab!" +
+            "- Added weapons to player load-out in the Live tab!" +
                     "\n- Made daily shop items more vibrant" +
                     "\n- Removed Premier tab, now 4 clean tabs!" +
                     "\n- App will automatically refresh after 1 hour of usage!" +
