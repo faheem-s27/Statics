@@ -1,16 +1,20 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
-import android.R
 import android.content.pm.PackageInfo
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
+import com.jawaadianinc.valorant_stats.R
 
 class NewAbout : AppCompatActivity() {
+    private lateinit var descTextView: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.jawaadianinc.valorant_stats.R.layout.activity_new_about)
@@ -66,6 +70,39 @@ class NewAbout : AppCompatActivity() {
             )
             startActivity(intent)
         }
+
+        // get the shared preferences for LatestFeatureDescription
+        val sharedPref = getSharedPreferences("LatestFeature", MODE_PRIVATE)
+        val latestFeatureDescription =
+            sharedPref.getString("LatestFeatureDescription", "No description available")
+
+        val lenny = """¯\_(ツ)_/¯"""
+        descTextView = findViewById<TextView>(R.id.aboutDesc)
+        descTextView.text = "Hi! I'm the developer of Statics\n " +
+                "A Valorant Stats Tracker app, for people who want to see their Valorant stats on mobile more conveniently without using an external browser or PC\n" +
+                lenny + "\n" + "Out of love for Valorant and with my coding expertise\nI created this app" +
+                " for fun and has been mostly a hobby project, but I'm always open to suggestions and feedback\nLots of love ❤️ \nFaheem Saleem\nMy Valorant user is Duck#2004"
+        descTextView.gravity = android.view.Gravity.CENTER
+
+        val updateTextView = findViewById<TextView>(R.id.updateDesc)
+        updateTextView.text = "Changes:\n$latestFeatureDescription"
+
+        val textFile = assets.open("TranslatersPeople.txt").bufferedReader().use { it.readText() }
+        val TranslaterPeople = ArrayList<Translater>()
+        val lines = textFile.split("\n")
+        for (line in lines) {
+            val parts = line.split(",")
+            val name = parts[0]
+            val discord = parts[1]
+            val language = parts[2]
+            val image = parts[3]
+            TranslaterPeople.add(Translater(name, discord, language, image))
+        }
+        val adapter = TranslaterAdapter(TranslaterPeople)
+        val listView = findViewById<RecyclerView>(R.id.listViewTranslaters)
+        listView.layoutManager = GridLayoutManager(this, 2)
+        listView.adapter = adapter
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

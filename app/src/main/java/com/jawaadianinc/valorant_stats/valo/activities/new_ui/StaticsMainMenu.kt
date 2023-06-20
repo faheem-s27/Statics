@@ -294,7 +294,7 @@ class StaticsMainMenu : Fragment() {
                     REFRESHING = false
                 } else {
                     // show alert dialog
-                    val builder = AlertDialog.Builder(requireContext())
+                    val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
                     builder.setTitle("Error")
                     builder.setMessage(
                         "Unable to fetch data. Please try again later.\nError Code: ${
@@ -356,7 +356,7 @@ class StaticsMainMenu : Fragment() {
             Picasso.get().load(smol).fit().centerCrop()
                 .into(newPlayerWideImage)
 
-            val builder = AlertDialog.Builder(requireContext())
+            val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
             builder.setTitle("No Matches Found")
             builder.setMessage("You have not played any matches in a long time so Statics is unable to process your stats. Please play a match and try again.")
             builder.setPositiveButton("OK") { dialog, which ->

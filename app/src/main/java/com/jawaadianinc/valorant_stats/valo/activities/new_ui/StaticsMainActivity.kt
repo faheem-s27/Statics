@@ -60,12 +60,11 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
 
-        val updateDescription =
-            "- Added weapons to player load-out in the Live tab!" +
-                    "\n- Made daily shop items more vibrant" +
-                    "\n- Removed Premier tab, now 4 clean tabs!" +
-                    "\n- App will automatically refresh after 1 hour of usage!" +
-                    "\n- Will add weapon changing in next beta update!"
+        val updateDescription: String = "- Default tab is now **Live** instead of Stats\n" +
+                "- Logging out now works (kinda)\n" +
+                "- New changes in the way Statics handles data means the app will be more smoother than before :)\n" +
+                "- Fixed button text colours being hard to see (changed background colour) \n" +
+                "- Added version changes in About page"
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         with(update.edit()) {
@@ -116,7 +115,7 @@ class StaticsMainActivity : AppCompatActivity() {
         val AssetsFragment = AssetsFragment()
         val SettingsFragment = SettingsFragment()
         val fragmentManager = supportFragmentManager
-        activeFragment = statsFragment
+        activeFragment = LiveStatsFragment
 
         val appUpdateManager = AppUpdateManagerFactory.create(this)
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
@@ -137,8 +136,8 @@ class StaticsMainActivity : AppCompatActivity() {
 
         fragmentManager.beginTransaction().apply {
             add(R.id.container, AssetsFragment, "1").hide(AssetsFragment)
-            add(R.id.container, LiveStatsFragment, "2").hide(LiveStatsFragment)
-            add(R.id.container, statsFragment, "3")
+            add(R.id.container, LiveStatsFragment, "2")
+            add(R.id.container, statsFragment, "3").hide(statsFragment)
             add(R.id.container, SettingsFragment, "4").hide(SettingsFragment)
         }.commit()
 

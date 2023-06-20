@@ -58,9 +58,13 @@ class NewLogInUI : AppCompatActivity() {
         webView.settings.javaScriptEnabled = true
         //val url = "https://auth.riotgames.com/authorize?client_id=statics&redirect_uri=https://statics-fd699.web.app/authorize.html&response_type=code&scope=openid+offline_access&prompt=login"
 
+        var RiotURL = "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid"
         // get the intent string and see if it says "login"
         val intentString = intent.getStringExtra("login")
-        var RiotURL = "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid"
+        if (intentString == "true")
+        {
+            RiotURL+="&prompt=login"
+        }
 
         // check if its the first time the user has opened the new UI
         val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)

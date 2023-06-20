@@ -4,6 +4,7 @@
     <style name="Divider">
         <item name="android:background">?android:attr/listDivider</item>
         //you can give your color here. that will change all divider color in your app.
+
     </style>
 
     <style name="Divider.Horizontal" parent="Divider">
@@ -12,21 +13,25 @@
         // You can change thickness here.
     </style>
 
-    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@color/white</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:background">@color/Valorant_SplashColourBackground</item>
-        <item name="android:windowBackground">@color/Valorant_SplashColourBackground</item>
+    <style name="AlertDialogTheme" parent="android:Theme.Material.Dialog.Alert">
+        <item name="android:background">@color/Discord</item>
+        <!--        <item name="android:windowBackground">@color/Valorant_SplashColourBackground</item>-->
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowEnterAnimation">@anim/fadein</item>
         <item name="android:windowExitAnimation">@anim/fadeout</item>
-        <item name="android:windowAnimationStyle">@style/DialogAnimation_2</item>
-        <item name="android:colorButtonNormal">@color/white</item>
-        <item name="android:colorControlHighlight">@color/white</item>
         <!-- Negative button color -->
-        <item name="android:colorAccent">@color/white</item>
+
+<!--        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>-->
+<!--        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>-->
     </style>
+
+<!--    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">-->
+<!--        <item name="android:textColor">#f00</item>-->
+<!--    </style>-->
+
+<!--    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">-->
+<!--        <item name="android:textColor">#00f</item>-->
+<!--    </style>-->
 
     <style name="DialogAnimation_2">
         <item name="android:windowEnterAnimation">@anim/fadein</item>

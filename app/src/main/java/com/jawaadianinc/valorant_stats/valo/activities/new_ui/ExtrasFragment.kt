@@ -54,11 +54,11 @@ class SettingsFragment : Fragment() {
         val logOutButton = view.findViewById<View>(R.id.new_SignOutButton)
         logOutButton.setOnClickListener {
             // Add a confirmation dialog
-            val alert = android.app.AlertDialog.Builder(requireActivity())
+            val alert = android.app.AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
             alert.setTitle(getString(R.string.s55))
             alert.setMessage(getString(R.string.s56))
             alert.setPositiveButton("Yes") { _, _ ->
-                logOut(playerName.split("#")[0])
+                logOut()
             }
             alert.setNegativeButton("No") { _, _ -> }
             alert.show()
@@ -138,7 +138,7 @@ class SettingsFragment : Fragment() {
 
         val aboutButton = view.findViewById<Button>(R.id.new_About)
         aboutButton.setOnClickListener {
-            val intent = Intent(requireActivity(), AboutActivity::class.java)
+            val intent = Intent(requireActivity(), NewAbout::class.java)
             startActivity(intent)
             activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         }
@@ -203,7 +203,7 @@ class SettingsFragment : Fragment() {
 
         val logs = view.findViewById<Button>(R.id.new_view_logs_button)
         logs.setOnClickListener {
-            Toast.makeText(requireActivity(), "Coming soon!", Toast.LENGTH_SHORT).show()
+            //startActivity(Intent(requireActivity(), RequestLogActivity::class.java))
         }
     }
 
@@ -396,24 +396,29 @@ class SettingsFragment : Fragment() {
 //    }
 
 
-    private fun logOut(name: String) {
-        val playerDB = PlayerDatabase(requireActivity())
-        if (playerDB.logOutPlayer(name)) {
-            val widgetIntent = Intent(requireActivity(), LastMatchWidget::class.java)
-            widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-            val ids = AppWidgetManager.getInstance(activity?.application).getAppWidgetIds(
-                ComponentName(activity?.applicationContext!!, LastMatchWidget::class.java)
-            )
-            widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-            activity?.sendBroadcast(widgetIntent)
-
-            startActivity(Intent(requireActivity(), LoggingInActivityRSO::class.java))
-            activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            activity?.finish()
-            Toast.makeText(requireActivity(), getString(R.string.s160), Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireActivity(), getString(R.string.s161), Toast.LENGTH_SHORT).show()
-        }
+    private fun logOut() {
+        val intent = Intent(requireActivity(), NewLogInUI::class.java)
+        intent.putExtra("login", "true")
+        startActivity(intent)
+        activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+        activity?.finish()
+//        val playerDB = PlayerDatabase(requireActivity())
+//        if (playerDB.logOutPlayer(name)) {
+//            val widgetIntent = Intent(requireActivity(), LastMatchWidget::class.java)
+//            widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+//            val ids = AppWidgetManager.getInstance(activity?.application).getAppWidgetIds(
+//                ComponentName(activity?.applicationContext!!, LastMatchWidget::class.java)
+//            )
+//            widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+//            activity?.sendBroadcast(widgetIntent)
+//
+//
+//
+//            activity?.finish()
+//            Toast.makeText(requireActivity(), getString(R.string.s160), Toast.LENGTH_SHORT).show()
+//        } else {
+//            Toast.makeText(requireActivity(), getString(R.string.s161), Toast.LENGTH_SHORT).show()
+//        }
     }
 
 

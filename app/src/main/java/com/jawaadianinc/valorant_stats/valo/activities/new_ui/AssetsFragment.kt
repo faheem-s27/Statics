@@ -92,6 +92,9 @@ class AssetsFragment : Fragment() {
             }
 
             uiThread {
+                if (context == null) {
+                    return@uiThread
+                }
                 val adapter = AssetsButtonNewAdapter(this@AssetsFragment, assets, images)
                 assetListView.adapter = adapter
                 assetListView.setOnItemClickListener { _, _, position, _ ->
