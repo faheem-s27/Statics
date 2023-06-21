@@ -1587,43 +1587,43 @@ withContext(Dispatchers.Main) {
             val body = response.body.string()
             if (code != 200) return@launch
             withContext(Dispatchers.Main){
-            val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
-            lockInButton!!.setOnClickListener {
-                // get the text from the lock in button
-                val lockInButtonText = lockInButton.text.toString()
-                // get the last word of the text
-                val lockInButtonTextLastWord = lockInButtonText.split(" ").last()
-                // check if the last word is in the agents ID hashmap
-                if (AgentNamesID.containsValue(lockInButtonTextLastWord)) {
-                    // get the key of the last word
-                    val agentID =
-                        AgentNamesID.filterValues { it == lockInButtonTextLastWord }.keys.first()
-                    // select the character
-                    lockInCharacter(agentID)
+                val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
+                lockInButton!!.setOnClickListener {
+                    // get the text from the lock in button
+                    val lockInButtonText = lockInButton.text.toString()
+                    // get the last word of the text
+                    val lockInButtonTextLastWord = lockInButtonText.split(" ").last()
+                    // check if the last word is in the agents ID hashmap
+                    if (AgentNamesID.containsValue(lockInButtonTextLastWord)) {
+                        // get the key of the last word
+                        val agentID =
+                            AgentNamesID.filterValues { it == lockInButtonTextLastWord }.keys.first()
+                        // select the character
+                        lockInCharacter(agentID)
+                    }
                 }
-            }
 
-            val quitButton = view?.findViewById<Button>(R.id.new_quitButton)
-            quitButton!!.setOnClickListener {
-                quitMatch(matchID)
-            }
+                val quitButton = view?.findViewById<Button>(R.id.new_quitButton)
+                quitButton!!.setOnClickListener {
+                    quitMatch(matchID)
+                }
 
-            val preGameJSON = JSONObject(body)
-//        val allyTeamJSON = preGameJSON.getJSONArray("Players")
+                val preGameJSON = JSONObject(body)
+    //        val allyTeamJSON = preGameJSON.getJSONArray("Players")
 
-            val currentModeSelected = capitaliseGameMode(preGameJSON.getString("QueueID"))
-            val textViewMode = view?.findViewById<TextView>(R.id.new_partyPreGameTitle)
-            textViewMode?.text = "Playing ${currentModeSelected}"
+                val currentModeSelected = capitaliseGameMode(preGameJSON.getString("QueueID"))
+                val textViewMode = view?.findViewById<TextView>(R.id.new_partyPreGameTitle)
+                textViewMode?.text = "Playing ${currentModeSelected}"
 
-            sendNotification(
-                "${getString(R.string.s69)} $currentModeSelected",
-                getString(R.string.s70),
-                "match_found"
-            )
+                sendNotification(
+                    "${getString(R.string.s69)} $currentModeSelected",
+                    getString(R.string.s70),
+                    "match_found"
+                )
 
-            val mapName = preGameJSON.getString("MapID")
-            val pregameBackground = view?.findViewById<ImageView>(R.id.new_partyPreGameMapImage)
-            Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop().into(pregameBackground)
+                val mapName = preGameJSON.getString("MapID")
+                val pregameBackground = view?.findViewById<ImageView>(R.id.new_partyPreGameMapImage)
+                Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop().into(pregameBackground)
         }
     }
 
@@ -1672,11 +1672,13 @@ withContext(Dispatchers.Main) {
 
             val code = response.code
 
-            if (code == 200) {
-                val agentName = AgentNamesID[agentID]
-                changePartyStatusText("${getString(R.string.s73)} $agentName")
-                val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
-                agentButton?.text = "${getString(R.string.s74)} $agentName"
+            withContext(Dispatchers.Main) {
+                if (code == 200) {
+                    val agentName = AgentNamesID[agentID]
+                    changePartyStatusText("${getString(R.string.s73)} $agentName")
+                    val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
+                    agentButton?.text = "${getString(R.string.s74)} $agentName"
+                }
             }
         }
     }
@@ -1738,10 +1740,10 @@ withContext(Dispatchers.Main) {
         // go thru hashmap
         // sort hashmap by Agent names
         val sortedAgents = sortHashMapByValues(AgentNamesID)
-        for (agentName in sortedAgents.values)
-        {
-            Log.d("LIVE_AGENT_HASHMAP", agentName)
-        }
+//        for (agentName in sortedAgents.values)
+//        {
+//            Log.d("LIVE_AGENT_HASHMAP", agentName)
+//        }
 
         for (agent in sortedAgents.keys) {
             agentImages.add(agent)
