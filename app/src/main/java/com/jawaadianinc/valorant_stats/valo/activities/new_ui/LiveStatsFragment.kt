@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -36,6 +37,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
@@ -106,6 +108,7 @@ class LiveStatsFragment : Fragment() {
     lateinit var assetsDB: AssetsDatabase
 
     private lateinit var agentPreGameRecyclerView: RecyclerView
+    private lateinit var agentPreGameSelectRecyclerView: RecyclerView
     var storeTimer: CountDownTimer? = null
 
     private lateinit var weaponsJSONObject: JSONObject
@@ -157,9 +160,11 @@ class LiveStatsFragment : Fragment() {
         LIVEVIEW = requireView().findViewById(R.id.LiveView)
 
         agentPreGameRecyclerView = requireView().findViewById(R.id.new_agentSelectGridRecyclerView)
-        agentPreGameRecyclerView.layoutManager = GridLayoutManager(requireContext(), 6)
+        agentPreGameRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
 
         currentLoadoutWeaponsRecyclerView = requireView().findViewById(R.id.currentLoadoutWeaponsRecyclerView)
+
+        agentPreGameSelectRecyclerView = requireView().findViewById(R.id.new_agentSelectGridRecyclerView_other_people)
 
         INITVIEW.visibility = View.VISIBLE
         LIVEVIEW.visibility = View.GONE
@@ -459,6 +464,9 @@ class LiveStatsFragment : Fragment() {
                 // context is the main thread
                 withContext(Dispatchers.Main)
                 {
+                    if (context == null) {
+                        return@withContext
+                    }
                     getPartyStatus()
                 }
             }
@@ -1515,9 +1523,8 @@ withContext(Dispatchers.Main) {
 
             if (code == 200) {
                 val preGameJSON = JSONObject(body)
-                val matchID = preGameJSON.getString("MatchID")
                 PreGameLayout?.visibility = View.VISIBLE
-                playerPreGame(matchID)
+                playerPreGame(preGameJSON.getString("MatchID"))
             } else if (code == 404) {
                 notificationSent = false
                 PreGameLayout?.visibility = View.GONE
@@ -1599,7 +1606,12 @@ withContext(Dispatchers.Main) {
                         val agentID =
                             AgentNamesID.filterValues { it == lockInButtonTextLastWord }.keys.first()
                         // select the character
-                        lockInCharacter(agentID)
+                        lockInCharacter(agentID, matchID)
+                    }
+                    else if (lockInButtonTextLastWord.lowercase() == "random")
+                    {
+                        val randomAgentID = AgentNamesID.keys.random()
+                        lockInCharacter(randomAgentID, matchID)
                     }
                 }
 
@@ -1610,6 +1622,7 @@ withContext(Dispatchers.Main) {
 
                 val preGameJSON = JSONObject(body)
     //        val allyTeamJSON = preGameJSON.getJSONArray("Players")
+                handleAgentSelect(preGameJSON)
 
                 val currentModeSelected = capitaliseGameMode(preGameJSON.getString("QueueID"))
                 val textViewMode = view?.findViewById<TextView>(R.id.new_partyPreGameTitle)
@@ -1624,9 +1637,62 @@ withContext(Dispatchers.Main) {
                 val mapName = preGameJSON.getString("MapID")
                 val pregameBackground = view?.findViewById<ImageView>(R.id.new_partyPreGameMapImage)
                 Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop().into(pregameBackground)
+
         }
     }
 
+    }
+    
+    private fun handleAgentSelect(matchJSON: JSONObject) {
+        val players = mutableListOf<PreGameAgentSelectPlayer>()
+        val allyTeam = matchJSON.getJSONObject("AllyTeam").getJSONArray("Players")
+        for (player in allyTeam)
+        {
+            val name = decodeNameFromSubject(player.getString("Subject"))
+            val agentID = player.getString("CharacterID")
+            val selectionState = player.getString("CharacterSelectionState")
+            val rank = getRank(name.split("#")[0], name.split("#")[1], region)
+
+            val playerObject = PreGameAgentSelectPlayer(name, agentID, selectionState, rank)
+            players.add(playerObject)
+        }
+
+        val adapter = PreGameAgentSelectAdapter(players)
+        agentPreGameSelectRecyclerView.layoutManager = LinearLayoutManager(context)
+        agentPreGameSelectRecyclerView.adapter = adapter
+    }
+
+    private fun getRank(name: String, tag: String, region: String): String {
+        if (context == null) return ""
+        val rankPreferences = requireContext().getSharedPreferences("rank", 0)
+
+        // check when was the last time we updated the rank
+        val lastUpdated = rankPreferences.getLong("lastUpdated", 0)
+        if (System.currentTimeMillis() - lastUpdated > 1000 * 60 * 60) {
+            rankPreferences.edit().clear().apply()
+            rankPreferences.edit().putLong("lastUpdated", System.currentTimeMillis()).apply()
+        }
+
+        val rank = rankPreferences.getString("$name#$tag", "")
+        if (rank != "") return rank!!
+
+        val client = okhttp3.OkHttpClient()
+        val url = "https://api.henrikdev.xyz/valorant/v2/mmr/$region/$name/$tag"
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
+            .build()
+        return runBlocking(Dispatchers.IO)
+        {
+            val response = client.newCall(request).execute()
+            val json = JSONObject(response.body.string())
+            val rank = json.getJSONObject("data")
+                .getJSONObject("current_data")
+                .getJSONObject("images")
+                .getString("large")
+            rankPreferences.edit().putString("$name#$tag", rank).apply()
+            return@runBlocking rank
+        }
     }
 
     private fun quitMatch(matchID: String) {
@@ -1683,25 +1749,13 @@ withContext(Dispatchers.Main) {
         }
     }
 
-    private fun lockInCharacter(agentID: String) {
+    private fun lockInCharacter(agentID: String, matchID: String) {
         // check if the pregame layout is visible
         val preGameLayout = view?.findViewById<RelativeLayout>(R.id.new_LayoutPartyPreGame)
         if (preGameLayout?.visibility == View.GONE) return
 
         if (PlayerUUID == null) return
-        val preGameUrl =
-            "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
-
         liveModeScope.launch {
-            val preGameresponse = APIRequestValorant(preGameUrl)
-            val preGamecode = preGameresponse.code
-            val preGamebody = preGameresponse.body.string()
-
-            if (preGamecode != 200) return@launch
-
-            val preGameJSON = JSONObject(preGamebody)
-            val matchID = preGameJSON.getString("MatchID")
-
             val url =
                 "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}/lock/${agentID}"
             val response = APIRequestValorant(url, "")
@@ -1737,17 +1791,11 @@ withContext(Dispatchers.Main) {
 
     private fun getAgentImages(): ArrayList<String> {
         val agentImages = ArrayList<String>()
-        // go thru hashmap
-        // sort hashmap by Agent names
         val sortedAgents = sortHashMapByValues(AgentNamesID)
-//        for (agentName in sortedAgents.values)
-//        {
-//            Log.d("LIVE_AGENT_HASHMAP", agentName)
-//        }
-
         for (agent in sortedAgents.keys) {
             agentImages.add(agent)
         }
+        agentImages+="Random"
         return agentImages
     }
 
@@ -2064,10 +2112,6 @@ withContext(Dispatchers.Main) {
         body: String? = null,
         put: Boolean? = false
     ): Response {
-        // get date in format of YYYY-MM-DD HH:MM:SS
-        val date = Calendar.getInstance().time
-        val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date)
-
         val request = Request.Builder()
             .url(url)
             .addHeader("Content-Type", "application/json")
@@ -2084,9 +2128,6 @@ withContext(Dispatchers.Main) {
 
         return withContext(Dispatchers.IO) {
             val response = client.newCall(request.build()).execute()
-//            val responseCode = response.code
-//            val responseBody = response.body.string()
-//            RequestLogsDatabase.addLog(url, response.protocol.toString(), dateTime, responseCode, responseBody)
             response
         }
     }
@@ -2226,18 +2267,26 @@ class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(image: String, isSelected: Boolean) {
         // Set the image resource and alpha value
-        val fullURL = "https://media.valorant-api.com/agents/${image}/displayicon.png"
-        Picasso.get().load(fullURL).fit().into(imageView)
+        if (image.lowercase() == "random")
+        {
+            val url = "https://cdn-icons-png.flaticon.com/128/9637/9637229.png"
+            Picasso.get().load(url).fit().into(imageView)
+        }
+        else{
+            val fullURL = "https://media.valorant-api.com/agents/${image}/displayicon.png"
+            Picasso.get().load(fullURL).fit().into(imageView)
+        }
+
         imageView.alpha = if (isSelected) 1.0f else 0.6f
 
         // Add or remove a border based on isSelected value
         if (isSelected) {
             // do an animation of the background resource making it zoom in
             imageView.setBackgroundResource(R.drawable.border_selected)
-            imageView.animate().scaleX(1.1f).scaleY(1.1f).setDuration(200).start()
+            imageView.animate().scaleX(1.05f).scaleY(1.05f).setDuration(1000).setInterpolator(AccelerateDecelerateInterpolator()).start()
         } else {
             imageView.setBackgroundResource(0) // Set 0 for no border
-            imageView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start()
+            imageView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(1000).setInterpolator(AccelerateDecelerateInterpolator()).start()
         }
 
         // Set click listener to handle image click event

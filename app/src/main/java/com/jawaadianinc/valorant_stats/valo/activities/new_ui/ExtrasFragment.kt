@@ -1,7 +1,5 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -21,14 +19,10 @@ import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetailsParams
-import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.main.AboutActivity
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.jawaadianinc.valorant_stats.main.SplashActivity
-import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
 import com.jawaadianinc.valorant_stats.valo.activities.chat.ChatsForumActivity
-import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import java.util.Locale
@@ -103,7 +97,7 @@ class SettingsFragment : Fragment() {
         //setStaticsLanguage()
 
         // Get the player image
-        val pfp = view.findViewById<ImageView>(R.id.Extras_PlayerPFP)
+        val pfp = view.findViewById<ImageView>(R.id.agent_select_agent)
         val Lpfp = view.findViewById<ImageView>(R.id.Extras_LargePlayerPFP)
         // Set the player image
         Picasso.get().load(StaticsMainActivity.playerCardSmall).fit().centerCrop().into(pfp)

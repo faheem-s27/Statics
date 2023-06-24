@@ -60,11 +60,10 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
 
-        val updateDescription: String = "- Default tab is now **Live** instead of Stats\n" +
-                "- Logging out now works (kinda)\n" +
-                "- New changes in the way Statics handles data means the app will be more smoother than before :)\n" +
-                "- Fixed button text colours being hard to see (changed background colour) \n" +
-                "- Added version changes in About page"
+        val updateDescription: String = "- New design in agent selection!" +
+                "\n- Rearranged buttons for Selecting and Quitting match" +
+                "\n- Added random agent select button... have fun :))" +
+                "\n- Fixed text issue of your balance shown in 2 lines"
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         with(update.edit()) {

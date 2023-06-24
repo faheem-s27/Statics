@@ -603,7 +603,7 @@
                         <!-- A textview thats next to the imageview -->
                         <TextView
                             android:id="@+id/RPTextBalance"
-                            android:layout_width="30dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="0dp"
                             android:layout_alignTop="@+id/RPImage"
                             android:layout_alignBottom="@+id/RPImage"
@@ -630,7 +630,7 @@
                         <!-- A textview next to that called "VPText" -->
                         <TextView
                             android:id="@+id/VPTextBalance"
-                            android:layout_width="30dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="0dp"
                             android:layout_alignTop="@+id/VPImage"
                             android:layout_alignBottom="@+id/VPImage"
@@ -843,14 +843,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/new_findMatchButton"
-                            android:visibility="gone">
+                            android:visibility="gone"
+                            tools:visibility="visible">
 
                             <!-- Imageview that covers the whole layout -->
                             <ImageView
                                 android:id="@+id/new_partyPreGameMapImage"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_alignBottom="@+id/new_lockInButton"
+                                android:layout_alignBottom="@+id/new_quitButton"
                                 android:layout_alignParentTop="true"
                                 android:layout_marginBottom="-16dp"
                                 android:alpha="0.5"
@@ -887,10 +888,23 @@
                                 android:textSize="24dp" />
 
                             <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/new_agentSelectGridRecyclerView"
+                                android:id="@+id/new_agentSelectGridRecyclerView_other_people"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/new_agentSelectTitle"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginBottom="16dp"
+                                android:scrollbars="vertical"
+                                tools:listitem="@layout/live_match_pregame_agent_select"/>
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/new_agentSelectGridRecyclerView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/new_quitButton"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentEnd="true"
                                 android:layout_marginStart="16dp"
@@ -904,10 +918,9 @@
                                 android:id="@+id/new_lockInButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/new_agentSelectGridRecyclerView"
-                                android:layout_alignParentStart="true"
-                                android:layout_marginStart="32dp"
-                                android:layout_marginBottom="16dp"
+                                android:layout_below="@+id/new_agentSelectGridRecyclerView_other_people"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginBottom="8dp"
                                 android:backgroundTint="@color/Valorant_Red"
                                 android:fontFamily="@font/lalezar"
                                 android:text="@string/s144"
@@ -920,9 +933,8 @@
                                 android:id="@+id/new_quitButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/new_agentSelectGridRecyclerView"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginEnd="32dp"
+                                android:layout_below="@+id/new_lockInButton"
+                                android:layout_centerHorizontal="true"
                                 android:layout_marginBottom="16dp"
                                 android:backgroundTint="@color/Valorant_Red"
                                 android:fontFamily="@font/lalezar"
@@ -930,6 +942,27 @@
                                 android:textColor="@color/white"
                                 android:textSize="16dp"
                                 app:cornerRadius="50dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/new_LayoutPartyCurrentGame"
+                            android:layout_width="match_parent"
+                            android:layout_height="400dp"
+                            android:layout_below="@+id/new_findMatchButton"
+                            android:visibility="gone"
+                            tools:visibility="gone">
+
+                            <!-- Imageview that covers the whole layout -->
+
+                            <ImageView
+                                android:id="@+id/new_partyCurrentGameMapImage"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:alpha="0.5"
+                                android:scaleType="centerCrop"
+                                tools:srcCompat="@drawable/red_to_blue" />
 
                         </RelativeLayout>
 
