@@ -50,7 +50,10 @@ import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,6 +74,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Locale
+import java.util.concurrent.Executors
 
 data class ValorantPing(val ServerName: String, val PingValue: Int)
 
@@ -109,6 +113,7 @@ class LiveStatsFragment : Fragment() {
 
     private lateinit var agentPreGameRecyclerView: RecyclerView
     private lateinit var agentPreGameSelectRecyclerView: RecyclerView
+    private lateinit var agentCoreGameRecyclerView: RecyclerView
     var storeTimer: CountDownTimer? = null
 
     private lateinit var weaponsJSONObject: JSONObject
@@ -165,6 +170,7 @@ class LiveStatsFragment : Fragment() {
         currentLoadoutWeaponsRecyclerView = requireView().findViewById(R.id.currentLoadoutWeaponsRecyclerView)
 
         agentPreGameSelectRecyclerView = requireView().findViewById(R.id.new_agentSelectGridRecyclerView_other_people)
+        agentCoreGameRecyclerView = requireView().findViewById(R.id.new_live_partyCoreGameRecyclerView)
 
         INITVIEW.visibility = View.VISIBLE
         LIVEVIEW.visibility = View.GONE
@@ -1509,6 +1515,7 @@ withContext(Dispatchers.Main) {
 
     private fun getGameInfoPlayer() {
         val PreGameLayout = view?.findViewById<RelativeLayout>(R.id.new_LayoutPartyPreGame)
+        val CoreGameLayout = view?.findViewById<RelativeLayout>(R.id.new_LayoutPartyCurrentGame)
 
         if (PlayerUUID == null) return
         val url = "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/players/${PlayerUUID}"
@@ -1524,6 +1531,7 @@ withContext(Dispatchers.Main) {
             if (code == 200) {
                 val preGameJSON = JSONObject(body)
                 PreGameLayout?.visibility = View.VISIBLE
+                CoreGameLayout?.visibility = View.GONE
                 playerPreGame(preGameJSON.getString("MatchID"))
             } else if (code == 404) {
                 notificationSent = false
@@ -1534,8 +1542,11 @@ withContext(Dispatchers.Main) {
                 val coreGameCode = coreGameResponse.code
                 val coreGameBody = coreGameResponse.body.string()
 
+                agentPreGameSelectRecyclerView.adapter = null
+
                 if (coreGameCode == 200) {
                     val coreGameJSON = JSONObject(coreGameBody)
+                    CoreGameLayout?.visibility = View.VISIBLE
                     val matchID = coreGameJSON.getString("MatchID")
                     playerCoreGame(matchID)
                 }
@@ -1547,6 +1558,8 @@ withContext(Dispatchers.Main) {
     private fun hideLayoutsMatch() {
         val pregameLayout = view?.findViewById<RelativeLayout>(R.id.new_LayoutPartyPreGame)
         pregameLayout?.visibility = View.GONE
+        val coreGameLayout = view?.findViewById<RelativeLayout>(R.id.new_LayoutPartyCurrentGame)
+        coreGameLayout?.visibility = View.GONE
         val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
         lockInButton!!.alpha = 1.0f
         lockInButton.isEnabled = true
@@ -1642,27 +1655,79 @@ withContext(Dispatchers.Main) {
     }
 
     }
-    
+
     private fun handleAgentSelect(matchJSON: JSONObject) {
+        var incognitoNumber = 0
+
         val players = mutableListOf<PreGameAgentSelectPlayer>()
         val allyTeam = matchJSON.getJSONObject("AllyTeam").getJSONArray("Players")
-        for (player in allyTeam)
-        {
-            val name = decodeNameFromSubject(player.getString("Subject"))
+        val dispatcher = Executors.newFixedThreadPool(allyTeam.length()).asCoroutineDispatcher()
+        val scope = CoroutineScope(dispatcher)
+
+        for (i in 0 until allyTeam.length()) {
+            val player = allyTeam.getJSONObject(i)
             val agentID = player.getString("CharacterID")
             val selectionState = player.getString("CharacterSelectionState")
-            val rank = getRank(name.split("#")[0], name.split("#")[1], region)
+            val nameJob =
+                scope.async(IO) { decodeNameFromSubjectAgentSelect(player.getString("Subject")) }
 
-            val playerObject = PreGameAgentSelectPlayer(name, agentID, selectionState, rank)
-            players.add(playerObject)
+            var agentName = ""
+
+            if (agentID != "") agentName = AgentNamesID[agentID] ?: ""
+
+            val incognito = player.getJSONObject("PlayerIdentity").getBoolean("Incognito")
+            if (incognito) incognitoNumber++
+
+            scope.launch(Main) {
+                var name = nameJob.await()
+                val rankJob = scope.async(IO) { getRank(name.split("#")[0], name.split("#")[1], region) }
+                val rank = rankJob.await()
+
+                if (incognito) {
+                    name = "Player $incognitoNumber"
+                }
+
+                val playerObject = PreGameAgentSelectPlayer(name, selectionState, agentID, rank, agentName)
+                players.add(playerObject)
+
+                if (players.size == allyTeam.length()) {
+                    val ordered = players.sortedBy { it.name }
+                    val adapter = PreGameAgentSelectAdapter(ordered)
+                    agentPreGameSelectRecyclerView.layoutManager = LinearLayoutManager(context)
+                    agentPreGameSelectRecyclerView.adapter = adapter
+                }
+            }
         }
-
-        val adapter = PreGameAgentSelectAdapter(players)
-        agentPreGameSelectRecyclerView.layoutManager = LinearLayoutManager(context)
-        agentPreGameSelectRecyclerView.adapter = adapter
     }
 
-    private fun getRank(name: String, tag: String, region: String): String {
+    private suspend fun decodeNameFromSubjectAgentSelect(subject: String): String {
+        // check if auth preferences contains the subject
+        if (authPreferences.contains(subject)) {
+            // return the name
+            return authPreferences.getString(subject, "")!!
+        } else {
+            // get the name from the subject
+            val url = "https://pd.${shard}.a.pvp.net/name-service/v2/players"
+            val body = "[\"$subject\"]"
+            return withContext(IO) {
+                val response = APIRequestValorant(url, body, true)
+                val code = response.code
+                val subjectBody = response.body.string()
+
+                if (code != 200) return@withContext ""
+                val playerName = JSONArray(subjectBody).getJSONObject(0).getString("GameName")
+                val playerTag = JSONArray(subjectBody).getJSONObject(0).getString("TagLine")
+
+                val displayName = "$playerName#$playerTag"
+
+                // save the name to the shared preferences
+                authPreferences.edit().putString(subject, displayName).apply()
+                return@withContext displayName
+            }
+        }
+    }
+
+    private suspend fun getRank(name: String, tag: String, region: String): String {
         if (context == null) return ""
         val rankPreferences = requireContext().getSharedPreferences("rank", 0)
 
@@ -1676,22 +1741,26 @@ withContext(Dispatchers.Main) {
         val rank = rankPreferences.getString("$name#$tag", "")
         if (rank != "") return rank!!
 
-        val client = okhttp3.OkHttpClient()
+        val client = OkHttpClient()
         val url = "https://api.henrikdev.xyz/valorant/v2/mmr/$region/$name/$tag"
         val request = Request.Builder()
             .url(url)
             .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
             .build()
-        return runBlocking(Dispatchers.IO)
-        {
+
+        return withContext(IO) {
             val response = client.newCall(request).execute()
             val json = JSONObject(response.body.string())
-            val rank = json.getJSONObject("data")
-                .getJSONObject("current_data")
-                .getJSONObject("images")
-                .getString("large")
-            rankPreferences.edit().putString("$name#$tag", rank).apply()
-            return@runBlocking rank
+            try {
+                val rank = json.getJSONObject("data")
+                    .getJSONObject("current_data")
+                    .getJSONObject("images")
+                    .getString("large")
+                rankPreferences.edit().putString("$name#$tag", rank).apply()
+                return@withContext rank
+            } catch (e: Exception) {
+                return@withContext "https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/smallicon.png"
+            }
         }
     }
 
@@ -1740,10 +1809,17 @@ withContext(Dispatchers.Main) {
 
             withContext(Dispatchers.Main) {
                 if (code == 200) {
-                    val agentName = AgentNamesID[agentID]
-                    changePartyStatusText("${getString(R.string.s73)} $agentName")
-                    val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
-                    agentButton?.text = "${getString(R.string.s74)} $agentName"
+                    if (agentID.lowercase() == "random")
+                    {
+                        val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
+                        agentButton?.text = "Lock in random"
+                    }
+                    else{
+                        val agentName = AgentNamesID[agentID]
+                        changePartyStatusText("${getString(R.string.s73)} $agentName")
+                        val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
+                        agentButton?.text = "${getString(R.string.s74)} $agentName"
+                    }
                 }
             }
         }
@@ -1776,7 +1852,67 @@ withContext(Dispatchers.Main) {
     }
 
     private fun playerCoreGame(matchID: String) {
+        val url =
+            "https://glz-${region}-1.${shard}.a.pvp.net/core-game/v1/matches/${matchID}"
+        liveModeScope.launch {
+            val response = APIRequestValorant(url)
+            val code = response.code
+            val body = response.body.string()
+            if (code != 200) return@launch
+            withContext(Dispatchers.Main)
+            {
+                val coreGameJSON = JSONObject(body)
+                val mapName = coreGameJSON.getString("MapID")
+                val coreGameBackground = view?.findViewById<ImageView>(R.id.new_partyCurrentGameMapImage)
+                Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop().into(coreGameBackground)
 
+                val gameMode = capitaliseGameMode(coreGameJSON.getJSONObject("MatchmakingData").getString("QueueID"))
+                val coreGameMode = view?.findViewById<TextView>(R.id.new_live_CoreGameTitle)
+                coreGameMode?.text = gameMode
+
+                val players = coreGameJSON.getJSONArray("Players")
+                handleCoreGameList(players)
+            }
+        }
+    }
+
+    private fun handleCoreGameList(players: JSONArray) {
+        var incognitoNumber = 0
+
+        val coreGamePlayers = mutableListOf<CoreGamePlayer>()
+        val dispatcher = Executors.newFixedThreadPool(players.length()).asCoroutineDispatcher()
+        val scope = CoroutineScope(dispatcher)
+        for (player in players)
+        {
+            val agentID = player.getString("CharacterID")
+            val agentName = AgentNamesID[agentID] ?: "Unknown"
+            val team = player.getString("TeamID")
+            val nameJob = scope.async(IO) { decodeNameFromSubjectAgentSelect(player.getString("Subject")) }
+
+            val incognito = player.getJSONObject("PlayerIdentity").getBoolean("Incognito")
+            if (incognito) incognitoNumber++
+
+            scope.launch(Main) {
+                var name = nameJob.await()
+                val rankJob = scope.async(IO) { getRank(name.split("#")[0], name.split("#")[1], region) }
+                val rank = rankJob.await()
+
+                if (incognito) name = "Player $incognitoNumber"
+
+                val playerObj = CoreGamePlayer(name, agentName, agentID, rank, team)
+                coreGamePlayers.add(playerObj)
+
+                if (coreGamePlayers.size == players.length())
+                {
+                    // order by team & then by name
+                    coreGamePlayers.sortBy { it.name }
+                    coreGamePlayers.sortBy { it.team }
+                    val coreGameAdapter = CoreGamePlayerAdapter(coreGamePlayers)
+                    agentCoreGameRecyclerView.adapter = coreGameAdapter
+                    agentCoreGameRecyclerView.layoutManager = LinearLayoutManager(context)
+                }
+            }
+        }
     }
 
     private fun sortHashMapByValues(hashMap: HashMap<String, String>): HashMap<String, String> {

@@ -844,7 +844,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/new_findMatchButton"
                             android:visibility="gone"
-                            tools:visibility="visible">
+                            tools:visibility="gone">
 
                             <!-- Imageview that covers the whole layout -->
                             <ImageView
@@ -948,22 +948,51 @@
                         <RelativeLayout
                             android:id="@+id/new_LayoutPartyCurrentGame"
                             android:layout_width="match_parent"
-                            android:layout_height="400dp"
+                            android:layout_height="wrap_content"
                             android:layout_below="@+id/new_findMatchButton"
                             android:visibility="gone"
-                            tools:visibility="gone">
+                            tools:visibility="visible">
 
                             <!-- Imageview that covers the whole layout -->
-
                             <ImageView
                                 android:id="@+id/new_partyCurrentGameMapImage"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_alignTop="@+id/new_live_CoreGameTitle"
+                                android:layout_alignBottom="@+id/new_live_partyCoreGameRecyclerView"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginBottom="-16dp"
                                 android:layout_centerInParent="true"
                                 android:alpha="0.5"
                                 android:scaleType="centerCrop"
                                 tools:srcCompat="@drawable/red_to_blue" />
 
+                            <TextView
+                                android:id="@+id/new_live_CoreGameTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginBottom="16dp"
+                                android:fontFamily="@font/lalezar"
+                                android:textColor="@color/white"
+                                android:textSize="30dp"
+                                tools:text="UNRATED" />
+
+                            <!-- A recyclerview that shows the current players in the game -->
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/new_live_partyCoreGameRecyclerView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/new_live_CoreGameTitle"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginBottom="16dp"
+                                android:scrollbars="vertical"
+                                tools:listitem="@layout/live_match_pregame_agent_select" />
                         </RelativeLayout>
 
 

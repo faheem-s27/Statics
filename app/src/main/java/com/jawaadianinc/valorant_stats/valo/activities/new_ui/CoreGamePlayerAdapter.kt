@@ -14,8 +14,8 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.Request
 import org.json.JSONObject
 
-class PreGameAgentSelectAdapter(private val players: List<PreGameAgentSelectPlayer>) :
-    RecyclerView.Adapter<PreGameAgentSelectAdapter.ViewHolder>() {
+class CoreGamePlayerAdapter(private val players: List<CoreGamePlayer>) :
+    RecyclerView.Adapter<CoreGamePlayerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -26,32 +26,26 @@ class PreGameAgentSelectAdapter(private val players: List<PreGameAgentSelectPlay
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val player = players[position]
         holder.playerName.text = player.name
+        holder.agentCharacter.text = player.agentName
 
-        when (player.agentSelectState) {
-            "" -> {
-                holder.agentCharacter.text = "Picking..."
-            }
-            "selected" -> {
-                holder.agentCharacter.text = "Selecting agent..."
-            }
-            "locked" -> {
-                //holder.agentCharacter.text = "Locked in!"
-                holder.agentImage.alpha = 1f
-                holder.agentCharacter.text = player.agentName
-                // make it white
-                holder.agentCharacter.setTextColor(holder.itemView.context.resources.getColor(R.color.white))
-            }
+        holder.agentImage.alpha = 1f
+
+        if (player.team == "Red") {
+            holder.agentImage.setBackgroundResource(R.drawable.red_to_black)
+            holder.playerName.setTextColor(holder.itemView.context.resources.getColor(R.color.Valorant_Red))
+        } else {
+            holder.agentImage.setBackgroundResource(R.drawable.blue_to_black)
+            holder.playerName.setTextColor(holder.itemView.context.resources.getColor(R.color.Valorant_Blue))
         }
 
-        if (player.agentID != "")
-        {
-            Picasso
-                .get()
-                .load(player.getAgentImage())
-                .fit()
-                .centerInside()
-                .into(holder.agentImage)
-        }
+        holder.agentCharacter.setTextColor(holder.itemView.context.resources.getColor(R.color.white))
+
+        Picasso
+            .get()
+            .load(player.getAgentImage())
+            .fit()
+            .centerInside()
+            .into(holder.agentImage)
 
         Picasso
             .get()
@@ -71,5 +65,4 @@ class PreGameAgentSelectAdapter(private val players: List<PreGameAgentSelectPlay
         val agentCharacter: TextView = itemView.findViewById(R.id.agent_select_user_agent)
         val playerRankImage: ImageView = itemView.findViewById(R.id.agent_select_rank)
     }
-
 }

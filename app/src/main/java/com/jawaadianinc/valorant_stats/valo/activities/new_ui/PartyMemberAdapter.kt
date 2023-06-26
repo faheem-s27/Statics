@@ -84,14 +84,19 @@ class PartyMemberAdapter(
             .build()
         return runBlocking(Dispatchers.IO)
         {
-            val response = client.newCall(request).execute()
-            val json = JSONObject(response.body.string())
-            val rank = json.getJSONObject("data")
-                .getJSONObject("current_data")
-                .getJSONObject("images")
-                .getString("large")
-            rankPreferences.edit().putString("$name#$tag", rank).apply()
-            return@runBlocking rank
+            try {
+                val response = client.newCall(request).execute()
+                val json = JSONObject(response.body.string())
+                val rank = json.getJSONObject("data")
+                    .getJSONObject("current_data")
+                    .getJSONObject("images")
+                    .getString("large")
+                rankPreferences.edit().putString("$name#$tag", rank).apply()
+                return@runBlocking rank
+            }
+            catch (e: Exception) {
+                return@runBlocking "https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/smallicon.png"
+            }
         }
     }
 }

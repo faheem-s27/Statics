@@ -15,7 +15,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:elevation="12dp"
-        app:cardBackgroundColor="#8018E4B7"
         app:cardCornerRadius="200dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,8 +23,8 @@
             android:id="@+id/agent_select_agent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:alpha="0.5"
             android:scaleType="centerInside"
-
             app:srcCompat="@drawable/question" />
 
     </androidx.cardview.widget.CardView>

@@ -60,10 +60,8 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
 
-        val updateDescription: String = "- New design in agent selection!" +
-                "\n- Rearranged buttons for Selecting and Quitting match" +
-                "\n- Added random agent select button... have fun :))" +
-                "\n- Fixed text issue of your balance shown in 2 lines"
+        val updateDescription: String = "- You can now see live players ranks in all game modes at all times!" +
+                "\n Including Deathmatch, Escalation, and Replication!"
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
         with(update.edit()) {
