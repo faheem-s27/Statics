@@ -1632,11 +1632,13 @@ withContext(Main) {
             val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
             readySwitch.visibility = View.VISIBLE
         } else if (state == "DEFAULT" && previousState == "LEAVING_MATCHMAKING" || previousState == "DEFAULT") {
-            joinMatchButton.text = getString(R.string.s64)
-            hideLayoutsMatch()
-            changePartyStatusText(getString(R.string.s65))
-            val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
-            readySwitch.visibility = View.VISIBLE
+            if (banTimer == null) {
+                joinMatchButton.text = getString(R.string.s64)
+                hideLayoutsMatch()
+                changePartyStatusText(getString(R.string.s65))
+                val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+                readySwitch.visibility = View.VISIBLE
+            }
         } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING" && !isReady!!) {
             changePartyStatusText("Party in game")
             joinMatchButton.text = "Cannot queue"
@@ -1644,11 +1646,13 @@ withContext(Main) {
             joinMatchButton.isEnabled = false
             getGameInfoPlayer()
         } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING" && isReady!!) {
-            joinMatchButton.text = getString(R.string.s64)
-            hideLayoutsMatch()
-            changePartyStatusText(getString(R.string.s65))
-            val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
-            readySwitch.visibility = View.VISIBLE
+            if (banTimer == null) {
+                joinMatchButton.text = getString(R.string.s64)
+                hideLayoutsMatch()
+                changePartyStatusText(getString(R.string.s65))
+                val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+                readySwitch.visibility = View.VISIBLE
+            }
         }
     }
 
