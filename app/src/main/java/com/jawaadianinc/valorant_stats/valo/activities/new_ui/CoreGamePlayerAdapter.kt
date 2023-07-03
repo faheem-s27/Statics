@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
@@ -30,12 +31,23 @@ class CoreGamePlayerAdapter(private val players: List<CoreGamePlayer>) :
 
         holder.agentImage.alpha = 1f
 
-        if (player.team == "Red") {
-            holder.agentImage.setBackgroundResource(R.drawable.red_to_black)
-            holder.playerName.setTextColor(holder.itemView.context.resources.getColor(R.color.Valorant_Red))
-        } else {
-            holder.agentImage.setBackgroundResource(R.drawable.blue_to_black)
-            holder.playerName.setTextColor(holder.itemView.context.resources.getColor(R.color.Valorant_Blue))
+        if (player.name.length > 12) {
+            holder.playerName.textSize = 10f
+        }
+
+        when {
+            player.name == "You" -> {
+                holder.agentImage.setBackgroundResource(R.drawable.yellow_to_black)
+                holder.playerName.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.Valorant_Yellow))
+            }
+            player.team == "Red" -> {
+                holder.agentImage.setBackgroundResource(R.drawable.red_to_black)
+                holder.playerName.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.Valorant_Red))
+            }
+            else -> {
+                holder.agentImage.setBackgroundResource(R.drawable.blue_to_black)
+                holder.playerName.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.Valorant_Blue))
+            }
         }
 
         holder.agentCharacter.setTextColor(holder.itemView.context.resources.getColor(R.color.white))

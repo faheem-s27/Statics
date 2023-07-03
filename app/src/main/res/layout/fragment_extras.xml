@@ -43,7 +43,7 @@
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/new_SignOutButton"
+        android:id="@+id/popup_LogOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -131,7 +131,7 @@
         app:layout_constraintTop_toBottomOf="@+id/new_Chats" />
 
     <Button
-        android:id="@+id/new_Donate"
+        android:id="@+id/popup_donate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -172,10 +172,10 @@
         app:iconTintMode="src_in"
         app:layout_constraintEnd_toEndOf="@+id/new_Leaderboards"
         app:layout_constraintStart_toStartOf="@+id/new_Leaderboards"
-        app:layout_constraintTop_toBottomOf="@+id/new_Donate" />
+        app:layout_constraintTop_toBottomOf="@+id/popup_donate" />
 
     <Button
-        android:id="@+id/new_reset_language"
+        android:id="@+id/pfp_reset_language"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -232,7 +232,7 @@
         android:background="@color/Valorant_SplashColourBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_SignOutButton" />
+        app:layout_constraintTop_toBottomOf="@+id/popup_LogOutButton" />
 
     <!-- A drop down menu under divider9 called language selector -->
 

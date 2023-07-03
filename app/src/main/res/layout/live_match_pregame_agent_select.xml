@@ -7,13 +7,12 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/circley_PFP"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="8dp"
         android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:elevation="12dp"
         app:cardCornerRadius="200dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,8 +33,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:textColor="#FFFFFF"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/circley_PFP"
         app:layout_constraintTop_toTopOf="@+id/circley_PFP"
         tools:text="Duck#2004" />
@@ -45,16 +45,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="2dp"
+        android:text="Picking..."
         android:textColor="#868686"
         app:layout_constraintBottom_toBottomOf="@+id/circley_PFP"
-        app:layout_constraintStart_toEndOf="@+id/circley_PFP"
-        android:text="Picking..." />
+        app:layout_constraintStart_toEndOf="@+id/circley_PFP" />
 
     <ImageView
         android:id="@+id/agent_select_rank"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/circley_PFP"
         app:layout_constraintEnd_toEndOf="parent"

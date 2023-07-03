@@ -7,21 +7,6 @@
     android:background="@color/Valorant_SplashColourBackground"
     tools:context=".valo.activities.new_ui.StaticsMainMenu">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/new_mainMenuToolBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:alpha="0.6"
-        android:background="@color/Valorant_SplashColourBackground"
-        android:elevation="16dp"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:subtitleCentered="true"
-        app:titleCentered="true" />
-
     <ImageView
         android:id="@+id/new_playerBackground"
         android:layout_width="match_parent"
@@ -39,7 +24,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_mainMenuToolBar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
@@ -52,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="72dp"
                 android:fontFamily="@font/lalezar"
                 android:text="@string/s22"
                 android:textColor="#CFCFCF"

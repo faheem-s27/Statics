@@ -55,48 +55,11 @@ class PartyMemberAdapter(
 
         Picasso
             .get()
-            .load(getRank(member.gameName, member.gameTag, member.region))
+            .load(member.rankImage)
             .fit()
             .centerInside()
             .into(rankImage)
 
         return row
-    }
-
-    private fun getRank(name: String, tag: String, region: String): String {
-        val rankPreferences = context.getSharedPreferences("rank", 0)
-
-        // check when was the last time we updated the rank
-        val lastUpdated = rankPreferences.getLong("lastUpdated", 0)
-        if (System.currentTimeMillis() - lastUpdated > 1000 * 60 * 60) {
-            rankPreferences.edit().clear().apply()
-            rankPreferences.edit().putLong("lastUpdated", System.currentTimeMillis()).apply()
-        }
-
-        val rank = rankPreferences.getString("$name#$tag", "")
-        if (rank != "") return rank!!
-
-        val client = okhttp3.OkHttpClient()
-        val url = "https://api.henrikdev.xyz/valorant/v2/mmr/$region/$name/$tag"
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "HDEV-67e86af9-8bf9-4f6d-b628-f4521b20d772")
-            .build()
-        return runBlocking(Dispatchers.IO)
-        {
-            try {
-                val response = client.newCall(request).execute()
-                val json = JSONObject(response.body.string())
-                val rank = json.getJSONObject("data")
-                    .getJSONObject("current_data")
-                    .getJSONObject("images")
-                    .getString("large")
-                rankPreferences.edit().putString("$name#$tag", rank).apply()
-                return@runBlocking rank
-            }
-            catch (e: Exception) {
-                return@runBlocking "https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/smallicon.png"
-            }
-        }
     }
 }

@@ -1,6 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,12 @@ class PreGameAgentSelectAdapter(private val players: List<PreGameAgentSelectPlay
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val player = players[position]
         holder.playerName.text = player.name
+        if (player.name == "You")
+        {
+            holder.agentImage.setBackgroundResource(R.drawable.yellow_to_black)
+            // set text colour to #f9eaac
+            holder.playerName.setTextColor(holder.itemView.context.resources.getColor(R.color.Valorant_Yellow))
+        }
 
         when (player.agentSelectState) {
             "" -> {
@@ -40,6 +47,8 @@ class PreGameAgentSelectAdapter(private val players: List<PreGameAgentSelectPlay
                 holder.agentCharacter.text = player.agentName
                 // make it white
                 holder.agentCharacter.setTextColor(holder.itemView.context.resources.getColor(R.color.white))
+                // make it bold
+                holder.agentCharacter.setTypeface(null, Typeface.BOLD)
             }
         }
 

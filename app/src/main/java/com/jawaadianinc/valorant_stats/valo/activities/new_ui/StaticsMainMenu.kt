@@ -46,6 +46,10 @@ import com.jawaadianinc.valorant_stats.valo.databases.TrackerDB
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -62,8 +66,6 @@ class StaticsMainMenu : Fragment() {
     private var puuid: String? = null
 
     var key: String = ""
-    private lateinit var toolbar: MaterialToolbar
-    private var timer: CountDownTimer? = null
     private var lastMatchData: JSONObject? = null
     private lateinit var seekBar: SeekBar
     var ISACTIVE = true
@@ -84,7 +86,6 @@ class StaticsMainMenu : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //binding = ActivityStaticsMainMenuBinding.inflate(layoutInflater)
-        toolbar = view.findViewById(R.id.new_mainMenuToolBar)
         //activity.setSupportActionBar(toolbar)
         progressDialog =
             ProgressDialogStatics().setProgressDialog(
@@ -106,18 +107,31 @@ class StaticsMainMenu : Fragment() {
 
         dissapearViews()
 
-        doAsync {
+        GlobalScope.launch {
             val URL = "https://valorant-api.com/v1/competitivetiers"
             val json = JSONObject(URL(URL).readText()).getJSONArray("data")
             // get last element
             val last = json.getJSONObject(json.length() - 1)
             JSONRanks = last.getJSONArray("tiers")
-            uiThread {
-                //testPlayer("BallFondler#His", "eu")
+            withContext(Dispatchers.Main)
+            {
                 getCurrentSeason()
                 setup()
             }
         }
+//
+//        doAsync {
+//            val URL = "https://valorant-api.com/v1/competitivetiers"
+//            val json = JSONObject(URL(URL).readText()).getJSONArray("data")
+//            // get last element
+//            val last = json.getJSONObject(json.length() - 1)
+//            JSONRanks = last.getJSONArray("tiers")
+//            uiThread {
+//                //testPlayer("BallFondler#His", "eu")
+//                getCurrentSeason()
+//                setup()
+//            }
+//        }
     }
 
     private fun testPlayer(name: String, region: String) {
@@ -184,23 +198,23 @@ class StaticsMainMenu : Fragment() {
     }
 
     private fun setup() {
-        //toolbar = (activity as AppCompatActivity).findViewById(R.id.new_mainMenuToolBar2) as MaterialToolbar
-        toolbar.setTitleTextColor(resources.getColor(android.R.color.white))
-        toolbar.title = playerName.split("#")[0]
-        toolbar.subtitle = getString(R.string.loading)
-
-        // inflate menu
-        toolbar.inflateMenu(R.menu.menu_valorant)
-        // listen to menu item clicks
-        toolbar.setOnMenuItemClickListener { item: MenuItem? ->
-            when (item!!.itemId) {
-                R.id.new_refresh -> {
-                    stopTimer()
-                    getLatestDetails()
-                }
-            }
-            true
-        }
+//        //toolbar = (activity as AppCompatActivity).findViewById(R.id.new_mainMenuToolBar2) as MaterialToolbar
+//        toolbar.setTitleTextColor(resources.getColor(android.R.color.white))
+//        toolbar.title = playerName.split("#")[0]
+//        toolbar.subtitle = getString(R.string.loading)
+//
+//        // inflate menu
+//        toolbar.inflateMenu(R.menu.menu_valorant)
+//        // listen to menu item clicks
+//        toolbar.setOnMenuItemClickListener { item: MenuItem? ->
+//            when (item!!.itemId) {
+//                R.id.new_refresh -> {
+//                    stopTimer()
+//                    getLatestDetails()
+//                }
+//            }
+//            true
+//        }
 
         val newPlayerNameText = view?.findViewById<TextView>(R.id.new_partyPlayerName)
         val newPlayerTag = view?.findViewById<TextView>(R.id.new_partyPlayerTag)
@@ -289,7 +303,7 @@ class StaticsMainMenu : Fragment() {
                 if (lastMatchData.getInt("status") == 200 && ranksData.getInt("status") == 200) {
                     loadRankDetails(ranksData)
                     processPlayerDetails(lastMatchData)
-                    updateTimer()
+                    //updateTimer()
                     animateViews()
                     REFRESHING = false
                 } else {
@@ -632,7 +646,7 @@ class StaticsMainMenu : Fragment() {
         val duration = 3000
         val progressBar = view?.findViewById<CircularProgressIndicator>(R.id.new_rankProgressBar)
         val progressAnimator =
-            ObjectAnimator.ofInt(progressBar, "progress", progressBar!!.progress, maxValue)
+            ObjectAnimator.ofInt(progressBar, "progress", 0, maxValue)
         progressAnimator.duration = duration.toLong()
         progressAnimator.interpolator = BounceInterpolator()
         progressAnimator.startDelay = 1000
@@ -689,44 +703,44 @@ class StaticsMainMenu : Fragment() {
         }
     }
 
-    private fun updateTimer() {
-        // only one timer is needed
-        if (timer != null) {
-            timer!!.cancel()
-        }
-
-        progressDialog.dismiss()
-
-        timer = object : CountDownTimer(60000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                if (isAdded) {
-                    if (ISACTIVE) toolbar.subtitle =
-                        "${getString(R.string.s20)} ${millisUntilFinished / 1000}"
-                    else {
-                        timer?.cancel()
-                    }
-                }
-            }
-
-            override fun onFinish() {
-                if (isAdded) {
-                    if (ISACTIVE) {
-                        toolbar.subtitle = getString(R.string.s100)
-                        getLatestDetails()
-                    } else {
-                        timer?.cancel()
-                    }
-                }
-            }
-        }
-        (timer as CountDownTimer).start()
-    }
-
-    private fun stopTimer() {
-        REFRESHING = true
-        timer?.cancel()
-        if (ISACTIVE) toolbar.subtitle = getString(R.string.s99)
-    }
+//    private fun updateTimer() {
+//        // only one timer is needed
+//        if (timer != null) {
+//            timer!!.cancel()
+//        }
+//
+//        progressDialog.dismiss()
+//
+//        timer = object : CountDownTimer(60000, 1000) {
+//            override fun onTick(millisUntilFinished: Long) {
+//                if (isAdded) {
+//                    if (ISACTIVE) toolbar.subtitle =
+//                        "${getString(R.string.s20)} ${millisUntilFinished / 1000}"
+//                    else {
+//                        timer?.cancel()
+//                    }
+//                }
+//            }
+//
+//            override fun onFinish() {
+//                if (isAdded) {
+//                    if (ISACTIVE) {
+//                        toolbar.subtitle = getString(R.string.s100)
+//                        getLatestDetails()
+//                    } else {
+//                        timer?.cancel()
+//                    }
+//                }
+//            }
+//        }
+//        (timer as CountDownTimer).start()
+//    }
+//
+//    private fun stopTimer() {
+//        REFRESHING = true
+//        timer?.cancel()
+//        if (ISACTIVE) toolbar.subtitle = getString(R.string.s99)
+//    }
 
     private fun loadMatchDetails(lastMatchData: JSONObject) {
 

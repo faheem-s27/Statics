@@ -13,8 +13,4 @@
         android:id="@+id/new_Assets"
         android:icon="@drawable/rioticon"
         android:title="@string/menu_assets" />
-    <item
-        android:id="@+id/new_Settings"
-        android:icon="@drawable/newcrosshair"
-        android:title="@string/menu_extras" />
 </menu>

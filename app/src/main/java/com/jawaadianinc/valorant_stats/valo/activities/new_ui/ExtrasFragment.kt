@@ -45,7 +45,7 @@ class SettingsFragment : Fragment() {
         playerName = activity?.intent?.getStringExtra("playerName").toString()
         region = activity?.intent?.getStringExtra("region").toString()
 
-        val logOutButton = view.findViewById<View>(R.id.new_SignOutButton)
+        val logOutButton = view.findViewById<View>(R.id.popup_LogOutButton)
         logOutButton.setOnClickListener {
             // Add a confirmation dialog
             val alert = android.app.AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
@@ -58,7 +58,7 @@ class SettingsFragment : Fragment() {
             alert.show()
         }
 
-        val resetLanguageButton = view.findViewById<Button>(R.id.new_reset_language)
+        val resetLanguageButton = view.findViewById<Button>(R.id.pfp_reset_language)
         resetLanguageButton.setOnClickListener {
             val alert = android.app.AlertDialog.Builder(requireActivity())
             alert.setTitle("Reset Language")
@@ -177,7 +177,7 @@ class SettingsFragment : Fragment() {
             }
         })
 
-        val donateButton = view.findViewById<Button>(R.id.new_Donate)
+        val donateButton = view.findViewById<Button>(R.id.popup_donate)
         donateButton.setOnClickListener {
             val skuList = ArrayList<String>()
             skuList.add("statics_donations")
@@ -396,24 +396,5 @@ class SettingsFragment : Fragment() {
         startActivity(intent)
         activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         activity?.finish()
-//        val playerDB = PlayerDatabase(requireActivity())
-//        if (playerDB.logOutPlayer(name)) {
-//            val widgetIntent = Intent(requireActivity(), LastMatchWidget::class.java)
-//            widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-//            val ids = AppWidgetManager.getInstance(activity?.application).getAppWidgetIds(
-//                ComponentName(activity?.applicationContext!!, LastMatchWidget::class.java)
-//            )
-//            widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-//            activity?.sendBroadcast(widgetIntent)
-//
-//
-//
-//            activity?.finish()
-//            Toast.makeText(requireActivity(), getString(R.string.s160), Toast.LENGTH_SHORT).show()
-//        } else {
-//            Toast.makeText(requireActivity(), getString(R.string.s161), Toast.LENGTH_SHORT).show()
-//        }
     }
-
-
 }
