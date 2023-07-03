@@ -1562,10 +1562,6 @@ withContext(Main) {
             if (code != 200) return@launch
             partyState = JSONObject(body).getString("State")
             RestrictedSeconds = JSONObject(body).getInt("RestrictedSeconds")
-            if (JSONObject(body).getInt("RestrictedSeconds") > 0)
-            {
-                startBanTimer(JSONObject(body).getInt("RestrictedSeconds"))
-            }
 
             val previousState = JSONObject(body).getString("PreviousState")
             val currentModeSelected =
@@ -1573,6 +1569,10 @@ withContext(Main) {
             var isReady = true
             withContext(Main)
             {
+                if (JSONObject(body).getInt("RestrictedSeconds") > 0)
+                {
+                    startBanTimer(JSONObject(body).getInt("RestrictedSeconds"))
+                }
                 val members = JSONObject(body).getJSONArray("Members")
                 handlePartyMembers(members)
                 for (i in 0 until members.length()) {
