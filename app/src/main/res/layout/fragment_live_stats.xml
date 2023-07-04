@@ -961,9 +961,9 @@
                                 android:layout_alignTop="@+id/new_live_CoreGameTitle"
                                 android:layout_alignBottom="@+id/new_live_partyCoreGameRecyclerView"
                                 android:layout_alignParentStart="true"
-                                android:layout_marginBottom="-16dp"
-                                android:layout_marginTop="-16dp"
                                 android:layout_centerInParent="true"
+                                android:layout_marginTop="-16dp"
+                                android:layout_marginBottom="-16dp"
                                 android:alpha="0.5"
                                 android:scaleType="centerCrop"
                                 tools:srcCompat="@drawable/red_to_blue" />

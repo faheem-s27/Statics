@@ -85,7 +85,6 @@ class StaticsMainActivity : AppCompatActivity() {
 
         val updateDescription: String =
                 "- Statics will now show u how long you are banned from the queue (if u are banned)" +
-                        "\n- Should show any penalties on your account (hopefully that works lol)" +
                         "\n- New layout in the main menu, with the extras tab being removed in favour of a popup menu (Thanks null)" +
                         "\n- New changes in the bottom nav bar to show which menu you are in" +
                         "\n- Fixed a bug where party members would be randomly shuffling" +

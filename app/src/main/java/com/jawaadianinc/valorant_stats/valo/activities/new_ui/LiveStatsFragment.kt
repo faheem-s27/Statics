@@ -15,6 +15,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -130,6 +131,8 @@ class LiveStatsFragment : Fragment() {
     private lateinit var liveModeScope: CoroutineScope
 
     private var RestrictedSeconds = 0
+    private var agentSelectSecondsRemaining: Long? = null
+    private var agentSelectTimer: CountDownTimer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -1617,40 +1620,99 @@ withContext(Main) {
         return currentModeSelectedCapital
     }
 
-    private fun handlePartyState(
+    private fun handlePartyState(state: String, previousState: String? = null, isReady: Boolean? = null) {
+        val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
+        val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+
+        fun setButtonEnabled(enabled: Boolean) {
+            joinMatchButton?.apply {
+                alpha = if (enabled) 1.0f else 0.5f
+                isEnabled = enabled
+            }
+        }
+
+        fun showReadySwitch() {
+            readySwitch.visibility = View.VISIBLE
+        }
+
+
+        fun handleDefaultState() {
+            if (previousState == "LEAVING_MATCHMAKING" || previousState == "DEFAULT") {
+                if (banTimer == null) {
+                    joinMatchButton?.text = getString(R.string.s64)
+                    hideLayoutsMatch()
+                    changePartyStatusText(getString(R.string.s65))
+                    showReadySwitch()
+                    agentSelectSecondsRemaining = null
+                    agentSelectTimer?.cancel()
+                    agentSelectTimer = null
+                }
+            } else if (previousState == "MATCHMADE_GAME_STARTING") {
+                if (isReady == true) {
+                    if (banTimer == null) {
+                        joinMatchButton?.text = getString(R.string.s64)
+                        hideLayoutsMatch()
+                        changePartyStatusText(getString(R.string.s65))
+                        showReadySwitch()
+                    }
+                } else {
+                    changePartyStatusText("Party in game")
+                    joinMatchButton?.text = "Cannot queue"
+                    setButtonEnabled(false)
+                    getGameInfoPlayer()
+                }
+            }
+        }
+
+        when (state) {
+            "MATCHMAKING" -> {
+                joinMatchButton?.text = getString(R.string.s60)
+                changePartyStatusText(getString(R.string.s59))
+                hideLayoutsMatch()
+                showReadySwitch()
+            }
+            "DEFAULT" -> handleDefaultState()
+        }
+    }
+
+
+    private fun handlePartyState2(
         state: String,
         previousState: String? = null,
         isReady: Boolean? = null
     ) {
         val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
-        joinMatchButton!!.alpha = 1.0f
-        joinMatchButton.isEnabled = true
+        val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+
+        if (banTimer == null) {
+            joinMatchButton!!.alpha = 1.0f
+            joinMatchButton.isEnabled = true
+        }
         if (state == "MATCHMAKING") {
-            joinMatchButton.text = getString(R.string.s60)
+            joinMatchButton?.text = getString(R.string.s60)
             changePartyStatusText(getString(R.string.s59))
             hideLayoutsMatch()
-            val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
             readySwitch.visibility = View.VISIBLE
         } else if (state == "DEFAULT" && previousState == "LEAVING_MATCHMAKING" || previousState == "DEFAULT") {
             if (banTimer == null) {
-                joinMatchButton.text = getString(R.string.s64)
+                joinMatchButton?.text = getString(R.string.s64)
                 hideLayoutsMatch()
                 changePartyStatusText(getString(R.string.s65))
-                val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
                 readySwitch.visibility = View.VISIBLE
             }
         } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING" && !isReady!!) {
             changePartyStatusText("Party in game")
-            joinMatchButton.text = "Cannot queue"
-            joinMatchButton.alpha = 0.5f
-            joinMatchButton.isEnabled = false
+            joinMatchButton?.apply {
+                text = "Cannot queue"
+                alpha = 0.5f
+                isEnabled = false
+            }
             getGameInfoPlayer()
         } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING" && isReady!!) {
             if (banTimer == null) {
-                joinMatchButton.text = getString(R.string.s64)
+                joinMatchButton?.text = getString(R.string.s64)
                 hideLayoutsMatch()
                 changePartyStatusText(getString(R.string.s65))
-                val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
                 readySwitch.visibility = View.VISIBLE
             }
         }
@@ -1698,6 +1760,9 @@ withContext(Main) {
                 CoreGameLayout?.visibility = View.GONE
                 playerPreGame(preGameJSON.getString("MatchID"))
             } else if (code == 404) {
+                agentSelectSecondsRemaining = null
+                agentSelectTimer?.cancel()
+                agentSelectTimer = null
                 notificationSent = false
                 PreGameLayout?.visibility = View.GONE
                 val coreGameURL =
@@ -1774,13 +1839,9 @@ withContext(Main) {
             withContext(Main){
                 val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
                 lockInButton!!.setOnClickListener {
-                    // get the text from the lock in button
                     val lockInButtonText = lockInButton.text.toString()
-                    // get the last word of the text
                     val lockInButtonTextLastWord = lockInButtonText.split(" ").last()
-                    // check if the last word is in the agents ID hashmap
                     if (AgentNamesID.containsValue(lockInButtonTextLastWord)) {
-                        // get the key of the last word
                         val agentID =
                             AgentNamesID.filterValues { it == lockInButtonTextLastWord }.keys.first()
                         // select the character
@@ -1799,7 +1860,6 @@ withContext(Main) {
                 }
 
                 val preGameJSON = JSONObject(body)
-    //        val allyTeamJSON = preGameJSON.getJSONArray("Players")
                 handleAgentSelect(preGameJSON)
 
                 val currentModeSelected = capitaliseGameMode(preGameJSON.getString("QueueID"))
@@ -1817,8 +1877,34 @@ withContext(Main) {
 
                 val pregameBackground = view?.findViewById<ImageView>(R.id.new_partyPreGameMapImage)
                 Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop().into(pregameBackground)
+
+                if (agentSelectSecondsRemaining == null)
+                {
+                    agentSelectSecondsRemaining = preGameJSON.getLong("PhaseTimeRemainingNS")
+                    startAgentSelectCountdown(agentSelectSecondsRemaining!!)
+                }
         }
     }
+    }
+
+    private fun startAgentSelectCountdown(phaseTimeRemaining: Long)
+    {
+        if (agentSelectTimer != null) return
+        val text = view?.findViewById<TextView>(R.id.new_agentSelectTitle)
+        text?.gravity = Gravity.CENTER
+        val countdownMillis = phaseTimeRemaining / 1_000_000 // Convert nanoseconds to milliseconds
+        agentSelectTimer = object : CountDownTimer(countdownMillis.toLong(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                // Update the UI with the remaining time
+                val secondsRemaining = millisUntilFinished / 1000
+                text?.text = "${getString(R.string.s70)}\n$secondsRemaining"
+            }
+
+            override fun onFinish() {
+                text?.text = "End of agent select"
+                agentSelectTimer = null
+            }
+        }.start()
     }
 
     private fun handleAgentSelect(matchJSON: JSONObject) {
