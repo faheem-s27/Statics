@@ -85,6 +85,8 @@ class StaticsMainActivity : AppCompatActivity() {
 
         val updateDescription: String =
                 "- Statics will now show u how long you are banned from the queue (if u are banned)" +
+                        "\n- Added timer in agent select" +
+                        "\n- Notification for when a match is found gets dismissed in 10 seconds" +
                         "\n- New layout in the main menu, with the extras tab being removed in favour of a popup menu (Thanks null)" +
                         "\n- New changes in the bottom nav bar to show which menu you are in" +
                         "\n- Fixed a bug where party members would be randomly shuffling" +

@@ -36,7 +36,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:gravity="center"
-            android:text="Live is loading :)"
+            android:text="@string/live_is_loading"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:textStyle="bold"
@@ -153,93 +153,6 @@
                             android:textColor="@color/white"
                             android:textSize="20sp"
                             android:textStyle="bold" />
-
-<!--                        &lt;!&ndash; An image of a spray &ndash;&gt;-->
-<!--                        <ImageView-->
-<!--                            android:id="@+id/CurrentLoadoutSprayPreRound"-->
-<!--                            android:layout_width="80dp"-->
-<!--                            android:layout_height="80dp"-->
-<!--                            android:layout_below="@+id/CurrentLoadoutSprayText"-->
-<!--                            android:layout_alignParentStart="true"-->
-<!--                            android:layout_marginStart="16dp"-->
-<!--                            android:layout_marginEnd="16dp"-->
-<!--                            android:layout_marginBottom="16dp"-->
-<!--                            android:backgroundTint="@color/white"-->
-<!--                            android:scaleType="centerCrop"-->
-<!--                            tools:srcCompat="@tools:sample/avatars" />-->
-
-<!--                        &lt;!&ndash; Text under the spray saying Pre round &ndash;&gt;-->
-<!--                        <TextView-->
-<!--                            android:id="@+id/CurrentLoadoutSprayPreRoundText"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_below="@+id/CurrentLoadoutSprayPreRound"-->
-<!--                            android:layout_alignParentStart="true"-->
-<!--                            android:layout_marginStart="16dp"-->
-<!--                            android:layout_marginEnd="16dp"-->
-<!--                            android:layout_marginBottom="16dp"-->
-<!--                            android:text="@string/s177"-->
-<!--                            android:textColor="@color/white"-->
-<!--                            android:textSize="16sp"-->
-<!--                            android:textStyle="bold" />-->
-
-<!--                        &lt;!&ndash; An image of a spray &ndash;&gt;-->
-<!--                        <ImageView-->
-<!--                            android:id="@+id/CurrentLoadoutSprayMidRound"-->
-<!--                            android:layout_width="80dp"-->
-<!--                            android:layout_height="80dp"-->
-<!--                            android:layout_below="@+id/CurrentLoadoutSprayText"-->
-<!--                            android:layout_centerHorizontal="true"-->
-<!--                            android:layout_marginStart="16dp"-->
-<!--                            android:layout_marginEnd="16dp"-->
-<!--                            android:layout_marginBottom="16dp"-->
-<!--                            android:backgroundTint="@color/white"-->
-<!--                            android:scaleType="centerCrop"-->
-<!--                            tools:srcCompat="@tools:sample/avatars" />-->
-
-<!--                        &lt;!&ndash; Text under the spray saying Mid round &ndash;&gt;-->
-<!--                        <TextView-->
-<!--                            android:id="@+id/CurrentLoadoutSprayMidRoundText"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_below="@+id/CurrentLoadoutSprayMidRound"-->
-<!--                            android:layout_centerHorizontal="true"-->
-<!--                            android:layout_marginStart="16dp"-->
-<!--                            android:layout_marginEnd="16dp"-->
-<!--                            android:layout_marginBottom="16dp"-->
-<!--                            android:text="@string/s178"-->
-<!--                            android:textColor="@color/white"-->
-<!--                            android:textSize="16sp"-->
-<!--                            android:textStyle="bold" />-->
-
-<!--                        &lt;!&ndash; An image of a spray &ndash;&gt;-->
-<!--                        <ImageView-->
-<!--                            android:id="@+id/CurrentLoadoutSprayPostRound"-->
-<!--                            android:layout_width="80dp"-->
-<!--                            android:layout_height="80dp"-->
-<!--                            android:layout_below="@+id/CurrentLoadoutSprayText"-->
-<!--                            android:layout_alignParentEnd="true"-->
-<!--                            android:layout_marginStart="16dp"-->
-<!--                            android:layout_marginEnd="16dp"-->
-<!--                            android:layout_marginBottom="16dp"-->
-<!--                            android:backgroundTint="@color/white"-->
-<!--                            android:scaleType="centerCrop"-->
-<!--                            tools:srcCompat="@tools:sample/avatars" />-->
-
-<!--                        &lt;!&ndash; Text under the spray saying Post round &ndash;&gt;-->
-<!--                        <TextView-->
-<!--                            android:id="@+id/CurrentLoadoutSprayPostRoundText"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_below="@+id/CurrentLoadoutSprayPostRound"-->
-<!--                            android:layout_alignParentEnd="true"-->
-<!--                            android:layout_marginStart="16dp"-->
-<!--                            android:layout_marginEnd="16dp"-->
-<!--                            android:layout_marginBottom="16dp"-->
-<!--                            android:text="@string/s179"-->
-<!--                            android:textColor="@color/white"-->
-<!--                            android:textSize="16sp"-->
-<!--                            android:textStyle="bold" />-->
 
                         <RelativeLayout
                             android:id="@+id/CurrentLoadoutSprayWheelLayout"
@@ -843,8 +756,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/new_findMatchButton"
-                            android:visibility="gone"
-                            tools:visibility="gone">
+                            android:visibility="visible"
+                            tools:visibility="visible">
 
                             <!-- Imageview that covers the whole layout -->
                             <ImageView
@@ -951,7 +864,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/new_findMatchButton"
                             android:visibility="gone"
-                            tools:visibility="visible">
+                            tools:visibility="gone">
 
                             <!-- Imageview that covers the whole layout -->
                             <ImageView

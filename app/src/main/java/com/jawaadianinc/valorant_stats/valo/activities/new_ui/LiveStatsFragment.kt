@@ -134,6 +134,8 @@ class LiveStatsFragment : Fragment() {
     private var agentSelectSecondsRemaining: Long? = null
     private var agentSelectTimer: CountDownTimer? = null
 
+    private var availableAgents = mutableListOf<String>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -302,6 +304,13 @@ class LiveStatsFragment : Fragment() {
             logLIVEStuff("Got titles")
             withContext(Main) {
                 progressDialog.progress = 90
+            }
+
+            availableAgents = getAvailableAgents()
+            withContext(Main)
+            {
+                progressDialog.progress = 100
+                progressDialog.visibility = View.GONE
             }
 
             withContext(Main)
@@ -675,7 +684,7 @@ class LiveStatsFragment : Fragment() {
                 } else {
                     Toast.makeText(
                         requireContext(),
-                        "Could not get your load-outs",
+                        getString(R.string.could_not_get_your_load_outs),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -1010,9 +1019,9 @@ withContext(Main) {
         val topSprayImage = view?.findViewById<ImageView>(R.id.imageViewTopSpray)
 
         val LeftSpray = "0814b2fe-4512-60a4-5288-1fbdcec6ca48"
-        val BottomSpray = "04af080a-4071-487b-61c0-5b9c0cfaac74"
+        val TopSpray = "04af080a-4071-487b-61c0-5b9c0cfaac74"
         val RightSpray = "5863985e-43ac-b05d-cb2d-139e72970014"
-        val TopSpray = "7cdc908e-4f69-9140-a604-899bd879eed1"
+        val BottomSpray = "7cdc908e-4f69-9140-a604-899bd879eed1"
 
         for (i in 0 until Sprays.length()) {
             when (Sprays.getJSONObject(i).getString("EquipSlotID")) {
@@ -1126,7 +1135,7 @@ withContext(Main) {
                 val penalty = penalties.getJSONObject(i)
                 // Show the penalty in alert dialog
                 AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-                    .setTitle("Penalty")
+                    .setTitle(getString(R.string.penalty))
                     //.setMessage("You have been banned from queueing for ${penalty.getString("Reason")} for ${convertSeconds(penalty.getInt("PenaltyRemainingDurationInSeconds"))}")
                     .setMessage("A penalty on your account has been detected. Response: $penalty")
                     .setPositiveButton("OK", null)
@@ -1147,29 +1156,29 @@ withContext(Main) {
     private var banTimer: CountDownTimer? = null
 
     private fun startBanTimer(restrictedSeconds: Int) {
-        if (banTimer != null) return
-
-        banTimer = object : CountDownTimer(restrictedSeconds * 1000L, 1000) {
-            val matchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
-
-            override fun onTick(millisUntilFinished: Long) {
-                val seconds = (millisUntilFinished / 1000).toInt()
-                matchButton?.apply {
-                    text = "Banned for ${convertSeconds(seconds)}"
-                    isEnabled = false
-                    alpha = 0.5f
-                }
-            }
-
-            override fun onFinish() {
-                matchButton?.apply {
-                    text = "Find Match"
-                    isEnabled = true
-                    alpha = 1f
-                }
-                banTimer = null
-            }
-        }.start()
+//        if (banTimer != null) return
+//
+//        banTimer = object : CountDownTimer(restrictedSeconds * 1000L, 1000) {
+//            val matchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
+//
+//            override fun onTick(millisUntilFinished: Long) {
+//                val seconds = (millisUntilFinished / 1000).toInt()
+//                matchButton?.apply {
+//                    text = "${context.getString(R.string.banned_for)}${convertSeconds(seconds)}"
+//                    isEnabled = false
+//                    alpha = 0.5f
+//                }
+//            }
+//
+//            override fun onFinish() {
+//                matchButton?.apply {
+//                    text = "Find Match"
+//                    isEnabled = true
+//                    alpha = 1f
+//                }
+//                banTimer = null
+//            }
+//        }.start()
     }
 
 
@@ -1620,7 +1629,7 @@ withContext(Main) {
         return currentModeSelectedCapital
     }
 
-    private fun handlePartyState(state: String, previousState: String? = null, isReady: Boolean? = null) {
+    private fun handlePartyState2(state: String, previousState: String? = null, isReady: Boolean? = null) {
         val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
         val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
 
@@ -1656,8 +1665,8 @@ withContext(Main) {
                         showReadySwitch()
                     }
                 } else {
-                    changePartyStatusText("Party in game")
-                    joinMatchButton?.text = "Cannot queue"
+                    changePartyStatusText(getString(R.string.party_in_game))
+                    joinMatchButton?.text = getString(R.string.cannot_queue)
                     setButtonEnabled(false)
                     getGameInfoPlayer()
                 }
@@ -1676,7 +1685,7 @@ withContext(Main) {
     }
 
 
-    private fun handlePartyState2(
+    private fun handlePartyState(
         state: String,
         previousState: String? = null,
         isReady: Boolean? = null
@@ -1701,9 +1710,9 @@ withContext(Main) {
                 readySwitch.visibility = View.VISIBLE
             }
         } else if (state == "DEFAULT" && previousState == "MATCHMADE_GAME_STARTING" && !isReady!!) {
-            changePartyStatusText("Party in game")
+            changePartyStatusText(getString(R.string.party_in_game))
             joinMatchButton?.apply {
-                text = "Cannot queue"
+                text = getString(R.string.cannot_queue)
                 alpha = 0.5f
                 isEnabled = false
             }
@@ -1864,7 +1873,7 @@ withContext(Main) {
 
                 val currentModeSelected = capitaliseGameMode(preGameJSON.getString("QueueID"))
                 val textViewMode = view?.findViewById<TextView>(R.id.new_partyPreGameTitle)
-                textViewMode?.text = "Playing ${currentModeSelected}"
+                textViewMode?.text = getString(R.string.playing) + currentModeSelected
 
                 val mapName = preGameJSON.getString("MapID")
 
@@ -1901,7 +1910,7 @@ withContext(Main) {
             }
 
             override fun onFinish() {
-                text?.text = "End of agent select"
+                text?.text = getString(R.string.end_of_agent_select)
                 agentSelectTimer = null
             }
         }.start()
@@ -1936,7 +1945,7 @@ withContext(Main) {
                 }
                 if (player.getString("Subject") == PlayerUUID)
                 {
-                    name = "You"
+                    name = getString(R.string.you)
                 }
 
                 val playerObject = PreGameAgentSelectPlayer(name, selectionState, agentID, rank, agentName)
@@ -2072,7 +2081,7 @@ withContext(Main) {
             {
                 withContext(Main) {
                     val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
-                    agentButton?.text = "Lock in random"
+                    agentButton?.text = getString(R.string.lock_in_random)
                 }
             }
         }
@@ -2202,16 +2211,25 @@ withContext(Main) {
         return sortedHashMap
     }
 
-
-    private fun getAgentImages(): ArrayList<String> {
+    private fun getAgentImages(): List<String> {
         val agentImages = ArrayList<String>()
-        val sortedAgents = sortHashMapByValues(AgentNamesID)
-        for (agent in sortedAgents.keys) {
-            agentImages.add(agent)
+        val removedAgents = ArrayList<String>()
+
+        for (agent in sortHashMapByValues(AgentNamesID).keys) {
+            if (agent in availableAgents) {
+                agentImages.add(agent)
+            }
+            else {
+                removedAgents.add(agent)
+            }
         }
-        agentImages+="random"
+
+        agentImages.add("random")
+        agentImages.addAll(removedAgents)
+
         return agentImages
     }
+
 
     private fun changeQueue(mode: String) {
         if (playerPartyID == null) return
@@ -2429,7 +2447,15 @@ withContext(Main) {
         }
 
         override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-            val image = images[position]
+            // check if the position is after the "random" position
+            // find the index of "random"
+            val randomIndex = images.indexOf("random")
+            var image = images[position]
+            if (position > randomIndex)
+            {
+                // put the word "locked" at the start of image
+                image = "locked $image"
+            }
 
             // Bind the image data and isSelected value to ViewHolder
             holder.bind(image, position == selectedItem)
@@ -2449,76 +2475,6 @@ withContext(Main) {
             return images.size
         }
     }
-
-//    private fun APIRequestValorant2(
-//        url: String,
-//        body: String? = null,
-//        put: Boolean? = false
-//    ): Response {
-//
-//        // get date in format of YYYY-MM-DD HH:MM:SS
-//        val date = Calendar.getInstance().time
-//        val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date)
-//
-//        if (body == null) {
-//            val request = Request.Builder()
-//                .url(url)
-//                .addHeader("Content-Type", "application/json")
-//                .addHeader("X-Riot-Entitlements-JWT", entitlementToken!!)
-//                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
-//                .addHeader("X-Riot-ClientVersion", ClientVersion)
-//                .addHeader("Authorization", "Bearer $accessToken")
-//                .get()
-//                .build()
-//
-//            // return main thread blocking
-//            return runBlocking(Dispatchers.IO) {
-//                val response = client.newCall(request).execute()
-//                val responseCode = response.code
-//                val responseBody = response.body.string()
-//                RequestLogsDatabase.addLog(url, "GET", dateTime, responseCode, responseBody)
-//                return@runBlocking client.newCall(request).execute()
-//            }
-//        } else if (put == false) {
-//            val request = Request.Builder()
-//                .url(url)
-//                .addHeader("Content-Type", "application/json")
-//                .addHeader("X-Riot-Entitlements-JWT", entitlementToken!!)
-//                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
-//                .addHeader("X-Riot-ClientVersion", ClientVersion)
-//                .addHeader("Authorization", "Bearer $accessToken")
-//                .post(body.toRequestBody("application/json".toMediaTypeOrNull()))
-//                .build()
-//
-//            // return main thread blocking
-//            return runBlocking(Dispatchers.IO) {
-//                val response = client.newCall(request).execute()
-//                val responseCode = response.code
-//                val responseBody = response.body.string()
-//                RequestLogsDatabase.addLog(url, "POST", dateTime, responseCode, responseBody)
-//                return@runBlocking client.newCall(request).execute()
-//            }
-//        } else {
-//            val request = Request.Builder()
-//                .url(url)
-//                .addHeader("Content-Type", "application/json")
-//                .addHeader("X-Riot-Entitlements-JWT", entitlementToken!!)
-//                .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
-//                .addHeader("X-Riot-ClientVersion", ClientVersion)
-//                .addHeader("Authorization", "Bearer $accessToken")
-//                .put(body.toRequestBody("application/json".toMediaTypeOrNull()))
-//                .build()
-//
-//            // return main thread blocking
-//            return runBlocking(Dispatchers.IO) {
-//                val response = client.newCall(request).execute()
-//                val responseCode = response.code
-//                val responseBody = response.body.string()
-//                RequestLogsDatabase.addLog(url, "PUT", dateTime, responseCode, responseBody)
-//                return@runBlocking client.newCall(request).execute()
-//            }
-//        }
-//    }
 
     private suspend fun APIRequestValorant(
         url: String,
@@ -2684,6 +2640,16 @@ class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         {
             val url = "https://cdn-icons-png.flaticon.com/128/9637/9637229.png"
             Picasso.get().load(url).fit().into(imageView)
+        }
+        else if (image.lowercase().split(" ")[0] == "locked")
+        {
+            val fullURL = "https://media.valorant-api.com/agents/${image.split(" ")[1]}/displayicon.png"
+            Picasso.get().load(fullURL).fit().into(imageView)
+            // set alpha to 0.2
+            imageView.alpha = 0.2f
+            // make it unclickable
+            imageView.isClickable = false
+            imageView.isEnabled = false
         }
         else{
             val fullURL = "https://media.valorant-api.com/agents/${image}/displayicon.png"

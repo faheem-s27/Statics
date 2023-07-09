@@ -11,8 +11,8 @@ android {
         applicationId "com.jawaadianinc.valorant_stats"
         minSdk 26
         targetSdk 33
-        versionCode 307
-        versionName "3.07 Beta"
+        versionCode 310
+        versionName "3.10 Beta"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -132,9 +132,9 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-storage'
 
-    implementation 'com.android.billingclient:billing:5.2.0'
+    implementation 'com.android.billingclient:billing:6.0.1'
 
     implementation 'com.google.android.gms:play-services-drive:17.0.0'
 
-
+    implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.5.9'
 }
