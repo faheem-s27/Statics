@@ -2215,8 +2215,16 @@ withContext(Main) {
         val agentImages = ArrayList<String>()
         val removedAgents = ArrayList<String>()
 
+        val defaultAgents = listOf(
+            "320b2a48-4d9b-a075-30f1-1f93a9b638fa",
+            "eb93336a-449b-9c1b-0a54-a891f7921d69",
+            "9f0d8ba9-4140-b941-57d3-a7ad57c6b417",
+            "569fdd95-4d10-43ab-ca70-79becc718b46",
+            "add6443a-41bd-e414-f6ad-e58d267f4e95"
+        )
+
         for (agent in sortHashMapByValues(AgentNamesID).keys) {
-            if (agent in availableAgents) {
+            if (agent in availableAgents || agent in defaultAgents) {
                 agentImages.add(agent)
             }
             else {
@@ -2635,6 +2643,8 @@ class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val imageView: ImageView = itemView.findViewById(R.id.image_view)
 
     fun bind(image: String, isSelected: Boolean) {
+        imageView.alpha = if (isSelected) 1.0f else 0.6f
+
         // Set the image resource and alpha value
         if (image.lowercase() == "random")
         {
@@ -2646,8 +2656,7 @@ class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val fullURL = "https://media.valorant-api.com/agents/${image.split(" ")[1]}/displayicon.png"
             Picasso.get().load(fullURL).fit().into(imageView)
             // set alpha to 0.2
-            imageView.alpha = 0.2f
-            // make it unclickable
+            imageView.alpha = 0.3f
             imageView.isClickable = false
             imageView.isEnabled = false
         }
@@ -2656,7 +2665,6 @@ class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             Picasso.get().load(fullURL).fit().into(imageView)
         }
 
-        imageView.alpha = if (isSelected) 1.0f else 0.6f
 
         // Add or remove a border based on isSelected value
         if (isSelected) {

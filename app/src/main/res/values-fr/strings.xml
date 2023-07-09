@@ -1,289 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Statics</string>
-    <string name="title_activity_stats" translatable="false">StatsActivity</string>
-    <string name="title_activity_valorant_updates" translatable="false">ValorantUpdatesActivity</string>
-    <string name="action_settings" translatable="false">Settings</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-    <string name="title_activity_brawl_find_account" translatable="false">BrawlFindAccount</string>
-    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
-
-    <string name="title_activity_weapon_info" translatable="false">WeaponInfo</string>
-    <string name="tab_text_1" translatable="false">Tab 1</string>
-    <string name="tab_text_2" translatable="false">Tab 2</string>
-
-    <string name="welcome" translatable="false">"Welcome to Statics!"</string>
-    <string name="RSO_URL" translatable="false">https://auth.riotgames.com/authorize?client_id=statics&amp;redirect_uri=https://statics-fd699.web.app/authorize.html&amp;response_type=code&amp;scope=openid+offline_access&amp;prompt=login</string>
-    <string name="title_activity_cross_hair" translatable="false">CrossHairActivity</string>
-    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
-    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
-    <string name="nav_header_title" translatable="false">Android Studio</string>
-    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
-    <string name="nav_header_desc" translatable="false">Navigation header</string>
-
-    <string name="menu_home" translatable="false">Home</string>
-    <string name="menu_gallery" translatable="false">Gallery</string>
-    <string name="menu_slideshow" translatable="false">Slideshow</string>
-
-    <string name="Share_Profile_URL" translatable="false">Anyone with access to the link can view your matches and rank. If you are not sure if you want to share your profile, please do not share it!</string>
-    <string name="appwidget_text" translatable="false">EXAMPLE</string>
-    <string name="configure" translatable="false">Configure</string>
-    <string name="add_widget" translatable="false">Add widget</string>
-    <string name="app_widget_description" translatable="false">This is an app widget description</string>
-
-    <string name="long_shortcut" translatable="false">See your rank history!</string>
-    <string name="short_shortcut" translatable="false">Past ranks</string>
-    <string name="title_activity_tracker_gg" translatable="false">TrackerGG_Activity</string>
-    <string name="title_home" translatable="false">Home</string>
-    <string name="title_dashboard" translatable="false">Dashboard</string>
-    <string name="title_notifications" translatable="false">Notifications</string>
-    <string name="current_rank" translatable="false">Current Rank:</string>
-    <string name="title_activity_statics_main" translatable="false">StaticsMainActivity</string>
-
-
-    <!-- LOGGING IN FOR THE FIRST TIME SCREEN -->
-    <string name="s6">En savoir plus sur \n<a href="https://statics-fd699.web.app/privacy.html">la politique de confidentialité de Statics</a></string>
-    <string name="s5">Statics n\'est pas approuvé par Riot Games et ne reflète pas les points de vue ou les opinions de Riot Games ou de toute personne officiellement impliquée dans la production ou la gestion des propriétés de Riot Games. Riot Games et toutes les propriétés associées sont des marques commerciales ou des marques déposées de Riot Games, Inc.</string>
-    <string name="s4">J\'ai lu et j\'accepte les termes et conditions ci-dessous</string>
-    <string name="s3">Se connecter à Riot</string>
-    <string name="s2">La première application avec une minimap</string>
-    <string name="s7">Lorsque vous vous connectez à Riot, vos informations d\'identification sont envoyées aux serveurs de Riot qui vous renvoient un jeton. Ce jeton est ensuite utilisé pour obtenir les détails de votre compte, comme votre nom. Le jeton est ensuite supprimé du serveur et n\'est stocké nulle part. Le serveur ne stocke que les informations de votre compte, qui sont utilisées pour afficher vos statistiques dans l\'application.\n\n Statics ne stocke aucun mot de passe !</string>
-    <string name="acceptTermsConditions">Veuillez accepter les termes et conditions pour continuer</string>
-    <string name="s1">connexion à Riot</string>
-    <string name="starting">départ</string>
-    <string name="s8">Comment ça marche</string>
-
-    <!-- WHEN SIGNING IN BACK FROM RIOT LOGIN -->
-    <string name="s9">Appuyez sur le bouton pour prouver que vous n’êtes pas un robot</string>
-    <string name="s10">Vol de vos données en cours</string>
-    <string name="s11">Ajout de porte-bonheurs à votre compte</string>
-    <string name="s12">Réglage de votre rang à \"Argent\"</string>
-    <string name="s13">Vous avez réuss</string>
-    <string name="s14">Bienvenue</string>
-    <string name="s15">Une erreur est survenue durant l’enregistrement :(</string>
-
-    <!-- WHEN SIGNED IN AND OPENING STATICS IN MAIN MENU -->
-    <string name="s16">Vous utilisez une version bêta de l\'application</string>
-    <string name="s17">Cela signifie que l\'application peut ne pas fonctionner comme prévu. Si vous trouvez des bugs, veuillez les signaler au développeur.</string>
-    <string name="s18">Nouvelles fonctionnalités pour Statics</string>
-    <string name="s19">Cette mise à jour inclut :</string>
-    <string name="menu_stats">Statistiques</string>
-    <string name="menu_live">En direct</string>
-    <string name="menu_assets">Atouts</string>
-    <string name="menu_premier">Premier</string>
-    <string name="menu_extras">Extras</string>
-    <string name="s20">Prochaine mise à jour dans</string>
-    <string name="s22">Détails du joueur</string>
-    <string name="s23">Résumé de rang</string>
-    <string name="s24">Dernier match</string>
-    <string name="s29">Historique</string>
-    <string name="s30">Il y a xx jours/semaines</string>
-    <string name="s31">Bienvenue dans Live!</string>
-    <string name="s32">Démarrer</string>
-    <string name="s33">Pourquoi un mot de passe?</string>
-    <string name="s34">Malheureusement, Statics a besoin de votre nom d\'utilisateur et de votre mot de passe Riot pour utiliser le mode en direct, car le mot de passe est nécessaire pour authentifier votre compte et est utilisé pour obtenir les données de Valorant Le mot de passe n\'est stocké nulle part et n\'est utilisé que pour authentifier votre compte. Je ne vais pas m\'étendre sur le sujet. En raison de la manière dont Statics utilise l\'API, je pense qu\'il n\'y a pas d\'autre moyen de s\'identifier que de demander aux gens d\'entrer directement leurs informations d\'identification. Dans ces conditions, il n\'y a pas vraiment de bon moyen pour quiconque de \'assurer que ses informations \'identification restent en sécurité. Pour ce que cela vaut : - Vos informations \'identification ne quittent jamais votre appareil que sous la forme \'une demande de connexion directe à Riot. Elles ne sont jamais stockées ou envoyées ailleurs. - Vous pouvez activer \'authentification à deux facteurs, afin de disposer \'une couche de sécurité supplémentaire en cas de problème. Le code est open-source et visible sur GitHub (en attente) ; vous pouvez le construire vous-même si vous voulez être sûr de ce qui fonctionne. TL; DR : vous devrez me croire sur parole. 🦆❤️ </string>
-    <string name="s35">Pourquoi dois-je saisir mon mot de passe ?</string>
-    <string name="s36">Nom d’utilisateur / mot de passe</string>
-    <string name="s37">Entrez votre nom d’utilisateur et mot de passe</string>
-    <string name="s38">Authentification en cours</string>
-    <string name="s39">Le caractère # n’est pas autorisé</string>
-    <string name="s40">Veuillez entrer votre nom d’utilisateur et mot de passe</string>
-    <string name="s41">Réponse des cookies d’authentification</string>
-    <string name="s42">La réponse est correcte mais le nom d’utilisateur ou mot de passe est incorrecte.</string>
-    <string name="s43">Une erreur est survenue lors de la connexion. Message d’erreur :</string>
-    <string name="s44">Code d’authentification à deux facteurs pour</string>
-    <string name="s45">Envoyer Dans quel contexte ? sinon valider</string>
-    <string name="s46">Code d’authentification à deux facteurs incorrect</string>
-    <string name="s47">Une erreur est survenue dans le mode Live :</string>
-    <string name="s48">Envoyez la au développeur sur Discord !</string>
-    <string name="s49">Copié dans le presse-papier!</string>
-    <string name="s50">Copier et envoyer</string>
-    <string name="s51">Annuler</string>
-    <string name="s52">Le Marché Nocturne est ouvert!</string>
-    <string name="s53">Le client Valorant n’est pas ouvert!</string>
-    <string name="s54">Pas à une fête!</string>
-    <string name="s55">Se déconnecter</string>
-    <string name="s56">Êtes-vous sûr de vouloir vous déconnecter?</string>
-    <string name="s57">Carte/Titre/Spray mis à jour avec succès</string>
-    <string name="s58">Sélectionnez une carte de joueur/titre/spray</string>
-    <string name="s59">Recherche d’une partie</string>
-    <string name="s60">Quitter la file</string>
-    <string name="s61">Le jeton a expiré, veuillez redémarrer l’application</string>
-    <string name="s62">Vous êtes seul dans ce groupe</string>
-    <string name="s63">membres dans le groupe</string>
-    <string name="s64">Rejoindre la file</string>
-    <string name="s65">Dans le salon</string>
-    <string name="s66">Partie non prête</string>
-    <string name="s67">Pas prêt</string>
-    <string name="s68">Choisissez les agents</string>
-    <string name="s69">Partie trouvée</string>
-    <string name="s70">Choisissez votre agent</string>
-    <string name="s71">Êtes-vous sûrs de vouloir quitter la partie ? (Cela pourrait engendrer une pénalité)</string>
-    <string name="s72">Quitter la partie</string>
-    <string name="s73">Sélectionné</string>
-    <string name="s74">Verrouiller</string>
-    <string name="s75">Verrouillé</string>
-    <string name="s76">File changée à</string>
-    <string name="s77">Dans le lobby</string>
-    <string name="s78">Trouvez votre asset favori</string>
-    <string name="s79">Agents</string>
-    <string name="s80">Porte-bonheurs</string>
-    <string name="s81">Packs</string>
-    <string name="s82">Rank</string>
-    <string name="s83">Modes</string>
-    <string name="s84">Bordures"</string>
-    <string name="s85">Maps</string>
-    <string name="s86">Cartes</string>
-    <string name="s87">Titres</string>
-    <string name="s88">Sprays</string>
-    <string name="s89">Armes</string>
-    <string name="s90">Le support de Premier arrive bientôt</string>
-    <string name="s91">Connecté en tant que</string>
-    <string name="s92">Se déconnecter</string>
-    <string name="s93">Choisir la langue</string>
-    <string name="s94">Classements</string>
-    <string name="s95">Chat</string>
-    <string name="s96">A propos</string>
-    <string name="s97">Faire un don</string>
-    <string name="s98">Voir les logs</string>
-    <string name="s99">Rafraichissement</string>
-    <string name="s100">Mise à jour</string>
-    <string name="s101">Ces statistiques sont mises à jour une fois par jour, elles peuvent donc ne pas être exactes</string>
-    <string name="s102">Disclaimer</string>
-    <string name="s103">Chargement de l’historique de rank</string>
-    <string name="s104">Activer les dates</string>
-    <string name="s105">Recherche de partie</string>
-    <string name="s106">Chargement de la partie</string>
-    <string name="s107">Résumé</string>
-    <string name="s108">Informations</string>
-    <string name="s109">Joueurs</string>
-    <string name="s110">Manches</string>
-    <string name="s111">Carte de Spike</string>
-    <string name="s112">Carte des kills</string>
-    <string name="s113">Résumé des kills</string>
-    <string name="s114">Manche</string>
-    <string name="s115">Toutes les manches</string>
-    <string name="s116">Bientôt</string>
-    <string name="s117">Éliminé, Bombe désamorcée, Temps écoulé, Égalité</string>
-    <string name="s118">Voir la carte des désamorçages</string>
-    <string name="s119">L’équipe Bleu/Rouge a gagné</string>
-    <string name="s120">Planté par X</string>
-    <string name="s121">Voir les agents</string>
-    <string name="s122">Tué avec</string>
-    <string name="s123">Obtention des dernières parties</string>
-    <string name="s124">Historique des parties</string>
-    <string name="s125">parties x/X traitées</string>
-    <string name="s126">La limite de requêtes a été atteinte, merci de réessayer dans quelques minutes</string>
-    <string name="s127">Vos parties ont été sauvegardé ! Elles chargeront plus rapidement la prochaine fois</string>
-    <string name="s128">Votre cache de partie à dépasser les 100 parties. Statics va supprimer les plus récentes pour libérer de l’espace !</string>
-    <string name="s129">Correspond à la taille de la base de données</string>
-    <string name="s130">De l’espace de stockage a été libéré ! Vos parties plus récentes sont toujours sauvegardées</string>
-    <string name="s131">Statics nécessite une connexion internet active !</string>
-    <string name="s132">Réessayer</string>
-    <string name="s133">Quitter</string>
-    <string name="s134">Veuillez accepter les termes et conditions pour continue</string>
-    <string name="loading_data">Chargement des données…</string>
-    <string name="loading">Chargement</string>
-    <string name="s21">Statistiques</string>
-    <string name="s25">En direct</string>
-
-    <string name="s140">Réponse de Statics</string>
-    <string name="s141">Sprays</string>
-    <string name="s142">Titre</string>
-    <string name="s143">Cartes</string>
-    <string name="s144">Choisissez un</string>
-    <string name="s145"> mis à jour avec succès !</string>
-    <string name="s146">Erreur pendant la mise à jo</string>
-    <string name="s147">Spike rush</string>
-    <string name="s148">Non classé</string>
-    <string name="s149">Classé</string>
-    <string name="s150">Réplication</string>
-    <string name="s151">Intensification</string>
-    <string name="s152">Swift Play</string>
-    <string name="s153">Erreur !</string>
-    <string name="s154">Prochaine mise à jour da</string>
-    <string name="s155">Secondes</string>
-    <string name="s156">Rafraîchissement</string>
-    <string name="s157">Mise à jour</string>
-    <string name="s158">Traité</string>
-    <string name="s159">Parties</string>
-    <string name="s160">Déconnecté</string>
-    <string name="s161">Erreur de déconnection O_o</string>
-    <string name="s162">Merci pour votre donation !</string>
-    <string name="s163">Donation annulée</string>
-    <string name="s164">Donation échouée</string>
-    <string name="s165">Chargement…</string>
-    <string name="s166">Ensemble</string>
-    <string name="s167">Boutique</string>
-    <string name="s168">Solde actuel:</string>
-    <string name="s169">Offres du jou</string>
-    <string name="s170">Mis à jour la dernière fois le</string>
-    <string name="s171">Prochaine mise à jour</string>
-    <string name="s172">Il y a x minutes</string>
-    <string name="s173">Il y a une heure</string>
-    <string name="s174">En train de parler en tant que</string>
-    <string name="s175">Votre meilleur rank</string>
-    <string name="s176">Il y a x jours</string>
-    <string name="s177">Pré-manche</string>
-    <string name="s178">Pendant la manche</string>
-    <string name="s179">Après-manche</string>
-    <string name="s180">Lignes de dialogue</string>
-    <string name="s181">Premier chargement</string>
-    <string name="s182">Déjà sélectionné</string>
-    <string name="s183">Envoyer un message</string>
-    <string name="s184">Valorant</string>
-    <string name="s185">Grand</string>
-    <string name="s186">Petit</string>
-    <string name="s187">Large</string>
-    <string name="s188">Traitement de la partie</string>
-    <string name="s189">Activer les dates</string>
-    <string name="s190">Acte</string>
-    <string name="s191">Épisode</string>
-    <string name="s192">Cartes</string>
-    <string name="s193">Agents</string>
-    <string name="s194">Armes</string>
-    <string name="s195">Le plus récent</string>
-    <string name="s196">Le plus vieux</string>
-    <string name="s197">Entrez votre code d\'authentification à plusieurs facteurs</string>
-    <string name="s198">Trouvez votre favo</string>
-    <string name="s199">Atouts</string>
-    <string name="s200">Chargement des informations de la partie</string>
-    <string name="s201">Mode</string>
-    <string name="s202">Serveur</string>
-    <string name="s203">Lancé</string>
-    <string name="s204">Durée</string>
-    <string name="s205">Ce mode de jeu n\'est pas encore entièrement supporté ! Mais vous pouvez tout de même voir certaines informations !</string>
-    <string name="s206">Manches jouées</string>
-    <string name="s207">Équipe</string>
-    <string name="s208">Score</string>
-    <string name="s209">Kills</string>
-    <string name="s210">Morts</string>
-    <string name="s211">Assistances</string>
-    <string name="s212">Noms</string>
-    <string name="s213">Niveaux</string>
-    <string name="s214">Ranks</string>
-    <string name="s215">Traitement des statistiques du joueu</string>
-
-    <string name="s216">Choisissez un mode de jeu</string>
-    <string name="s217">Compilation des statistiques…</string>
-    <string name="s218">L’équipe Bleu a gagné !</string>
-    <string name="s219">L’équipe rouge a gagné !</string>
-    <string name="s220">Score</string>
-    <string name="s221">Il y a x heures</string>
-    <string name="s222">Il y a x minutes</string>
-    <string name="s223">Il y a x jours</string>
-    <string name="s224">Joué</string>
-    <string name="s225">Éliminé</string>
-    <string name="s226">Copier le nom</string>
-    <string name="s227">Détails du rank</string>
-    <string name="s228">Rejeter</string>
-    <string name="s229">Spike désamorcé</string>
-    <string name="s230">Le Spike a explosé</string>
-    <string name="s231">Planté par</string>
-    <string name="s232">Voir la map de désamorçage</string>
-    <string name="s233">Niveau</string>
-    <string name="s234">Rank</string>
-    <string name="s235">Il y a x semaine</string>
-    <string name="s236">Important</string>
-    <string name="s237">Veuillez cocher "Rester connecté" pendant la connexion</string>
+  <string name="s6">En savoir plus sur \n&lt;a href=\"https://statics-fd699.web.app/privacy.html\"&gt;la politique de confidentialité de Statics&lt;/a&gt;</string>
+  <string name="s5">Statics n\'est pas approuvé par Riot Games et ne reflète pas les points de vue ou les opinions de Riot Games ou de toute personne officiellement impliquée dans la production ou la gestion des propriétés de Riot Games. Riot Games et toutes les propriétés associées sont des marques commerciales ou des marques déposées de Riot Games, Inc.</string>
+  <string name="s4">J\'ai lu et j\'accepte les conditions générales ci-dessous</string>
+  <string name="s3">Se connecter avec Riot</string>
+  <string name="s2">La première application avec une minimap</string>
+  <string name="s7">Lorsque vous vous connectez à Riot, vos informations d\'identification sont envoyées aux serveurs de Riot qui vous renvoient un jeton.\nCe jeton est ensuite utilisé pour obtenir les détails de votre compte, comme votre nom. Le jeton est ensuite supprimé du serveur et n\'est stocké nulle part. Le serveur ne stocke que les informations de votre compte, qui sont utilisées pour afficher vos statistiques dans l\'application.\n\n Statics ne stocke aucun mot de passe !</string>
+  <string name="acceptTermsConditions">Veuillez accepter les conditions générales pour continuer</string>
+  <string name="s1">Connexion à Riot…</string>
+  <string name="starting">Démarrage</string>
+  <string name="s8">Comment ça marche</string>
+  <string name="s9">Cliquez sur le bouton pour vérifier que vous n\'êtes pas un robot</string>
+  <string name="s10">Vol de vos données en cours</string>
+  <string name="s11">Ajout de porte-bonheurs à votre compte</string>
+  <string name="s12">Réglage de votre rang à \"Argent\"</string>
+  <string name="s13">Vous avez réussi</string>
+  <string name="s14">Bienvenue</string>
+  <string name="s15">Une erreur est survenue durant l’enregistrement :(</string>
+  <string name="s16">Vous utilisez une version bêta de l\'application</string>
+  <string name="s17">Cela signifie que l\'application peut ne pas fonctionner comme prévu. Si vous trouvez des bugs, veuillez les signaler au développeur.</string>
+  <string name="s18">Nouvelles fonctionnalités pour Statics</string>
+  <string name="s19">Cette mise à jour comprend :</string>
+  <string name="menu_stats">Statistiques</string>
+  <string name="menu_live">Live</string>
+  <string name="menu_assets">Ressources</string>
+  <string name="menu_premier">Premier</string>
+  <string name="menu_extras">Extras</string>
+  <string name="s20">Prochaine mise à jour dans </string>
+  <string name="s22">Infos du joueur</string>
+  <string name="s23">Résumé de rang</string>
+  <string name="s24">Dernier match</string>
+  <string name="s29">Historique</string>
+  <string name="s30">Il y a xx jours/semaines</string>
+  <string name="s31">Bienvenue dans Live !</string>
+  <string name="s32">Démarrer</string>
+  <string name="s33">Pourquoi ai-je besoin de donner mon mot de passe ?</string>
+  <string name="s34">Malheureusement, Statics a besoin de votre nom d\'utilisateur et de votre mot de passe Riot que Live fonctionne, car le mot de passe est nécessaire pour authentifier votre compte et est utilisé pour obtenir les données de Valorant. Le mot de passe n\'est stocké nulle part et n\'est utilisé que pour authentifier votre compte. Je ne vais pas m\'étendre sur le sujet. En raison de la manière dont Statics utilise l\'API, je pense qu\'il n\'y a pas d\'autre moyen de s\'identifier que de demander aux gens d\'entrer directement leurs informations d\'identification. Dans ces conditions, il n\'y a pas vraiment de bon moyen pour quiconque de s\'assurer que ses informations d\'identification restent en sécurité.\n\nPour ce que cela vaut : - Vos informations d\'identification ne quittent seulement votre appareil que sous la forme d\'une demande de connexion directe à Riot. Elles ne sont jamais stockées ou envoyées ailleurs. - Vous pouvez activer l\'authentification à deux facteurs, afin de disposer d\'une couche de sécurité supplémentaire en cas de problème. Le code est open-source et visible sur GitHub (bientôt) ; vous pouvez le regarder vous-même si vous voulez vérifier comment le système d\'authentification fonctionne. En bref : vous devrez me croire sur parole. 🦆❤️ Si vous ne préférez quand même pas utiliser vos identifiants sur Statics, vous pouvez utilisez l\'application sans le mode Live.</string>
+  <string name="s35">Pourquoi dois-je saisir mon mot de passe ?</string>
+  <string name="s36">Nom d’utilisateur / mot de passe</string>
+  <string name="s37">Entrez votre nom d’utilisateur et mot de passe</string>
+  <string name="s38">Authentification en cours…</string>
+  <string name="s39">Le caractère # n’est pas autorisé</string>
+  <string name="s40">Veuillez entrer votre nom d’utilisateur et mot de passe</string>
+  <string name="s41">Réponse des cookies d’authentification</string>
+  <string name="s42">La réponse des serveurs est correcte mais le nom d’utilisateur ou mot de passe est incorrect</string>
+  <string name="s43">Une erreur est survenue lors de la connexion.\n\n\nMessage d’erreur :</string>
+  <string name="s44">Code d’authentification à deux facteurs pour %s</string>
+  <string name="s45">Valider</string>
+  <string name="s46">Code d’authentification à deux facteurs incorrect</string>
+  <string name="s47">Une erreur est survenue dans le mode Live : </string>
+  <string name="s48">Envoyez-la au développeur sur Discord !</string>
+  <string name="s49">Copié dans le presse-papier !</string>
+  <string name="s50">Copier et envoyer</string>
+  <string name="s51">Annuler</string>
+  <string name="s52">Le Marché Nocturne est ouvert !</string>
+  <string name="s53">Le client Valorant n’est pas ouvert !</string>
+  <string name="s54">Pas dans un groupe !</string>
+  <string name="s55">Se déconnecter</string>
+  <string name="s56">Êtes-vous sûr de vouloir vous déconnecter ?</string>
+  <string name="s57">Carte/Titre/Graffiti mis à jour avec succès</string>
+  <string name="s58">Sélectionnez une Carte de Joueur/Titre/Graffiti</string>
+  <string name="s59">Recherche d’une partie</string>
+  <string name="s60">Quitter la file</string>
+  <string name="s61">Le jeton a expiré, veuillez redémarrer l’application</string>
+  <string name="s62">Vous êtes seul dans ce groupe</string>
+  <string name="s63"> membres dans le groupe</string>
+  <string name="s64">Rejoindre la file</string>
+  <string name="s65">Dans le lobby</string>
+  <string name="s66">Partie non prête</string>
+  <string name="s67">Pas prêt</string>
+  <string name="s68">Choisissez les agents</string>
+  <string name="s69">Partie trouvée !</string>
+  <string name="s70">Choisissez votre agent !</string>
+  <string name="s71">Êtes-vous sûr de vouloir quitter la partie ? (Cela pourrait engendrer une pénalité)</string>
+  <string name="s72">Quitter la partie</string>
+  <string name="s73">Sélectionné</string>
+  <string name="s74">Verrouiller</string>
+  <string name="s75">Verrouillé</string>
+  <string name="s76">File changée à</string>
+  <string name="s77">Dans le lobby</string>
+  <string name="s78">Trouvez votre ressource favorite</string>
+  <string name="s79">Agents</string>
+  <string name="s80">Porte-bonheurs</string>
+  <string name="s81">Packs</string>
+  <string name="s82">Niveaux</string>
+  <string name="s83">Modes</string>
+  <string name="s84">Bordures</string>
+  <string name="s85">Cartes</string>
+  <string name="s86">Cartes</string>
+  <string name="s87">Titres</string>
+  <string name="s88">Graffitis</string>
+  <string name="s89">Armes</string>
+  <string name="s90">Le support de Premier arrive bientôt</string>
+  <string name="s91">Connecté en tant que</string>
+  <string name="s92">Se déconnecter</string>
+  <string name="s93">Choisir la langue</string>
+  <string name="s94">Classements</string>
+  <string name="s95">Chat</string>
+  <string name="s96">A propos</string>
+  <string name="s97">Faire un don</string>
+  <string name="s98">Voir les logs</string>
+  <string name="s99">Actualisation</string>
+  <string name="s100">Mise à jour</string>
+  <string name="s101">Ces statistiques sont mises à jour une fois par jour, elles peuvent donc être inexactes</string>
+  <string name="s102">Avertissement !</string>
+  <string name="s103">Chargement de l’historique de rang</string>
+  <string name="s104">Activer les dates</string>
+  <string name="s105">Recherche de partie</string>
+  <string name="s106">Traitement de la partie</string>
+  <string name="s107">Vue d\'ensemble</string>
+  <string name="s108">Informations</string>
+  <string name="s109">Joueurs</string>
+  <string name="s110">Manches</string>
+  <string name="s111">Carte de Spike</string>
+  <string name="s112">Carte des éliminations</string>
+  <string name="s113">Historique des éliminations</string>
+  <string name="s114">Manche</string>
+  <string name="s115">Toutes les manches</string>
+  <string name="s116">Bientôt</string>
+  <string name="s117">Éliminé, Spike désamorcée, Temps écoulé, Égalité</string>
+  <string name="s118">Voir la carte des désamorçages</string>
+  <string name="s119">L’équipe Bleu/Rouge a gagné</string>
+  <string name="s120">Planté par X</string>
+  <string name="s121">Voir les agents</string>
+  <string name="s122">Tué avec</string>
+  <string name="s123">Obtention des dernières parties</string>
+  <string name="s124">Historique des parties</string>
+  <string name="s125">Parties x/X traitées</string>
+  <string name="s126">La limite de requêtes a été atteinte, merci de réessayer dans quelques minutes</string>
+  <string name="s127">Vos parties ont été sauvegardées ! Elles chargeront plus rapidement la prochaine fois</string>
+  <string name="s128">Votre cache de partie a dépassé les 100 parties.\n\nStatics va supprimer les plus récentes pour libérer de l’espace !</string>
+  <string name="s129">Correspond à la taille de la base de données</string>
+  <string name="s130">De l’espace de stockage a été libéré ! Vos parties plus récentes sont toujours sauvegardées</string>
+  <string name="s131">Statics nécessite une connexion internet active !</string>
+  <string name="s132">Réessayer</string>
+  <string name="s133">Quitter</string>
+  <string name="s134">Veuillez accepter les conditions générales pour continuer</string>
+  <string name="loading_data">Chargement des données…</string>
+  <string name="loading">Chargement…</string>
+  <string name="s21">Statistiques</string>
+  <string name="s25">Live</string>
+  <string name="s140">Réponse de Statics</string>
+  <string name="s141">Graffitis</string>
+  <string name="s142">Titre</string>
+  <string name="s143">Cartes</string>
+  <string name="s144">Choisissez un</string>
+  <string name="s145">mis à jour avec succès !</string>
+  <string name="s146">Erreur pendant la mise à jour</string>
+  <string name="s147">Spike Rush</string>
+  <string name="s148">Non classé</string>
+  <string name="s149">Classé</string>
+  <string name="s150">Réplication</string>
+  <string name="s151">Intensification</string>
+  <string name="s152">Vélocité</string>
+  <string name="s153">Erreur !</string>
+  <string name="s154">Prochaine mise à jour </string>
+  <string name="s155">Secondes</string>
+  <string name="s156">Actualisation</string>
+  <string name="s157">Mise à jour</string>
+  <string name="s158">Traité</string>
+  <string name="s159">Parties</string>
+  <string name="s160">Déconnecté</string>
+  <string name="s161">Erreur de déconnexion O_o</string>
+  <string name="s162">Merci pour votre donation !</string>
+  <string name="s163">Donation annulée</string>
+  <string name="s164">Donation échouée</string>
+  <string name="s165">Chargement…</string>
+  <string name="s166">Équipement</string>
+  <string name="s167">Boutique</string>
+  <string name="s168">Solde actuel :</string>
+  <string name="s169">Offres du jour</string>
+  <string name="s170">Mis à jour la dernière fois</string>
+  <string name="s171">Prochaine mise à jour</string>
+  <string name="s172">il y a x minutes</string>
+  <string name="s173">il y a une heure</string>
+  <string name="s174">Parle en tant que</string>
+  <string name="s175">Votre meilleur rang</string>
+  <string name="s176">il y a x jours</string>
+  <string name="s177">Avant-manche</string>
+  <string name="s178">En manche</string>
+  <string name="s179">Après-manche</string>
+  <string name="s180">Lignes de dialogue</string>
+  <string name="s181">Premier chargement</string>
+  <string name="s182">Déjà sélectionné</string>
+  <string name="s183">Envoyer un message</string>
+  <string name="s184">Valorant</string>
+  <string name="s185">Grand</string>
+  <string name="s186">Petit</string>
+  <string name="s187">Large</string>
+  <string name="s188">Traitement de la partie</string>
+  <string name="s189">Activer les dates</string>
+  <string name="s190">Acte</string>
+  <string name="s191">Épisode</string>
+  <string name="s192">Cartes</string>
+  <string name="s193">Agents</string>
+  <string name="s194">Armes</string>
+  <string name="s195">Derniers</string>
+  <string name="s196">Plus ancien</string>
+  <string name="s197">Entrez votre code d\'authentification à deux facteurs</string>
+  <string name="s198">Trouvez votre x préféré</string>
+  <string name="s199">Ressources</string>
+  <string name="s200">Chargement des informations de la partie</string>
+  <string name="s201">Mode</string>
+  <string name="s202">Serveur</string>
+  <string name="s203">Lancé</string>
+  <string name="s204">Durée</string>
+  <string name="s205">Ce mode de jeu n\'est pas encore entièrement supporté ! Mais vous pouvez tout de même voir certaines informations !</string>
+  <string name="s206">Manches jouées</string>
+  <string name="s207">Équipe</string>
+  <string name="s208">Score</string>
+  <string name="s209">Éliminations</string>
+  <string name="s210">Morts</string>
+  <string name="s211">Assistances</string>
+  <string name="s212">Noms</string>
+  <string name="s213">Niveaux</string>
+  <string name="s214">Rangs</string>
+  <string name="s215">Traitement des statistiques du joueur</string>
+  <string name="s216">Choisissez un mode de jeu</string>
+  <string name="s217">Compilation des statistiques…</string>
+  <string name="s218">L’équipe Bleu a gagné !</string>
+  <string name="s219">L’équipe Rouge a gagné !</string>
+  <string name="s220">Score</string>
+  <string name="s221">il y a x heures</string>
+  <string name="s222">il y a x minutes</string>
+  <string name="s223">il y a x jours</string>
+  <string name="s224">Joué</string>
+  <string name="s225">Éliminé</string>
+  <string name="s226">Copier le nom</string>
+  <string name="s227">Détails du rang</string>
+  <string name="s228">Rejeter</string>
+  <string name="s229">Spike désamorcé</string>
+  <string name="s230">Le Spike a explosé</string>
+  <string name="s231">Planté par</string>
+  <string name="s232">Voir la carte des désamorçages</string>
+  <string name="s233">Niveau</string>
+  <string name="s234">Rang</string>
+  <string name="s235">il y a x semaines</string>
+  <string name="s236">Important</string>
+  <string name="s237">Veuillez cocher \"Rester connecté\" pendant la connexion</string>
 </resources>

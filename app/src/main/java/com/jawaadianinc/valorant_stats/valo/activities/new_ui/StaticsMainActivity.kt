@@ -25,6 +25,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetailsParams
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.color.DynamicColors
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
@@ -84,13 +85,10 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription: String =
-                "- Statics will now show u how long you are banned from the queue (if u are banned)" +
-                        "\n- Added timer in agent select" +
-                        "\n- Notification for when a match is found gets dismissed in 10 seconds" +
-                        "\n- New layout in the main menu, with the extras tab being removed in favour of a popup menu (Thanks null)" +
-                        "\n- New changes in the bottom nav bar to show which menu you are in" +
-                        "\n- Fixed a bug where party members would be randomly shuffling" +
-                        "\n\nKingdom points and the new store will be coming soon! Still finishing up the backend for it :)\n\n🦆❤️"
+                "- Only agents that you have unlocked will be selectable in agent select" +
+                        "- New updated translations and hopefully faster translations for the future!"
+
+        DynamicColors.applyToActivitiesIfAvailable(application)
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)

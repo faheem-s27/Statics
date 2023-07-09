@@ -756,8 +756,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/new_findMatchButton"
-                            android:visibility="visible"
-                            tools:visibility="visible">
+                            android:visibility="gone"
+                            tools:visibility="gone">
 
                             <!-- Imageview that covers the whole layout -->
                             <ImageView
