@@ -35,16 +35,21 @@ import android.widget.RelativeLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.tabs.TabLayout
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
@@ -76,6 +81,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.Executors
+
 
 data class ValorantPing(val ServerName: String, val PingValue: Int)
 
@@ -534,9 +540,49 @@ class LiveStatsFragment : Fragment() {
                     Snackbar.make(requireView(), getString(R.string.s52), Snackbar.LENGTH_LONG).show()
                     handleNightMarket(NightMarket)
                 }
-                handleDailyOffers(json.getJSONObject("SkinsPanelLayout"))
+                val tabLayout = requireView().findViewById<TabLayout>(R.id.shop_tabLayout)
+                val viewPager = requireView().findViewById<ViewPager>(R.id.shop_viewPager)
+
+                val adapter = handleDailyOffers(json.getJSONObject("SkinsPanelLayout"))
+
+                val pagerAdapter = adapter?.let { PagerAdapter(childFragmentManager, it) }
+                viewPager.adapter = pagerAdapter
+                tabLayout.setupWithViewPager(viewPager)
+//
+//
+//                val listView = requireView().findViewById<ListView>(R.id.playerStoreListView)
+//                listView.adapter = adapter
                 getWallet()
             }
+        }
+    }
+
+    // Define your PagerAdapter
+    private class PagerAdapter(fm: FragmentManager?, offersAdapter: WeaponSkinOfferAdapter) :
+        FragmentPagerAdapter(fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        private val fragments: MutableList<Fragment> = ArrayList()
+        private val fragmentTitles: MutableList<String> = ArrayList()
+
+        init {
+            // Add your fragments and titles here
+            fragments.add(ShopOffersFragment().newInstance(offersAdapter))
+            fragments.add(ShopBundlesFragment().newInstance(offersAdapter))
+            fragments.add(ShopNightMarketFragment().newInstance(offersAdapter))
+            fragmentTitles.add("Offers")
+            fragmentTitles.add("Bundles")
+            fragmentTitles.add("Night Market")
+        }
+
+        override fun getItem(position: Int): Fragment {
+            return fragments[position]
+        }
+
+        override fun getCount(): Int {
+            return fragments.size
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            return fragmentTitles[position]
         }
     }
 
@@ -544,7 +590,7 @@ class LiveStatsFragment : Fragment() {
 
     }
 
-    private fun handleDailyOffers(dailyOffersSkins: JSONObject) {
+    private fun handleDailyOffers(dailyOffersSkins: JSONObject): WeaponSkinOfferAdapter? {
         val weaponsSkins = ArrayList<WeaponSkinOffer>()
 
         val offers = dailyOffersSkins.getJSONArray("SingleItemStoreOffers")
@@ -555,7 +601,7 @@ class LiveStatsFragment : Fragment() {
                 currentOffer.getJSONObject("Cost").getInt("85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741")
             val jsonWeapon = getNameAndImageFromOffer(offerID)
             if (jsonWeapon == JSONObject()) {
-                return
+                return null
             }
             val displayName = jsonWeapon.getString("displayName")
             val displayIcon = jsonWeapon.getString("displayIcon")
@@ -564,9 +610,8 @@ class LiveStatsFragment : Fragment() {
             weaponsSkins.add(weaponSkinOffer)
         }
 
-        val adapter = WeaponSkinOfferAdapter(requireActivity(), weaponsSkins)
-        val listView = requireView().findViewById<ListView>(R.id.playerStoreListView)
-        listView.adapter = adapter
+        return WeaponSkinOfferAdapter(requireActivity(), weaponsSkins)
+
     }
 
     private fun getRarity(offerID: String): JSONObject {
@@ -614,15 +659,6 @@ class LiveStatsFragment : Fragment() {
     data class Weapon(val weaponID: String, val name: String, val imageString: String)
 
     private fun getNameAndImageFromOffer(offerID: String): JSONObject {
-        // run a coroutine to get the name and image from https://valorant-api.com/v1/weapons/skinlevels/${offerID} and return the json
-        // then use the json to get the name and image
-//        val url = "https://valorant-api.com/v1/weapons/skinlevels/${offerID}"
-//        val response = APIRequestValorant(url)
-//        val body = response.body.string()
-//        val code = response.code
-//        if (code != 200) return JSONObject()
-//        return JSONObject(body)
-
         val data = weaponsSkinLevels.getJSONArray("data")
         for (i in 0 until data.length())
         {
@@ -2484,7 +2520,7 @@ withContext(Main) {
         }
     }
 
-    private suspend fun APIRequestValorant(
+     suspend fun APIRequestValorant(
         url: String,
         body: String? = null,
         put: Boolean? = false
@@ -2649,6 +2685,7 @@ class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         if (image.lowercase() == "random")
         {
             val url = "https://cdn-icons-png.flaticon.com/128/9637/9637229.png"
+            //val url = "https://media.discordapp.net/attachments/1009511403029274654/1126431437172768861/IMG_1313.png?width=709&height=671"
             Picasso.get().load(url).fit().into(imageView)
         }
         else if (image.lowercase().split(" ")[0] == "locked")

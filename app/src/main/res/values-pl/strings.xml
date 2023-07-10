@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+  <string name="s6">Dowiedz się więcej na temat \n&lt;a href=\"https://statics-fd699.web.app/privacy.html\"&gt;polityki prywatności Statics&lt;/a&gt;</string>
+  <string name="s5">Statics nie jest w żaden sposób wspierana przez Riot Games ani nie odzwierciedla poglądów ani opinii Riot Games ani nikogo oficjalnie zaangażowanego w produkcję lub zarządzanie właściwościami Riot Games. Riot Games oraz wszystkie powiązane właściwości są znakami towarowymi lub zastrzeżonymi znakami towarowymi firmy Riot Games Inc.</string>
+  <string name="s4">Przeczytałem/am i zgadzam się z T&amp;C\'s z linku poniżej.</string>
+  <string name="s3">Zaloguj się poprzez konto Riot</string>
+  <string name="s2">Pierwsza aplikacja, która posiada wbudowaną mini mapę</string>
+  <string name="s7">Podczas logowania za pomocą konta Riot Games, twoje dane logowania są wysyłane na serwery firmy Riot Games w celu uzyskania tokenu, który następnie jest używany do uzyskania danych, takich jak twoja nazwa użytkownika. \nPo uzyskaniu wszystkich danych token jest usuwany z naszych serwerów oraz nie jest nigdzie przechowywany. Nasz serwer przechowuje tylko informację o Twoim koncie, które są następnie używane do wyświetlania twoich statystyk w naszej aplikacji. \n\n Statics nie przechowuje żadnych danych użytkownika!</string>
+  <string name="acceptTermsConditions">Prosimy o potwierdzenie zapoznania się z naszym Regulaminem oraz Polityką prywatności, aby kontynuować</string>
+  <string name="s1">Łączenie z serwerami Riot…</string>
+  <string name="starting">Uruchamianie</string>
+  <string name="s8">Jak to działa</string>
+  <string name="s9">Wciśnij przycisk, aby potwierdzić, że jesteś aktywny</string>
+  <string name="s12">Ustawianie konta na Żelazo</string>
+  <string name="s13">Udało ci się</string>
+  <string name="s14">Witaj</string>
+  <string name="s15">Wystąpił błąd podczas zapisywania :(</string>
+  <string name="s16">Używasz wersji beta aplikacji</string>
+  <string name="s17">Oznacza to, że aplikacja może nie działać zgodnie z przeznaczeniem. Jeśli znajdziesz jakiekolwiek błędy, zgłoś je do dewelopera</string>
+</resources>

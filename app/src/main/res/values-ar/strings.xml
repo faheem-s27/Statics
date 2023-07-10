@@ -34,7 +34,7 @@
   <string name="s29">السجل</string>
   <string name="s30">قبل xx أيام / أسابيع</string>
   <string name="s31">مرحباً بك في الوضع الحي!</string>
-  <string name="s32">أبدا الآن</string>
+  <string name="s32">إبدأ الآن</string>
   <string name="s33">لماذا كلمة المرور؟</string>
   <string name="s34">للأسف, ستاتكس يحتاج اسم وكلمة سر حسابك في ريوت ليتم استخدام الوضع الحي (لايڤ) كما ان كلمة السر مطلوبة لمصادقة الحساب والتحقق من معلوماتك في فالورانت.
 كلمة السر لا تحفظ في اي مكان وفقط تستخدم لمصادقة حسابك.
@@ -63,7 +63,7 @@
   <string name="s50">نسخ &amp; أرسل</string>
   <string name="s51">إلغاء</string>
   <string name="s52">سوق الليل مفتوح!</string>
-  <string name="s53">فالورانت غير مفتوحة!</string>
+  <string name="s53">فالورانت مغلقة!</string>
   <string name="s54">لست في فريق!</string>
   <string name="s55">تسجيل الخروج</string>
   <string name="s56">هل أنت متأكد من تسجيل الخروج؟</string>
@@ -83,12 +83,12 @@
   <string name="s70">اختر عميلك!</string>
   <string name="s71">هل أنت متأكد من أنك تريد الخروج من المباراة؟ (قد يؤدي هذا إلى عقوبة)</string>
   <string name="s72">الخروج من المباراة</string>
-  <string name="s73">محدد</string>
+  <string name="s73">مُحدد</string>
   <string name="s74">تثبيت</string>
   <string name="s75">تم التثبيت</string>
   <string name="s76">تم تغيير الطابور إلى</string>
   <string name="s77">في اللوبي</string>
-  <string name="s78">أعثر على الأصل المفضل لك</string>
+  <string name="s78">أعثر على الأصل المفضل لديك</string>
   <string name="s79">العملاء</string>
   <string name="s80">ملحقات</string>
   <string name="s81">الحزم</string>
@@ -100,7 +100,7 @@
   <string name="s87">الألقاب</string>
   <string name="s88">الرسمات</string>
   <string name="s89">الأسلحة</string>
-  <string name="s90">دعم البريمير قريباً</string>
+  <string name="s90">سيتوفر دعم البريمير قريباً</string>
   <string name="s91">سجلت الدخول كـ</string>
   <string name="s92">تسجيل الخروج</string>
   <string name="s93">اختر اللغة</string>
@@ -111,11 +111,11 @@
   <string name="s98">عرض السجل</string>
   <string name="s99">جاري التحديث</string>
   <string name="s100">جارٍ التحديث</string>
-  <string name="s101">هذه الإحصائيات تتجدد مرة واحدة في اليوم, لذلك قد تكون غير دقيقة </string>
+  <string name="s101">هذه الإحصائيات تتجدد مرة واحدة في اليوم, لذلك قد تكون غير دقيقة</string>
   <string name="s102">تحذير!</string>
   <string name="s103">جاري تحميل سجل الرانك</string>
   <string name="s104">تفعيل التواريخ</string>
-  <string name="s105">جارٍ البحث عن مباراة</string>
+  <string name="s105">جاري البحث عن مباراة</string>
   <string name="s106">جاري معالجة المباراة</string>
   <string name="s107">نظرة عامة</string>
   <string name="s108">تفاصيل</string>
@@ -175,7 +175,7 @@
   <string name="s163">تم إلغاء التبرع</string>
   <string name="s164">فشل التبرع</string>
   <string name="s165">جاري التحميل…</string>
-  <string name="s166">عتاد الأسلحة</string>
+  <string name="s166">العتاد</string>
   <string name="s167">المتجر</string>
   <string name="s168">الرصيد الحالي:</string>
   <string name="s169">العروض اليومية</string>
@@ -207,7 +207,7 @@
   <string name="s195">آخر</string>
   <string name="s196">أقدم</string>
   <string name="s197">أدخل رمز تعدد العوامل الخاص بك</string>
-  <string name="s198">أعثر على المفضل لك</string>
+  <string name="s198">أعثر على المفضل لديك</string>
   <string name="s199">أصول</string>
   <string name="s200">جاري تحميل تفاصيل المباراة</string>
   <string name="s201">وضع</string>
@@ -235,16 +235,26 @@
   <string name="s223">منذ X أيام</string>
   <string name="s224">لُعبت</string>
   <string name="s225">مقتول\"</string>
-  <string name="s226">انسخ الإسم</string>
+  <string name="s226">انسخ الاسم</string>
   <string name="s227">تفاصيل الرانك</string>
   <string name="s228">رفض</string>
   <string name="s229">تم تعطيل القنبلة</string>
   <string name="s230">القنبلة انفجرت</string>
-  <string name="s231">زرعت بواسطة</string>
+  <string name="s231">زُرِعت بواسطة</string>
   <string name="s232">خريطة تعطيل السبايك</string>
   <string name="s233">المستوى</string>
   <string name="s234">الرانك</string>
   <string name="s235">منذ X أسابيع</string>
   <string name="s236">مهم</string>
   <string name="s237">تأكد من الضغط على \"ابقَ مسجلاً الدخول\" عند تسجيل الدخول</string>
+  <string name="live_is_loading">الوضع الحي قيد التحميل :)</string>
+  <string name="could_not_get_your_load_outs">تعذر الحصول على عتادك</string>
+  <string name="penalty">عقوبة</string>
+  <string name="banned_for">محظور لمدة </string>
+  <string name="party_in_game">الفريق في اللعبة</string>
+  <string name="cannot_queue">لا يمكنك دخول طابور</string>
+  <string name="playing">يلعب </string>
+  <string name="end_of_agent_select">نهاية اختيار العملاء</string>
+  <string name="you">أنت</string>
+  <string name="lock_in_random">اختَر عشوائياً</string>
 </resources>

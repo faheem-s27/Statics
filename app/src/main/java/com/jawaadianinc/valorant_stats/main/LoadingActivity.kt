@@ -44,7 +44,6 @@ class LoadingActivity : AppCompatActivity() {
     private lateinit var backgroundIMG: ImageView
     private lateinit var videoPlayer: VideoView
     private var key = ""
-    //private var totalCount by Delegates.notNull<Int>()
 
     lateinit var assetsDB: AssetsDatabase
 

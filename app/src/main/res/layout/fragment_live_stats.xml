@@ -336,6 +336,7 @@
                             android:clipToPadding="false"
                             android:scrollbars="vertical"
                             android:padding="4dp"
+                            tools:visibility="gone"
                             android:clipChildren="false"
                             android:overScrollMode="ifContentScrolls"
                             tools:listitem="@layout/live_player_loadout_weapons" />
@@ -465,37 +466,37 @@
                             android:textSize="12dp"
                             android:textStyle="bold" />
 
-                        <!-- A listview under textView33 for Daily store items -->
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/playerStoreListView_circle"
+                        <!-- TabLayout for different options -->
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/shop_tabLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/textView33"
-                            android:layout_centerHorizontal="true"
                             android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
                             android:layout_marginEnd="16dp"
-                            android:layout_marginBottom="4dp"
-                            android:elevation="12dp"
-                            app:cardCornerRadius="20dp">
+                            android:background="@color/Valorant_SplashColourBackground"
+                            app:tabGravity="fill"
+                            app:tabIndicatorColor="@color/white"
+                            app:tabMode="fixed"
+                            app:tabSelectedTextColor="@color/white"
+                            app:tabTextColor="@color/white" />
 
-                            <com.jawaadianinc.valorant_stats.valo.activities.new_ui.WrapContentListView
-                                android:id="@+id/playerStoreListView"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@color/Valorant_SplashColourBackground"
-                                android:divider="@null"
-                                android:dividerHeight="0dp"
-                                android:nestedScrollingEnabled="true"
-                                android:scrollbars="none" />
-
-                        </androidx.cardview.widget.CardView>
+                        <!-- ViewPager to hold the content of each tab -->
+                        <androidx.viewpager.widget.ViewPager
+                            android:id="@+id/shop_viewPager"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/shop_tabLayout"
+                            android:layout_marginTop="8dp"
+                            android:background="@color/Valorant_SplashColourBackground" />
 
                         <!-- A text says that says Current Balance -->
                         <TextView
                             android:id="@+id/textView34"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/playerStoreListView_circle"
+                            android:layout_below="@+id/shop_viewPager"
                             android:layout_marginStart="16dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/s168"
