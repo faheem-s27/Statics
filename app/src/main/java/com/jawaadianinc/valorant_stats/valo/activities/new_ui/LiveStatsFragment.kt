@@ -129,7 +129,9 @@ class LiveStatsFragment : Fragment() {
     private lateinit var weaponsSkinLevels: JSONObject
     private lateinit var titlesJSON: JSONObject
     private lateinit var gunBuddies : JSONObject
+    private lateinit var gunSkinLevelsJSON: JSONObject
     private lateinit var spraysJSON: JSONObject
+    private lateinit var playerCardsJSON: JSONObject
 
     private lateinit var loadingDialogStatics: androidx.appcompat.app.AlertDialog
     private lateinit var currentLoadoutWeaponsRecyclerView: RecyclerView
@@ -227,6 +229,12 @@ class LiveStatsFragment : Fragment() {
             withContext(Main) {
                 progressDialog.progress = 10
             }
+
+            val playerCardsURL = "https://valorant-api.com/v1/playercards"
+            playerCardsJSON = JSONObject(URL(playerCardsURL).readText())
+
+            val gunSkinLevelsURL = "https://valorant-api.com/v1/weapons/skinlevels"
+            gunSkinLevelsJSON = JSONObject(URL(gunSkinLevelsURL).readText())
 
             val spraysURL = "https://valorant-api.com/v1/sprays"
             val response = JSONObject(URL(spraysURL).readText())
@@ -554,7 +562,7 @@ class LiveStatsFragment : Fragment() {
                 val adapter = handleDailyOffers(json.getJSONObject("SkinsPanelLayout"))
                 val bundleAdapter = handleBundleOffer(json.getJSONObject("FeaturedBundle").getJSONObject("Bundle"))
 
-                val pagerAdapter = adapter?.let { PagerAdapter(childFragmentManager, requireContext(), it) }
+                val pagerAdapter = PagerAdapter(childFragmentManager, requireContext(), adapter!!, bundleAdapter)
                 viewPager.adapter = pagerAdapter
                 viewPager.offscreenPageLimit = 4
                 tabLayout.setupWithViewPager(viewPager)
@@ -564,7 +572,7 @@ class LiveStatsFragment : Fragment() {
     }
 
     // Define your PagerAdapter
-    private class PagerAdapter(fm: FragmentManager?, context: Context, offersAdapter: WeaponSkinOfferAdapter) :
+    private class PagerAdapter(fm: FragmentManager?, context: Context, offersAdapter: WeaponSkinOfferAdapter, bundleOfferAdapter: BundleOfferAdapter) :
         FragmentPagerAdapter(fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val fragments: MutableList<Fragment> = ArrayList()
         private val fragmentTitles: MutableList<String> = ArrayList()
@@ -572,7 +580,7 @@ class LiveStatsFragment : Fragment() {
         init {
             // Add your fragments and titles here
             fragments.add(ShopOffersFragment.newInstance(offersAdapter))
-            fragments.add(ShopBundlesFragment().newInstance(offersAdapter))
+            fragments.add(ShopBundlesFragment.newInstance(bundleOfferAdapter))
             fragments.add(ShopNightMarketFragment().newInstance(offersAdapter))
             fragmentTitles.add(context.getString(R.string.offers))
             fragmentTitles.add(context.getString(R.string.bundles))
@@ -596,12 +604,74 @@ class LiveStatsFragment : Fragment() {
 
     }
 
-    private fun getBundleNameAndImage(typeID: String, itemID: String)
+    private fun getBundleNameAndImage(typeID: String, itemID: String): Pair<String?, String?>
     {
+        val mapping = mapOf(
+            "d5f120f8-ff8c-4aac-92ea-f2b5acbe9475" to spraysJSON.getJSONArray("data"),
+            "dd3bf334-87f3-40bd-b043-682a57a8dc3a" to gunBuddies.getJSONArray("data"),
+            "e7c63390-eda7-46e0-bb7a-a6abdacd2433" to gunSkinLevelsJSON.getJSONArray("data"),
+            "3f296c07-64c3-494c-923b-fe692a4fa1bd" to playerCardsJSON.getJSONArray("data")
+        )
+        val jsonArray = mapping[typeID]
 
+        // Sprays
+        when (typeID) {
+            "d5f120f8-ff8c-4aac-92ea-f2b5acbe9475" -> {
+                val spraysArray = spraysJSON.getJSONArray("data")
+                for (spray in spraysArray)
+                {
+                    if (spray.getString("uuid") == itemID)
+                    {
+                        val name = spray.getString("displayName")
+                        val image = spray.getString("displayIcon")
+                        return Pair(name, image)
+                    }
+                }
+            }
+            // Buddies
+            "dd3bf334-87f3-40bd-b043-682a57a8dc3a" -> {
+                val buddiesArray = gunBuddies.getJSONArray("data")
+                for (buddy in buddiesArray)
+                {
+                    if (buddy.getString("uuid") == itemID)
+                    {
+                        val name = buddy.getString("displayName")
+                        val image = buddy.getString("displayIcon")
+                        return Pair(name, image)
+                    }
+                }
+            }
+            // Gun Skins
+            "e7c63390-eda7-46e0-bb7a-a6abdacd2433" -> {
+                val array = gunSkinLevelsJSON.getJSONArray("data")
+                for (gun in array)
+                {
+                    if (gun.getString("uuid") == itemID)
+                    {
+                        val name = gun.getString("displayName")
+                        val image = gun.getString("displayIcon")
+                        return Pair(name, image)
+                    }
+                }
+            }
+            // Player Cards
+            "3f296c07-64c3-494c-923b-fe692a4fa1bd" -> {
+                val array = playerCardsJSON.getJSONArray("data")
+                for (card in array)
+                {
+                    if (card.getString("uuid") == itemID)
+                    {
+                        val name = card.getString("displayName")
+                        val image = "https://media.valorant-api.com/playercards/$itemID/wideart.png"
+                        return Pair(name, image)
+                    }
+                }
+            }
+        }
+        return Pair(null, null)
     }
 
-    private fun handleBundleOffer(bundleJSON: JSONObject)
+    private fun handleBundleOffer(bundleJSON: JSONObject): BundleOfferAdapter
     {
         val bundleItems = ArrayList<BundleOffer>()
         val bundleID = bundleJSON.getString("DataAssetID")
@@ -609,8 +679,14 @@ class LiveStatsFragment : Fragment() {
         val items = bundleJSON.getJSONArray("Items")
         for (item in items)
         {
-            val price = item.getString("BasePrice")
+            val price = item.getInt("BasePrice")
+            val itemObj = item.getJSONObject("Item")
+            val nameImage = getBundleNameAndImage(itemObj.getString("ItemTypeID"), itemObj.getString("ItemID"))
+            val name = nameImage.first ?: "Unknown"
+            val image = nameImage.second ?: ""
+            bundleItems.add(BundleOffer(name, price, image))
         }
+        return BundleOfferAdapter(requireActivity(), bundleItems, bundleImage)
     }
 
     private fun handleDailyOffers(dailyOffersSkins: JSONObject): WeaponSkinOfferAdapter? {

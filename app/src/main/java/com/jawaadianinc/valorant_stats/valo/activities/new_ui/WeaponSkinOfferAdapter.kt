@@ -46,8 +46,6 @@ class WeaponSkinOfferAdapter(
         var colourHex = colour.substring(0, colour.length - 2)
         colourHex = darkenColor(colourHex)
 
-        Log.d("LIVE_STATS_COLOUR", colourHex)
-
         val layout = row.findViewById(R.id.playerStoreListView_circle) as View
         layout.setBackgroundColor(android.graphics.Color.parseColor(colourHex))
 
