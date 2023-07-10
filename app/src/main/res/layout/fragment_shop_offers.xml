@@ -3,30 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".valo.activities.new_ui.ShopOffersFragment">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/playerStoreListView_circle"
+    <ListView
+        android:id="@+id/playerStoreListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:elevation="12dp"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/Valorant_SplashColourBackground"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:nestedScrollingEnabled="true"
+        android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <com.jawaadianinc.valorant_stats.valo.activities.new_ui.WrapContentListView
-            android:id="@+id/playerStoreListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/Valorant_SplashColourBackground"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            android:nestedScrollingEnabled="true"
-            android:scrollbars="none" />
 
-    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -86,6 +86,7 @@ class StaticsMainActivity : AppCompatActivity() {
 
         val updateDescription: String =
                 "- Only agents that you have unlocked will be selectable in agent select" +
+                        "\n- New shop layout!" +
                         "\n- New updated translations and hopefully faster translations for the future!"
 
         DynamicColors.applyToActivitiesIfAvailable(application)
@@ -139,7 +140,7 @@ class StaticsMainActivity : AppCompatActivity() {
         val LiveStatsFragment = LiveStatsFragment()
         val AssetsFragment = AssetsFragment()
         val fragmentManager = supportFragmentManager
-        activeFragment = statsFragment
+        activeFragment = LiveStatsFragment
 
         val appUpdateManager = AppUpdateManagerFactory.create(this)
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
@@ -160,8 +161,8 @@ class StaticsMainActivity : AppCompatActivity() {
 
         fragmentManager.beginTransaction().apply {
             add(R.id.container, AssetsFragment, "1").hide(AssetsFragment)
-            add(R.id.container, LiveStatsFragment, "2").hide(LiveStatsFragment)
-            add(R.id.container, statsFragment, "3")
+            add(R.id.container, LiveStatsFragment, "2")
+            add(R.id.container, statsFragment, "3").hide(statsFragment)
         }.commit()
 
         bottomNavBar.setOnNavigationItemSelectedListener {

@@ -296,5 +296,8 @@
     <string name="end_of_agent_select">End of agent select</string>
     <string name="you">You</string>
     <string name="lock_in_random">Lock in random</string>
+    <string name="offers">Offers</string>
+    <string name="bundles">Bundles</string>
+    <string name="night_market">Night Market</string>
 
 </resources>

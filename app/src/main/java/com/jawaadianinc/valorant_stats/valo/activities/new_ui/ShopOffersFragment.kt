@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
 
@@ -21,10 +22,12 @@ class ShopOffersFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_shop_offers, container, false)
     }
 
-    fun newInstance(shopAdapter: WeaponSkinOfferAdapter): ShopOffersFragment {
-        val fragment = ShopOffersFragment()
-        adapter = shopAdapter
-        return fragment
+    companion object {
+        fun newInstance(shopAdapter: WeaponSkinOfferAdapter): ShopOffersFragment {
+            val fragment = ShopOffersFragment()
+            fragment.adapter = shopAdapter
+            return fragment
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

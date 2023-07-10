@@ -35,7 +35,6 @@ import android.widget.RelativeLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -53,6 +52,7 @@ import com.google.android.material.tabs.TabLayout
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
+import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
@@ -128,6 +128,8 @@ class LiveStatsFragment : Fragment() {
     private lateinit var contenttierJSONObject: JSONObject
     private lateinit var weaponsSkinLevels: JSONObject
     private lateinit var titlesJSON: JSONObject
+    private lateinit var gunBuddies : JSONObject
+    private lateinit var spraysJSON: JSONObject
 
     private lateinit var loadingDialogStatics: androidx.appcompat.app.AlertDialog
     private lateinit var currentLoadoutWeaponsRecyclerView: RecyclerView
@@ -227,12 +229,16 @@ class LiveStatsFragment : Fragment() {
             }
 
             val spraysURL = "https://valorant-api.com/v1/sprays"
-            val spraysJSON = JSONObject(URL(spraysURL).readText())
-            val spraysData = spraysJSON.getJSONArray("data")
+            val response = JSONObject(URL(spraysURL).readText())
+            val spraysData = response.getJSONArray("data")
             for (i in 0 until spraysData.length()) {
                 val spray = spraysData.getJSONObject(i)
                 SpraysIDImage[spray.getString("uuid")] = spray.getString("fullTransparentIcon")
             }
+            spraysJSON = response
+
+            val gunBuddiesURL = "https://valorant-api.com/v1/buddies"
+            gunBuddies = JSONObject(URL(gunBuddiesURL).readText())
 
             logLIVEStuff("Got sprays")
             withContext(Main) {
@@ -514,7 +520,6 @@ class LiveStatsFragment : Fragment() {
 
         Log.d("LIVE_STATS_CONTRACTS", "Response code: $code Body: $body")
 
-
     }
 
     private fun showStoreFront() {
@@ -530,6 +535,8 @@ class LiveStatsFragment : Fragment() {
             //Log.d("LIVE_STATS_STOREFRONT", "Response code: $code Body: $body")
             withContext(Main) {
                 val json = JSONObject(body)
+                //copyToClipboard(json, "Storefront")
+
                 val timerSeconds =
                     json.getJSONObject("SkinsPanelLayout")
                         .getInt("SingleItemOffersRemainingDurationInSeconds")
@@ -542,35 +549,34 @@ class LiveStatsFragment : Fragment() {
                 }
                 val tabLayout = requireView().findViewById<TabLayout>(R.id.shop_tabLayout)
                 val viewPager = requireView().findViewById<ViewPager>(R.id.shop_viewPager)
+                viewPager?.setPageTransformer(true, ZoomOutPageTransformer())
 
                 val adapter = handleDailyOffers(json.getJSONObject("SkinsPanelLayout"))
+                val bundleAdapter = handleBundleOffer(json.getJSONObject("FeaturedBundle").getJSONObject("Bundle"))
 
-                val pagerAdapter = adapter?.let { PagerAdapter(childFragmentManager, it) }
+                val pagerAdapter = adapter?.let { PagerAdapter(childFragmentManager, requireContext(), it) }
                 viewPager.adapter = pagerAdapter
+                viewPager.offscreenPageLimit = 4
                 tabLayout.setupWithViewPager(viewPager)
-//
-//
-//                val listView = requireView().findViewById<ListView>(R.id.playerStoreListView)
-//                listView.adapter = adapter
                 getWallet()
             }
         }
     }
 
     // Define your PagerAdapter
-    private class PagerAdapter(fm: FragmentManager?, offersAdapter: WeaponSkinOfferAdapter) :
+    private class PagerAdapter(fm: FragmentManager?, context: Context, offersAdapter: WeaponSkinOfferAdapter) :
         FragmentPagerAdapter(fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val fragments: MutableList<Fragment> = ArrayList()
         private val fragmentTitles: MutableList<String> = ArrayList()
 
         init {
             // Add your fragments and titles here
-            fragments.add(ShopOffersFragment().newInstance(offersAdapter))
+            fragments.add(ShopOffersFragment.newInstance(offersAdapter))
             fragments.add(ShopBundlesFragment().newInstance(offersAdapter))
             fragments.add(ShopNightMarketFragment().newInstance(offersAdapter))
-            fragmentTitles.add("Offers")
-            fragmentTitles.add("Bundles")
-            fragmentTitles.add("Night Market")
+            fragmentTitles.add(context.getString(R.string.offers))
+            fragmentTitles.add(context.getString(R.string.bundles))
+            fragmentTitles.add(context.getString(R.string.night_market))
         }
 
         override fun getItem(position: Int): Fragment {
@@ -581,13 +587,30 @@ class LiveStatsFragment : Fragment() {
             return fragments.size
         }
 
-        override fun getPageTitle(position: Int): CharSequence? {
+        override fun getPageTitle(position: Int): CharSequence {
             return fragmentTitles[position]
         }
     }
 
     private fun handleNightMarket(data: JSONObject){
 
+    }
+
+    private fun getBundleNameAndImage(typeID: String, itemID: String)
+    {
+
+    }
+
+    private fun handleBundleOffer(bundleJSON: JSONObject)
+    {
+        val bundleItems = ArrayList<BundleOffer>()
+        val bundleID = bundleJSON.getString("DataAssetID")
+        val bundleImage = "https://media.valorant-api.com/bundles/$bundleID/displayicon.png"
+        val items = bundleJSON.getJSONArray("Items")
+        for (item in items)
+        {
+            val price = item.getString("BasePrice")
+        }
     }
 
     private fun handleDailyOffers(dailyOffersSkins: JSONObject): WeaponSkinOfferAdapter? {
@@ -2419,10 +2442,11 @@ withContext(Main) {
 
     private fun copyToClipboard(content: Any, desc: String = "")
     {
-//        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-//        val clip = ClipData.newPlainText("Copied Text", content.toString())
-//        clipboard.setPrimaryClip(clip)
-//        Toast.makeText(requireContext(), "Copied $desc", Toast.LENGTH_SHORT).show()
+        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Copied Text", content.toString())
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(requireContext(), "Copied $desc", Toast.LENGTH_SHORT).show()
+
     }
 
     private fun getAvailablePlayerCards(): ArrayList<String> {

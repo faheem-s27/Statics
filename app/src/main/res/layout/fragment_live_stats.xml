@@ -439,27 +439,11 @@
                         android:layout_height="match_parent">
 
                         <TextView
-                            android:id="@+id/textView33"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginBottom="16dp"
-                            android:fontFamily="@font/lalezar"
-                            android:text="@string/s169"
-                            android:textColor="#FFFFFF"
-                            android:textSize="16dp"
-                            android:textStyle="bold" />
-
-                        <!-- A timer in the top right corner that counts down -->
-                        <TextView
                             android:id="@+id/playerStoreTimer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/textView33"
-                            android:layout_alignBottom="@+id/textView33"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="16dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="16dp"
                             android:fontFamily="@font/baloo_bhai"
                             android:text="00:00:00"
                             android:textColor="#FFFFFF"
@@ -471,24 +455,31 @@
                             android:id="@+id/shop_tabLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/textView33"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
+                            android:layout_below="@+id/playerStoreTimer"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:layout_marginTop="4dp"
                             android:background="@color/Valorant_SplashColourBackground"
-                            app:tabGravity="fill"
-                            app:tabIndicatorColor="@color/white"
-                            app:tabMode="fixed"
-                            app:tabSelectedTextColor="@color/white"
-                            app:tabTextColor="@color/white" />
+                            app:tabGravity="center"
+                            app:tabIconTint="@color/light_blue_50"
+                            app:tabIndicatorAnimationDuration="500"
+                            app:tabIndicatorAnimationMode="elastic"
+                            app:tabIndicatorColor="#f94555"
+                            app:tabIndicatorFullWidth="true"
+                            app:tabIndicatorGravity="bottom"
+                            app:tabMode="auto"
+                            app:tabSelectedTextColor="#f94555"
+                            app:tabTextColor="@color/white"
+                            app:tabUnboundedRipple="true" />
 
                         <!-- ViewPager to hold the content of each tab -->
                         <androidx.viewpager.widget.ViewPager
                             android:id="@+id/shop_viewPager"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="500dp"
+                            android:nestedScrollingEnabled="true"
                             android:layout_below="@+id/shop_tabLayout"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="2dp"
                             android:background="@color/Valorant_SplashColourBackground" />
 
                         <!-- A text says that says Current Balance -->
@@ -498,6 +489,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/shop_viewPager"
                             android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/s168"
                             android:textColor="#FFFFFF"
