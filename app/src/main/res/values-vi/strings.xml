@@ -23,6 +23,7 @@
   <string name="menu_stats">Chỉ số</string>
   <string name="menu_live">Trực tiếp</string>
   <string name="menu_assets">Đồ họa</string>
+  <string name="menu_premier">Premier</string>
   <string name="menu_extras">Khác</string>
   <string name="s20">Làm mới sau giây</string>
   <string name="s22">Thông tin người chơi</string>
@@ -94,6 +95,7 @@
   <string name="s92">Đăng xuất</string>
   <string name="s93">Chọn ngôn ngữ</string>
   <string name="s94">Bảng xếp hạng</string>
+  <string name="s95">Tin nhắn</string>
   <string name="s96">Về ứng dụng này</string>
   <string name="s97">Ủng hộ</string>
   <string name="s98">Xem nhật kí</string>
@@ -111,6 +113,8 @@
   <string name="s110">Round đấu</string>
   <string name="s111">Bản đồ spike</string>
   <string name="s112">Bản đồ hạ gục</string>
+  <string name="s113">Kill feed</string>
+  <string name="s114">Round đấu</string>
   <string name="s115">Tất cả các round</string>
   <string name="s116">Sắp ra mắt</string>
   <string name="s117">Hạ gục, Gỡ được bom, Hết giờ, Hòa</string>
@@ -130,7 +134,11 @@
   <string name="s131">Statics cần kết nối wifi</string>
   <string name="s132">Thử lại</string>
   <string name="s133">Thoát</string>
+  <string name="s134">Chấp nhận điều khoản sử dụng để tiếp tục</string>
+  <string name="loading_data">Đang tải dữ liệu…</string>
+  <string name="loading">Đang tải…</string>
   <string name="s21">Chỉ số</string>
+  <string name="s25">Trực tiếp</string>
   <string name="s140">Phản hồi từ Statics</string>
   <string name="s141">Hình phun sơn</string>
   <string name="s142">Danh hiệu</string>
@@ -142,6 +150,7 @@
   <string name="s148">Đấu thường</string>
   <string name="s149">Xếp hạng</string>
   <string name="s150">Nhân bản</string>
+  <string name="s151">Escalation</string>
   <string name="s152">Siêu tốc</string>
   <string name="s153">Lỗi!</string>
   <string name="s154">Cập nhật sau</string>
@@ -170,9 +179,11 @@
   <string name="s177">Đầu round</string>
   <string name="s178">Trong round</string>
   <string name="s179">Cuối round</string>
+  <string name="s180">Giọng nói</string>
   <string name="s181">Vào ứng dụng lần đầu</string>
   <string name="s182">Đã chọn</string>
   <string name="s183">Gửi tin nhắn</string>
+  <string name="s184">Valorant</string>
   <string name="s185">To</string>
   <string name="s186">Nhỏ</string>
   <string name="s187">Ngang</string>
@@ -190,6 +201,7 @@
   <string name="s199">Đồ họa</string>
   <string name="s200">Đang tải trận đấu</string>
   <string name="s201">Chế độ</string>
+  <string name="s202">Máy chủ</string>
   <string name="s203">Đã bắt đầu</string>
   <string name="s204">Thời hạn</string>
   <string name="s205">Chế độ này chưa được hỗ trợ hoàn toàn! Nhưng bạn vẫn có thể xem một số chỉ số</string>
@@ -200,6 +212,7 @@
   <string name="s210">Bị hạ gục</string>
   <string name="s211">Hỗ trợ</string>
   <string name="s212">Tên</string>
+  <string name="s214">Xếp hạng</string>
   <string name="s215">Đang tải chỉ só của người chơ</string>
   <string name="s216">Chọn 1 chế độ</string>
   <string name="s217">Đang soạn chỉ số…</string>
@@ -218,5 +231,20 @@
   <string name="s230">Bom nổ</string>
   <string name="s231">Bom đặt bởi</string>
   <string name="s232">Xem bản đồ gỡ bom</string>
+  <string name="s234">Xếp hạng</string>
   <string name="s235">tuần trướ</string>
+  <string name="s236">Quan trọng</string>
+  <string name="s237">Nhớ bấm \"Lưu đăng nhập\" khi đăng nhập</string>
+  <string name="live_is_loading">Đang tải chế độ Trực tiếp :)</string>
+  <string name="could_not_get_your_load_outs">Không thể tải kho đồ của bạn</string>
+  <string name="penalty">Phạt</string>
+  <string name="banned_for">Bị cấm do </string>
+  <string name="party_in_game">Tổ đội trong game</string>
+  <string name="cannot_queue">Không thể ghép trận</string>
+  <string name="playing">Đang chơi </string>
+  <string name="end_of_agent_select">Kết thúc lượt chọn đặc vụ</string>
+  <string name="you">Bạn</string>
+  <string name="lock_in_random">Chọn ngẫu nhiên</string>
+  <string name="bundles">Bundles</string>
+  <string name="night_market">Chợ Đêm</string>
 </resources>

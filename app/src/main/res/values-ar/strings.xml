@@ -257,4 +257,7 @@
   <string name="end_of_agent_select">نهاية اختيار العملاء</string>
   <string name="you">أنت</string>
   <string name="lock_in_random">اختَر عشوائياً</string>
+  <string name="offers">العروض</string>
+  <string name="bundles">الحزم</string>
+  <string name="night_market">النايت ماركت</string>
 </resources>

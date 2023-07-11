@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:background="@color/Valorant_SplashColourBackground"
         android:elevation="12dp"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,9 +39,11 @@
             <ImageView
                 android:id="@+id/weapon_skin_image"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="120dp"
                 android:layout_marginTop="24dp"
-                android:scaleType="fitCenter"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:scaleType="centerInside"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="50dp"
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />

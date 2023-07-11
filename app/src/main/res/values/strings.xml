@@ -215,7 +215,7 @@
     <string name="s165">Loading…</string>
     <string name="s166">Loadout</string>
     <string name="s167">Store</string>
-    <string name="s168">Current balance:</string>
+    <string name="s168">Balance:</string>
     <string name="s169">Daily offers</string>
     <string name="s170">Last updated</string>
     <string name="s171">Next update</string>
@@ -296,8 +296,9 @@
     <string name="end_of_agent_select">End of agent select</string>
     <string name="you">You</string>
     <string name="lock_in_random">Lock in random</string>
-    <string name="offers">Offers</string>
+    <string name="offers">Daily Offers</string>
     <string name="bundles">Bundles</string>
     <string name="night_market">Night Market</string>
+    <string name="accessory">Accessory</string>
 
 </resources>

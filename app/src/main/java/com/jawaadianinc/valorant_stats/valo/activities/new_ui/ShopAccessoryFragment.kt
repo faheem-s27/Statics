@@ -10,7 +10,7 @@ import com.jawaadianinc.valorant_stats.R
 
 
 
-class ShopBundlesFragment : Fragment() {
+class ShopAccessoryFragment : Fragment() {
     private var adapter: BundleOfferAdapter? = null
 
     override fun onCreateView(
@@ -21,9 +21,10 @@ class ShopBundlesFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_shop_offers, container, false)
     }
 
+
     companion object {
-        fun newInstance(shopAdapter: BundleOfferAdapter): ShopBundlesFragment {
-            val fragment = ShopBundlesFragment()
+        fun newInstance(shopAdapter: BundleOfferAdapter): ShopAccessoryFragment {
+            val fragment = ShopAccessoryFragment()
             fragment.adapter = shopAdapter
             return fragment
         }

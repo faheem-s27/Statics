@@ -123,6 +123,8 @@ class LiveStatsFragment : Fragment() {
     private lateinit var agentPreGameSelectRecyclerView: RecyclerView
     private lateinit var agentCoreGameRecyclerView: RecyclerView
     var storeTimer: CountDownTimer? = null
+    var bundleTimer: CountDownTimer? = null
+    var accessoryTimer: CountDownTimer? = null
 
     private lateinit var weaponsJSONObject: JSONObject
     private lateinit var contenttierJSONObject: JSONObject
@@ -540,15 +542,23 @@ class LiveStatsFragment : Fragment() {
 
             if (code != 200) return@launch
 
-            //Log.d("LIVE_STATS_STOREFRONT", "Response code: $code Body: $body")
             withContext(Main) {
+                getWallet()
                 val json = JSONObject(body)
-                //copyToClipboard(json, "Storefront")
 
                 val timerSeconds =
                     json.getJSONObject("SkinsPanelLayout")
                         .getInt("SingleItemOffersRemainingDurationInSeconds")
                 setStoreTimer(timerSeconds)
+
+                val bundleSeconds = json.getJSONObject("FeaturedBundle")
+                    .getInt("BundleRemainingDurationInSeconds")
+                setBundleStoreTimer(bundleSeconds)
+
+                val accessorySeconds = json.getJSONObject("AccessoryStore")
+                    .getInt("AccessoryStoreRemainingDurationInSeconds")
+                setAccessoryStoreTimer(accessorySeconds)
+
                 val NightMarket = json.optJSONObject("BonusStore")
                 if (NightMarket != null) {
                     //show dialog
@@ -561,18 +571,71 @@ class LiveStatsFragment : Fragment() {
 
                 val adapter = handleDailyOffers(json.getJSONObject("SkinsPanelLayout"))
                 val bundleAdapter = handleBundleOffer(json.getJSONObject("FeaturedBundle").getJSONObject("Bundle"))
+                val accessoryAdapter = handleAccessoryStore(json.getJSONObject("AccessoryStore"))
 
-                val pagerAdapter = PagerAdapter(childFragmentManager, requireContext(), adapter!!, bundleAdapter)
+                val pagerAdapter = PagerAdapter(childFragmentManager, requireContext(), adapter!!, bundleAdapter, accessoryAdapter)
                 viewPager.adapter = pagerAdapter
                 viewPager.offscreenPageLimit = 4
                 tabLayout.setupWithViewPager(viewPager)
-                getWallet()
+
+                val dailyTimer = requireView().findViewById<TextView>(R.id.playerStoreTimer)
+                val bundleTimer = requireView().findViewById<TextView>(R.id.playerStoreBundleTimer)
+                val accessoryTimer = requireView().findViewById<TextView>(R.id.playerStoreAccessoryTimer)
+
+                dailyTimer.visibility = View.VISIBLE
+                bundleTimer.visibility = View.INVISIBLE
+                accessoryTimer.visibility = View.INVISIBLE
+
+                // add a page listener to the viewpager so that it can show the right timerTextView
+                viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                    override fun onPageScrollStateChanged(state: Int) {
+                        // do nothing
+                    }
+
+                    override fun onPageScrolled(
+                        position: Int,
+                        positionOffset: Float,
+                        positionOffsetPixels: Int
+                    ) {
+                        // do nothing
+                    }
+
+                    override fun onPageSelected(position: Int) {
+                        when (position) {
+                            0 -> {
+                                // Offers
+                                dailyTimer.visibility = View.VISIBLE
+                                bundleTimer.visibility = View.INVISIBLE
+                                accessoryTimer.visibility = View.INVISIBLE
+                            }
+                            1 -> {
+                                // Accessory
+                                dailyTimer.visibility = View.INVISIBLE
+                                bundleTimer.visibility = View.INVISIBLE
+                                accessoryTimer.visibility = View.VISIBLE
+                            }
+                            2 -> {
+                                // Bundles
+                                dailyTimer.visibility = View.INVISIBLE
+                                bundleTimer.visibility = View.VISIBLE
+                                accessoryTimer.visibility = View.INVISIBLE
+                            }
+                            3 -> {
+                                // Night Market
+                                // hide all timers
+                                dailyTimer.visibility = View.INVISIBLE
+                                bundleTimer.visibility = View.INVISIBLE
+                                accessoryTimer.visibility = View.INVISIBLE
+                            }
+                        }
+                    }
+                })
             }
         }
     }
 
     // Define your PagerAdapter
-    private class PagerAdapter(fm: FragmentManager?, context: Context, offersAdapter: WeaponSkinOfferAdapter, bundleOfferAdapter: BundleOfferAdapter) :
+    private class PagerAdapter(fm: FragmentManager?, context: Context, offersAdapter: WeaponSkinOfferAdapter, bundleOfferAdapter: BundleOfferAdapter, accessoryAdapter: BundleOfferAdapter) :
         FragmentPagerAdapter(fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val fragments: MutableList<Fragment> = ArrayList()
         private val fragmentTitles: MutableList<String> = ArrayList()
@@ -580,9 +643,11 @@ class LiveStatsFragment : Fragment() {
         init {
             // Add your fragments and titles here
             fragments.add(ShopOffersFragment.newInstance(offersAdapter))
+            fragments.add(ShopAccessoryFragment.newInstance(accessoryAdapter))
             fragments.add(ShopBundlesFragment.newInstance(bundleOfferAdapter))
             fragments.add(ShopNightMarketFragment().newInstance(offersAdapter))
             fragmentTitles.add(context.getString(R.string.offers))
+            fragmentTitles.add(context.getString(R.string.accessory))
             fragmentTitles.add(context.getString(R.string.bundles))
             fragmentTitles.add(context.getString(R.string.night_market))
         }
@@ -613,6 +678,17 @@ class LiveStatsFragment : Fragment() {
             "3f296c07-64c3-494c-923b-fe692a4fa1bd" to playerCardsJSON.getJSONArray("data")
         )
         val jsonArray = mapping[typeID]
+        if (jsonArray != null) {
+            for (obj in jsonArray)
+            {
+                if (obj.getString("uuid") == itemID)
+                {
+                    val name = obj.getString("displayName")
+                    val image = obj.getString("displayIcon")
+                    return Pair(name, image)
+                }
+            }
+        }
 
         // Sprays
         when (typeID) {
@@ -671,6 +747,27 @@ class LiveStatsFragment : Fragment() {
         return Pair(null, null)
     }
 
+    private fun handleAccessoryStore(accessoryJSON: JSONObject): BundleOfferAdapter
+    {
+        val accessoryItems = ArrayList<BundleOffer>()
+        val array = accessoryJSON.getJSONArray("AccessoryStoreOffers")
+        for (offer in array)
+        {
+            val price = offer.getJSONObject("Offer")
+                .getJSONObject("Cost")
+                .getString("85ca954a-41f2-ce94-9b45-8ca3dd39a00d")
+            val reward = offer.getJSONObject("Offer").getJSONArray("Rewards").getJSONObject(0)
+            val nameImage = getBundleNameAndImage(
+                reward.getString("ItemTypeID"),
+                reward.getString("ItemID"))
+            if (nameImage.first != null && nameImage.second != null)
+            {
+                accessoryItems.add(BundleOffer(nameImage.first!!, price.toInt(), nameImage.second!!))
+            }
+        }
+        return BundleOfferAdapter(requireActivity(), accessoryItems, null, "85ca954a-41f2-ce94-9b45-8ca3dd39a00d")
+    }
+
     private fun handleBundleOffer(bundleJSON: JSONObject): BundleOfferAdapter
     {
         val bundleItems = ArrayList<BundleOffer>()
@@ -682,9 +779,10 @@ class LiveStatsFragment : Fragment() {
             val price = item.getInt("BasePrice")
             val itemObj = item.getJSONObject("Item")
             val nameImage = getBundleNameAndImage(itemObj.getString("ItemTypeID"), itemObj.getString("ItemID"))
-            val name = nameImage.first ?: "Unknown"
-            val image = nameImage.second ?: ""
-            bundleItems.add(BundleOffer(name, price, image))
+            if (nameImage.first != null && nameImage.second != null)
+            {
+                bundleItems.add(BundleOffer(nameImage.first!!, price, nameImage.second!!))
+            }
         }
         return BundleOfferAdapter(requireActivity(), bundleItems, bundleImage)
     }
@@ -770,11 +868,55 @@ class LiveStatsFragment : Fragment() {
         return JSONObject()
     }
 
+    private fun setAccessoryStoreTimer(seconds: Int)
+    {
+        val timer = requireView().findViewById<TextView>(R.id.playerStoreAccessoryTimer)
+        if (accessoryTimer != null) return
+
+        accessoryTimer = object : CountDownTimer((seconds * 1000).toLong(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val seconds = millisUntilFinished / 1000
+                val hours = seconds / 3600
+                val minutes = (seconds % 3600) / 60
+                val secs = seconds % 60
+                val time = String.format("%02d:%02d:%02d", hours, minutes, secs)
+                timer.text = time
+            }
+
+            override fun onFinish() {
+                timer.text = "00:00:00"
+                accessoryTimer = null
+                showStoreFront()
+            }
+        }.start()
+    }
+
+    private fun setBundleStoreTimer(seconds: Int)
+    {
+        val timer = requireView().findViewById<TextView>(R.id.playerStoreBundleTimer)
+        if (bundleTimer != null) return
+
+        bundleTimer = object : CountDownTimer((seconds * 1000).toLong(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val seconds = millisUntilFinished / 1000
+                val hours = seconds / 3600
+                val minutes = (seconds % 3600) / 60
+                val secs = seconds % 60
+                val time = String.format("%02d:%02d:%02d", hours, minutes, secs)
+                timer.text = time
+            }
+
+            override fun onFinish() {
+                timer.text = "00:00:00"
+                bundleTimer = null
+                showStoreFront()
+            }
+        }.start()
+    }
+
     private fun setStoreTimer(seconds: Int) {
         val timer = requireView().findViewById<TextView>(R.id.playerStoreTimer)
         if (storeTimer != null) return
-
-        //Toast.makeText(requireContext(), "Store timer set!", Toast.LENGTH_SHORT).show()
 
         storeTimer = object : CountDownTimer((seconds * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -1953,12 +2095,15 @@ withContext(Main) {
                 val walletJSON = JSONObject(body).getJSONObject("Balances")
                 val VP = walletJSON.getInt("85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741")
                 val RadiantePoints = walletJSON.getInt("e59aa87c-4cbf-517a-5983-6e81511be9b7")
+                val KingdomPoints = walletJSON.getInt("85ca954a-41f2-ce94-9b45-8ca3dd39a00d")
 
                 val VPText = view?.findViewById<TextView>(R.id.VPTextBalance)
                 val RadiantePointsText = view?.findViewById<TextView>(R.id.RPTextBalance)
+                val KPText = view?.findViewById<TextView>(R.id.KPTextBalance)
 
                 VPText?.text = VP.toString()
                 RadiantePointsText?.text = RadiantePoints.toString()
+                KPText?.text = KingdomPoints.toString()
 
                 Picasso.get()
                     .load("https://media.valorant-api.com/currencies/85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741/displayicon.png")
@@ -1966,6 +2111,9 @@ withContext(Main) {
                 Picasso.get()
                     .load("https://media.valorant-api.com/currencies/e59aa87c-4cbf-517a-5983-6e81511be9b7/displayicon.png")
                     .into(view?.findViewById<ImageView>(R.id.RPImage))
+                Picasso.get()
+                    .load("https://media.valorant-api.com/currencies/85ca954a-41f2-ce94-9b45-8ca3dd39a00d/displayicon.png")
+                    .into(view?.findViewById<ImageView>(R.id.KPImage))
             }
         }
 

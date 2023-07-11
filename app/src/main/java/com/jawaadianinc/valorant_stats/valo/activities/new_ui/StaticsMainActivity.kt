@@ -86,7 +86,8 @@ class StaticsMainActivity : AppCompatActivity() {
 
         val updateDescription: String =
                 "- Only agents that you have unlocked will be selectable in agent select" +
-                        "\n- New shop layout!" +
+                        "\n- New shop layout; added bundles and accessory store!" +
+                        "\n- Added Kingdom points currency" +
                         "\n- New updated translations and hopefully faster translations for the future!"
 
         DynamicColors.applyToActivitiesIfAvailable(application)

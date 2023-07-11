@@ -1,2 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+  <string name="app_name">Statics</string>
+  <string name="title_activity_stats">StatsActivity</string>
+  <string name="title_activity_valorant_updates">ValorantUpdatesActivity</string>
+  <string name="action_settings">Налаштування</string>
+  <string name="hello_blank_fragment">Привіт, пустий фрагмент</string>
+  <string name="title_activity_brawl_find_account">BrawlFindAccount</string>
+  <string name="title_activity_settings">SettingsActivity</string>
+  <string name="title_activity_weapon_info">Інформація про зброю</string>
+  <string name="tab_text_1">Tab 1</string>
+  <string name="tab_text_2">Tab 2</string>
+  <string name="welcome">Ласкаво просимо до Statics!</string>
+  <string name="RSO_URL">https://auth.riotgames.com/authorize?client_id=statics&amp;redirect_uri=https://statics-fd699.web.app/authorize.html&amp;response_type=code&amp;scope=openid+offline_access&amp;prompt=login</string>
+  <string name="title_activity_cross_hair">CrossHairActivity</string>
+  <string name="navigation_drawer_open">Відкрити панель навігації</string>
+  <string name="navigation_drawer_close">Закрити панель навігації</string>
+  <string name="nav_header_title">Студія Android</string>
+  <string name="nav_header_subtitle">android.studio@android.com</string>
+  <string name="nav_header_desc">Заголовок навігації</string>
+  <string name="menu_home">Головна</string>
+  <string name="menu_gallery">Галерея</string>
+  <string name="menu_slideshow">Слайдшоу</string>
+  <string name="Share_Profile_URL">Будь-хто, хто має доступ до посилання, може переглядати ваші збіги та рейтинг. Якщо ви не впевнені, чи хочете поділитися своїм профілем, будь ласка, не діліться ним!</string>
+  <string name="appwidget_text">ПРИКЛАД</string>
+  <string name="configure">Налаштування</string>
+  <string name="add_widget">Додати віджет</string>
+  <string name="app_widget_description">Це опис віджета додатку</string>
+  <string name="long_shortcut">Перегляньте вашу історію рангів!</string>
+  <string name="s5">Статистика не є затвердженою компанією Riot Games і не відображає погляди або думки Riot Games або будь-кого, хто офіційно займається виробництвом або управлінням власності Riot Games. Riot Games та всі пов\'язані з ними власності є товарними знаками або зареєстрованими товарними знаками Riot Games, Inc.</string>
+  <string name="s4">Я прочитав(ла) і погоджуюсь з Умовами та Положеннями, які зазначені нижче.</string>
+  <string name="s3">Увійти за допомогою Riot</string>
+  <string name="s2">Перший додаток з міні-картою</string>
+  <string name="s7">Під час входу за допомогою Riot ваші облікові дані надсилаються на сервери Riot і повертається токен. Цей токен потім використовується для отримання деталей вашого облікового запису, таких як ваше ім\'я.\nТокен потім видаляється з сервера і не зберігається ніде. Сервер лише зберігає вашу інформацію об обліковому записі, яка використовується для відображення вашої статистики в додатку.\n\nStatics не зберігає жодних паролів!</string>
+</resources>

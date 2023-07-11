@@ -14,7 +14,8 @@ import com.squareup.picasso.Picasso
 class BundleOfferAdapter(
     private var context: Activity,
     private val weapons: ArrayList<BundleOffer>,
-    private val bundleImage: String
+    private val bundleImage: String? = null,
+    private val currency: String? = null
 ) :
     ArrayAdapter<Any?>(
         context, R.layout.weapon_skin_offer_layout, weapons as List<Any?>
@@ -46,20 +47,34 @@ class BundleOfferAdapter(
 
         val layout = row.findViewById(R.id.background_image) as ImageView
         // Picasso load bundle image
-        Picasso
-            .get()
-            .load(bundleImage)
-            .fit()
-            .centerInside()
-            .into(layout)
-
-        Picasso
-            .get()
-            .load("https://media.valorant-api.com/currencies/85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741/displayicon.png")
-            .fit()
-            .centerInside()
-            .into(VPImage)
-
+        if (bundleImage != null) {
+            Picasso
+                .get()
+                .load(bundleImage)
+                .fit()
+                .centerInside()
+                .into(layout)
+        }
+        else
+        {
+            layout.setBackgroundColor(context.resources.getColor(R.color.Valorant_SplashColourBackground))
+        }
+        if (currency != null) {
+            Picasso
+                .get()
+                .load("https://media.valorant-api.com/currencies/$currency/displayicon.png")
+                .fit()
+                .centerInside()
+                .into(VPImage)
+        }
+        else {
+            Picasso
+                .get()
+                .load("https://media.valorant-api.com/currencies/85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741/displayicon.png")
+                .fit()
+                .centerInside()
+                .into(VPImage)
+        }
         return row
     }
 }
