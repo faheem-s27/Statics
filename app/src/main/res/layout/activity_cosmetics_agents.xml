@@ -29,7 +29,6 @@
                 android:id="@+id/AgentName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:fontFamily="@font/valorant"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
@@ -37,7 +36,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageSlider"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Skye" />
 
             <View
@@ -140,11 +139,11 @@
 
             <com.smarteist.autoimageslider.SliderView
                 android:id="@+id/imageSliderText"
-                android:layout_width="match_parent"
+                android:layout_width="500dp"
                 android:layout_height="0dp"
+                android:layout_marginStart="100dp"
                 android:alpha="0.5"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintDimensionRatio="1:2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:sliderAnimationDuration="600"
@@ -161,17 +160,18 @@
 
             <com.smarteist.autoimageslider.SliderView
                 android:id="@+id/imageSlider"
-                android:layout_width="0dp"
+                android:layout_width="500dp"
                 android:layout_height="0dp"
+                android:layout_marginStart="100dp"
                 android:alpha="1"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintDimensionRatio="1:2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:sliderAnimationDuration="600"
                 app:sliderAutoCycleDirection="back_and_forth"
                 app:sliderIndicatorAnimationDuration="600"
                 app:sliderIndicatorGravity="bottom|center"
+                sliderIndicatorEnabled="false"
                 app:sliderIndicatorOrientation="horizontal"
                 app:sliderIndicatorSelectedColor="#ff4654"
                 app:sliderIndicatorUnselectedColor="#FFF"
