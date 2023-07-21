@@ -638,7 +638,6 @@
 
             <SeekBar
                 android:id="@+id/howManyMatches"
-
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

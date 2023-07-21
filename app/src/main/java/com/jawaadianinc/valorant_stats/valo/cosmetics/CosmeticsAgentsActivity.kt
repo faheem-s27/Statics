@@ -2,6 +2,8 @@ package com.jawaadianinc.valorant_stats.valo.cosmetics
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color.parseColor
 import android.graphics.drawable.GradientDrawable
 import android.media.AudioManager
@@ -14,7 +16,12 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.auth.api.signin.internal.Storage
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
@@ -29,6 +36,7 @@ import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+import java.util.Locale
 
 
 class CosmeticsAgentsActivity : AppCompatActivity() {
@@ -48,13 +56,16 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
     private val animation = 200L
     private val agentVoicePlayer = MediaPlayer()
     private val voiceLinePlayer = MediaPlayer()
-    private val storageRef = FirebaseStorage.getInstance().reference
+    private lateinit var storageRef: StorageReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cosmetics_agents)
         agentVoicePlayer.start()
         voiceLinePlayer.start()
+        // init firebase storage
+        storageRef = FirebaseStorage.getInstance().reference
+        //Toast.makeText(this, "Firebase Storage reference: ${storageRef.name}", Toast.LENGTH_SHORT).show()
 
         val progressDialog = ProgressDialogStatics().setProgressDialog(this, "Loading...")
         progressDialog.show()
@@ -194,13 +205,42 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         }
     }
 
+    fun getLanguageLocale(context: Context): String {
+        val resources: Resources = context.resources
+        val locale: Locale =
+            resources.configuration.locales.get(0)
+        return "${locale.language}-${locale.country}"
+    }
+
     private fun loadAgentImage() {
-        // get the language from shared preferences
-        val sharedPref = getSharedPreferences("UserLocale", MODE_PRIVATE)
-        var LANGUAGE = sharedPref.getString("locale", "en-US").toString()
-        if (LANGUAGE == "pt-PT") LANGUAGE = "pt-BR"
-        //Toast.makeText(this, LANGUAGE, Toast.LENGTH_SHORT).show()
-        val url = "https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=$LANGUAGE"
+        var lang = "en-US"
+        val language = getLanguageLocale(this)
+        val supportedLanguages = listOf(
+            "ar-AE",
+            "de-DE",
+            "en-US",
+            "es-ES",
+            "es-MX",
+            "fr-FR",
+            "id-ID",
+            "it-IT",
+            "ja-JP",
+            "ko-KR",
+            "pl-PL",
+            "pt-BR",
+            "ru-RU",
+            "th-TH",
+            "tr-TR",
+            "vi-VN",
+            "zh-CN",
+            "zh-TW"
+        )
+
+        if (supportedLanguages.contains(language)) {
+            lang = language
+        }
+
+        val url = "https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=$lang"
         val imageSlider = findViewById<SliderView>(R.id.imageSlider)
         doAsync {
             agentJSON =
@@ -221,10 +261,8 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
                 // check if the agent voice line is null
                 if (!currentAgent.isNull("voiceLine")) {
                     voiceLines.add(agent.voiceLine.mediaList[0].wave)
-                    Log.d("Agent", agent.voiceLine.mediaList[0].wave)
                 } else {
                     voiceLines.add("")
-                    Log.d("Agent", "EMPTY")
                 }
                 bustPortrait.add(agent.fullPortrait)
                 Log.d("Agent", agent.fullPortrait)

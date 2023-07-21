@@ -55,7 +55,7 @@
 
     <!-- WHEN SIGNING IN BACK FROM RIOT LOGIN -->
     <string name="s9">Click the button to prove you are alive</string>
-    <string name="s10">Time to steal your date</string>
+    <string name="s10">Time to steal your data</string>
     <string name="s11">Giving you gun buddies</string>
     <string name="s12">Setting your account to Iron</string>
     <string name="s13">You did it</string>
@@ -300,5 +300,17 @@
     <string name="bundles">Bundles</string>
     <string name="night_market">Night Market</string>
     <string name="accessory">Accessory</string>
+    <string name="weapons">Weapons</string>
+    <string name="reset_language">Reset language</string>
+    <string name="got_cookies">Got cookies 🍪</string>
+    <string name="got_access_token">Got access token 🎫</string>
+    <string name="got_riot_s_latest_version">Got Riot\'s latest version 📦</string>
+    <string name="error_getting_entitlement">Error getting entitlement ❌</string>
+    <string name="got_entitlement">Got entitlement 📜</string>
+    <string name="error_getting_user_info">Error getting user info ❌</string>
+    <string name="decrypting_user">Decrypting User 👤</string>
+    <string name="error_getting_region">Error getting region ❌</string>
+    <string name="got_region">Got region 🌎</string>
+    <string name="hello">"Hello "</string>
 
 </resources>

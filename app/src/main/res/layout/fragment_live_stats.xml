@@ -322,7 +322,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginBottom="16dp"
-                            android:text="Weapons"
+                            android:text="@string/weapons"
                             android:textColor="@color/white"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -507,7 +507,7 @@
                         <androidx.viewpager.widget.ViewPager
                             android:id="@+id/shop_viewPager"
                             android:layout_width="match_parent"
-                            android:layout_height="500dp"
+                            android:layout_height="700dp"
                             android:nestedScrollingEnabled="true"
                             android:layout_below="@+id/shop_tabLayout"
                             android:layout_marginTop="2dp"

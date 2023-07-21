@@ -326,26 +326,29 @@ class StaticsMainActivity : AppCompatActivity() {
 
             val resetLanguageButton = popupView.findViewById<Button>(R.id.pfp_reset_language)
             resetLanguageButton.setOnClickListener {
-                val alert = android.app.AlertDialog.Builder(requireActivity())
-                alert.setTitle("Reset Language")
-                alert.setMessage("Are you sure you want to reset the language?")
-                alert.setPositiveButton("Yes") { _, _ ->
-                    val prefs =
-                        requireActivity().getSharedPreferences("UserLocale", Context.MODE_PRIVATE)
-                    val editor = prefs.edit()
-                    editor.putString("locale", "")
-                    editor.apply()
-                    requireActivity().moveTaskToBack(true)
-                    Handler().postDelayed({
-                        // Bring the app back to the foreground
-                        val intent = Intent(requireActivity(), SplashActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                    }, 250)
-
-                }
-                alert.setNegativeButton("No") { _, _ -> }
-                alert.show()
+                val intent = Intent(this, RecentMatchesList::class.java)
+                intent.putExtra("region", region)
+                startActivity(intent)
+//                val alert = android.app.AlertDialog.Builder(requireActivity())
+//                alert.setTitle("Reset Language")
+//                alert.setMessage("Are you sure you want to reset the language?")
+//                alert.setPositiveButton("Yes") { _, _ ->
+//                    val prefs =
+//                        requireActivity().getSharedPreferences("UserLocale", Context.MODE_PRIVATE)
+//                    val editor = prefs.edit()
+//                    editor.putString("locale", "")
+//                    editor.apply()
+//                    requireActivity().moveTaskToBack(true)
+//                    Handler().postDelayed({
+//                        // Bring the app back to the foreground
+//                        val intent = Intent(requireActivity(), SplashActivity::class.java)
+//                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                        startActivity(intent)
+//                    }, 250)
+//
+//                }
+//                alert.setNegativeButton("No") { _, _ -> }
+//                alert.show()
             }
         }
     }

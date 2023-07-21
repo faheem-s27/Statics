@@ -124,7 +124,7 @@
         android:backgroundTint="@color/Valorant_Red"
         android:fontFamily="@font/lalezar_reg"
         android:gravity="center"
-        android:text="Reset language"
+        android:text="@string/reset_language"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="14sp"

@@ -124,27 +124,27 @@ class NewLogInUI : AppCompatActivity() {
         GlobalScope.launch {
             withContext(Dispatchers.Main)
             {
-                addStringToTextView("Got cookies 🍪")
+                addStringToTextView(getString(R.string.got_cookies))
             }
             delay(DURATION)
             withContext(Dispatchers.Main) {
-                addStringToTextView("Got access token 🎫")
+                addStringToTextView(getString(R.string.got_access_token))
             }
             delay(DURATION)
             val RiotVersion = getRiotClientVersion()
             withContext(Dispatchers.Main) {
-                addStringToTextView("Got Riot's latest version 📦")
+                addStringToTextView(getString(R.string.got_riot_s_latest_version))
             }
             delay(DURATION)
             val entitlement = getEntitlement(accessToken, RiotVersion.first, RiotVersion.second)
             withContext(Dispatchers.Main) {
                 if (entitlement == "Error")
                 {
-                    addStringToTextView("Error getting entitlement ❌")
+                    addStringToTextView(getString(R.string.error_getting_entitlement))
                     return@withContext
                 }
                 else{
-                    addStringToTextView("Got entitlement 📜")
+                    addStringToTextView(getString(R.string.got_entitlement))
                 }
             }
             delay(DURATION)
@@ -152,11 +152,11 @@ class NewLogInUI : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 if (userInfo == "Error")
                 {
-                    addStringToTextView("Error getting user info ❌")
+                    addStringToTextView(getString(R.string.error_getting_user_info))
                     return@withContext
                 }
                 else{
-                    addStringToTextView("Decrypting User 👤")
+                    addStringToTextView(getString(R.string.decrypting_user))
                 }
             }
             val name = userInfo.split(":")[1]
@@ -165,13 +165,13 @@ class NewLogInUI : AppCompatActivity() {
             if (region == "Error")
             {
                 withContext(Dispatchers.Main) {
-                    addStringToTextView("Error getting region ❌")
+                    addStringToTextView(getString(R.string.error_getting_region))
                     return@withContext
                 }
             }
             else{
                 withContext(Dispatchers.Main) {
-                    addStringToTextView("Got region 🌎")
+                    addStringToTextView(getString(R.string.got_region))
                 }
             }
             val key = this@NewLogInUI.intent.getStringExtra("key")
@@ -193,7 +193,7 @@ class NewLogInUI : AppCompatActivity() {
 
             delay(DURATION)
             withContext(Dispatchers.Main) {
-                addStringToTextView("Hello $name 👋")
+                addStringToTextView(getString(R.string.hello) + name + " 👋")
             }
             delay(DURATION)
             withContext(Dispatchers.Main) {
@@ -326,37 +326,6 @@ class NewLogInUI : AppCompatActivity() {
         }
     }
 
-    private fun getPartyTest(accessToken: String, entitlement: String, subject: String, build: String, clientVersion: String) : String
-    {
-        val client = OkHttpClient()
-        val url = "https://pd.eu.a.pvp.net/personalization/v2/players/${subject}/playerloadout"
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Content-Type", "application/json")
-            .addHeader("X-Riot-Entitlements-JWT", entitlement)
-            .addHeader("X-Riot-ClientPlatform", clientPlatformToken)
-            .addHeader("X-Riot-ClientVersion", build)
-            .addHeader("Authorization", "Bearer $accessToken")
-            .addHeader(
-                "User-Agent",
-                "RiotClient/$clientVersion rso-auth (Windows; 10;;Professional, x64)"
-            )
-            .get()
-            .build()
-
-        return runBlocking(Dispatchers.IO) {
-            val response = client.newCall(request).execute()
-            val code = response.code
-            val body = response.body.string()
-            Log.d("RSO", "Party test: $body")
-            if (code != 200) {
-                return@runBlocking "Error"
-            }
-            return@runBlocking body
-        }
-
-    }
-
     private fun getPlayerImage(valoName: String?): String {
         if (valoName == null) return "9fb348bc-41a0-91ad-8a3e-818035c4e561"
         // run on main thread blocking
@@ -397,5 +366,4 @@ class NewLogInUI : AppCompatActivity() {
             json.getString("puuid")
         }
     }
-
 }
