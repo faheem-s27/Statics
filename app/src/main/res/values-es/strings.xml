@@ -180,7 +180,7 @@
   <string name="s165">Cargando…</string>
   <string name="s166">Equipamiento</string>
   <string name="s167">Tienda</string>
-  <string name="s168">Saldo actual:</string>
+  <string name="s168">Saldo:</string>
   <string name="s169">Ofertas Diarias</string>
   <string name="s170">Última actualización</string>
   <string name="s171">Próxima actualización</string>
@@ -260,4 +260,20 @@
   <string name="end_of_agent_select">Fin de la selección del agente</string>
   <string name="you">Usted</string>
   <string name="lock_in_random">Bloquear aleatorio</string>
+  <string name="offers">Ofertas Diarias</string>
+  <string name="bundles">Paquetes</string>
+  <string name="night_market">Mercado Nocturno</string>
+  <string name="accessory">Accesorios</string>
+  <string name="weapons">Armas</string>
+  <string name="reset_language">Restablecer idioma</string>
+  <string name="got_cookies">Cookies obtenidas 🍪</string>
+  <string name="got_access_token">Token de acceso obtenido 🎫</string>
+  <string name="got_riot_s_latest_version">Última versión de Riot obtenida 📦</string>
+  <string name="error_getting_entitlement">Error obteniendo derechos ❌</string>
+  <string name="got_entitlement">Derechos obtenidos 📜</string>
+  <string name="error_getting_user_info">Error obteniendo la información del usuario ❌</string>
+  <string name="decrypting_user">Descifrando usuario 👤</string>
+  <string name="error_getting_region">Error obteniendo región ❌</string>
+  <string name="got_region">Región encontrada 🌎</string>
+  <string name="hello">Hola </string>
 </resources>

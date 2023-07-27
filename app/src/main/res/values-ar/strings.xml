@@ -50,7 +50,7 @@
   <string name="s37">يرجى إدخال اسم المستخدم وكلمة المرور</string>
   <string name="s38">جاري المصادقة..</string>
   <string name="s39">الحرف # غير مسموح به</string>
-  <string name="s40">يرجى ادخال اسم المستخدم وكلمة المرور</string>
+  <string name="s40">يرجى إدخال اسم المستخدم وكلمة المرور</string>
   <string name="s41">رد من مصادقة الكوكيز</string>
   <string name="s42">الرد كان ناجحاً، ولكن اسم المستخدم أو كلمة المرور غير صحيحة</string>
   <string name="s43">حدث خطأ عند تسجيل الدخول\n\n\nرسالة الخطأ:</string>
@@ -92,9 +92,9 @@
   <string name="s79">العملاء</string>
   <string name="s80">ملحقات</string>
   <string name="s81">الحزم</string>
-  <string name="s82">المستويات</string>
+  <string name="s82">الرانكات</string>
   <string name="s83">الأنماط</string>
-  <string name="s84">إطارات المستويات</string>
+  <string name="s84">إطارات</string>
   <string name="s85">الخرائط</string>
   <string name="s86">البطاقات</string>
   <string name="s87">الألقاب</string>
@@ -177,7 +177,7 @@
   <string name="s165">جاري التحميل…</string>
   <string name="s166">العتاد</string>
   <string name="s167">المتجر</string>
-  <string name="s168">الرصيد الحالي:</string>
+  <string name="s168">الرصيد:</string>
   <string name="s169">العروض اليومية</string>
   <string name="s170">آخر تحديث</string>
   <string name="s171">التحديث التالي</string>
@@ -257,7 +257,20 @@
   <string name="end_of_agent_select">نهاية اختيار العملاء</string>
   <string name="you">أنت</string>
   <string name="lock_in_random">اختَر عشوائياً</string>
-  <string name="offers">العروض</string>
+  <string name="offers">العروض اليومية</string>
   <string name="bundles">الحزم</string>
   <string name="night_market">النايت ماركت</string>
+  <string name="accessory">عناصر تجميلية</string>
+  <string name="weapons">أسلحة</string>
+  <string name="reset_language">إعادة اللغة</string>
+  <string name="got_cookies">الحصول على الكوكيز 🍪</string>
+  <string name="got_access_token">الحصول على التوكن 🎫</string>
+  <string name="got_riot_s_latest_version">الحصول على أحدث إصدار لريوت 📦</string>
+  <string name="error_getting_entitlement">خطأ في الحصول على الاستحقاق ❌</string>
+  <string name="got_entitlement">تم الحصول على المستحقات 📜</string>
+  <string name="error_getting_user_info">خطأ في الحصول على معلومات المستخدم ❌</string>
+  <string name="decrypting_user">فك تشفير المستخدم 👤</string>
+  <string name="error_getting_region">خطأ في الحصول على المنطقة ❌</string>
+  <string name="got_region">الحصول على المنطقة 🌎</string>
+  <string name="hello">مرحباً </string>
 </resources>

@@ -2,13 +2,15 @@ package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.RecentMatchStats.RecentMatchStatsAgentAdapter
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
-import com.jawaadianinc.valorant_stats.valo.databases.Match
-import org.jetbrains.anko.find
+import com.squareup.picasso.Picasso
 
 data class MatchAnalyser(val sortedList: Array<Pair<String, Int>>, val type: String, val assetName: List<String>) {
     override fun equals(other: Any?): Boolean {
@@ -31,6 +33,7 @@ class MatchesProcessedStats : AppCompatActivity() {
     lateinit var agentsCount: Array<Pair<String, Int>>
     lateinit var mapsCount: Array<Pair<String, Int>>
     lateinit var assetsDB: AssetsDatabase
+    lateinit var toolbar: MaterialToolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +42,9 @@ class MatchesProcessedStats : AppCompatActivity() {
         agentsCount = (intent.getSerializableExtra("agents") as? Array<Pair<String, Int>>)!!
         mapsCount = (intent.getSerializableExtra("maps") as? Array<Pair<String, Int>>)!!
         assetsDB = AssetsDatabase(this)
+        toolbar = findViewById(R.id.materialToolbar4)
+
+        toolbar.title = intent.getStringExtra("Toolbar") ?: "Recent Matches"
 
         val listStats = mutableListOf<MatchAnalyser>()
 
@@ -52,6 +58,11 @@ class MatchesProcessedStats : AppCompatActivity() {
         {
             mapsActualName+=assetsDB.retrieveName(map.first)
         }
+
+        val agentList = RecentMatchStatsAgentAdapter(agentsCount)
+        val agentListView = findViewById<RecyclerView>(R.id.agent_recyclerView)
+        agentListView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        agentListView.adapter = agentList
 
         listStats.add(MatchAnalyser(agentsCount, "Agent", agentsActualNames))
         listStats.add(MatchAnalyser(mapsCount, "Map", mapsActualName))

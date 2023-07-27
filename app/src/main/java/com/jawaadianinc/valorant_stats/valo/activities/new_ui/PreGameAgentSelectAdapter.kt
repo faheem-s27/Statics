@@ -1,6 +1,5 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
-import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import okhttp3.Request
-import org.json.JSONObject
 
 class PreGameAgentSelectAdapter(private val players: List<PreGameAgentSelectPlayer>) :
     RecyclerView.Adapter<PreGameAgentSelectAdapter.ViewHolder>() {

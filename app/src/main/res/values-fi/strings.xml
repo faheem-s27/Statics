@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+  <string name="s6">Lue lisää \n&lt;a href=\"https://statics-fd699.web.app/privacy.html\"&gt;Starics:in tietosuojaelosteesta&lt;/a&gt;</string>
+  <string name="s4">Olen lukenut ja hyväksyn ehdot ja edellykset linkistä alempana</string>
+  <string name="s3">Kirjaudu Riot:in avulla</string>
+  <string name="s2">Ensimmäinen sovellus jossa voi käyttää pikkukarttaa</string>
+  <string name="starting">Käynnistetään</string>
+  <string name="s49">Kopioitu leikepöytään!</string>
+  <string name="s55">Kirjaudu ulos</string>
+  <string name="s56">Oletko varma että haluat kirjautua ulos?</string>
+  <string name="s57">Card/Title/Spray ovat päivittyneet</string>
+  <string name="s58">Valitse Player Card/Title/Spray</string>
+  <string name="s59">Etsitään matsia</string>
+  <string name="s60">Poistu matsin etsinnästä</string>
+  <string name="s61">Kirjautumisesi voimassaolo on päättynyt, käynnistä sovellus uudelleen</string>
+  <string name="s62">Olet ainoa party:ssä</string>
+  <string name="s63"> ihmistä party:ssä</string>
+  <string name="s64">Aloita matsin etsiminen</string>
+  <string name="s65">Lobby:ssä</string>
+</resources>

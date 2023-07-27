@@ -45,7 +45,6 @@
   <string name="starting">Uruchamianie</string>
   <string name="s8">Jak to działa</string>
   <string name="s9">Wciśnij przycisk, aby potwierdzić, że jesteś aktywny</string>
-  <string name="s10">Czas na kradzież twoich danych</string>
   <string name="s11">Dawanie ci zawieszek do broni</string>
   <string name="s12">Ustawianie konta na Żelazo</string>
   <string name="s13">Udało ci się</string>
@@ -119,7 +118,7 @@
   <string name="s81">Pakiety</string>
   <string name="s82">Stopnie</string>
   <string name="s83">Tryby</string>
-  <string name="s84">Obramowania</string>
+  <string name="s84">Bordery</string>
   <string name="s85">Mapy</string>
   <string name="s86">Karty</string>
   <string name="s87">Tytuły</string>
@@ -202,7 +201,7 @@
   <string name="s165">Wczytywanie…</string>
   <string name="s166">Wyposażenie</string>
   <string name="s167">Sklep</string>
-  <string name="s168">Bieżący bilans:</string>
+  <string name="s168">Balans:</string>
   <string name="s169">Codzienna oferta</string>
   <string name="s170">Ostatnia aktualizacja</string>
   <string name="s171">Następna aktualizacja</string>
@@ -259,7 +258,7 @@
   <string name="s222">minut temu</string>
   <string name="s223">dni temu</string>
   <string name="s224">Rozegrano</string>
-  <string name="s225">Wyeliminowano\"</string>
+  <string name="s225">Wyeliminowano</string>
   <string name="s226">Kopiuj nazwę</string>
   <string name="s227">Szczegóły rankingu</string>
   <string name="s228">Odrzuć</string>
@@ -272,7 +271,7 @@
   <string name="s235">tyg. temu</string>
   <string name="s236">Ważne</string>
   <string name="s237">Pamiętaj, aby kliknąć \'Zostań zalogowany\' podczas logowania</string>
-  <string name="live_is_loading">Ładowanie na żywo :)</string>
+  <string name="live_is_loading">Łączenie z klientem...</string>
   <string name="could_not_get_your_load_outs">Nie można uzyskać Twojego uzbrojenia</string>
   <string name="penalty">Kary</string>
   <string name="banned_for">Zbanowany za </string>
@@ -282,7 +281,8 @@
   <string name="end_of_agent_select">Koniec wyboru agenta</string>
   <string name="you">Ty</string>
   <string name="lock_in_random">Wybierz losowo</string>
-  <string name="offers">Oferty</string>
+  <string name="offers">Codzienne oferty</string>
   <string name="bundles">Pakiety</string>
   <string name="night_market">Nocny Rynek</string>
+  <string name="accessory">Akcesoria</string>
 </resources>

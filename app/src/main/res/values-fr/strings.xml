@@ -11,7 +11,6 @@
   <string name="starting">Démarrage</string>
   <string name="s8">Comment ça marche</string>
   <string name="s9">Cliquez sur le bouton pour vérifier que vous n\'êtes pas un robot</string>
-  <string name="s10">Vol de vos données en cours</string>
   <string name="s11">Ajout de porte-bonheurs à votre compte</string>
   <string name="s12">Réglage de votre rang à \"Argent\"</string>
   <string name="s13">Vous avez réussi</string>
@@ -168,7 +167,7 @@
   <string name="s165">Chargement…</string>
   <string name="s166">Équipement</string>
   <string name="s167">Boutique</string>
-  <string name="s168">Solde actuel :</string>
+  <string name="s168">Solde :</string>
   <string name="s169">Offres du jour</string>
   <string name="s170">Mis à jour la dernière fois</string>
   <string name="s171">Prochaine mise à jour</string>
@@ -248,4 +247,8 @@
   <string name="end_of_agent_select">Fin de la sélection d\'agent</string>
   <string name="you">Vous</string>
   <string name="lock_in_random">Verrouillage aléatoire</string>
+  <string name="offers">Offres du jour</string>
+  <string name="bundles">Packs</string>
+  <string name="night_market">Marché Nocturne</string>
+  <string name="accessory">Accessoire</string>
 </resources>

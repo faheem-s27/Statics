@@ -4,6 +4,7 @@ import RecentMatchesDatabase
 import ValorantMatch
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.os.Message
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -22,6 +23,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
@@ -50,7 +52,12 @@ class RecentMatchesList : AppCompatActivity() {
     lateinit var AssetsDatabase: AssetsDatabase
     lateinit var mapsJSON: JSONArray
     lateinit var RecentMatchesDatabase: RecentMatchesDatabase
+    private val characterCounts = mutableMapOf<String, Int>()
+    private val mapCounts = mutableMapOf<String, Int>()
+    private val rankCount = mutableMapOf<Int, Int>()
+    private val playerCardsCount = mutableMapOf<String, Int>()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recent_matches_list)
@@ -126,16 +133,16 @@ class RecentMatchesList : AppCompatActivity() {
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
             progressDialog.show()
 
+            var actualMatchesProcessed = 0
+
             // Create a custom coroutine dispatcher with a fixed thread pool
-            val customDispatcher: CoroutineContext =
-                Executors.newFixedThreadPool(400).asCoroutineDispatcher()
+            val customDispatcher: CoroutineContext = Executors.newFixedThreadPool(400).asCoroutineDispatcher()
+
 
             scope.launch {
                 val batchSize = 100 // Set the batch size according to your needs
-                val totalBatches =
-                    totalMatches / batchSize + if (totalMatches % batchSize == 0) 0 else 1
-                withContext(Main)
-                {
+                val totalBatches = totalMatches / batchSize + if (totalMatches % batchSize == 0) 0 else 1
+                withContext(Main) {
                     progressDialog.max = batchSize
                 }
 
@@ -143,7 +150,7 @@ class RecentMatchesList : AppCompatActivity() {
                     val startIndex = batchIndex * batchSize
                     val endIndex = minOf(startIndex + batchSize, totalMatches)
 
-                    val coroutines = mutableListOf<Deferred<Unit?>>()
+                    val coroutines = mutableListOf<Deferred<ValorantMatch?>>()
 
                     // Function to update progress based on completed coroutines
                     fun updateProgress() {
@@ -160,60 +167,34 @@ class RecentMatchesList : AppCompatActivity() {
                     for (i in startIndex until endIndex) {
                         val matchID = matchIdList[i]
                         val coroutine = CoroutineScope(customDispatcher).async {
-                            getMatch(matchID)
+                            getMatch2(matchID)
                         }
                         coroutine.invokeOnCompletion { updateProgress() } // Update progress on coroutine completion
                         coroutines.add(coroutine)
                     }
+
+                    // Await all coroutines in this batch to be completed concurrently
                     coroutines.awaitAll()
-                }
 
-                // All matches loaded!
-                var totalMatches = 0
-                var completedMatches = 0
-
-                withContext(Dispatchers.IO)
-                {
-                    totalMatches = RecentMatchesDatabase.getTotalMatchesCount()
-                }
-                withContext(Main)
-                {
-                    progressDialog.setTitle("Reading match data")
-                    progressDialog.max = totalMatches
-                }
-
-                val characterCounts = mutableMapOf<String, Int>()
-                val mapCounts = mutableMapOf<String, Int>()
-                val rankCount = mutableMapOf<Int, Int>()
-
-                // Observe the flow of matches and update progress
-                RecentMatchesDatabase.getAllMatchesFlow()
-                    .flowOn(Dispatchers.IO)
-                    .collect { match ->
-                        val map = convertMapURL(match.matchInfo.mapId)
-                        mapCounts[map] = mapCounts.getOrDefault(map, 0) + 1
-                        for (player in match.players) {
-                            val character = player.characterId
-                            val rank = player.competitiveTier
-                            rankCount[rank] = rankCount.getOrDefault(rank, 0) + 1
-                            characterCounts[character] =
-                                characterCounts.getOrDefault(character, 0) + 1
-                        }
-
-                        withContext(Main) {
-                            completedMatches++
-                            progressDialog.progress = completedMatches
+                    // Process the matches in this batch once all the coroutines are done
+                    for (coroutine in coroutines) {
+                        val match = coroutine.getCompleted()
+                        if (match != null) {
+                            actualMatchesProcessed++
+                            processMatch(match)
                         }
                     }
+                }
 
                 // All matches loaded!
                 withContext(Main) {
                     progressDialog.dismiss()
+                    Toast.makeText(this@RecentMatchesList, "Processed $actualMatchesProcessed matches!", Toast.LENGTH_SHORT).show()
                 }
 
-                val sortedCharacterCounts =
-                    characterCounts.toList().sortedByDescending { it.second }
+                val sortedCharacterCounts = characterCounts.toList().sortedByDescending { it.second }
                 val sortedMapCounts = mapCounts.toList().sortedByDescending { it.second }
+                val sortedCardCounts = playerCardsCount.toList().sortedByDescending { it.second }
                 val sortedRankCount = rankCount.toList().sortedByDescending { it.second }
 
                 val intent = android.content.Intent(
@@ -222,12 +203,24 @@ class RecentMatchesList : AppCompatActivity() {
                 )
                 intent.putExtra("agents", sortedCharacterCounts.toTypedArray())
                 intent.putExtra("maps", sortedMapCounts.toTypedArray())
+                intent.putExtra("cards", sortedCardCounts.toTypedArray())
+                intent.putExtra("Toolbar", "$actualMatchesProcessed matches in ${gamemodeSpinner.selectedItem}")
                 startActivity(intent)
-//
-                //Toast.makeText(this@RecentMatchesList, "$agentName was played ${mostPlayedAgent.second} times", Toast.LENGTH_LONG).show()
-                //Toast.makeText(this@RecentMatchesList, "$mapName was played ${mostPlayedMap.second} times", Toast.LENGTH_LONG).show()
-
             }
+        }
+    }
+
+    private fun processMatch(match: ValorantMatch)
+    {
+        val map = convertMapURL(match.matchInfo.mapId)
+        mapCounts[map] = mapCounts.getOrDefault(map, 0) + 1
+        for (player in match.players) {
+            val character = player.characterId
+            val rank = player.competitiveTier
+            val card = player.playerCard
+            rankCount[rank] = rankCount.getOrDefault(rank, 0) + 1
+            characterCounts[character] = characterCounts.getOrDefault(character, 0) + 1
+            playerCardsCount[card] = playerCardsCount.getOrDefault(card, 0) + 1
         }
     }
 
@@ -276,7 +269,6 @@ class RecentMatchesList : AppCompatActivity() {
             null
         }
     }
-
 
     fun formatGameMode(mode: String): String
     {
