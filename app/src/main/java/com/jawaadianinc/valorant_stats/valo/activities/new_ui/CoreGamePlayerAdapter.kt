@@ -31,7 +31,7 @@ class CoreGamePlayerAdapter(private val players: List<CoreGamePlayer>) :
 
         holder.agentImage.alpha = 1f
 
-        if (player.name.length > 12) {
+        if (player.name.length > 8) {
             holder.playerName.textSize = 10f
         }
 

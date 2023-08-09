@@ -312,5 +312,6 @@
     <string name="error_getting_region">Error getting region ❌</string>
     <string name="got_region">Got region 🌎</string>
     <string name="hello">"Hello "</string>
+    <string name="game_modes_unavailable">Game modes unavailable</string>
 
 </resources>

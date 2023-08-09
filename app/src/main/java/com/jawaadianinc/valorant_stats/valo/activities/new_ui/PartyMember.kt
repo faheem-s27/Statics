@@ -13,10 +13,11 @@ class PartyMember(
     val rankImage: String
 ) {
     fun getPlayerImage(): String {
-        return "https://media.valorant-api.com/playercards/${cardID}/smallart.png"
+        return "https://media.valorant-api.com/playercards/$cardID/smallart.png"
     }
 
     fun getTitle(context: Context): String {
-        return AssetsDatabase(context).retrieveName(titleID)
+        val name = AssetsDatabase(context).retrieveName(titleID)
+        return name.takeIf { it.isNotBlank() } ?: "None"
     }
 }

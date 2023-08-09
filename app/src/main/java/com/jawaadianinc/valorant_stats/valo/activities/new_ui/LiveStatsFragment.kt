@@ -76,6 +76,7 @@ import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
+import java.net.SocketTimeoutException
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -205,9 +206,10 @@ class LiveStatsFragment : Fragment() {
         entitlementToken = activity?.intent?.getStringExtra("entitlement")
 
         // add the game modes to the array
-        gameModes = ArrayList<String>(listOf(
+        gameModes = ArrayList(listOf(
             "Unrated",
             "Competitive",
+            "Team Deathmatch",
             "Swift Play",
             "Spike Rush",
             "Deathmatch",
@@ -525,11 +527,11 @@ class LiveStatsFragment : Fragment() {
 
         val url = "https://pd.${shard}.a.pvp.net/contracts/v1/contracts/$PlayerUUID"
         val response = APIRequestValorant(url)
-        val body = response.body.string()
-        val code = response.code
-
-        Log.d("LIVE_STATS_CONTRACTS", "Response code: $code Body: $body")
-
+        if (response != null) {
+            val body = response.body.string()
+            val code = response.code
+            Log.d("LIVE_STATS_CONTRACTS", "Response code: $code Body: $body")
+        }
     }
 
     private fun showStoreFront() {
@@ -537,99 +539,116 @@ class LiveStatsFragment : Fragment() {
 
         liveModeScope.launch {
             val response = APIRequestValorant(url)
-            val body = response.body.string()
-            val code = response.code
+            if (response != null) {
+                val body = response.body.string()
+                val code = response.code
 
-            if (code != 200) return@launch
+                if (code != 200) return@launch
 
-            withContext(Main) {
-                getWallet()
-                val json = JSONObject(body)
+                withContext(Main) {
+                    getWallet()
+                    val json = JSONObject(body)
 
-                val timerSeconds =
-                    json.getJSONObject("SkinsPanelLayout")
-                        .getInt("SingleItemOffersRemainingDurationInSeconds")
-                setStoreTimer(timerSeconds)
+                    val timerSeconds =
+                        json.getJSONObject("SkinsPanelLayout")
+                            .getInt("SingleItemOffersRemainingDurationInSeconds")
+                    setStoreTimer(timerSeconds)
 
-                val bundleSeconds = json.getJSONObject("FeaturedBundle")
-                    .getInt("BundleRemainingDurationInSeconds")
-                setBundleStoreTimer(bundleSeconds)
+                    val bundleSeconds = json.getJSONObject("FeaturedBundle")
+                        .getInt("BundleRemainingDurationInSeconds")
+                    setBundleStoreTimer(bundleSeconds)
 
-                val accessorySeconds = json.getJSONObject("AccessoryStore")
-                    .getInt("AccessoryStoreRemainingDurationInSeconds")
-                setAccessoryStoreTimer(accessorySeconds)
+                    val accessorySeconds = json.getJSONObject("AccessoryStore")
+                        .getInt("AccessoryStoreRemainingDurationInSeconds")
+                    setAccessoryStoreTimer(accessorySeconds)
 
-                val NightMarket = json.optJSONObject("BonusStore")
-                if (NightMarket != null) {
-                    //show dialog
-                    Snackbar.make(requireView(), getString(R.string.s52), Snackbar.LENGTH_LONG).show()
-                    handleNightMarket(NightMarket)
-                }
-                val tabLayout = requireView().findViewById<TabLayout>(R.id.shop_tabLayout)
-                val viewPager = requireView().findViewById<ViewPager>(R.id.shop_viewPager)
-                viewPager?.setPageTransformer(true, ZoomOutPageTransformer())
-
-                val adapter = handleDailyOffers(json.getJSONObject("SkinsPanelLayout"))
-                val bundleAdapter = handleBundleOffer(json.getJSONObject("FeaturedBundle").getJSONObject("Bundle"))
-                val accessoryAdapter = handleAccessoryStore(json.getJSONObject("AccessoryStore"))
-
-                val pagerAdapter = PagerAdapter(childFragmentManager, requireContext(), adapter!!, bundleAdapter, accessoryAdapter)
-                viewPager.adapter = pagerAdapter
-                viewPager.offscreenPageLimit = 4
-                tabLayout.setupWithViewPager(viewPager)
-
-                val dailyTimer = requireView().findViewById<TextView>(R.id.playerStoreTimer)
-                val bundleTimer = requireView().findViewById<TextView>(R.id.playerStoreBundleTimer)
-                val accessoryTimer = requireView().findViewById<TextView>(R.id.playerStoreAccessoryTimer)
-
-                dailyTimer.visibility = View.VISIBLE
-                bundleTimer.visibility = View.INVISIBLE
-                accessoryTimer.visibility = View.INVISIBLE
-
-                // add a page listener to the viewpager so that it can show the right timerTextView
-                viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                    override fun onPageScrollStateChanged(state: Int) {
-                        // do nothing
+                    val NightMarket = json.optJSONObject("BonusStore")
+                    if (NightMarket != null) {
+                        //show dialog
+                        Snackbar.make(requireView(), getString(R.string.s52), Snackbar.LENGTH_LONG)
+                            .show()
+                        handleNightMarket(NightMarket)
                     }
+                    val tabLayout = requireView().findViewById<TabLayout>(R.id.shop_tabLayout)
+                    val viewPager = requireView().findViewById<ViewPager>(R.id.shop_viewPager)
+                    viewPager?.setPageTransformer(true, ZoomOutPageTransformer())
 
-                    override fun onPageScrolled(
-                        position: Int,
-                        positionOffset: Float,
-                        positionOffsetPixels: Int
-                    ) {
-                        // do nothing
-                    }
+                    val adapter = handleDailyOffers(json.getJSONObject("SkinsPanelLayout"))
+                    val bundleAdapter = handleBundleOffer(
+                        json.getJSONObject("FeaturedBundle").getJSONObject("Bundle")
+                    )
+                    val accessoryAdapter =
+                        handleAccessoryStore(json.getJSONObject("AccessoryStore"))
 
-                    override fun onPageSelected(position: Int) {
-                        when (position) {
-                            0 -> {
-                                // Offers
-                                dailyTimer.visibility = View.VISIBLE
-                                bundleTimer.visibility = View.INVISIBLE
-                                accessoryTimer.visibility = View.INVISIBLE
-                            }
-                            1 -> {
-                                // Accessory
-                                dailyTimer.visibility = View.INVISIBLE
-                                bundleTimer.visibility = View.INVISIBLE
-                                accessoryTimer.visibility = View.VISIBLE
-                            }
-                            2 -> {
-                                // Bundles
-                                dailyTimer.visibility = View.INVISIBLE
-                                bundleTimer.visibility = View.VISIBLE
-                                accessoryTimer.visibility = View.INVISIBLE
-                            }
-                            3 -> {
-                                // Night Market
-                                // hide all timers
-                                dailyTimer.visibility = View.INVISIBLE
-                                bundleTimer.visibility = View.INVISIBLE
-                                accessoryTimer.visibility = View.INVISIBLE
+                    val pagerAdapter = PagerAdapter(
+                        childFragmentManager,
+                        requireContext(),
+                        adapter!!,
+                        bundleAdapter,
+                        accessoryAdapter
+                    )
+                    viewPager.adapter = pagerAdapter
+                    viewPager.offscreenPageLimit = 4
+                    tabLayout.setupWithViewPager(viewPager)
+
+                    val dailyTimer = requireView().findViewById<TextView>(R.id.playerStoreTimer)
+                    val bundleTimer =
+                        requireView().findViewById<TextView>(R.id.playerStoreBundleTimer)
+                    val accessoryTimer =
+                        requireView().findViewById<TextView>(R.id.playerStoreAccessoryTimer)
+
+                    dailyTimer.visibility = View.VISIBLE
+                    bundleTimer.visibility = View.INVISIBLE
+                    accessoryTimer.visibility = View.INVISIBLE
+
+                    // add a page listener to the viewpager so that it can show the right timerTextView
+                    viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                        override fun onPageScrollStateChanged(state: Int) {
+                            // do nothing
+                        }
+
+                        override fun onPageScrolled(
+                            position: Int,
+                            positionOffset: Float,
+                            positionOffsetPixels: Int
+                        ) {
+                            // do nothing
+                        }
+
+                        override fun onPageSelected(position: Int) {
+                            when (position) {
+                                0 -> {
+                                    // Offers
+                                    dailyTimer.visibility = View.VISIBLE
+                                    bundleTimer.visibility = View.INVISIBLE
+                                    accessoryTimer.visibility = View.INVISIBLE
+                                }
+
+                                1 -> {
+                                    // Accessory
+                                    dailyTimer.visibility = View.INVISIBLE
+                                    bundleTimer.visibility = View.INVISIBLE
+                                    accessoryTimer.visibility = View.VISIBLE
+                                }
+
+                                2 -> {
+                                    // Bundles
+                                    dailyTimer.visibility = View.INVISIBLE
+                                    bundleTimer.visibility = View.VISIBLE
+                                    accessoryTimer.visibility = View.INVISIBLE
+                                }
+
+                                3 -> {
+                                    // Night Market
+                                    // hide all timers
+                                    dailyTimer.visibility = View.INVISIBLE
+                                    bundleTimer.visibility = View.INVISIBLE
+                                    accessoryTimer.visibility = View.INVISIBLE
+                                }
                             }
                         }
-                    }
-                })
+                    })
+                }
             }
         }
     }
@@ -671,24 +690,24 @@ class LiveStatsFragment : Fragment() {
 
     private fun getBundleNameAndImage(typeID: String, itemID: String): Pair<String?, String?>
     {
-        val mapping = mapOf(
-            "d5f120f8-ff8c-4aac-92ea-f2b5acbe9475" to spraysJSON.getJSONArray("data"),
-            "dd3bf334-87f3-40bd-b043-682a57a8dc3a" to gunBuddies.getJSONArray("data"),
-            "e7c63390-eda7-46e0-bb7a-a6abdacd2433" to gunSkinLevelsJSON.getJSONArray("data"),
-            "3f296c07-64c3-494c-923b-fe692a4fa1bd" to playerCardsJSON.getJSONArray("data")
-        )
-        val jsonArray = mapping[typeID]
-        if (jsonArray != null) {
-            for (obj in jsonArray)
-            {
-                if (obj.getString("uuid") == itemID)
-                {
-                    val name = obj.getString("displayName")
-                    val image = obj.getString("displayIcon")
-                    return Pair(name, image)
-                }
-            }
-        }
+//        val mapping = mapOf(
+//            "d5f120f8-ff8c-4aac-92ea-f2b5acbe9475" to spraysJSON.getJSONArray("data"),
+//            "dd3bf334-87f3-40bd-b043-682a57a8dc3a" to gunBuddies.getJSONArray("data"),
+//            "e7c63390-eda7-46e0-bb7a-a6abdacd2433" to gunSkinLevelsJSON.getJSONArray("data"),
+//            "3f296c07-64c3-494c-923b-fe692a4fa1bd" to playerCardsJSON.getJSONArray("data")
+//        )
+//        val jsonArray = mapping[typeID]
+//        if (jsonArray != null) {
+//            for (obj in jsonArray)
+//            {
+//                if (obj.getString("uuid") == itemID)
+//                {
+//                    val name = obj.getString("displayName")
+//                    val image = obj.getString("displayIcon")
+//                    return Pair(name, image)
+//                }
+//            }
+//        }
 
         // Sprays
         when (typeID) {
@@ -946,24 +965,26 @@ class LiveStatsFragment : Fragment() {
             "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
         liveModeScope.launch {
             val response = APIRequestValorant(url)
-            val body = response.body.string()
-            val code = response.code
+            if (response != null) {
+                val body = response.body.string()
+                val code = response.code
 
-            withContext(Main)
-            {
-                if (code == 200) {
-                    // show dialog
-                    val json = JSONObject(body)
-                    loadSprays(json.getJSONArray("Sprays"))
-                    loadTitle(json.getJSONObject("Identity").getString("PlayerTitleID"))
-                    loadPlayerCard(json.getJSONObject("Identity").getString("PlayerCardID"))
-                    loadWeapons(json.getJSONArray("Guns"))
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.could_not_get_your_load_outs),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                withContext(Main)
+                {
+                    if (code == 200) {
+                        // show dialog
+                        val json = JSONObject(body)
+                        loadSprays(json.getJSONArray("Sprays"))
+                        loadTitle(json.getJSONObject("Identity").getString("PlayerTitleID"))
+                        loadPlayerCard(json.getJSONObject("Identity").getString("PlayerCardID"))
+                        loadWeapons(json.getJSONArray("Guns"))
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.could_not_get_your_load_outs),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }
@@ -1112,41 +1133,46 @@ class LiveStatsFragment : Fragment() {
             "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
         liveModeScope.launch {
             val response = APIRequestValorant(url)
-            var body = response.body.string()
-            val code = response.code
+            if (response != null) {
+                var body = response.body.string()
+                val code = response.code
 
-            if (code != 200) return@launch
+                if (code != 200) return@launch
 
-            val json = JSONObject(body)
-            val identity = json.getJSONObject("Identity")
-            identity.put("PlayerCardID", selectedPicture)
+                val json = JSONObject(body)
+                val identity = json.getJSONObject("Identity")
+                identity.put("PlayerCardID", selectedPicture)
 
-            // convert to string
-            body = json.toString()
+                // convert to string
+                body = json.toString()
 
-            val sprayResponse = APIRequestValorant(url, body, true)
-            val sprayBody = sprayResponse.body.string()
-            val sprayCode = sprayResponse.code
-            withContext(Main) {
-                if (sprayCode == 200) {
-                    Snackbar.make(
-                        requireView(),
-                        getString(R.string.s57),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                    val refreshButtonCurrentLoadout =
-                        view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
-                    refreshButtonCurrentLoadout!!.animate().rotationBy(360f).setDuration(500)
-                        .withEndAction {
-                            getPlayerLoadOuts()
+                val sprayResponse = APIRequestValorant(url, body, true)
+                if (sprayResponse != null) {
+                    val sprayBody = sprayResponse.body.string()
+                    val sprayCode = sprayResponse.code
+                    withContext(Main) {
+                        if (sprayCode == 200) {
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.s57),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            val refreshButtonCurrentLoadout =
+                                view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
+                            refreshButtonCurrentLoadout!!.animate().rotationBy(360f)
+                                .setDuration(500)
+                                .withEndAction {
+                                    getPlayerLoadOuts()
+                                }
+                        } else {
+                            // show error
+                            val dialog = AlertDialog.Builder(requireContext())
+                                .setTitle("Error")
+                                .setMessage("Error updating spray: $sprayBody")
+                                .setPositiveButton("OK", null)
+                            dialog.show()
                         }
-                } else {
-                    // show error
-                    val dialog = AlertDialog.Builder(requireContext())
-                        .setTitle("Error")
-                        .setMessage("Error updating spray: $sprayBody")
-                        .setPositiveButton("OK", null)
-                    dialog.show()
+                    }
                 }
             }
         }
@@ -1197,46 +1223,52 @@ class LiveStatsFragment : Fragment() {
             "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
         liveModeScope.launch {
             val response = APIRequestValorant(url)
-            var body = response.body.string()
-            val code = response.code
+            if (response != null) {
+                var body = response.body.string()
+                val code = response.code
 
-            if (code != 200) return@launch
+                if (code != 200) return@launch
 
-            val json = JSONObject(body)
-            val identity = json.getJSONObject("Identity")
-            identity.put("PlayerTitleID", titleID)
+                val json = JSONObject(body)
+                val identity = json.getJSONObject("Identity")
+                identity.put("PlayerTitleID", titleID)
 
-            // convert to string
-            body = json.toString()
+                // convert to string
+                body = json.toString()
 
-            val titleResponse = APIRequestValorant(url, body, true)
-            val titleBody = titleResponse.body.string()
-            val titleCode = titleResponse.code
+                val titleResponse = APIRequestValorant(url, body, true)
+                if (titleResponse != null) {
+                    val titleBody = titleResponse.body.string()
+                    val titleCode = titleResponse.code
 
-            withContext(Main) {
-            if (titleCode == 200) {
-                // update the title
-                //loadTitle(titleID)
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.s57),
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                val refreshButtonCurrentLoadout =
-                    view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
-                refreshButtonCurrentLoadout!!.animate().rotationBy(360f).setDuration(500)
-                    .withEndAction {
-                        getPlayerLoadOuts()
+                    withContext(Main) {
+                        if (titleCode == 200) {
+                            // update the title
+                            //loadTitle(titleID)
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.s57),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            val refreshButtonCurrentLoadout =
+                                view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
+                            refreshButtonCurrentLoadout!!.animate().rotationBy(360f)
+                                .setDuration(500)
+                                .withEndAction {
+                                    getPlayerLoadOuts()
+                                }
+                        } else {
+                            // show error
+                            val dialog = AlertDialog.Builder(requireContext())
+                                .setTitle("Error")
+                                .setMessage("Error updating title: $titleBody")
+                                .setPositiveButton("OK", null)
+                            dialog.show()
+                        }
+
                     }
-            } else {
-                // show error
-                val dialog = AlertDialog.Builder(requireContext())
-                    .setTitle("Error")
-                    .setMessage("Error updating title: $titleBody")
-                    .setPositiveButton("OK", null)
-                dialog.show()
-            }
-        }
+                }
+                            }
     }
     }
 
@@ -1245,48 +1277,53 @@ class LiveStatsFragment : Fragment() {
             "https://pd.${shard}.a.pvp.net/personalization/v2/players/${PlayerUUID}/playerloadout"
         liveModeScope.launch {
             val response = APIRequestValorant(url)
-            var body = response.body.string()
-            val code = response.code
+            if (response != null) {
+                var body = response.body.string()
+                val code = response.code
 
-            if (code != 200) return@launch
+                if (code != 200) return@launch
 
-            val json = JSONObject(body)
-            val sprays = json.getJSONArray("Sprays")
-            for (i in 0 until sprays.length()) {
-                val spray = sprays.getJSONObject(i)
-                if (spray.getString("EquipSlotID") == sprayEquipID) {
-                    spray.put("SprayID", sprayID)
-                }
-            }
-
-            // convert to string
-            body = json.toString()
-
-            val sprayResponse = APIRequestValorant(url, body, true)
-            val sprayBody = sprayResponse.body.string()
-            val sprayCode = sprayResponse.code
-withContext(Main) {
-            if (sprayCode == 200) {
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.s57),
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                val refreshButtonCurrentLoadout =
-                    view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
-                refreshButtonCurrentLoadout!!.animate().rotationBy(360f).setDuration(500)
-                    .withEndAction {
-                        getPlayerLoadOuts()
+                val json = JSONObject(body)
+                val sprays = json.getJSONArray("Sprays")
+                for (i in 0 until sprays.length()) {
+                    val spray = sprays.getJSONObject(i)
+                    if (spray.getString("EquipSlotID") == sprayEquipID) {
+                        spray.put("SprayID", sprayID)
                     }
-            } else {
-                // show error
-                val dialog = AlertDialog.Builder(requireContext())
-                    .setTitle("Error")
-                    .setMessage("Error updating spray: $sprayBody")
-                    .setPositiveButton("OK", null)
-                dialog.show()
-            }
-        }
+                }
+
+                // convert to string
+                body = json.toString()
+
+                val sprayResponse = APIRequestValorant(url, body, true)
+                if (sprayResponse!= null) {
+                    val sprayBody = sprayResponse.body.string()
+                    val sprayCode = sprayResponse.code
+                    withContext(Main) {
+                        if (sprayCode == 200) {
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.s57),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            val refreshButtonCurrentLoadout =
+                                view?.findViewById<ImageView>(R.id.new_refreshButtonCurrentLoadout)
+                            refreshButtonCurrentLoadout!!.animate().rotationBy(360f)
+                                .setDuration(500)
+                                .withEndAction {
+                                    getPlayerLoadOuts()
+                                }
+                        } else {
+                            // show error
+                            val dialog = AlertDialog.Builder(requireContext())
+                                .setTitle("Error")
+                                .setMessage("Error updating spray: $sprayBody")
+                                .setPositiveButton("OK", null)
+                            dialog.show()
+                        }
+                    }
+                            }
+                            }
     }
     }
     private fun loadSprays(Sprays: JSONArray) {
@@ -1296,9 +1333,9 @@ withContext(Main) {
         val topSprayImage = view?.findViewById<ImageView>(R.id.imageViewTopSpray)
 
         val LeftSpray = "0814b2fe-4512-60a4-5288-1fbdcec6ca48"
-        val TopSpray = "04af080a-4071-487b-61c0-5b9c0cfaac74"
+        val BottomSpray = "04af080a-4071-487b-61c0-5b9c0cfaac74"
         val RightSpray = "5863985e-43ac-b05d-cb2d-139e72970014"
-        val BottomSpray = "7cdc908e-4f69-9140-a604-899bd879eed1"
+        val TopSpray = "7cdc908e-4f69-9140-a604-899bd879eed1"
 
         for (i in 0 until Sprays.length()) {
             when (Sprays.getJSONObject(i).getString("EquipSlotID")) {
@@ -1391,35 +1428,35 @@ withContext(Main) {
         }
     }
 
-    private fun getPenalties()
-    {
-        val url = "https://pd.${shard}.a.pvp.net/restrictions/v3/penalties"
-        liveModeScope.launch {
-            val response = APIRequestValorant(url )
-            val code = response.code
-            val body = response.body.string()
-
-            if (code != 200) return@launch
-
-            val penaltiesJSON = JSONObject(body)
-            val penalties = penaltiesJSON.getJSONArray("Penalties")
-
-            if (penalties.length() == 0) return@launch
-
-            // loop through each penalty and show an alert dialog
-            for (i in 0 until penalties.length())
-            {
-                val penalty = penalties.getJSONObject(i)
-                // Show the penalty in alert dialog
-                AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-                    .setTitle(getString(R.string.penalty))
-                    //.setMessage("You have been banned from queueing for ${penalty.getString("Reason")} for ${convertSeconds(penalty.getInt("PenaltyRemainingDurationInSeconds"))}")
-                    .setMessage("A penalty on your account has been detected. Response: $penalty")
-                    .setPositiveButton("OK", null)
-                    .show()
-            }
-        }
-    }
+//    private fun getPenalties()
+//    {
+//        val url = "https://pd.${shard}.a.pvp.net/restrictions/v3/penalties"
+//        liveModeScope.launch {
+//            val response = APIRequestValorant(url )
+//            val code = response.code
+//            val body = response.body.string()
+//
+//            if (code != 200) return@launch
+//
+//            val penaltiesJSON = JSONObject(body)
+//            val penalties = penaltiesJSON.getJSONArray("Penalties")
+//
+//            if (penalties.length() == 0) return@launch
+//
+//            // loop through each penalty and show an alert dialog
+//            for (i in 0 until penalties.length())
+//            {
+//                val penalty = penalties.getJSONObject(i)
+//                // Show the penalty in alert dialog
+//                AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+//                    .setTitle(getString(R.string.penalty))
+//                    //.setMessage("You have been banned from queueing for ${penalty.getString("Reason")} for ${convertSeconds(penalty.getInt("PenaltyRemainingDurationInSeconds"))}")
+//                    .setMessage("A penalty on your account has been detected. Response: $penalty")
+//                    .setPositiveButton("OK", null)
+//                    .show()
+//            }
+//        }
+//    }
 
     private fun getEligibleGameModes(queueJSON: JSONArray) : ArrayList<String> {
         gameModes.clear()
@@ -1613,17 +1650,22 @@ withContext(Main) {
             "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${playerPartyID}/matchmaking/join"
         liveModeScope.launch {
             val response = APIRequestValorant(url, "")
-            val code = response.code
-            withContext(Main) {
-                if (code == 200) {
-                    val partyStatus = view?.findViewById<TextView>(R.id.new_playerPartyStatus)
-                    partyStatus?.text = getString(R.string.s59)
-                    val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
-                    joinMatchButton?.text = getString(R.string.s60)
+
+            if (response != null) {
+                val code = response.code
+
+                withContext(Dispatchers.Main) {
+                    if (code == 200) {
+                        val partyStatus = view?.findViewById<TextView>(R.id.new_playerPartyStatus)
+                        partyStatus?.text = getString(R.string.s59)
+                        val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
+                        joinMatchButton?.text = getString(R.string.s60)
+                    }
                 }
             }
         }
     }
+
 
     private fun cancelMatchmaking() {
         val url =
@@ -2021,6 +2063,12 @@ withContext(Main) {
         val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
         readySwitch.visibility = View.GONE
 
+        val gameModeSpinner = requireView().findViewById<Spinner>(R.id.new_partyGameModeSelect)
+        val unselectableAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, listOf(getString(
+                    R.string.game_modes_unavailable)))
+        gameModeSpinner.adapter = unselectableAdapter
+
+        gameModesUpdated = false
         playerPartyID = null
         partyState = null
     }
@@ -2768,11 +2816,11 @@ withContext(Main) {
         }
     }
 
-     suspend fun APIRequestValorant(
+    suspend fun APIRequestValorant(
         url: String,
         body: String? = null,
         put: Boolean? = false
-    ): Response {
+    ): Response? {
         val request = Request.Builder()
             .url(url)
             .addHeader("Content-Type", "application/json")
@@ -2787,11 +2835,21 @@ withContext(Main) {
             else -> request.put(body.toRequestBody("application/json".toMediaTypeOrNull()))
         }
 
-        return withContext(IO) {
-            val response = client.newCall(request.build()).execute()
-            response
+        return try {
+            withContext(IO) {
+                val response = client.newCall(request.build()).execute()
+                response
+            }
+        } catch (e: SocketTimeoutException) {
+            // Handle timeout exception
+            // You might want to retry the request or show an error to the user
+            null // Return null in case of timeout
+        } catch (e: Exception) {
+            // Handle other network-related exceptions
+            null // Return null in case of other exceptions
         }
     }
+
 
     private fun APIRequestValorant3(
         url: String,
