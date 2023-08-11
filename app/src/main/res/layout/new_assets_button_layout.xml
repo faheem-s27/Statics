@@ -25,13 +25,11 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/Valorant_SplashColourBackground"
         android:justificationMode="inter_word"
         android:paddingLeft="32dp"
         android:text="Agents"
         android:textAlignment="viewStart"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
         android:textSize="34sp"
         android:textStyle="bold"
         app:cornerRadius="25dp"
@@ -39,7 +37,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_wrapBehaviorInParent="included"
-        app:strokeColor="@color/ToolBar"
         app:strokeWidth="2dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

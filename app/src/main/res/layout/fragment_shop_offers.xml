@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Valorant_SplashColourBackground"
     tools:context=".valo.activities.new_ui.ShopOffersFragment">
 
     <ListView
         android:id="@+id/playerStoreListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Valorant_SplashColourBackground"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:nestedScrollingEnabled="true"

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Valorant_SplashColourBackground"
     tools:context=".valo.activities.new_ui.RecentMatchesList">
 
     <Spinner
@@ -23,10 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:backgroundTint="@color/Valorant_Red"
         android:fontFamily="@font/lalezar"
         android:text="Process"
-        android:textColor="@color/white"
         app:cornerRadius="15dp"
         app:layout_constraintEnd_toEndOf="@+id/gameModeSpinner"
         app:layout_constraintStart_toStartOf="@+id/gameModeSpinner"
@@ -41,9 +38,6 @@
         android:max="100"
         android:min="0"
         android:progress="50"
-        android:progressTint="#FFFFFF"
-        android:secondaryProgressTint="@color/ic_launcher_background"
-        android:thumbTint="@color/light_blue_50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/gameModeSpinner"
         app:layout_constraintStart_toStartOf="@+id/gameModeSpinner"
@@ -68,7 +62,6 @@
         android:layout_marginEnd="16dp"
         android:text="Valorant Recent Matches"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

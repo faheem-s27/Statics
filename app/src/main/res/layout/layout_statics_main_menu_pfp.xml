@@ -3,92 +3,84 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout16"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorOnSurfaceInverse"
     android:gravity="center"
     android:orientation="vertical"
     android:paddingLeft="20dp"
     android:paddingTop="20dp"
     android:paddingRight="20dp"
-    android:background="@color/Valorant_SplashColourBackground"
-    android:paddingBottom="20dp"
-    android:layout_height="wrap_content">
+    android:paddingBottom="20dp">
 
-<!--    <ImageView-->
-<!--        android:id="@+id/PopUp_LargePlayerPFP"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:alpha="0.5"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        android:src="@drawable/agent_background_generic"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/PopUp_LargePlayerPFP"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:alpha="0.5"-->
+    <!--        android:scaleType="centerCrop"-->
+    <!--        android:src="@drawable/agent_background_generic"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <Button
         android:id="@+id/popup_LogOutButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#d32f2f"
         android:fontFamily="@font/lalezar_reg"
         android:gravity="center"
         android:text="@string/s92"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="16dp"
         android:textStyle="bold"
         app:cornerRadius="10dp"
-        app:icon="@drawable/icons8_riot_games_48"
+        app:icon="@drawable/rioticon"
         app:iconPadding="0dp"
         app:iconSize="32dp"
         app:iconTint="#00FFFFFF"
         app:iconTintMode="add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/new_Leaderboards"
+        app:layout_constraintStart_toStartOf="@+id/new_Leaderboards"
+        app:layout_constraintTop_toBottomOf="@+id/switch_darkMode" />
 
     <Button
         android:id="@+id/new_Leaderboards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/Valorant_Red"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:fontFamily="@font/lalezar_reg"
         android:gravity="center"
         android:text="@string/s94"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
         android:textSize="14sp"
         android:textStyle="bold"
         app:cornerRadius="33px"
         app:icon="@drawable/rankicon"
         app:iconSize="36dp"
-        app:iconTint="@color/light_blue_50"
         app:iconTintMode="src_in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider9" />
+        app:layout_constraintTop_toBottomOf="@+id/popup_LogOutButton" />
 
     <Button
         android:id="@+id/new_About"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/Valorant_Red"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/lalezar_reg"
         android:gravity="center"
         android:text="@string/s96"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:layout_marginTop="16dp"
         app:cornerRadius="33px"
         app:icon="@drawable/just_statics_alot_smaller"
         app:iconSize="36dp"
-        app:iconTint="@color/light_blue_50"
         app:iconTintMode="src_in"
         app:layout_constraintEnd_toEndOf="@+id/new_Leaderboards"
         app:layout_constraintStart_toStartOf="@+id/new_Leaderboards"
@@ -99,18 +91,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/Valorant_Red"
         android:fontFamily="@font/lalezar_reg"
         android:gravity="center"
         android:text="@string/s97"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
         app:cornerRadius="33px"
         app:icon="@drawable/donate"
         app:iconSize="36dp"
-        app:iconTint="@color/light_blue_50"
         app:iconTintMode="src_in"
         app:layout_constraintEnd_toEndOf="@+id/new_Leaderboards"
         app:layout_constraintStart_toStartOf="@+id/new_Leaderboards"
@@ -120,34 +109,31 @@
         android:id="@+id/pfp_reset_language"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/Valorant_Red"
         android:fontFamily="@font/lalezar_reg"
         android:gravity="center"
         android:text="@string/reset_language"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:layout_marginTop="16dp"
         app:cornerRadius="33px"
         app:icon="@drawable/common_full_open_on_phone"
         app:iconSize="36dp"
-        app:iconTint="@color/light_blue_50"
         app:iconTintMode="src_in"
         app:layout_constraintEnd_toEndOf="@+id/new_Leaderboards"
         app:layout_constraintStart_toStartOf="@+id/new_Leaderboards"
         app:layout_constraintTop_toBottomOf="@+id/popup_donate" />
 
-    <View
-        android:id="@+id/divider9"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:visibility="invisible"
-        android:background="@color/Valorant_SplashColourBackground"
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/switch_darkMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dark Mode"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/popup_LogOutButton" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- A drop down menu under divider9 called language selector -->
 

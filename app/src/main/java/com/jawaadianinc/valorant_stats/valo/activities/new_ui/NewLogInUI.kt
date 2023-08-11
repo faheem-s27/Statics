@@ -202,6 +202,7 @@ class NewLogInUI : AppCompatActivity() {
 //                buttonStarted.text = "Click here! 🦆❤️"
 //                buttonStarted.visibility=View.VISIBLE
 //                buttonStarted.animate().alpha(1f).setDuration(1000).start()
+                finish()
                 startActivity(intent)
 //                buttonStarted.setOnClickListener {
 //                }

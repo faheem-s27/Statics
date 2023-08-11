@@ -33,7 +33,6 @@
             android:fontFamily="@font/baloo_bhai"
             android:padding="15dp"
             android:text="Round 1"
-            android:textColor="#FFFFFF"
             android:textSize="20dp"
             android:textStyle="bold" />
 
@@ -47,7 +46,6 @@
             android:fontFamily="@font/baloo_bhai"
             android:padding="15dp"
             android:text="Eliminated"
-            android:textColor="#FFFFFF"
             android:textSize="20dp"
             android:textStyle="bold" />
     </GridLayout>

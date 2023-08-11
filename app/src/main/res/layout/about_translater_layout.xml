@@ -29,7 +29,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textColor="#FFFFFF"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/circley_PFP"
@@ -40,7 +39,6 @@
     <TextView
         android:id="@+id/translater_discord"
         android:layout_width="wrap_content"
-        android:textColor="#FFFFFF"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="@+id/circley_PFP"
@@ -53,7 +51,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/circley_PFP"
         app:layout_constraintStart_toStartOf="@+id/circley_PFP"

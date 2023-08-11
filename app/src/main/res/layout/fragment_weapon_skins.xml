@@ -5,7 +5,6 @@
     android:id="@+id/frameLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Valorant_SplashColourBackground"
     tools:context=".valo.cosmetics.weapon.WeaponSkins">
 
     <SearchView

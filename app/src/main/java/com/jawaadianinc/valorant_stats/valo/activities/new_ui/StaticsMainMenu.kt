@@ -28,6 +28,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.firebase.database.FirebaseDatabase
@@ -73,7 +74,7 @@ class StaticsMainMenu : Fragment() {
     private var testing = false
     private var JSONRanks = JSONArray()
     private val scraper = TrackerGGScraper()
-    lateinit var progressDialog: androidx.appcompat.app.AlertDialog
+    lateinit var progressDialog: AlertDialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,11 +88,6 @@ class StaticsMainMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //binding = ActivityStaticsMainMenuBinding.inflate(layoutInflater)
         //activity.setSupportActionBar(toolbar)
-        progressDialog =
-            ProgressDialogStatics().setProgressDialog(
-                requireActivity(),
-                getString(R.string.loading_data)
-            )
         //progressDialog.show()
 
         playerName = activity?.intent?.getStringExtra("playerName") ?: return
@@ -255,8 +251,7 @@ class StaticsMainMenu : Fragment() {
             // only show this dialog once
             val prefs = activity?.getSharedPreferences("trackerGGDialog", Context.MODE_PRIVATE)!!
             val editor = prefs.edit()
-            if (!prefs.getBoolean("shown", false)) {
-                androidx.appcompat.app.AlertDialog.Builder(
+            if (!prefs.getBoolean("shown", false)) {  MaterialAlertDialogBuilder(
                     requireActivity(),
                     R.style.AlertDialogTheme
                 ).setTitle(getString(R.string.s102))
@@ -308,7 +303,7 @@ class StaticsMainMenu : Fragment() {
                     REFRESHING = false
                 } else {
                     // show alert dialog
-                    val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+                    val builder = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                     builder.setTitle("Error")
                     builder.setMessage(
                         "Unable to fetch data. Please try again later.\nError Code: ${
@@ -321,8 +316,7 @@ class StaticsMainMenu : Fragment() {
                         // finish the fragment
                         //requireActivity().finish()
                     }
-                    val dialog: AlertDialog = builder.create()
-                    dialog.show()
+                    builder.show()
 
                     // send this error to the firebase database
                     val error = hashMapOf(
@@ -370,13 +364,12 @@ class StaticsMainMenu : Fragment() {
             Picasso.get().load(smol).fit().centerCrop()
                 .into(newPlayerWideImage)
 
-            val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+            val builder = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             builder.setTitle("No Matches Found")
             builder.setMessage("You have not played any matches in a long time so Statics is unable to process your stats. Please play a match and try again.")
             builder.setPositiveButton("OK") { dialog, which ->
             }
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
+            builder.show()
 
             return
         }
@@ -886,8 +879,7 @@ class StaticsMainMenu : Fragment() {
     private fun checkForTrackerGG(gameName: String, gameTag: String) {
         // show loading dialog
         // show an alert dialog with options to choose which game mode to view stats on
-        val builder =
-            androidx.appcompat.app.AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
+        val builder = MaterialAlertDialogBuilder(requireActivity(), R.style.AlertDialogTheme)
         builder.setTitle("${getString(R.string.s216)} $gameName#$gameTag")
         val gameModes =
             arrayOf(getString(R.string.s149), getString(R.string.s148), getString(R.string.s147))
@@ -988,8 +980,7 @@ class StaticsMainMenu : Fragment() {
                     uiThread {
                         progressDoalog.dismiss()
                         // show dialog saying player is not signed in at tracker.gg
-                        val builder =
-                            androidx.appcompat.app.AlertDialog.Builder(
+                        val builder = MaterialAlertDialogBuilder(
                                 requireActivity(),
                                 R.style.AlertDialogTheme
                             )

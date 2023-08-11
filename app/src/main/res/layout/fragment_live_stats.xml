@@ -4,20 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout15"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Valorant_SplashColourBackground">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/new_LiveStatsBackground"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:alpha="0.5"
+        android:alpha="0"
         android:scaleType="centerCrop"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/agent_background_generic" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/InitView"
@@ -37,7 +36,6 @@
             android:layout_marginEnd="32dp"
             android:gravity="center"
             android:text="@string/live_is_loading"
-            android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -53,9 +51,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:indeterminateTint="@color/Valorant_Red"
             android:progress="0"
-            android:progressTint="@color/Valorant_Red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView46" />
@@ -110,13 +106,11 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="80dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/currentLoadoutExpandButton"
-                    app:strokeColor="@color/white"
                     app:strokeWidth="1dp">
 
                     <RelativeLayout
@@ -150,7 +144,6 @@
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/s141"
-                            android:textColor="@color/white"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -169,25 +162,25 @@
                                 android:layout_width="80dp"
                                 android:layout_height="80dp"
                                 android:layout_centerInParent="true"
-                                android:translationZ="100dp"
-                                android:background="@drawable/circle_shape"/>
+                                android:background="@drawable/circle_shape"
+                                android:translationZ="100dp" />
                             <!-- A line going from top corner to bottom corner -->
                             <View
                                 android:id="@+id/line"
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:rotation="45"
                                 android:layout_centerInParent="true"
-                                android:background="@color/white" />
+                                android:background="?attr/colorPrimary"
+                                android:rotation="45" />
 
                             <!-- A line going from top corner to bottom corner -->
                             <View
                                 android:id="@+id/line2"
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:rotation="135"
                                 android:layout_centerInParent="true"
-                                android:background="@color/white" />
+                                android:background="?attr/colorPrimary"
+                                android:rotation="135" />
 
                             <ImageView
                                 android:id="@+id/imageViewTopSpray"
@@ -240,7 +233,6 @@
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/s142"
-                            android:textColor="@color/white"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -256,7 +248,6 @@
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
                             android:text="Title"
-                            android:textColor="@color/white"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -269,7 +260,6 @@
                             android:layout_alignBottom="@+id/CurrentLoadoutTitle"
                             android:layout_marginStart="8dp"
                             android:layout_toEndOf="@+id/CurrentLoadoutTitle"
-                            android:backgroundTint="@color/light_blue_50"
                             android:scaleType="fitCenter"
                             app:srcCompat="@drawable/edit_icon"
                             app:tint="@color/white" />
@@ -286,7 +276,6 @@
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/s143"
-                            android:textColor="@color/white"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -323,7 +312,6 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/weapons"
-                            android:textColor="@color/white"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -354,7 +342,6 @@
                     android:layout_marginTop="72dp"
                     android:fontFamily="@font/baloo_bhai"
                     android:text="@string/s25"
-                    android:textColor="#FFFFFF"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -368,7 +355,6 @@
                     android:layout_marginTop="32dp"
                     android:fontFamily="@font/baloo_bhai"
                     android:text="@string/s166"
-                    android:textColor="#FFFFFF"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -382,7 +368,6 @@
                     android:layout_marginTop="32dp"
                     android:fontFamily="@font/baloo_bhai"
                     android:text="@string/s167"
-                    android:textColor="#FFFFFF"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -396,7 +381,6 @@
                     android:layout_marginTop="64dp"
                     android:fontFamily="@font/baloo_bhai"
                     android:text="END"
-                    android:textColor="#FFFFFF"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     android:visibility="invisible"
@@ -425,13 +409,11 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="48dp"
-                    app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="80dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView32"
-                    app:strokeColor="@color/white"
                     app:strokeWidth="1dp">
 
                     <RelativeLayout
@@ -448,7 +430,6 @@
                             android:layout_marginTop="16dp"
                             android:fontFamily="@font/baloo_bhai"
                             android:text="00:00:00"
-                            android:textColor="#FFFFFF"
                             android:textSize="12dp"
                             android:textStyle="bold" />
 
@@ -463,7 +444,6 @@
                             android:layout_marginTop="16dp"
                             android:fontFamily="@font/baloo_bhai"
                             android:text="00:00:00"
-                            android:textColor="#FFFFFF"
                             android:textSize="12dp"
                             android:textStyle="bold" />
 
@@ -477,30 +457,38 @@
                             android:layout_marginTop="16dp"
                             android:fontFamily="@font/baloo_bhai"
                             android:text="00:00:00"
-                            android:textColor="#FFFFFF"
                             android:textSize="12dp"
                             android:textStyle="bold" />
 
                         <!-- TabLayout for different options -->
+                        <TextView
+                            android:id="@+id/playerStoreNightTimer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/baloo_bhai"
+                            android:text="00:00:00"
+                            android:textSize="12dp"
+                            android:textStyle="bold" />
+
                         <com.google.android.material.tabs.TabLayout
                             android:id="@+id/shop_tabLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/playerStoreTimer"
                             android:layout_marginStart="2dp"
-                            android:layout_marginEnd="2dp"
                             android:layout_marginTop="4dp"
-                            android:background="@color/Valorant_SplashColourBackground"
+                            android:layout_marginEnd="2dp"
+                            android:background="?attr/controlBackground"
                             app:tabGravity="center"
-                            app:tabIconTint="@color/light_blue_50"
                             app:tabIndicatorAnimationDuration="500"
                             app:tabIndicatorAnimationMode="elastic"
-                            app:tabIndicatorColor="#f94555"
                             app:tabIndicatorFullWidth="true"
                             app:tabIndicatorGravity="bottom"
                             app:tabMode="auto"
-                            app:tabSelectedTextColor="#f94555"
-                            app:tabTextColor="@color/white"
                             app:tabUnboundedRipple="true" />
 
                         <!-- ViewPager to hold the content of each tab -->
@@ -510,8 +498,7 @@
                             android:layout_height="700dp"
                             android:nestedScrollingEnabled="true"
                             android:layout_below="@+id/shop_tabLayout"
-                            android:layout_marginTop="2dp"
-                            android:background="@color/Valorant_SplashColourBackground" />
+                            android:layout_marginTop="2dp"/>
 
                         <!-- A text says that says Current Balance -->
                         <TextView
@@ -523,7 +510,6 @@
                             android:layout_marginTop="16dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/s168"
-                            android:textColor="#FFFFFF"
                             android:textSize="16dp"
                             android:textStyle="bold" />
 
@@ -550,7 +536,6 @@
                             android:textAlignment="center"
                             android:text="0"
                             android:fontFamily="@font/valorant"
-                            android:textColor="#FFFFFF"
                             android:textSize="16dp"
                             android:textStyle="bold" />
 
@@ -578,7 +563,6 @@
                             android:gravity="center"
                             android:text="0"
                             android:textAlignment="center"
-                            android:textColor="#FFFFFF"
                             android:textSize="16dp"
                             android:textStyle="bold" />
 
@@ -606,7 +590,6 @@
                             android:gravity="center"
                             android:text="0"
                             android:textAlignment="center"
-                            android:textColor="#FFFFFF"
                             android:textSize="16dp"
                             android:textStyle="bold" />
 
@@ -634,13 +617,11 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="80dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/partyExpandButton"
-                    app:strokeColor="@color/white"
                     app:strokeWidth="1dp">
 
                     <RelativeLayout
@@ -672,7 +653,6 @@
                             android:layout_toEndOf="@+id/new_playerAvatar"
                             android:fontFamily="@font/lalezar"
                             android:text="Duck"
-                            android:textColor="@color/white"
                             android:textSize="18dp" />
 
                         <TextView
@@ -700,7 +680,6 @@
                             android:gravity="center"
                             android:text="Not in game!"
                             android:textAlignment="center"
-                            android:textColor="#B0B0B0"
                             android:textSize="16dp" />
 
                         <ImageView
@@ -726,7 +705,6 @@
                             android:layout_marginEnd="16dp"
                             android:fontFamily="@font/lalezar"
                             android:text="Party Members"
-                            android:textColor="#FFFFFF"
                             android:textSize="18dp" />
 
                         <com.jawaadianinc.valorant_stats.valo.activities.new_ui.WrapContentListView
@@ -767,6 +745,7 @@
 
                         <!-- Button that says Find Match -->
                         <Button
+                            style="@style/Widget.Material3.Button.Icon"
                             android:id="@+id/new_findMatchButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -774,16 +753,17 @@
                             android:layout_alignParentStart="true"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
-                            android:layout_marginBottom="32dp"
-                            android:backgroundTint="@color/Valorant_Red"
                             android:fontFamily="@font/lalezar"
                             android:text="@string/s64"
-                            android:textColor="@color/white"
                             android:textSize="16dp"
-                            app:cornerRadius="50dp" />
+                            app:cornerRadius="50dp"
+                            android:layout_marginBottom="32dp"
+                            />
+<!--                            android:backgroundTint="@color/Valorant_Red"-->
+
 
                         <!-- Switch on the right side of the screen saying ready -->
-                        <com.google.android.material.switchmaterial.SwitchMaterial
+                        <com.google.android.material.materialswitch.MaterialSwitch
                             android:id="@+id/new_readySwitch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -792,15 +772,15 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="16dp"
                             android:checked="true"
+                            app:useMaterialThemeColors="true"
                             android:fontFamily="@font/lalezar"
                             android:text="Ready"
-                            android:textColor="#FFFFFF"
                             android:textOff="@string/s67"
                             android:textOn="Ready"
                             android:textSize="18dp"
-                            app:switchPadding="8dp"
-                            app:thumbTint="@color/switch_thumb_selector"
-                            app:trackTint="@color/Valorant_Red" />
+                            app:switchPadding="8dp"/>
+<!--                            app:thumbTint="@color/switch_thumb_selector"-->
+<!--                            app:trackTint="@color/Valorant_Red" -->
 
                         <!-- have a new relative layout underneath the button -->
                         <RelativeLayout
@@ -834,7 +814,6 @@
                                 android:layout_marginBottom="16dp"
                                 android:fontFamily="@font/lalezar"
                                 android:text="You are in a match!"
-                                android:textColor="@color/white"
                                 android:textSize="30dp"
                                 tools:text="UNRATED" />
 
@@ -849,7 +828,6 @@
                                 android:layout_marginBottom="16dp"
                                 android:fontFamily="@font/lalezar"
                                 android:text="@string/s70"
-                                android:textColor="@color/white"
                                 android:textSize="24dp" />
 
                             <androidx.recyclerview.widget.RecyclerView
@@ -880,31 +858,29 @@
 
                             <!-- Button that says Lock in -->
                             <Button
+                                style="@style/Widget.Material3.Button.Icon"
                                 android:id="@+id/new_lockInButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/new_agentSelectGridRecyclerView_other_people"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginBottom="8dp"
-                                android:backgroundTint="@color/Valorant_Red"
                                 android:fontFamily="@font/lalezar"
                                 android:text="@string/s144"
-                                android:textColor="@color/white"
                                 android:textSize="16dp"
                                 app:cornerRadius="50dp" />
 
                             <!-- Button that says Quit -->
                             <Button
+                                style="@style/Widget.Material3.Button.Icon"
                                 android:id="@+id/new_quitButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/new_lockInButton"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginBottom="16dp"
-                                android:backgroundTint="@color/Valorant_Red"
                                 android:fontFamily="@font/lalezar"
                                 android:text="@string/s72"
-                                android:textColor="@color/white"
                                 android:textSize="16dp"
                                 app:cornerRadius="50dp" />
 
@@ -942,7 +918,6 @@
                                 android:layout_marginTop="16dp"
                                 android:layout_marginBottom="16dp"
                                 android:fontFamily="@font/lalezar"
-                                android:textColor="@color/white"
                                 android:textSize="30dp"
                                 tools:text="UNRATED" />
 

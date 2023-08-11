@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import com.google.android.material.color.DynamicColors
 import com.jawaadianinc.valorant_stats.R
 import java.util.Locale
 
@@ -14,7 +15,8 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
+
+        DynamicColors.applyToActivitiesIfAvailable(application)
 
         val languageCode = Locale.getDefault().language
         setLocale(languageCode)

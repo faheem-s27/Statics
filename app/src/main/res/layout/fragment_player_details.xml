@@ -5,7 +5,6 @@
     android:id="@+id/frameLayout5"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ic_launcher_background"
     tools:context=".valo.match_info.PlayerDetailsFragment">
 
     <HorizontalScrollView
@@ -20,7 +19,6 @@
             android:id="@+id/radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/ic_launcher_background"
             android:checkedButton="@id/teamsRadio"
             android:orientation="horizontal"
             android:overScrollMode="ifContentScrolls"
@@ -33,43 +31,34 @@
                 android:id="@+id/teamsRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="@string/s207"
-                android:textColor="#FFFFFF" />
+                android:text="@string/s207" />
 
             <RadioButton
                 android:id="@+id/latestRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="@string/s208"
-                android:textColor="#FFFFFF" />
+                android:text="@string/s208" />
 
             <RadioButton
                 android:id="@+id/killsRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="@string/s209"
-                android:textColor="#FFFFFF" />
+                android:text="@string/s209"/>
 
             <RadioButton
                 android:id="@+id/deathsRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="@string/s210"
-                android:textColor="#FFFFFF" />
+                android:text="@string/s210" />
 
             <RadioButton
                 android:id="@+id/assistsRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
                 android:text="@string/s211"
                 android:textColor="#FFFFFF" />
@@ -80,26 +69,21 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="@string/s212"
-                android:textColor="#FFFFFF" />
+                android:text="@string/s212" />
 
             <RadioButton
                 android:id="@+id/levelsRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="@string/s213"
-                android:textColor="#FFFFFF" />
+                android:text="@string/s213" />
 
             <RadioButton
                 android:id="@+id/compRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="@string/s214"
-                android:textColor="#FFFFFF" />
+                android:text="@string/s214" />
 
         </RadioGroup>
 
@@ -126,7 +110,6 @@
         android:fontFamily="@font/baloo_bhai"
         android:text="@string/s215"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -149,7 +132,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0"
-        android:background="#B4000000"
         android:orientation="horizontal"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"

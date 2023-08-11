@@ -12,6 +12,7 @@
   <string name="starting">Startet</string>
   <string name="s8">So geht\'s</string>
   <string name="s9">Klicke auf den Button, um zu beweisen, dass du am Leben bist</string>
+  <string name="s10">Zeit deine Daten zu stehlen</string>
   <string name="s11">Gebe dir Talismänner</string>
   <string name="s12">Setze deinen Rang auf Eisen</string>
   <string name="s13">Du hast es geschafft</string>
@@ -252,4 +253,8 @@
   <string name="bundles">Pakete</string>
   <string name="night_market">Nachtmarkt</string>
   <string name="accessory">Accessoires</string>
+  <string name="weapons">Waffen</string>
+  <string name="reset_language">Sprache zurücksetzen</string>
+  <string name="got_cookies">Cookies erhalten 🍪</string>
+  <string name="got_access_token">Zugangs-Token 🎫</string>
 </resources>

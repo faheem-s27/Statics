@@ -14,13 +14,14 @@
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/ic_launcher_background"
+        android:background="?attr/colorOnSurfaceInverse"
         app:cardCornerRadius="30dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="?attr/colorOnSurfaceInverse">
 
             <TextView
                 android:id="@+id/playerName"
@@ -69,16 +70,13 @@
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
-                android:backgroundTint="@color/ic_launcher_background"
                 android:fontFamily="@font/lalezar"
                 android:text="@string/s226"
-                android:textColor="#FFFFFF"
                 app:cornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/playerstatsText"
-                app:strokeColor="#FFFFFF"
-                app:strokeWidth="4dp" />
+                app:strokeWidth="1dp" />
 
             <Button
                 android:id="@+id/playerRankButon"
@@ -87,17 +85,14 @@
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
-                android:backgroundTint="@color/ic_launcher_background"
                 android:fontFamily="@font/lalezar"
                 android:text="@string/s227"
-                android:textColor="#FFFFFF"
                 app:cornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/copyPlayerName"
-                app:strokeColor="#FFFFFF"
-                app:strokeWidth="4dp" />
+                app:strokeWidth="1dp" />
 
             <Button
                 android:id="@+id/dismiss"
@@ -107,18 +102,15 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/ic_launcher_background"
                 android:fontFamily="@font/lalezar"
                 android:text="@string/s228"
-                android:textColor="#FFFFFF"
                 app:cornerRadius="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/playerRankButon"
-                app:strokeColor="#FFFFFF"
-                app:strokeWidth="4dp" />
+                app:strokeWidth="1dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

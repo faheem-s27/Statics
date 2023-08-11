@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Valorant_SplashColourBackground"
     tools:context=".valo.activities.new_ui.MatchesProcessedStats">
 
     <View
@@ -27,7 +26,6 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/valorant"
         android:text="Agents"
-        android:textColor="@color/Valorant_Red"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,14 +57,12 @@
         android:id="@+id/materialToolbar4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/ToolBar"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="247 Matches on Comp"
-        app:titleCentered="true"
-        app:titleTextColor="@color/light_blue_50" />
+        app:titleCentered="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

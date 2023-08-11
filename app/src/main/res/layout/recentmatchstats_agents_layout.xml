@@ -91,8 +91,7 @@
                 android:layout_weight="1"
                 android:text="69"
                 android:textStyle="bold"
-                android:gravity="center"
-                android:textColor="@color/white" />
+                android:gravity="center" />
 
             <!-- Ability 2 -->
             <!-- Ability 1 -->
@@ -104,8 +103,7 @@
                 android:layout_weight="1"
                 android:text="69"
                 android:textStyle="bold"
-                android:gravity="center"
-                android:textColor="@color/white" />
+                android:gravity="center"/>
 
             <!-- Ability 1 -->
             <TextView
@@ -116,8 +114,7 @@
                 android:layout_weight="1"
                 android:text="69"
                 android:textStyle="bold"
-                android:gravity="center"
-                android:textColor="@color/white" />
+                android:gravity="center" />
 
             <!-- Ability 1 -->
             <TextView
@@ -128,8 +125,7 @@
                 android:layout_weight="1"
                 android:text="69"
                 android:textStyle="bold"
-                android:gravity="center"
-                android:textColor="@color/white" />
+                android:gravity="center" />
         </LinearLayout>
 
         <TextView
@@ -143,7 +139,6 @@
             android:layout_marginBottom="8dp"
             android:layout_toEndOf="@+id/imageView"
             android:gravity="center"
-            android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"
             tools:text="Played 345 times" />
@@ -158,7 +153,6 @@
             android:layout_marginBottom="8dp"
             android:layout_toEndOf="@+id/imageView"
             android:gravity="center"
-            android:textColor="#FFFFFF"
             android:textSize="14sp"
             tools:text="1332 kills" />
 
@@ -172,7 +166,6 @@
             android:layout_marginBottom="8dp"
             android:layout_toEndOf="@+id/imageView"
             android:gravity="center"
-            android:textColor="#FFFFFF"
             android:textSize="14sp"
             tools:text="1336 deaths" />
 
@@ -186,7 +179,6 @@
             android:layout_marginBottom="8dp"
             android:layout_toEndOf="@+id/imageView"
             android:gravity="center"
-            android:textColor="#FFFFFF"
             android:textSize="14sp"
             tools:text="436 assists" />
 
@@ -200,7 +192,6 @@
             android:layout_marginBottom="8dp"
             android:layout_toEndOf="@+id/imageView"
             android:gravity="center"
-            android:textColor="#FFFFFF"
             android:textSize="14sp"
             tools:text="1.4 K/D" />
     </RelativeLayout>

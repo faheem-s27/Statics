@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ic_launcher_background"
     tools:context=".valo.cosmetics.CosmeticsAgentsActivity">
 
     <View
@@ -32,7 +31,6 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/valorant"
                 android:textAlignment="center"
-                android:textColor="#FFFFFF"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +56,6 @@
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/baloo_bhai"
                 android:textAlignment="textStart"
-                android:textColor="#FFFFFF"
                 android:textSize="10dp"
                 android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +90,6 @@
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/baloo_bhai"
                 android:textAlignment="center"
-                android:textColor="#FFFFFF"
                 android:textSize="12dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/roleImage"
@@ -119,7 +115,6 @@
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/baloo_bhai"
                 android:textAlignment="viewStart"
-                android:textColor="#FFFFFF"
                 android:textSize="11dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -153,8 +148,6 @@
                 app:sliderIndicatorEnabled="false"
                 app:sliderIndicatorGravity="bottom|center"
                 app:sliderIndicatorOrientation="horizontal"
-                app:sliderIndicatorSelectedColor="#ff4654"
-                app:sliderIndicatorUnselectedColor="#FFF"
                 app:sliderScrollTimeInSec="2">
 
             </com.smarteist.autoimageslider.SliderView>
@@ -174,8 +167,6 @@
                 app:sliderIndicatorGravity="bottom"
                 app:sliderIndicatorOrientation="vertical"
                 app:sliderIndicatorRadius="1dp"
-                app:sliderIndicatorSelectedColor="#ff4654"
-                app:sliderIndicatorUnselectedColor="#FFF"
                 app:sliderScrollTimeInSec="2">
 
             </com.smarteist.autoimageslider.SliderView>
@@ -189,7 +180,6 @@
                 android:fontFamily="@font/lalezar"
                 android:text="@string/s180"
                 android:textAlignment="center"
-                android:textColor="#FFFFFF"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"

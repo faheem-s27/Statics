@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ic_launcher_background"
     tools:context=".valo.cosmetics.CosmeticsListActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0A0F15"
         app:layout_scrollFlags="scroll|enterAlways|snap"
         app:titleCentered="true"
         android:minHeight="?attr/actionBarSize"
@@ -19,8 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Valorant Weapons"
-        app:titleTextColor="#FFFFFF" />
+        app:title="Valorant Weapons" />
 
     <SearchView
         android:id="@+id/searchViewCosmetics"
@@ -28,7 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/ic_launcher_background"
         android:orientation="horizontal"
         android:queryHint="Search cosmetics"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,11 +37,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:backgroundTint="#283840"
         android:fontFamily="@font/baloo_bhai"
         android:text="@string/s187"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:cornerRadius="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,11 +50,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:backgroundTint="#283840"
         android:fontFamily="@font/baloo_bhai"
         android:text="@string/s186"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:cornerRadius="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,11 +65,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        android:backgroundTint="#283840"
         android:fontFamily="@font/baloo_bhai"
         android:text="@string/s185"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:cornerRadius="50dp"
         app:layout_constraintBottom_toBottomOf="@+id/cosmeticListView"

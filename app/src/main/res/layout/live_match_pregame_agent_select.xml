@@ -34,7 +34,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
-        android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/circley_PFP"
         app:layout_constraintTop_toTopOf="@+id/circley_PFP"
@@ -47,7 +46,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="2dp"
         android:text="Picking..."
-        android:textColor="#868686"
         app:layout_constraintBottom_toBottomOf="@+id/circley_PFP"
         app:layout_constraintStart_toEndOf="@+id/circley_PFP" />
 

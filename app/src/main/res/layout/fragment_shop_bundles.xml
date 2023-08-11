@@ -22,7 +22,6 @@
             android:id="@+id/playerStoreListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Valorant_SplashColourBackground"
             android:divider="@null"
             android:dividerHeight="0dp"
             android:nestedScrollingEnabled="true"

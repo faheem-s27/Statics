@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Valorant_SplashColourBackground"
     tools:context=".valo.activities.chat.ChatsForumActivity">
 
     <ImageView
@@ -23,7 +22,6 @@
         android:id="@+id/materialToolbar2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ToolBar"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +60,6 @@
         android:layout_marginBottom="16dp"
         android:checkable="false"
         android:elevation="12dp"
-        app:cardBackgroundColor="@color/Valorant_SplashColourBackground"
         app:cardCornerRadius="8dp"
         app:cardElevation="10dp"
         app:cardPreventCornerOverlap="true"
@@ -71,7 +68,6 @@
         app:layout_constraintEnd_toStartOf="@+id/sendMessageFAB"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/sendMessageFAB"
-        app:strokeColor="@color/Valorant_Red"
         app:strokeWidth="1dp">
 
         <EditText
@@ -82,8 +78,7 @@
             android:ems="10"
             android:hint="@string/s183"
             android:inputType="textPersonName"
-            android:paddingStart="15dp"
-            android:textColor="#FFFFFF" />
+            android:paddingStart="15dp"/>
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -93,12 +88,10 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        app:backgroundTint="@color/Valorant_Red"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_send"
-        app:tint="@color/Valorant_SplashColourBackground" />
+        app:srcCompat="@android:drawable/ic_menu_send" />
 
     <ListView
         android:id="@+id/messagesListView"
@@ -117,7 +110,6 @@
         android:layout_marginBottom="16dp"
         android:fontFamily="@font/lalezar"
         android:text="@string/s174"
-        android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/circle"

@@ -46,6 +46,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.tabs.TabLayout
@@ -126,6 +128,7 @@ class LiveStatsFragment : Fragment() {
     var storeTimer: CountDownTimer? = null
     var bundleTimer: CountDownTimer? = null
     var accessoryTimer: CountDownTimer? = null
+    var nightTimer: CountDownTimer? = null
 
     private lateinit var weaponsJSONObject: JSONObject
     private lateinit var contenttierJSONObject: JSONObject
@@ -480,26 +483,31 @@ class LiveStatsFragment : Fragment() {
 //                    "\n\nBoom! I'll now be able to help out much more!")
 
         } catch (e: Exception) {
-            // Alert the user and ask to send a bug report
             loadingDialogStatics.dismiss()
-            val msg = "${getString(R.string.s47)} ${e.message} ${e.cause} $e"
-            val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-                .setTitle(getString(R.string.s48))
-                .setMessage(msg)
-                .setPositiveButton(getString(R.string.s50)) { dialog, which ->
-                    // copy to clipboard and send to discord
-                    val clipboard =
-                        requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText("Valorant Live Stats", msg)
-                    clipboard.setPrimaryClip(clip)
-                    Toast.makeText(requireContext(), getString(R.string.s49), Toast.LENGTH_SHORT)
-                        .show()
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = Uri.parse("https://discord.gg/jwfJUQMPP7")
-                    startActivity(intent)
-                }
-                .setNegativeButton(getString(R.string.s51), null)
-            dialog.show()
+            if (context != null) {
+                val msg = "${getString(R.string.s47)} ${e.message} ${e.cause} $e"
+                val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+                    .setTitle(getString(R.string.s48))
+                    .setMessage(msg)
+                    .setPositiveButton(getString(R.string.s50)) { dialog, which ->
+                        // copy to clipboard and send to discord
+                        val clipboard =
+                            requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Valorant Live Stats", msg)
+                        clipboard.setPrimaryClip(clip)
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.s49),
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse("https://discord.gg/jwfJUQMPP7")
+                        startActivity(intent)
+                    }
+                    .setNegativeButton(getString(R.string.s51), null)
+                dialog.show()
+            }
         }
     }
 
@@ -562,13 +570,6 @@ class LiveStatsFragment : Fragment() {
                         .getInt("AccessoryStoreRemainingDurationInSeconds")
                     setAccessoryStoreTimer(accessorySeconds)
 
-                    val NightMarket = json.optJSONObject("BonusStore")
-                    if (NightMarket != null) {
-                        //show dialog
-                        Snackbar.make(requireView(), getString(R.string.s52), Snackbar.LENGTH_LONG)
-                            .show()
-                        handleNightMarket(NightMarket)
-                    }
                     val tabLayout = requireView().findViewById<TabLayout>(R.id.shop_tabLayout)
                     val viewPager = requireView().findViewById<ViewPager>(R.id.shop_viewPager)
                     viewPager?.setPageTransformer(true, ZoomOutPageTransformer())
@@ -580,12 +581,21 @@ class LiveStatsFragment : Fragment() {
                     val accessoryAdapter =
                         handleAccessoryStore(json.getJSONObject("AccessoryStore"))
 
+                    var nightAdapter: WeaponSkinOfferAdapter? = null
+                    val NightMarket = json.optJSONObject("BonusStore")
+                    if (NightMarket != null) {
+                        val nightSeconds = NightMarket.getInt("BonusStoreRemainingDurationInSeconds")
+                        setNightStoreTimer(nightSeconds)
+                        nightAdapter = handleNightMarket(NightMarket)
+                    }
+
                     val pagerAdapter = PagerAdapter(
                         childFragmentManager,
                         requireContext(),
                         adapter!!,
                         bundleAdapter,
-                        accessoryAdapter
+                        accessoryAdapter,
+                        nightAdapter
                     )
                     viewPager.adapter = pagerAdapter
                     viewPager.offscreenPageLimit = 4
@@ -596,10 +606,12 @@ class LiveStatsFragment : Fragment() {
                         requireView().findViewById<TextView>(R.id.playerStoreBundleTimer)
                     val accessoryTimer =
                         requireView().findViewById<TextView>(R.id.playerStoreAccessoryTimer)
+                    val nightTimer = requireView().findViewById<TextView>(R.id.playerStoreNightTimer)
 
                     dailyTimer.visibility = View.VISIBLE
                     bundleTimer.visibility = View.INVISIBLE
                     accessoryTimer.visibility = View.INVISIBLE
+                    nightTimer.visibility = View.INVISIBLE
 
                     // add a page listener to the viewpager so that it can show the right timerTextView
                     viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -622,6 +634,7 @@ class LiveStatsFragment : Fragment() {
                                     dailyTimer.visibility = View.VISIBLE
                                     bundleTimer.visibility = View.INVISIBLE
                                     accessoryTimer.visibility = View.INVISIBLE
+                                    nightTimer.visibility = View.INVISIBLE
                                 }
 
                                 1 -> {
@@ -629,6 +642,7 @@ class LiveStatsFragment : Fragment() {
                                     dailyTimer.visibility = View.INVISIBLE
                                     bundleTimer.visibility = View.INVISIBLE
                                     accessoryTimer.visibility = View.VISIBLE
+                                    nightTimer.visibility = View.INVISIBLE
                                 }
 
                                 2 -> {
@@ -636,14 +650,15 @@ class LiveStatsFragment : Fragment() {
                                     dailyTimer.visibility = View.INVISIBLE
                                     bundleTimer.visibility = View.VISIBLE
                                     accessoryTimer.visibility = View.INVISIBLE
+                                    nightTimer.visibility = View.INVISIBLE
                                 }
 
                                 3 -> {
                                     // Night Market
-                                    // hide all timers
                                     dailyTimer.visibility = View.INVISIBLE
                                     bundleTimer.visibility = View.INVISIBLE
                                     accessoryTimer.visibility = View.INVISIBLE
+                                    nightTimer.visibility = View.VISIBLE
                                 }
                             }
                         }
@@ -654,7 +669,7 @@ class LiveStatsFragment : Fragment() {
     }
 
     // Define your PagerAdapter
-    private class PagerAdapter(fm: FragmentManager?, context: Context, offersAdapter: WeaponSkinOfferAdapter, bundleOfferAdapter: BundleOfferAdapter, accessoryAdapter: BundleOfferAdapter) :
+    private class PagerAdapter(fm: FragmentManager?, context: Context, offersAdapter: WeaponSkinOfferAdapter, bundleOfferAdapter: BundleOfferAdapter, accessoryAdapter: BundleOfferAdapter, nightAdapter: WeaponSkinOfferAdapter?) :
         FragmentPagerAdapter(fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val fragments: MutableList<Fragment> = ArrayList()
         private val fragmentTitles: MutableList<String> = ArrayList()
@@ -664,11 +679,13 @@ class LiveStatsFragment : Fragment() {
             fragments.add(ShopOffersFragment.newInstance(offersAdapter))
             fragments.add(ShopAccessoryFragment.newInstance(accessoryAdapter))
             fragments.add(ShopBundlesFragment.newInstance(bundleOfferAdapter))
-            fragments.add(ShopNightMarketFragment().newInstance(offersAdapter))
             fragmentTitles.add(context.getString(R.string.offers))
             fragmentTitles.add(context.getString(R.string.accessory))
             fragmentTitles.add(context.getString(R.string.bundles))
-            fragmentTitles.add(context.getString(R.string.night_market))
+            if (nightAdapter != null) {
+                fragments.add(ShopNightMarketFragment.newInstance(nightAdapter))
+                fragmentTitles.add(context.getString(R.string.night_market))
+            }
         }
 
         override fun getItem(position: Int): Fragment {
@@ -684,8 +701,25 @@ class LiveStatsFragment : Fragment() {
         }
     }
 
-    private fun handleNightMarket(data: JSONObject){
-
+    private fun handleNightMarket(data: JSONObject): WeaponSkinOfferAdapter? {
+        val weaponSkins = ArrayList<WeaponSkinOffer>()
+        val items = data.getJSONArray("BonusStoreOffers")
+        for (item in items)
+        {
+            val offerID = item.getJSONObject("Offer").getString("OfferID")
+            val cost = item.getJSONObject("Offer")
+                .getJSONObject("Cost")
+                .getInt("85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741")
+            val weapon = getNameAndImageFromOffer(offerID)
+            if (weapon == JSONObject()) return null
+            val displayName = weapon.getString("displayName")
+            val displayIcon = weapon.getString("displayIcon")
+            val rarity = getRarity(offerID)
+            val weaponSkinOffer = WeaponSkinOffer(displayName, displayIcon, cost, rarity)
+            weaponSkins.add(weaponSkinOffer)
+        }
+        Toast.makeText(requireActivity(), "Got ${weaponSkins.size} night market weapons", Toast.LENGTH_LONG).show()
+        return WeaponSkinOfferAdapter(requireActivity(), weaponSkins)
     }
 
     private fun getBundleNameAndImage(typeID: String, itemID: String): Pair<String?, String?>
@@ -910,6 +944,30 @@ class LiveStatsFragment : Fragment() {
         }.start()
     }
 
+    private fun setNightStoreTimer(seconds: Int)
+    {
+        val timer = requireView().findViewById<TextView>(R.id.playerStoreNightTimer)
+        if (nightTimer != null) return
+
+        nightTimer = object : CountDownTimer((seconds * 1000).toLong(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val seconds = millisUntilFinished / 1000
+                val hours = seconds / 3600
+                val minutes = (seconds % 3600) / 60
+                val secs = seconds % 60
+                val time = String.format("%02d:%02d:%02d", hours, minutes, secs)
+                timer.text = time
+            }
+
+            override fun onFinish() {
+                timer.text = "00:00:00"
+                nightTimer = null
+                showStoreFront()
+            }
+        }.start()
+    }
+
+
     private fun setBundleStoreTimer(seconds: Int)
     {
         val timer = requireView().findViewById<TextView>(R.id.playerStoreBundleTimer)
@@ -1036,7 +1094,7 @@ class LiveStatsFragment : Fragment() {
 //                    copyToClipboard(skins.toString(), "${skins.size} skins for ${weapon.name}")
 //                }
                 // show an alert dialog saying that you will be able to change the skin soon!
-                val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+                val builder = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                 builder.setTitle("Coming soon!")
                 builder.setMessage("You will be able to change your ${weapon.name} skins soon! :)")
                 builder.setPositiveButton("Ok") { dialog, which ->
@@ -1166,7 +1224,7 @@ class LiveStatsFragment : Fragment() {
                                 }
                         } else {
                             // show error
-                            val dialog = AlertDialog.Builder(requireContext())
+                            val dialog = MaterialAlertDialogBuilder(requireContext())
                                 .setTitle("Error")
                                 .setMessage("Error updating spray: $sprayBody")
                                 .setPositiveButton("OK", null)
@@ -1187,7 +1245,7 @@ class LiveStatsFragment : Fragment() {
             // convert to CharSequence
             val titlesCharSequence = titles.map { it }.toTypedArray()
             // show a dialog with all of the titles
-            val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+            val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.s58))
                 .setItems(titlesCharSequence) { _, which ->
                     // get the title id from the selected item
@@ -1259,7 +1317,7 @@ class LiveStatsFragment : Fragment() {
                                 }
                         } else {
                             // show error
-                            val dialog = AlertDialog.Builder(requireContext())
+                            val dialog = MaterialAlertDialogBuilder(requireContext())
                                 .setTitle("Error")
                                 .setMessage("Error updating title: $titleBody")
                                 .setPositiveButton("OK", null)
@@ -1315,7 +1373,7 @@ class LiveStatsFragment : Fragment() {
                                 }
                         } else {
                             // show error
-                            val dialog = AlertDialog.Builder(requireContext())
+                            val dialog = MaterialAlertDialogBuilder(requireContext())
                                 .setTitle("Error")
                                 .setMessage("Error updating spray: $sprayBody")
                                 .setPositiveButton("OK", null)
@@ -1370,7 +1428,7 @@ class LiveStatsFragment : Fragment() {
         }
 
         val sprays = getAvailableSprays()
-        var alertDialog: AlertDialog = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme).create()
+        var alertDialog = MaterialAlertDialogBuilder(requireActivity(), R.style.AlertDialogTheme).create()
         val dialogView =
             LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_picture_list, null)
         val listViewPictures = dialogView.findViewById<ListView>(R.id.listViewPictures)
@@ -1380,7 +1438,7 @@ class LiveStatsFragment : Fragment() {
             "Spray"
         ) // Create an adapter for the list of pictures
 
-        alertDialog = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
+        alertDialog = MaterialAlertDialogBuilder(requireActivity(), R.style.AlertDialogTheme)
             .setTitle(getString(R.string.s58))
             .setView(dialogView)
             .setNegativeButton(getString(R.string.s51)) { _, _ ->
@@ -1448,7 +1506,7 @@ class LiveStatsFragment : Fragment() {
 //            {
 //                val penalty = penalties.getJSONObject(i)
 //                // Show the penalty in alert dialog
-//                AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+//                MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
 //                    .setTitle(getString(R.string.penalty))
 //                    //.setMessage("You have been banned from queueing for ${penalty.getString("Reason")} for ${convertSeconds(penalty.getInt("PenaltyRemainingDurationInSeconds"))}")
 //                    .setMessage("A penalty on your account has been detected. Response: $penalty")
@@ -1498,7 +1556,7 @@ class LiveStatsFragment : Fragment() {
 
     private fun canQueue(): Boolean {
 //        if (RestrictedSeconds > 0) {
-//            AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+//            MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
 //                .run {
 //                    setTitle("Error in queueing")
 //                    setMessage("You are banned from queueing for ${convertSeconds(RestrictedSeconds)}")
@@ -1574,7 +1632,7 @@ class LiveStatsFragment : Fragment() {
 
         val logOut = view?.findViewById<ImageButton>(R.id.new_partyPlayerLogOut)
         logOut?.setOnClickListener {
-            val dialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+            val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.s92))
                 .setMessage(getString(R.string.s56))
                 .setPositiveButton("Yes") { _, _ ->
@@ -1601,7 +1659,7 @@ class LiveStatsFragment : Fragment() {
             showPlayerCardsDialog()
         }
 
-        val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+        val readySwitch = requireView().findViewById<MaterialSwitch>(R.id.new_readySwitch)
         readySwitch?.setOnCheckedChangeListener { _, isChecked -> handleMemberReady(isChecked) }
 
         // disable the ready switch until the party is ready
@@ -1610,7 +1668,7 @@ class LiveStatsFragment : Fragment() {
 
     private fun showPlayerCardsDialog() {
         val pictures = getAvailablePlayerCards()
-        var alertDialog: AlertDialog = AlertDialog.Builder(requireActivity()).create()
+        var alertDialog = MaterialAlertDialogBuilder(requireActivity()).create()
         val dialogView =
             LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_picture_list, null)
         val listViewPictures = dialogView.findViewById<ListView>(R.id.listViewPictures)
@@ -1620,7 +1678,7 @@ class LiveStatsFragment : Fragment() {
             "PlayerCard"
         ) // Create an adapter for the list of pictures
 
-        alertDialog = AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
+        alertDialog = MaterialAlertDialogBuilder(requireActivity(), R.style.AlertDialogTheme)
             .setTitle(getString(R.string.s58))
             .setView(dialogView)
             .setNegativeButton(getString(R.string.s51)) { _, _ ->
@@ -1678,31 +1736,33 @@ class LiveStatsFragment : Fragment() {
             liveModeScope.launch {
                 val response =
                     APIRequestValorant("https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/players/${PlayerUUID}")
-                val code = response.code
-                val body = response.body.string()
-                withContext(Main)
-                {
-                    if (code == 404 || body.contains("PLAYER_DOES_NOT_EXIST")) {
-                        // No party found so player is not on Valorant
-                        timerSeconds = 10000
-                        notInGame()
-                        return@withContext
-                    } else if (code == 400 && body.contains("BAD_CLAIMS")) {
-                        // auth expired so tell user to restart app
-                        timerSeconds = 100000
-                        changePartyStatusText(getString(R.string.s61))
-                        // restart app
-                        val intent = Intent(requireContext(), LoadingActivity::class.java)
-                        startActivity(intent)
-                        activity?.finish()
-                    } else if (code == 200) {
-                        timerSeconds = 1000
-                        val partyJSON = JSONObject(body)
-                        playerPartyID = partyJSON.getString("CurrentPartyID")
-                        getPartyDetails(playerPartyID!!)
-                    } else {
-                        Log.d("LIVE_STATS_PARTY_STATUS", "Error: $code")
-                        Log.d("LIVE_STATS_PARTY_STATUS", "Body: $body")
+                if (response != null) {
+                    val code = response.code
+                    val body = response.body.string()
+                    withContext(Main)
+                    {
+                        if (code == 404 || body.contains("PLAYER_DOES_NOT_EXIST")) {
+                            // No party found so player is not on Valorant
+                            timerSeconds = 10000
+                            notInGame()
+                            return@withContext
+                        } else if (code == 400 && body.contains("BAD_CLAIMS")) {
+                            // auth expired so tell user to restart app
+                            timerSeconds = 100000
+                            changePartyStatusText(getString(R.string.s61))
+                            // restart app
+                            val intent = Intent(requireContext(), LoadingActivity::class.java)
+                            startActivity(intent)
+                            activity?.finish()
+                        } else if (code == 200) {
+                            timerSeconds = 1000
+                            val partyJSON = JSONObject(body)
+                            playerPartyID = partyJSON.getString("CurrentPartyID")
+                            getPartyDetails(playerPartyID!!)
+                        } else {
+                            Log.d("LIVE_STATS_PARTY_STATUS", "Error: $code")
+                            Log.d("LIVE_STATS_PARTY_STATUS", "Body: $body")
+                        }
                     }
                 }
             }
@@ -1868,18 +1928,21 @@ class LiveStatsFragment : Fragment() {
             val body = "[\"$subject\"]"
             return runBlocking(IO)  {
                 val response = APIRequestValorant(url, body, true)
-                val code = response.code
-                val subjectBody = response.body.string()
+                if (response != null) {
+                    val code = response.code
+                    val subjectBody = response.body.string()
 
-                if (code != 200) return@runBlocking ""
-                val playerName = JSONArray(subjectBody).getJSONObject(0).getString("GameName")
-                val playerTag = JSONArray(subjectBody).getJSONObject(0).getString("TagLine")
+                    if (code != 200) return@runBlocking ""
+                    val playerName = JSONArray(subjectBody).getJSONObject(0).getString("GameName")
+                    val playerTag = JSONArray(subjectBody).getJSONObject(0).getString("TagLine")
 
-                val displayName = "$playerName#$playerTag"
+                    val displayName = "$playerName#$playerTag"
 
-                // save the name to the shared preferences
-                authPreferences.edit().putString(subject, displayName).apply()
-                return@runBlocking displayName
+                    // save the name to the shared preferences
+                    authPreferences.edit().putString(subject, displayName).apply()
+                    return@runBlocking displayName
+                }
+                return@runBlocking ""
             }
         }
     }
@@ -1888,46 +1951,48 @@ class LiveStatsFragment : Fragment() {
         val url = "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/parties/${partyID}"
         liveModeScope.launch {
             val response = APIRequestValorant(url)
-            val body = response.body.string()
-            val code = response.code
-            if (code != 200) return@launch
-            partyState = JSONObject(body).getString("State")
-            RestrictedSeconds = JSONObject(body).getInt("RestrictedSeconds")
+            if (response != null) {
+                val body = response.body.string()
+                val code = response.code
+                if (code != 200) return@launch
+                partyState = JSONObject(body).getString("State")
+                RestrictedSeconds = JSONObject(body).getInt("RestrictedSeconds")
 
-            val previousState = JSONObject(body).getString("PreviousState")
-            val currentModeSelected =
-                JSONObject(body).getJSONObject("MatchmakingData").getString("QueueID")
-            var isReady = true
-            withContext(Main)
-            {
-                if (JSONObject(body).getInt("RestrictedSeconds") > 0)
+                val previousState = JSONObject(body).getString("PreviousState")
+                val currentModeSelected =
+                    JSONObject(body).getJSONObject("MatchmakingData").getString("QueueID")
+                var isReady = true
+                withContext(Main)
                 {
-                    startBanTimer(JSONObject(body).getInt("RestrictedSeconds"))
-                }
-                val members = JSONObject(body).getJSONArray("Members")
-                handlePartyMembers(members)
-                for (i in 0 until members.length()) {
-                    if (!members.getJSONObject(i).getBoolean("IsReady")) isReady = false
-                    break
-                }
+                    if (JSONObject(body).getInt("RestrictedSeconds") > 0) {
+                        startBanTimer(JSONObject(body).getInt("RestrictedSeconds"))
+                    }
+                    val members = JSONObject(body).getJSONArray("Members")
+                    handlePartyMembers(members)
+                    for (i in 0 until members.length()) {
+                        if (!members.getJSONObject(i).getBoolean("IsReady")) isReady = false
+                        break
+                    }
 
-                val spinner = view?.findViewById<Spinner>(R.id.new_partyGameModeSelect)
-                if (!gameModesUpdated) {
-                    val adapterQueue = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_spinner_item,
-                        getEligibleGameModes(JSONObject(body).getJSONArray("EligibleQueues"))
-                    )
-                    adapterQueue.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    spinner?.adapter = adapterQueue
-                    gameModesUpdated = true
+                    val spinner = view?.findViewById<Spinner>(R.id.new_partyGameModeSelect)
+                    if (!gameModesUpdated) {
+                        val adapterQueue = ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_spinner_item,
+                            getEligibleGameModes(JSONObject(body).getJSONArray("EligibleQueues"))
+                        )
+                        adapterQueue.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        spinner?.adapter = adapterQueue
+                        gameModesUpdated = true
+                    }
+                    val currentModeSelectedIndex =
+                        gameModes.indexOf(capitaliseGameMode(currentModeSelected))
+                    spinner?.setSelection(currentModeSelectedIndex)
+                    handlePartyState(partyState!!, previousState, isReady)
+
+
+                    //Log.d("LIVE_STATS_PARTY_STATUS", "Party state: $body")
                 }
-                val currentModeSelectedIndex = gameModes.indexOf(capitaliseGameMode(currentModeSelected))
-                spinner?.setSelection(currentModeSelectedIndex)
-                handlePartyState(partyState!!, previousState, isReady)
-
-
-                //Log.d("LIVE_STATS_PARTY_STATUS", "Party state: $body")
             }
         }
     }
@@ -1950,7 +2015,7 @@ class LiveStatsFragment : Fragment() {
 
     private fun handlePartyState2(state: String, previousState: String? = null, isReady: Boolean? = null) {
         val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
-        val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+        val readySwitch = requireView().findViewById<MaterialSwitch>(R.id.new_readySwitch)
 
         fun setButtonEnabled(enabled: Boolean) {
             joinMatchButton?.apply {
@@ -2010,7 +2075,7 @@ class LiveStatsFragment : Fragment() {
         isReady: Boolean? = null
     ) {
         val joinMatchButton = view?.findViewById<Button>(R.id.new_findMatchButton)
-        val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+        val readySwitch = requireView().findViewById<MaterialSwitch>(R.id.new_readySwitch)
 
         if (banTimer == null) {
             joinMatchButton!!.alpha = 1.0f
@@ -2060,7 +2125,7 @@ class LiveStatsFragment : Fragment() {
         val new_partyMembersText = view?.findViewById<TextView>(R.id.new_partyMembersText)
         new_partyMembersText?.text = getString(R.string.s54)
 
-        val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
+        val readySwitch = requireView().findViewById<MaterialSwitch>(R.id.new_readySwitch)
         readySwitch.visibility = View.GONE
 
         val gameModeSpinner = requireView().findViewById<Spinner>(R.id.new_partyGameModeSelect)
@@ -2082,39 +2147,44 @@ class LiveStatsFragment : Fragment() {
 
         liveModeScope.launch {
             val response = APIRequestValorant(url)
-            val code = response.code
-            val body = response.body.string()
-            withContext(Main){
-            val readySwitch = requireView().findViewById<SwitchMaterial>(R.id.new_readySwitch)
-            readySwitch.visibility = View.GONE
+            if (response != null) {
+                val code = response.code
+                val body = response.body.string()
+                withContext(Main) {
+                    val readySwitch =
+                        requireView().findViewById<MaterialSwitch>(R.id.new_readySwitch)
+                    readySwitch.visibility = View.GONE
 
-            if (code == 200) {
-                val preGameJSON = JSONObject(body)
-                PreGameLayout?.visibility = View.VISIBLE
-                CoreGameLayout?.visibility = View.GONE
-                playerPreGame(preGameJSON.getString("MatchID"))
-            } else if (code == 404) {
-                agentSelectSecondsRemaining = null
-                agentSelectTimer?.cancel()
-                agentSelectTimer = null
-                notificationSent = false
-                PreGameLayout?.visibility = View.GONE
-                val coreGameURL =
-                    "https://glz-${region}-1.${shard}.a.pvp.net/core-game/v1/players/${PlayerUUID}"
-                val coreGameResponse = APIRequestValorant(coreGameURL)
-                val coreGameCode = coreGameResponse.code
-                val coreGameBody = coreGameResponse.body.string()
+                    if (code == 200) {
+                        val preGameJSON = JSONObject(body)
+                        PreGameLayout?.visibility = View.VISIBLE
+                        CoreGameLayout?.visibility = View.GONE
+                        playerPreGame(preGameJSON.getString("MatchID"))
+                    } else if (code == 404) {
+                        agentSelectSecondsRemaining = null
+                        agentSelectTimer?.cancel()
+                        agentSelectTimer = null
+                        notificationSent = false
+                        PreGameLayout?.visibility = View.GONE
+                        val coreGameURL =
+                            "https://glz-${region}-1.${shard}.a.pvp.net/core-game/v1/players/${PlayerUUID}"
+                        val coreGameResponse = APIRequestValorant(coreGameURL)
+                        if (coreGameResponse != null) {
+                            val coreGameCode = coreGameResponse.code
+                            val coreGameBody = coreGameResponse.body.string()
 
-                agentPreGameSelectRecyclerView.adapter = null
+                            agentPreGameSelectRecyclerView.adapter = null
 
-                if (coreGameCode == 200) {
-                    val coreGameJSON = JSONObject(coreGameBody)
-                    CoreGameLayout?.visibility = View.VISIBLE
-                    val matchID = coreGameJSON.getString("MatchID")
-                    playerCoreGame(matchID)
+                            if (coreGameCode == 200) {
+                                val coreGameJSON = JSONObject(coreGameBody)
+                                CoreGameLayout?.visibility = View.VISIBLE
+                                val matchID = coreGameJSON.getString("MatchID")
+                                playerCoreGame(matchID)
+                            }
+                        }
+                    }
                 }
             }
-        }
         }
     }
 
@@ -2134,34 +2204,36 @@ class LiveStatsFragment : Fragment() {
         val url = "https://pd.${shard}.a.pvp.net/store/v1/wallet/${PlayerUUID}"
         liveModeScope.launch {
             val response = APIRequestValorant(url)
-            val code = response.code
-            val body = response.body.string()
+            if (response != null) {
+                val code = response.code
+                val body = response.body.string()
 
-            if (code != 200) return@launch
-            withContext(Main)
-            {
-                val walletJSON = JSONObject(body).getJSONObject("Balances")
-                val VP = walletJSON.getInt("85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741")
-                val RadiantePoints = walletJSON.getInt("e59aa87c-4cbf-517a-5983-6e81511be9b7")
-                val KingdomPoints = walletJSON.getInt("85ca954a-41f2-ce94-9b45-8ca3dd39a00d")
+                if (code != 200) return@launch
+                withContext(Main)
+                {
+                    val walletJSON = JSONObject(body).getJSONObject("Balances")
+                    val VP = walletJSON.getInt("85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741")
+                    val RadiantePoints = walletJSON.getInt("e59aa87c-4cbf-517a-5983-6e81511be9b7")
+                    val KingdomPoints = walletJSON.getInt("85ca954a-41f2-ce94-9b45-8ca3dd39a00d")
 
-                val VPText = view?.findViewById<TextView>(R.id.VPTextBalance)
-                val RadiantePointsText = view?.findViewById<TextView>(R.id.RPTextBalance)
-                val KPText = view?.findViewById<TextView>(R.id.KPTextBalance)
+                    val VPText = view?.findViewById<TextView>(R.id.VPTextBalance)
+                    val RadiantePointsText = view?.findViewById<TextView>(R.id.RPTextBalance)
+                    val KPText = view?.findViewById<TextView>(R.id.KPTextBalance)
 
-                VPText?.text = VP.toString()
-                RadiantePointsText?.text = RadiantePoints.toString()
-                KPText?.text = KingdomPoints.toString()
+                    VPText?.text = VP.toString()
+                    RadiantePointsText?.text = RadiantePoints.toString()
+                    KPText?.text = KingdomPoints.toString()
 
-                Picasso.get()
-                    .load("https://media.valorant-api.com/currencies/85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741/displayicon.png")
-                    .into(view?.findViewById<ImageView>(R.id.VPImage))
-                Picasso.get()
-                    .load("https://media.valorant-api.com/currencies/e59aa87c-4cbf-517a-5983-6e81511be9b7/displayicon.png")
-                    .into(view?.findViewById<ImageView>(R.id.RPImage))
-                Picasso.get()
-                    .load("https://media.valorant-api.com/currencies/85ca954a-41f2-ce94-9b45-8ca3dd39a00d/displayicon.png")
-                    .into(view?.findViewById<ImageView>(R.id.KPImage))
+                    Picasso.get()
+                        .load("https://media.valorant-api.com/currencies/85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741/displayicon.png")
+                        .into(view?.findViewById<ImageView>(R.id.VPImage))
+                    Picasso.get()
+                        .load("https://media.valorant-api.com/currencies/e59aa87c-4cbf-517a-5983-6e81511be9b7/displayicon.png")
+                        .into(view?.findViewById<ImageView>(R.id.RPImage))
+                    Picasso.get()
+                        .load("https://media.valorant-api.com/currencies/85ca954a-41f2-ce94-9b45-8ca3dd39a00d/displayicon.png")
+                        .into(view?.findViewById<ImageView>(R.id.KPImage))
+                }
             }
         }
 
@@ -2172,58 +2244,58 @@ class LiveStatsFragment : Fragment() {
         val url = "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}"
         liveModeScope.launch {
             val response = APIRequestValorant(url)
-
-            val code = response.code
-            val body = response.body.string()
-            if (code != 200) return@launch
-            withContext(Main){
-                val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
-                lockInButton!!.setOnClickListener {
-                    val lockInButtonText = lockInButton.text.toString()
-                    val lockInButtonTextLastWord = lockInButtonText.split(" ").last()
-                    if (AgentNamesID.containsValue(lockInButtonTextLastWord)) {
-                        val agentID =
-                            AgentNamesID.filterValues { it == lockInButtonTextLastWord }.keys.first()
-                        // select the character
-                        lockInCharacter(agentID, matchID)
+            if (response != null) {
+                val code = response.code
+                val body = response.body.string()
+                if (code != 200) return@launch
+                withContext(Main) {
+                    val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
+                    lockInButton!!.setOnClickListener {
+                        val lockInButtonText = lockInButton.text.toString()
+                        val lockInButtonTextLastWord = lockInButtonText.split(" ").last()
+                        if (AgentNamesID.containsValue(lockInButtonTextLastWord)) {
+                            val agentID =
+                                AgentNamesID.filterValues { it == lockInButtonTextLastWord }.keys.first()
+                            // select the character
+                            lockInCharacter(agentID, matchID)
+                        } else if (lockInButtonTextLastWord.lowercase() == "random") {
+                            val randomAgentID = AgentNamesID.keys.random()
+                            lockInCharacter(randomAgentID, matchID)
+                        }
                     }
-                    else if (lockInButtonTextLastWord.lowercase() == "random")
-                    {
-                        val randomAgentID = AgentNamesID.keys.random()
-                        lockInCharacter(randomAgentID, matchID)
+
+                    val quitButton = view?.findViewById<Button>(R.id.new_quitButton)
+                    quitButton!!.setOnClickListener {
+                        quitMatch(matchID)
+                    }
+
+                    val preGameJSON = JSONObject(body)
+                    handleAgentSelect(preGameJSON)
+
+                    val currentModeSelected = capitaliseGameMode(preGameJSON.getString("QueueID"))
+                    val textViewMode = view?.findViewById<TextView>(R.id.new_partyPreGameTitle)
+                    textViewMode?.text = getString(R.string.playing) + currentModeSelected
+
+                    val mapName = preGameJSON.getString("MapID")
+
+                    sendNotification(
+                        "${getString(R.string.s69)} $currentModeSelected",
+                        getString(R.string.s70),
+                        "match_found",
+                        MapsImagesID[mapName] ?: "",
+                    )
+
+                    val pregameBackground =
+                        view?.findViewById<ImageView>(R.id.new_partyPreGameMapImage)
+                    Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop()
+                        .into(pregameBackground)
+
+                    if (agentSelectSecondsRemaining == null) {
+                        agentSelectSecondsRemaining = preGameJSON.getLong("PhaseTimeRemainingNS")
+                        startAgentSelectCountdown(agentSelectSecondsRemaining!!)
                     }
                 }
-
-                val quitButton = view?.findViewById<Button>(R.id.new_quitButton)
-                quitButton!!.setOnClickListener {
-                    quitMatch(matchID)
-                }
-
-                val preGameJSON = JSONObject(body)
-                handleAgentSelect(preGameJSON)
-
-                val currentModeSelected = capitaliseGameMode(preGameJSON.getString("QueueID"))
-                val textViewMode = view?.findViewById<TextView>(R.id.new_partyPreGameTitle)
-                textViewMode?.text = getString(R.string.playing) + currentModeSelected
-
-                val mapName = preGameJSON.getString("MapID")
-
-                sendNotification(
-                    "${getString(R.string.s69)} $currentModeSelected",
-                    getString(R.string.s70),
-                    "match_found",
-                    MapsImagesID[mapName] ?: "",
-                )
-
-                val pregameBackground = view?.findViewById<ImageView>(R.id.new_partyPreGameMapImage)
-                Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop().into(pregameBackground)
-
-                if (agentSelectSecondsRemaining == null)
-                {
-                    agentSelectSecondsRemaining = preGameJSON.getLong("PhaseTimeRemainingNS")
-                    startAgentSelectCountdown(agentSelectSecondsRemaining!!)
-                }
-        }
+            }
     }
     }
 
@@ -2303,18 +2375,21 @@ class LiveStatsFragment : Fragment() {
             val body = "[\"$subject\"]"
             return withContext(IO) {
                 val response = APIRequestValorant(url, body, true)
-                val code = response.code
-                val subjectBody = response.body.string()
+                if (response != null) {
+                    val code = response.code
+                    val subjectBody = response.body.string()
 
-                if (code != 200) return@withContext ""
-                val playerName = JSONArray(subjectBody).getJSONObject(0).getString("GameName")
-                val playerTag = JSONArray(subjectBody).getJSONObject(0).getString("TagLine")
+                    if (code != 200) return@withContext ""
+                    val playerName = JSONArray(subjectBody).getJSONObject(0).getString("GameName")
+                    val playerTag = JSONArray(subjectBody).getJSONObject(0).getString("TagLine")
 
-                val displayName = "$playerName#$playerTag"
+                    val displayName = "$playerName#$playerTag"
 
-                // save the name to the shared preferences
-                authPreferences.edit().putString(subject, displayName).apply()
-                return@withContext displayName
+                    // save the name to the shared preferences
+                    authPreferences.edit().putString(subject, displayName).apply()
+                    return@withContext displayName
+                }
+                return@withContext ""
             }
         }
     }
@@ -2358,7 +2433,7 @@ class LiveStatsFragment : Fragment() {
 
     private fun quitMatch(matchID: String) {
         // Show a dialog to confirm the user wants to quit the match
-        val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
+        val builder = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
         builder.setTitle(getString(R.string.s72))
         builder.setMessage(getString(R.string.s71))
         builder.setPositiveButton("Yes") { dialog, which ->
@@ -2370,8 +2445,7 @@ class LiveStatsFragment : Fragment() {
         builder.setNegativeButton("No") { dialog, which ->
             // do nothing
         }
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
+        builder.show()
     }
 
     private fun selectCharacter(agentID: String) {
@@ -2385,34 +2459,36 @@ class LiveStatsFragment : Fragment() {
 
         liveModeScope.launch {
             val preGameresponse = APIRequestValorant(preGameUrl)
-            val preGamecode = preGameresponse.code
-            val preGamebody = preGameresponse.body.string()
+            if (preGameresponse != null) {
+                val preGamecode = preGameresponse.code
+                val preGamebody = preGameresponse.body.string()
 
-            if (preGamecode != 200) return@launch
+                if (preGamecode != 200) return@launch
 
-            val preGameJSON = JSONObject(preGamebody)
-            val matchID = preGameJSON.getString("MatchID")
+                val preGameJSON = JSONObject(preGamebody)
+                val matchID = preGameJSON.getString("MatchID")
 
-            if (agentID.lowercase() != "random") {
-                val url =
-                    "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}/select/${agentID}"
-                val response = APIRequestValorant(url, "")
-                val code = response.code
-                withContext(Main) {
-                    if (code == 200) {
-                            val agentName = AgentNamesID[agentID]
-                            changePartyStatusText("${getString(R.string.s73)} $agentName")
-                            val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
-                            agentButton?.text = "${getString(R.string.s74)} $agentName"
+                if (agentID.lowercase() != "random") {
+                    val url =
+                        "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}/select/${agentID}"
+                    val response = APIRequestValorant(url, "")
+                    if (response != null) {
+                        val code = response.code
+                        withContext(Main) {
+                            if (code == 200) {
+                                val agentName = AgentNamesID[agentID]
+                                changePartyStatusText("${getString(R.string.s73)} $agentName")
+                                val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
+                                agentButton?.text = "${getString(R.string.s74)} $agentName"
 
+                            }
+                        }
                     }
-                }
-            }
-            else if (agentID.lowercase() == "random")
-            {
-                withContext(Main) {
-                    val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
-                    agentButton?.text = getString(R.string.lock_in_random)
+                } else if (agentID.lowercase() == "random") {
+                    withContext(Main) {
+                        val agentButton = view?.findViewById<Button>(R.id.new_lockInButton)
+                        agentButton?.text = getString(R.string.lock_in_random)
+                    }
                 }
             }
         }
@@ -2428,17 +2504,18 @@ class LiveStatsFragment : Fragment() {
             val url =
                 "https://glz-${region}-1.${shard}.a.pvp.net/pregame/v1/matches/${matchID}/lock/${agentID}"
             val response = APIRequestValorant(url, "")
-
-            val code = response.code
-            withContext(Main)
-            {
-                if (code == 200) {
-                    val agentName = AgentNamesID[agentID]
-                    changePartyStatusText("${getString(R.string.s73)} $agentName")
-                    val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
-                    lockInButton?.isEnabled = false
-                    lockInButton?.alpha = 0.5f
-                    lockInButton?.text = "${getString(R.string.s75)} $agentName"
+            if (response != null) {
+                val code = response.code
+                withContext(Main)
+                {
+                    if (code == 200) {
+                        val agentName = AgentNamesID[agentID]
+                        changePartyStatusText("${getString(R.string.s73)} $agentName")
+                        val lockInButton = view?.findViewById<Button>(R.id.new_lockInButton)
+                        lockInButton?.isEnabled = false
+                        lockInButton?.alpha = 0.5f
+                        lockInButton?.text = "${getString(R.string.s75)} $agentName"
+                    }
                 }
             }
         }
@@ -2449,22 +2526,28 @@ class LiveStatsFragment : Fragment() {
             "https://glz-${region}-1.${shard}.a.pvp.net/core-game/v1/matches/${matchID}"
         liveModeScope.launch {
             val response = APIRequestValorant(url)
-            val code = response.code
-            val body = response.body.string()
-            if (code != 200) return@launch
-            withContext(Main)
-            {
-                val coreGameJSON = JSONObject(body)
-                val mapName = coreGameJSON.getString("MapID")
-                val coreGameBackground = view?.findViewById<ImageView>(R.id.new_partyCurrentGameMapImage)
-                Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop().into(coreGameBackground)
+            if (response != null) {
+                val code = response.code
+                val body = response.body.string()
+                if (code != 200) return@launch
+                withContext(Main)
+                {
+                    val coreGameJSON = JSONObject(body)
+                    val mapName = coreGameJSON.getString("MapID")
+                    val coreGameBackground =
+                        view?.findViewById<ImageView>(R.id.new_partyCurrentGameMapImage)
+                    Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop()
+                        .into(coreGameBackground)
 
-                val gameMode = capitaliseGameMode(coreGameJSON.getJSONObject("MatchmakingData").getString("QueueID"))
-                val coreGameMode = view?.findViewById<TextView>(R.id.new_live_CoreGameTitle)
-                coreGameMode?.text = gameMode
+                    val gameMode = capitaliseGameMode(
+                        coreGameJSON.getJSONObject("MatchmakingData").getString("QueueID")
+                    )
+                    val coreGameMode = view?.findViewById<TextView>(R.id.new_live_CoreGameTitle)
+                    coreGameMode?.text = gameMode
 
-                val players = coreGameJSON.getJSONArray("Players")
-                handleCoreGameList(players)
+                    val players = coreGameJSON.getJSONArray("Players")
+                    handleCoreGameList(players)
+                }
             }
         }
     }
@@ -2583,11 +2666,13 @@ class LiveStatsFragment : Fragment() {
 
         liveModeScope.launch {
             val response = APIRequestValorant(url, body)
-            val code = response.code
-            if (code == 200) {
-                withContext(Main)
-                {
-                    changePartyStatusText("${getString(R.string.s76)} $mode")
+            if (response != null) {
+                val code = response.code
+                if (code == 200) {
+                    withContext(Main)
+                    {
+                        changePartyStatusText("${getString(R.string.s76)} $mode")
+                    }
                 }
             }
         }
@@ -2630,15 +2715,19 @@ class LiveStatsFragment : Fragment() {
 
         return runBlocking(IO){
             val response = APIRequestValorant(url)
-            val body = response.body.string()
-            val code = response.code
-            if (code != 200) return@runBlocking arrayListOf()
-            val sprays = JSONObject(body).getJSONArray("Entitlements")
-            for (i in 0 until sprays.length()) {
-                val sprayObject = sprays.getJSONObject(i)
-                availableSprays.add(sprayObject.getString("ItemID"))
+            if (response != null) {
+                val body = response.body.string()
+                val code = response.code
+                if (code != 200) return@runBlocking arrayListOf()
+                val sprays = JSONObject(body).getJSONArray("Entitlements")
+                for (i in 0 until sprays.length()) {
+                    val sprayObject = sprays.getJSONObject(i)
+                    availableSprays.add(sprayObject.getString("ItemID"))
+                }
+                return@runBlocking availableSprays
             }
             return@runBlocking availableSprays
+
         }
 
     }
@@ -2651,17 +2740,20 @@ class LiveStatsFragment : Fragment() {
 
         return runBlocking(IO) {
             val response = APIRequestValorant(url)
-            val body = response.body.string()
-            val code = response.code
+            if (response != null) {
+                val body = response.body.string()
+                val code = response.code
 
-            if (code != 200) return@runBlocking arrayListOf()
+                if (code != 200) return@runBlocking arrayListOf()
 
-            Log.d("LIVE_STATS_AVAILABLE_AGENTS", body)
-            val agents = JSONObject(body).getJSONArray("Entitlements")
-            for (i in 0 until agents.length()) {
-                val agentObject = agents.getJSONObject(i)
-                val agentID = agentObject.getString("ItemID")
-                availableAgents.add(agentID)
+                Log.d("LIVE_STATS_AVAILABLE_AGENTS", body)
+                val agents = JSONObject(body).getJSONArray("Entitlements")
+                for (i in 0 until agents.length()) {
+                    val agentObject = agents.getJSONObject(i)
+                    val agentID = agentObject.getString("ItemID")
+                    availableAgents.add(agentID)
+                }
+                return@runBlocking availableAgents
             }
             return@runBlocking availableAgents
         }
@@ -2676,38 +2768,44 @@ class LiveStatsFragment : Fragment() {
 
         return runBlocking(IO) {
             val response = APIRequestValorant(url)
-            val body = response.body.string()
-            val code = response.code
+            if (response != null) {
+                val body = response.body.string()
+                val code = response.code
 
-            val skinVarientsID = "3ad1b2b2-acdb-4524-852f-954a76ddae0a"
-            val GunSkinVarientsurl = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$skinVarientsID"
+                val skinVarientsID = "3ad1b2b2-acdb-4524-852f-954a76ddae0a"
+                val GunSkinVarientsurl =
+                    "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$skinVarientsID"
 
-            val GunSkinVarientsresponse = APIRequestValorant(GunSkinVarientsurl)
-            val GunSkinVarientsbody = GunSkinVarientsresponse.body.string()
-            val GunSkinVarientscode = GunSkinVarientsresponse.code
+                val GunSkinVarientsresponse = APIRequestValorant(GunSkinVarientsurl)
+                if (GunSkinVarientsresponse != null) {
+                    val GunSkinVarientsbody = GunSkinVarientsresponse.body.string()
+                    val GunSkinVarientscode = GunSkinVarientsresponse.code
 
-            if (code != 200 || GunSkinVarientscode != 200) return@runBlocking arrayListOf()
-            //copyToClipboard(body + "\n\n" + GunSkinVarientsbody, "Gun Skins")
-            val gunSkins = JSONObject(body).getJSONArray("Entitlements")
-            for (i in 0 until gunSkins.length()) {
-                val gunSkinObject = gunSkins.getJSONObject(i)
-                val gunSkinID = gunSkinObject.getString("ItemID")
-                availableGunSkins.add(gunSkinID)
-            }
+                    if (code != 200 || GunSkinVarientscode != 200) return@runBlocking arrayListOf()
+                    //copyToClipboard(body + "\n\n" + GunSkinVarientsbody, "Gun Skins")
+                    val gunSkins = JSONObject(body).getJSONArray("Entitlements")
+                    for (i in 0 until gunSkins.length()) {
+                        val gunSkinObject = gunSkins.getJSONObject(i)
+                        val gunSkinID = gunSkinObject.getString("ItemID")
+                        availableGunSkins.add(gunSkinID)
+                    }
 
-            //Toast.makeText(requireContext(), "Got ${gunSkins.length()} gun skins", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(requireContext(), "Got ${gunSkins.length()} gun skins", Toast.LENGTH_SHORT).show()
 
-            val gunVarientSkins = JSONObject(GunSkinVarientsbody).getJSONArray("Entitlements")
-            for (i in 0 until gunVarientSkins.length()) {
-                val gunVarientSkinObject = gunVarientSkins.getJSONObject(i)
-                val gunVarientSkinID = gunVarientSkinObject.getString("ItemID")
-                availableGunSkins.add(gunVarientSkinID)
-            }
-
+                    val gunVarientSkins =
+                        JSONObject(GunSkinVarientsbody).getJSONArray("Entitlements")
+                    for (i in 0 until gunVarientSkins.length()) {
+                        val gunVarientSkinObject = gunVarientSkins.getJSONObject(i)
+                        val gunVarientSkinID = gunVarientSkinObject.getString("ItemID")
+                        availableGunSkins.add(gunVarientSkinID)
+                    }
+                }
 //        Toast.makeText(requireContext(), "Got ${gunVarientSkins
 //            .length()} gun variant skins", Toast.LENGTH_SHORT).show()
 
-            //copyToClipboard(availableGunSkins, "Available gun skins")
+                //copyToClipboard(availableGunSkins, "Available gun skins")
+                return@runBlocking availableGunSkins
+            }
             return@runBlocking availableGunSkins
         }
     }
@@ -2728,17 +2826,20 @@ class LiveStatsFragment : Fragment() {
 
         return runBlocking(IO) {
             val response = APIRequestValorant(url)
-            val body = response.body.string()
-            val code = response.code
+            if (response != null) {
+                val body = response.body.string()
+                val code = response.code
 
-            if (code != 200) return@runBlocking arrayListOf()
+                if (code != 200) return@runBlocking arrayListOf()
 
-            Log.d("LIVE_STATS_AVAILABLE_PLAYERCARDS", body)
-            val playerCards = JSONObject(body).getJSONArray("Entitlements")
-            for (i in 0 until playerCards.length()) {
-                val playerCardObject = playerCards.getJSONObject(i)
-                val playerCardID = playerCardObject.getString("ItemID")
-                availablePlayerCards.add(playerCardID)
+                Log.d("LIVE_STATS_AVAILABLE_PLAYERCARDS", body)
+                val playerCards = JSONObject(body).getJSONArray("Entitlements")
+                for (i in 0 until playerCards.length()) {
+                    val playerCardObject = playerCards.getJSONObject(i)
+                    val playerCardID = playerCardObject.getString("ItemID")
+                    availablePlayerCards.add(playerCardID)
+                }
+                return@runBlocking availablePlayerCards
             }
             return@runBlocking availablePlayerCards
         }
@@ -2750,26 +2851,28 @@ class LiveStatsFragment : Fragment() {
         val url = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$titleID"
 
         return runBlocking(IO) {
-
             val response = APIRequestValorant(url)
-            val body = response.body.string()
-            val code = response.code
+            if (response != null) {
+                val body = response.body.string()
+                val code = response.code
 
-            if (code != 200) return@runBlocking arrayListOf()
+                if (code != 200) return@runBlocking arrayListOf()
 
-            Log.d("LIVE_STATS_AVAILABLE_TITLES", body)
+                Log.d("LIVE_STATS_AVAILABLE_TITLES", body)
 
-            val titles = JSONObject(body).getJSONArray("Entitlements")
-            for (i in 0 until titles.length()) {
-                val titleObject = titles.getJSONObject(i)
-                val titleID = titleObject.getString("ItemID")
+                val titles = JSONObject(body).getJSONArray("Entitlements")
+                for (i in 0 until titles.length()) {
+                    val titleObject = titles.getJSONObject(i)
+                    val titleID = titleObject.getString("ItemID")
 
-                // convert titleID to title name
-                val converted = getTitleFromJson(titleID)
-                availableTitles.add(converted)
+                    // convert titleID to title name
+                    val converted = getTitleFromJson(titleID)
+                    availableTitles.add(converted)
+                }
+                // sort titles alphabetically
+                availableTitles.sort()
+                return@runBlocking availableTitles
             }
-            // sort titles alphabetically
-            availableTitles.sort()
             return@runBlocking availableTitles
         }
 

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:background="@color/Valorant_SplashColourBackground"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -12,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0"
-        android:background="#B4000000"
+        android:background="?attr/colorPrimary"
         android:orientation="horizontal"
         android:translationZ="60dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,52 +22,63 @@
 
     </LinearLayout>
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/flFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="0dp"
-        android:background="@color/Valorant_SplashColourBackground"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintBottom_toTopOf="@+id/bottomCard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialToolbar3" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/bottomCard"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="@color/ToolBar"
-        android:labelFor="@id/flFragment"
-        android:layerType="hardware"
-        android:outlineProvider="background"
-        android:overScrollMode="ifContentScrolls"
-        android:saveEnabled="true"
-        app:itemIconSize="24dp"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="#FFFFFF"
-        app:labelVisibilityMode="selected"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/statics_main_menu">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:labelFor="@id/flFragment"
+            android:layerType="hardware"
+            android:outlineProvider="background"
+            android:overScrollMode="ifContentScrolls"
+            android:saveEnabled="true"
+            app:itemIconSize="24dp"
+            app:itemPaddingBottom="8dp"
+            app:itemPaddingTop="8dp"
+            app:labelVisibilityMode="selected"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:menu="@menu/statics_main_menu">
+
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+    </androidx.cardview.widget.CardView>
+
+
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ToolBar"
+        android:alpha="1"
+        android:background="?attr/colorOnSurfaceInverse"
         android:minHeight="?attr/actionBarSize"
-        android:translationZ="30dp"
+        android:nestedScrollingEnabled="true"
         android:theme="?attr/actionBarTheme"
+        android:translationZ="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleCentered="true"
-        app:titleTextColor="@color/white"
-        android:alpha="0.7"
         tools:title="Duck#2004" />
 
     <androidx.cardview.widget.CardView

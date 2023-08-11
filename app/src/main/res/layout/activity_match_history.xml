@@ -10,7 +10,6 @@
         android:id="@+id/topAppBarMatchHistory"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#0A0F15"
         android:fitsSystemWindows="true"
         android:theme="@style/Theme.VALORANT_stats.AppBarOverlay"
         app:expanded="true"
@@ -29,24 +28,18 @@
             android:text="@string/s106"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-            android:textColor="#FFFFFF"
             android:textStyle="bold" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabsforMatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#0A0F15"
             app:tabGravity="fill"
-            app:tabIconTint="@color/light_blue_50"
             app:tabIndicatorAnimationDuration="1000"
             app:tabIndicatorAnimationMode="elastic"
-            app:tabIndicatorColor="#f94555"
             app:tabIndicatorFullWidth="true"
             app:tabIndicatorGravity="bottom"
             app:tabMode="auto"
-            app:tabSelectedTextColor="#18e4b7"
-            app:tabTextColor="@color/white"
             app:tabUnboundedRipple="true" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -54,7 +47,6 @@
         android:id="@+id/view_pager_matchHistory"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/ic_launcher_background"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +60,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        app:backgroundTint="#f94555"
         app:layout_anchorGravity="end|bottom"
         app:layout_constraintBottom_toBottomOf="@+id/view_pager_matchHistory"
         app:layout_constraintEnd_toEndOf="parent"

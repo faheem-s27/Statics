@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Valorant_SplashColourBackground"
     tools:context=".valo.activities.new_ui.NewLogInUI">
 
     <ProgressBar
@@ -23,7 +22,6 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/baloo_bhai"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,10 +33,8 @@
         android:id="@+id/RSO_confirmUserButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/ic_launcher_background"
         android:fontFamily="@font/valorant"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="invisible"
@@ -46,7 +42,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/statusText"
-        app:strokeColor="#EB0029"
         app:strokeWidth="1dp"
         tools:text="SprinkledRainbow#1593" />
 

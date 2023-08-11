@@ -3,16 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Valorant_SplashColourBackground">
+    android:layout_height="match_parent">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/ToolBar"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="#FFFFFF"
         app:labelVisibilityMode="selected"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -35,13 +31,11 @@
         android:id="@+id/toolbar4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#0A0F15"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Hello there"
-        app:titleTextColor="#FFFFFF" />
+        app:title="Hello there" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

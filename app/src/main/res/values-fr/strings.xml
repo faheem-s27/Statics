@@ -11,6 +11,7 @@
   <string name="starting">Démarrage</string>
   <string name="s8">Comment ça marche</string>
   <string name="s9">Cliquez sur le bouton pour vérifier que vous n\'êtes pas un robot</string>
+  <string name="s10">Vol de vos données en cours</string>
   <string name="s11">Ajout de porte-bonheurs à votre compte</string>
   <string name="s12">Réglage de votre rang à \"Argent\"</string>
   <string name="s13">Vous avez réussi</string>
@@ -251,4 +252,16 @@
   <string name="bundles">Packs</string>
   <string name="night_market">Marché Nocturne</string>
   <string name="accessory">Accessoire</string>
+  <string name="weapons">Armes</string>
+  <string name="reset_language">Changer de langue</string>
+  <string name="got_cookies">Cookies obtenus 🍪</string>
+  <string name="got_access_token">Jeton d\'accès obtenu 🎫</string>
+  <string name="got_riot_s_latest_version">Dernière version de Riot obtenue 📦</string>
+  <string name="error_getting_entitlement">Erreur lors de l\'obtention des droits ❌</string>
+  <string name="got_entitlement">Droits obtenus 📜</string>
+  <string name="error_getting_user_info">Erreur lors de l\'obtention des informations de l\'utilisateur ❌</string>
+  <string name="decrypting_user">Déchiffrage de l\'utilisateur 👤</string>
+  <string name="error_getting_region">Erreur lors de l\'obtention de la région ❌</string>
+  <string name="got_region">Région obtenue 🌎</string>
+  <string name="hello">Bonjour </string>
 </resources>

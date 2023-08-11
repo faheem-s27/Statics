@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Valorant_SplashColourBackground"
     tools:context=".valo.activities.ui.agents.AgentsFragment">
 
     <TextView
@@ -15,7 +14,6 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/lalezar"
         android:text="Agent"
-        android:textColor="#FFFFFF"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +26,6 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/lalezar"
         android:text="KDA"
-        android:textColor="#FFFFFF"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +40,6 @@
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/lalezar"
         android:text="WinRate"
-        android:textColor="#FFFFFF"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

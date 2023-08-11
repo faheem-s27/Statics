@@ -3,30 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#111822">
-
-    <View
-        android:id="@+id/killColour"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="0.5"
-        android:background="#DD2C00"
-        app:layout_constraintBottom_toBottomOf="@+id/mapImageRow"
-        app:layout_constraintEnd_toStartOf="@+id/middleKillRow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/mapImageRow" />
-
-    <View
-        android:id="@+id/victimColour"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="0.5"
-        android:background="#2962FF"
-        app:layout_constraintBottom_toBottomOf="@+id/mapImageRow"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/killColour"
-        app:layout_constraintTop_toTopOf="@+id/mapImageRow" />
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/gradient"
@@ -103,7 +80,6 @@
         android:fontFamily="@font/valorant"
         android:text="Killed using Ghost"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/weaponIcon"
         app:layout_constraintEnd_toEndOf="parent"

@@ -94,6 +94,7 @@
                     android:orientation="horizontal">
 
                     <Button
+                        style="@style/Widget.Material3.Button.Icon"
                         android:id="@+id/agentsCozBT"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

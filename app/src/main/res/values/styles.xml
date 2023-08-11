@@ -7,14 +7,19 @@
 
     </style>
 
+<!--    <style name="Theme.App" parent="Theme.Material3.*">-->
+<!--        ...-->
+<!--        <item name="colorSurface">@color/shrine_theme_light_surface</item>-->
+<!--        <item name="colorOnSurfaceVariant">@color/shrine_theme_light_onSurfaceVariant</item>-->
+<!--    </style>-->
+
     <style name="Divider.Horizontal" parent="Divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
         // You can change thickness here.
     </style>
 
-    <style name="AlertDialogTheme" parent="android:Theme.Material.Dialog.Alert">
-        <item name="android:background">@color/Discord</item>
+    <style name="AlertDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <!--        <item name="android:windowBackground">@color/Valorant_SplashColourBackground</item>-->
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowEnterAnimation">@anim/fadein</item>

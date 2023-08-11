@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#111822"
     tools:context=".valo.activities.ViewMatches">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ToolBar"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +29,6 @@
             android:id="@+id/radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/ic_launcher_background"
             android:checkedButton="@id/teamsRadio"
             android:orientation="horizontal"
             android:overScrollMode="ifContentScrolls"
@@ -44,76 +41,60 @@
                 android:id="@+id/latestRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="@string/s195"
-                android:textColor="#FFFFFF" />
+                android:text="@string/s195"/>
 
             <RadioButton
                 android:id="@+id/oldestRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="@string/s196"
-                android:textColor="#FFFFFF" />
+                android:text="@string/s196"/>
 
             <RadioButton
                 android:id="@+id/compRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Comp"
-                android:textColor="#FFFFFF" />
+                android:text="Comp"/>
 
             <RadioButton
                 android:id="@+id/unratedRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Unrated"
-                android:textColor="#FFFFFF" />
+                android:text="Unrated" />
 
             <RadioButton
                 android:id="@+id/spikeRushRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Spike Rush"
-                android:textColor="#FFFFFF" />
+                android:text="Spike Rush"/>
 
             <RadioButton
                 android:id="@+id/killsRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Kills"
-                android:textColor="#FFFFFF" />
+                android:text="Kills" />
 
             <RadioButton
                 android:id="@+id/deathsRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Red"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Deaths"
-                android:textColor="#FFFFFF" />
+                android:text="Deaths"/>
 
             <RadioButton
                 android:id="@+id/assistsRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/Valorant_Blue"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Assists"
-                android:textColor="#FFFFFF" />
+                android:text="Assists"/>
 
         </RadioGroup>
 
@@ -139,11 +120,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:background="@color/ic_launcher_background"
         android:fontFamily="@font/lalezar"
         android:gravity="center"
         android:text="@string/s123"
-        android:textColor="#FFFFFF"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/progressBar6"
         app:layout_constraintEnd_toEndOf="parent"
@@ -158,9 +137,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
-        android:background="@color/ic_launcher_background"
         android:progress="0"
-        android:progressTint="#DD2C00"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

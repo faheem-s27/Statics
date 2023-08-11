@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.appcheck.FirebaseAppCheck
@@ -222,7 +223,7 @@ class MMRActivity : AppCompatActivity() {
                     graphView.gridLabelRenderer.labelVerticalWidth = 50
                     graphView.gridLabelRenderer.labelHorizontalHeight = 50
 
-                    val datesSwtich = findViewById<Switch>(R.id.viewDatesMMRSwitch)
+                    val datesSwtich = findViewById<MaterialSwitch>(R.id.viewDatesMMRSwitch)
 
                     datesSwtich.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {

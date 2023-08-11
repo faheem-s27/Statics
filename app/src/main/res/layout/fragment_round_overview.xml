@@ -5,7 +5,6 @@
     android:id="@+id/frameLayout14"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ic_launcher_background"
     tools:context=".valo.match_info.RoundOverview">
 
     <TextView
@@ -15,7 +14,6 @@
         android:fontFamily="@font/valorant"
         android:text="Coming soon"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

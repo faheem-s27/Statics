@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-    <solid android:color="@color/Valorant_SplashColourBackground" /> <!-- Transparent fill color -->
+    android:shape="oval"><!-- Transparent fill color -->
+    <solid android:color="?attr/colorSecondaryContainer"/>
     <stroke
-        android:color="#FFFFFF"
+        android:color="?attr/colorPrimary"
     android:width="1dp" /> <!-- Replace with desired outline width -->
     <sizer
         android:width="100dp"

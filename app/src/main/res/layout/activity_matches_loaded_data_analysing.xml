@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/Valorant_SplashColourBackground">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/objectName"
@@ -16,7 +15,6 @@
         android:fontFamily="@font/lalezar"
         android:paddingBottom="16dp"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,8 +37,6 @@
         app:sliderIndicatorGravity="bottom|center"
         app:sliderIndicatorOrientation="horizontal"
         app:sliderIndicatorRadius="1dp"
-        app:sliderIndicatorSelectedColor="#ff4654"
-        app:sliderIndicatorUnselectedColor="#FFF"
         app:sliderScrollTimeInSec="2">
 
     </com.smarteist.autoimageslider.SliderView>

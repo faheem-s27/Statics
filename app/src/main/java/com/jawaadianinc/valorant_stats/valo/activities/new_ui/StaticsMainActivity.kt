@@ -1,13 +1,11 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.Button
@@ -16,7 +14,9 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -26,14 +26,17 @@ import com.android.billingclient.api.SkuDetailsParams
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.color.DynamicColors
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityStaticsMainBinding
-import com.jawaadianinc.valorant_stats.main.SplashActivity
+import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.squareup.picasso.Picasso
+
 
 class StaticsMainActivity : AppCompatActivity() {
     lateinit var playerName: String
@@ -60,6 +63,8 @@ class StaticsMainActivity : AppCompatActivity() {
         binding = ActivityStaticsMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        DynamicColors.applyToActivitiesIfAvailable(application)
+
         bottomNavBar = binding.bottomNavigationView
         toolbar = binding.materialToolbar3
         toolbarPicture = binding.staticsToolbarImage
@@ -85,12 +90,12 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription: String =
-                "- Only agents that you have unlocked will be selectable in agent select" +
-                        "\n- New shop layout; added bundles and accessory store!" +
-                        "\n- Added Kingdom points currency" +
-                        "\n- New updated translations and hopefully faster translations for the future!"
-
-        DynamicColors.applyToActivitiesIfAvailable(application)
+                "- Night market added!" +
+                        "\n- Fixed some Material You colours" +
+                        "\n- Fixed Material You icon showing enlarged.. now it should look better" +
+                        "\n- Added a dark mode toggle switch in account settings" +
+                        "\n- Fixed UI issue of the account level only showing 1 digit" +
+                        "\n- General optimisations."
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
@@ -108,10 +113,10 @@ class StaticsMainActivity : AppCompatActivity() {
             val hasSeen = sharedPref.getBoolean(versionName, false)
             if (!hasSeen) {
                 // show the dialog
-                val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
+                val dialog = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
                 dialog.setTitle("${getString(R.string.s16)} ($versionName)")
                 dialog.setMessage("${getString(R.string.s17)} \n\n$updateDescription")
-                dialog.setPositiveButton("Ok") { _, _ -> }
+                dialog.setPositiveButton("Ok") { dialog, which -> }
                 dialog.show()
                 with(sharedPref.edit()) {
                     putBoolean(versionName, true)
@@ -125,7 +130,7 @@ class StaticsMainActivity : AppCompatActivity() {
             val hasSeen = sharedPref.getBoolean(versionName, false)
             if (!hasSeen) {
                 // show the dialog
-                val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme)
+                val dialog = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
                 dialog.setTitle("${getString(R.string.s18)} ($versionName)")
                 dialog.setMessage("${getString(R.string.s19)} \n\n$updateDescription")
                 dialog.setPositiveButton("Ok") { _, _ -> }
@@ -136,13 +141,6 @@ class StaticsMainActivity : AppCompatActivity() {
                 }
             }
         }
-
-        val statsFragment = StaticsMainMenu()
-        val LiveStatsFragment = LiveStatsFragment()
-        val AssetsFragment = AssetsFragment()
-        val fragmentManager = supportFragmentManager
-        activeFragment = LiveStatsFragment
-
         val appUpdateManager = AppUpdateManagerFactory.create(this)
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
@@ -160,11 +158,22 @@ class StaticsMainActivity : AppCompatActivity() {
             }
         }
 
-        fragmentManager.beginTransaction().apply {
-            add(R.id.container, AssetsFragment, "1").hide(AssetsFragment)
-            add(R.id.container, LiveStatsFragment, "2")
-            add(R.id.container, statsFragment, "3").hide(statsFragment)
+        val statsFragment = StaticsMainMenu()
+        val liveStatsFragment = LiveStatsFragment()
+        val assetsFragment = AssetsFragment()
+        activeFragment = liveStatsFragment
+
+        val fragmentManager: FragmentManager = supportFragmentManager
+        while (fragmentManager.backStackEntryCount > 0) {
+            fragmentManager.popBackStackImmediate()
+        }
+
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.container, statsFragment, "1").hide(statsFragment)
+            add(R.id.container, liveStatsFragment, "2")
+            add(R.id.container, assetsFragment, "3").hide(assetsFragment)
         }.commit()
+
 
         bottomNavBar.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -173,11 +182,11 @@ class StaticsMainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.new_Live -> {
-                    changeFragment(LiveStatsFragment)
+                    changeFragment(liveStatsFragment)
                     true
                 }
                 R.id.new_Assets -> {
-                    changeFragment(AssetsFragment)
+                    changeFragment(assetsFragment)
                     true
                 }
                 else -> {
@@ -202,8 +211,8 @@ class StaticsMainActivity : AppCompatActivity() {
         toolbarPicture.setOnClickListener {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val popupView = inflater.inflate(R.layout.layout_statics_main_menu_pfp, null)
-            val width = LinearLayout.LayoutParams.WRAP_CONTENT
-            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+            val width = LinearLayout.LayoutParams.MATCH_PARENT
+            val height = LinearLayout.LayoutParams.MATCH_PARENT
             val focusable = true
             val popupWindow = PopupWindow(popupView, width, height, focusable)
             popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0)
@@ -220,7 +229,7 @@ class StaticsMainActivity : AppCompatActivity() {
             val dimLayout = findViewById<LinearLayout>(R.id.dim_layout)
 
             // set the dim layout to alpha 1f in 500ms
-            dimLayout.animate().alpha(1f).setDuration(500).start()
+            dimLayout.animate().alpha(0.5f).setDuration(500).start()
 
             // set the popup window to dismiss when the back button is pressed
             popupWindow.setOnDismissListener {
@@ -236,7 +245,7 @@ class StaticsMainActivity : AppCompatActivity() {
             val logout = popupView.findViewById<Button>(R.id.popup_LogOutButton)
             logout.setOnClickListener {
                 // Add a confirmation dialog
-                val alert = android.app.AlertDialog.Builder(this, R.style.AlertDialogTheme)
+                val alert = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
                 alert.setTitle(getString(R.string.s55))
                 alert.setMessage(getString(R.string.s56))
                 alert.setPositiveButton("Yes") { _, _ ->
@@ -350,6 +359,28 @@ class StaticsMainActivity : AppCompatActivity() {
 //                alert.setNegativeButton("No") { _, _ -> }
 //                alert.show()
             }
+
+            val darkModeSwitch : MaterialSwitch = popupView.findViewById(R.id.switch_darkMode)
+            // Get the current system night mode
+            val currentNightMode = AppCompatDelegate.getDefaultNightMode()
+            darkModeSwitch.isChecked = currentNightMode == AppCompatDelegate.MODE_NIGHT_YES
+            darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
+                val nightMode =
+                    if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                AppCompatDelegate.setDefaultNightMode(nightMode)
+                finish()
+                val intent = Intent(this, LoadingActivity::class.java)
+                startActivity(intent)
+//                // Finish the current activity
+//                // Finish the current activity
+//                finish()
+//
+//                // Start a new activity after the theme has been applied
+//
+//                // Start a new activity after the theme has been applied
+//                val intent = Intent(this@CurrentActivity, NewActivity::class.java)
+//                startActivity(intent)
+            }
         }
     }
 
@@ -368,7 +399,7 @@ class StaticsMainActivity : AppCompatActivity() {
     private fun changeFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction().apply {
-            setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+            setCustomAnimations(R.anim.bounce_in, 0);
             hide(activeFragment)
             show(fragment)
         }.commit()
@@ -377,11 +408,11 @@ class StaticsMainActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (activeFragment is StaticsMainMenu) {
+        if (activeFragment is LiveStatsFragment) {
             super.onBackPressed()
         } else {
-            changeFragment(StaticsMainMenu())
-            bottomNavBar.selectedItemId = R.id.new_Stats
+            changeFragment(LiveStatsFragment())
+            bottomNavBar.selectedItemId = R.id.new_Live
         }
     }
 
