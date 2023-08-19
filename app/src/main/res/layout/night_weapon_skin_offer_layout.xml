@@ -38,12 +38,13 @@
             <ImageView
                 android:id="@+id/weapon_skin_image"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="24dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="4dp"
                 android:scaleType="centerInside"
                 app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="50dp"
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
             <TextView
@@ -51,14 +52,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:fontFamily="@font/lalezar"
                 android:paddingBottom="8dp"
                 android:text="Reaver Vandal"
                 android:textSize="16dp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/weapon_skin_cost"
+                app:layout_constraintEnd_toStartOf="@+id/weapon_skin_cost_original"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/weapon_skin_image" />
 
@@ -67,13 +68,13 @@
                 android:layout_width="30dp"
                 android:layout_height="0dp"
                 android:layout_marginEnd="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/weapon_skin_cost"
+                app:layout_constraintBottom_toBottomOf="@+id/weapon_skin_cost_discount"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/weapon_skin_cost"
+                app:layout_constraintTop_toTopOf="@+id/weapon_skin_cost_discount"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
-                android:id="@+id/weapon_skin_cost"
+                android:id="@+id/weapon_skin_cost_discount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
@@ -83,6 +84,21 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/weapon_skin_title"
                 app:layout_constraintEnd_toStartOf="@+id/weapon_skin_VP"
+                app:layout_constraintTop_toTopOf="@+id/weapon_skin_title" />
+
+            <TextView
+                android:id="@+id/weapon_skin_cost_original"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:fontFamily="@font/lalezar"
+                android:padding="5dp"
+                android:text="0"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/weapon_skin_title"
+                app:layout_constraintEnd_toStartOf="@+id/weapon_skin_cost_discount"
                 app:layout_constraintTop_toTopOf="@+id/weapon_skin_title" />
 
             <ImageView

@@ -1,7 +1,6 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.Activity
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -55,10 +54,10 @@ class BundleOfferAdapter(
                 .centerInside()
                 .into(layout)
         }
-        else
-        {
-            layout.setBackgroundColor(context.resources.getColor(R.color.Valorant_SplashColourBackground))
-        }
+//        else
+//        {
+//            layout.setBackgroundColor(context.resources.getColor(R.color.Valorant_SplashColourBackground))
+//        }
         if (currency != null) {
             Picasso
                 .get()
@@ -66,8 +65,7 @@ class BundleOfferAdapter(
                 .fit()
                 .centerInside()
                 .into(VPImage)
-        }
-        else {
+        } else {
             Picasso
                 .get()
                 .load("https://media.valorant-api.com/currencies/85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741/displayicon.png")

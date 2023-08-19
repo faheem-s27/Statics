@@ -1,31 +1,23 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.webkit.CookieManager
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityNewLogInUiBinding
 import com.jawaadianinc.valorant_stats.main.Account
 import com.jawaadianinc.valorant_stats.valo.Henrik
-import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -37,7 +29,6 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.net.URL
-import javax.security.auth.Subject
 
 class NewLogInUI : AppCompatActivity() {
     lateinit var binding : ActivityNewLogInUiBinding
@@ -45,6 +36,8 @@ class NewLogInUI : AppCompatActivity() {
     lateinit var updateText: TextView
     private val clientPlatformToken =
         "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9"
+    var RiotURL =
+        "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid"
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,14 +49,37 @@ class NewLogInUI : AppCompatActivity() {
         updateText = binding.statusText
 
         webView.settings.javaScriptEnabled = true
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                if (request != null) {
+                    Log.d("RiotSignIn", request.url.toString())
+                }
+
+                val url = request!!.url.toString()
+
+                // check if the url contains the code
+                if (url.contains("access_token=")) {
+                    val cookies = CookieManager.getInstance().getCookie(RiotURL)
+                    val accessToken = url.split("access_token=")[1].split("&")[0]
+                    val idToken = url.split("id_token=")[1].split("&")[0]
+                    authoriseUser(accessToken, cookies, idToken)
+                }
+                // else if the url doesn't contain the code, load the url
+                else {
+                    view!!.loadUrl(url)
+                }
+                return false
+            }
+        }
         //val url = "https://auth.riotgames.com/authorize?client_id=statics&redirect_uri=https://statics-fd699.web.app/authorize.html&response_type=code&scope=openid+offline_access&prompt=login"
 
-        var RiotURL = "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid"
         // get the intent string and see if it says "login"
         val intentString = intent.getStringExtra("login")
-        if (intentString == "true")
-        {
-            RiotURL+="&prompt=login"
+        if (intentString == "true") {
+            RiotURL += "&prompt=login"
         }
 
         // check if its the first time the user has opened the new UI
@@ -73,7 +89,7 @@ class NewLogInUI : AppCompatActivity() {
         {
             RiotURL = "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid&prompt=login"
             // Show a dialog to the user that says "Make sure to click on 'Stay signed in' when logging in"
-            val dialog = AlertDialog.Builder(this)
+            val dialog = MaterialAlertDialogBuilder(this)
             dialog.setTitle(getString(R.string.s236))
             dialog.setMessage(getString(R.string.s237))
             dialog.setPositiveButton("OK") { dialog, which ->
@@ -88,29 +104,10 @@ class NewLogInUI : AppCompatActivity() {
         CookieManager.getInstance().setAcceptCookie(true)
         webView.loadUrl(RiotURL)
 
-        webView.webViewClient = object : WebViewClient() {
-            @Deprecated("Deprecated in Java")
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                // check if the url contains the code
-                if (url.contains("access_token=")) {
-                    // get the cookies from the webview
-                    val cookies = CookieManager.getInstance().getCookie(RiotURL)
-                    val accessToken = url.split("access_token=")[1].split("&")[0]
-                    val idToken = url.split("id_token=")[1].split("&")[0]
-                    authoriseUser(accessToken, cookies, idToken)
-                }
-                // else if the url doesn't contain the code, load the url
-                else {
-                    view.loadUrl(url)
-                }
-                return true
-            }
-        }
     }
 
     private fun addStringToTextView(text: String)
     {
-        // animate the textview
         updateText.text = updateText.text.toString() + "\n" + text
     }
 
@@ -197,18 +194,9 @@ class NewLogInUI : AppCompatActivity() {
             }
             delay(DURATION)
             withContext(Dispatchers.Main) {
-//                val buttonStarted = findViewById<Button>(R.id.RSO_confirmUserButton)
-//                buttonStarted.alpha=0f
-//                buttonStarted.text = "Click here! 🦆❤️"
-//                buttonStarted.visibility=View.VISIBLE
-//                buttonStarted.animate().alpha(1f).setDuration(1000).start()
                 finish()
                 startActivity(intent)
-//                buttonStarted.setOnClickListener {
-//                }
             }
-
-            //val partyTest = getPartyTest(accessToken, entitlement, userInfo, RiotVersion.first, RiotVersion.second)
         }
     }
 

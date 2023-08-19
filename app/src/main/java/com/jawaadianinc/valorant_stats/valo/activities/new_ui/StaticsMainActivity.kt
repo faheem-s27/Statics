@@ -90,12 +90,12 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription: String =
-                "- Night market added!" +
-                        "\n- Fixed some Material You colours" +
-                        "\n- Fixed Material You icon showing enlarged.. now it should look better" +
-                        "\n- Added a dark mode toggle switch in account settings" +
-                        "\n- Fixed UI issue of the account level only showing 1 digit" +
-                        "\n- General optimisations."
+            "- Night market discounted prices are now shown with original prices crossed out" +
+                    "\n- Fixed missing gun buddies & player titles in accessory store" +
+                    "\n- All store timers now show days remaining" +
+                    "\n- Fixed top and bottom spray being the wrong way around" +
+                    "\n- A few more additions to Material You with certain icons tinting, default is also now blue" +
+                    "\n- Fixed clipping issues with some parts of Statics"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
@@ -123,7 +123,7 @@ class StaticsMainActivity : AppCompatActivity() {
                     apply()
                 }
             }
-        } else if (versionName.contains("Release")) {
+        } else {
             // check if they have seen the dialog that says that this is a beta version
             val sharedPref = getSharedPreferences("release", Context.MODE_PRIVATE)
             // make hasSeen based off the version name

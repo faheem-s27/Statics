@@ -2,7 +2,6 @@ package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
@@ -12,28 +11,24 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.BounceInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.firebase.database.FirebaseDatabase
 import com.jawaadianinc.valorant_stats.LastMatchWidget
-import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.MMRActivity
@@ -42,7 +37,6 @@ import com.jawaadianinc.valorant_stats.valo.activities.TrackerGG_Activity
 import com.jawaadianinc.valorant_stats.valo.activities.ViewMatches
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.MatchDatabase
-import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.TrackerDB
 import com.jawaadianinc.valorant_stats.valo.match_info.MatchHistoryActivity
 import com.squareup.picasso.Picasso
@@ -69,13 +63,10 @@ class StaticsMainMenu : Fragment() {
     var key: String = ""
     private var lastMatchData: JSONObject? = null
     private lateinit var seekBar: SeekBar
-    var ISACTIVE = true
     private var REFRESHING = false
     private var testing = false
     private var JSONRanks = JSONArray()
     private val scraper = TrackerGGScraper()
-    lateinit var progressDialog: AlertDialog
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -306,11 +297,11 @@ class StaticsMainMenu : Fragment() {
                     val builder = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                     builder.setTitle("Error")
                     builder.setMessage(
-                        "Unable to fetch data. Please try again later.\nError Code: ${
+                        "Statics was not able to get your stats data due to an error!\nError Code: ${
                             lastMatchData.getInt(
                                 "status"
                             )
-                        } ${ranksData.getInt("status")}, report will be sent to the developer."
+                        } ${ranksData.getInt("status")}, it should be fixed in a couple hours."
                     )
                     builder.setPositiveButton("OK") { dialog, which ->
                         // finish the fragment
@@ -334,7 +325,7 @@ class StaticsMainMenu : Fragment() {
                     FirebaseDatabase.getInstance().reference.child("Statics/Errors/")
                         .child("NewMainMenu").push().setValue(error)
 
-                    progressDialog.dismiss()
+                    //progressDialog.dismiss()
                 }
             }
         }

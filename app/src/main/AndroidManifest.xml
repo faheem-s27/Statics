@@ -31,7 +31,7 @@
             android:exported="false" />
         <activity
             android:name=".valo.activities.new_ui.NewLogInUI"
-            android:exported="false" />
+            android:exported="false"></activity>
         <activity
             android:name=".valo.activities.new_ui.NewAbout"
             android:exported="false" />
@@ -41,7 +41,7 @@
         <activity
             android:name=".valo.activities.new_ui.StaticsMainActivity"
             android:exported="false"
-            android:label="@string/title_activity_statics_main"
+            android:label="@string/app_name"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
@@ -91,6 +91,7 @@
             android:name=".valo.RecieveSharedProfileActivity"
             android:exported="true"
             android:screenOrientation="portrait">
+            <tools:validation testUrl="https://statics-fd699.web.app/valorant/profile" />
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -162,7 +163,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 

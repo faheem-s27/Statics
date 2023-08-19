@@ -129,7 +129,7 @@
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
                             android:background="@drawable/refreshicon"
-                            android:backgroundTint="@color/white"
+                            android:backgroundTint="?attr/colorPrimary"
                             android:scaleType="centerCrop" />
 
                         <!-- Big text saying Sprays -->
@@ -262,7 +262,7 @@
                             android:layout_toEndOf="@+id/CurrentLoadoutTitle"
                             android:scaleType="fitCenter"
                             app:srcCompat="@drawable/edit_icon"
-                            app:tint="@color/white" />
+                            app:tint="?attr/colorPrimary" />
 
                         <!-- Big text saying Card -->
                         <TextView
@@ -574,7 +574,8 @@
                             android:layout_alignTop="@+id/RPTextBalance"
                             android:layout_alignBottom="@+id/RPTextBalance"
                             android:layout_marginEnd="16dp"
-                            android:layout_toStartOf="@+id/VPTextBalance" />
+                            android:layout_toStartOf="@+id/VPTextBalance"
+                            android:backgroundTint="?attr/colorPrimary" />
 
                         <!-- A textview next to that called "VPText" -->
                         <TextView
@@ -642,7 +643,7 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/rsologout"
                             app:maxImageSize="24dp"
-                            app:tint="#FFFFFF" />
+                            app:tint="?attr/colorPrimary" />
 
                         <TextView
                             android:id="@+id/new_partyPlayerName"
@@ -667,7 +668,7 @@
                             android:gravity="center"
                             android:text="#2004"
                             android:textAlignment="center"
-                            android:textColor="#B0B0B0"
+                            android:textColor="?attr/colorPrimary"
                             android:textSize="16dp" />
 
                         <TextView
@@ -745,21 +746,20 @@
 
                         <!-- Button that says Find Match -->
                         <Button
-                            style="@style/Widget.Material3.Button.Icon"
                             android:id="@+id/new_findMatchButton"
+                            style="@style/Widget.Material3.Button.Icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/new_partyPingsListView"
                             android:layout_alignParentStart="true"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="32dp"
                             android:fontFamily="@font/lalezar"
                             android:text="@string/s64"
                             android:textSize="16dp"
-                            app:cornerRadius="50dp"
-                            android:layout_marginBottom="32dp"
-                            />
-<!--                            android:backgroundTint="@color/Valorant_Red"-->
+                            app:cornerRadius="50dp" />
+                        <!--                            android:backgroundTint="@color/Valorant_Red"-->
 
 
                         <!-- Switch on the right side of the screen saying ready -->
@@ -772,15 +772,15 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="16dp"
                             android:checked="true"
-                            app:useMaterialThemeColors="true"
                             android:fontFamily="@font/lalezar"
                             android:text="Ready"
                             android:textOff="@string/s67"
                             android:textOn="Ready"
                             android:textSize="18dp"
-                            app:switchPadding="8dp"/>
-<!--                            app:thumbTint="@color/switch_thumb_selector"-->
-<!--                            app:trackTint="@color/Valorant_Red" -->
+                            app:switchPadding="8dp"
+                            app:useMaterialThemeColors="true" />
+                        <!--                            app:thumbTint="@color/switch_thumb_selector"-->
+                        <!--                            app:trackTint="@color/Valorant_Red" -->
 
                         <!-- have a new relative layout underneath the button -->
                         <RelativeLayout
@@ -841,7 +841,7 @@
                                 android:layout_marginEnd="16dp"
                                 android:layout_marginBottom="16dp"
                                 android:scrollbars="vertical"
-                                tools:listitem="@layout/live_match_pregame_agent_select"/>
+                                tools:listitem="@layout/live_match_pregame_agent_select" />
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/new_agentSelectGridRecyclerView"
@@ -858,8 +858,8 @@
 
                             <!-- Button that says Lock in -->
                             <Button
-                                style="@style/Widget.Material3.Button.Icon"
                                 android:id="@+id/new_lockInButton"
+                                style="@style/Widget.Material3.Button.Icon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/new_agentSelectGridRecyclerView_other_people"
@@ -872,8 +872,8 @@
 
                             <!-- Button that says Quit -->
                             <Button
-                                style="@style/Widget.Material3.Button.Icon"
                                 android:id="@+id/new_quitButton"
+                                style="@style/Widget.Material3.Button.Icon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/new_lockInButton"

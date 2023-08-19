@@ -5,7 +5,6 @@ import RecentMatchesDatabase
 import ValorantMatch
 import android.app.ProgressDialog
 import android.os.Bundle
-import android.os.Message
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -18,22 +17,14 @@ import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -211,66 +202,73 @@ class RecentMatchesList : AppCompatActivity() {
                 intent.putExtra("agents", sortedAgentsStats.toTypedArray())
                 intent.putExtra("maps", sortedMapCounts.toTypedArray())
                 intent.putExtra("cards", sortedCardCounts.toTypedArray())
-                intent.putExtra("Toolbar", "$actualMatchesProcessed matches in ${gamemodeSpinner.selectedItem}")
+                intent.putExtra(
+                    "Toolbar",
+                    "$actualMatchesProcessed matches in ${gamemodeSpinner.selectedItem}"
+                )
                 startActivity(intent)
             }
         }
     }
 
-    private fun processMatch(match: ValorantMatch)
-    {
-        val map = convertMapURL(match.matchInfo.mapId)
-        mapCounts[map] = mapCounts.getOrDefault(map, 0) + 1
-        for (player in match.players) {
-            val character = player.characterId
-            characterCounts[character] = characterCounts.getOrDefault(character, 0) + 1
+    private fun processMatch(match: ValorantMatch) {
+        try {
+            val map = convertMapURL(match.matchInfo.mapId)
+            mapCounts[map] = mapCounts.getOrDefault(map, 0) + 1
+            for (player in match.players) {
+                val character = player.characterId
+                //characterCounts[character] = characterCounts.getOrDefault(character, 0) + 1
 
-            val agentStatsObject = AgentStats(
-                character,
-                characterCounts.getOrDefault(character, 0) + 1,
-                player.stats.kills,
-                player.stats.deaths,
-                player.stats.assists,
-                player.stats.abilityCasts ?: AbilityCasts(0, 0, 0, 0)
-            )
-
-            if (agentsStatsMap.containsKey(agentStatsObject.id))
-            {
-                val existingStats = agentsStatsMap[agentStatsObject.id]!!
-                val newTimesPlayed = characterCounts.getOrDefault(character, 0) + 1
-                val newKills = existingStats.kills + agentStatsObject.kills
-                val newDeaths = existingStats.deaths + agentStatsObject.deaths
-                val newAssists = existingStats.assists + agentStatsObject.assists
-                val newAbilityCasts = AbilityCasts(
-                    (existingStats.ability?.ability1Casts ?: 0) + (agentStatsObject.ability?.ability1Casts
-                        ?: 0),
-                    (existingStats.ability?.ability2Casts ?: 0) + (agentStatsObject.ability?.ability2Casts
-                        ?: 0),
-                    (existingStats.ability?.grenadeCasts ?: 0) + (agentStatsObject.ability?.grenadeCasts
-                        ?: 0),
-                    (existingStats.ability?.ultimateCasts ?: 0) + (agentStatsObject.ability?.ultimateCasts
-                        ?: 0)
-                )
-                val updatedStats = AgentStats(
-                    agentStatsObject.id,
-                    newTimesPlayed,
-                    newKills,
-                    newDeaths,
-                    newAssists,
-                    newAbilityCasts
+                val agentStatsObject = AgentStats(
+                    character,
+                    characterCounts.getOrDefault(character, 0) + 1,
+                    player.stats.kills,
+                    player.stats.deaths,
+                    player.stats.assists,
+                    player.stats.abilityCasts ?: AbilityCasts(0, 0, 0, 0)
                 )
 
-                agentsStatsMap[agentStatsObject.id] = updatedStats
-            }
-            else
-            {
-                agentsStatsMap[agentStatsObject.id] = agentStatsObject
-            }
+                if (agentsStatsMap.containsKey(agentStatsObject.id)) {
+                    val existingStats = agentsStatsMap[agentStatsObject.id]!!
+                    val newTimesPlayed = characterCounts.getOrDefault(character, 0) + 1
+                    val newKills = existingStats.kills + agentStatsObject.kills
+                    val newDeaths = existingStats.deaths + agentStatsObject.deaths
+                    val newAssists = existingStats.assists + agentStatsObject.assists
+                    val newAbilityCasts = AbilityCasts(
+                        (existingStats.ability?.ability1Casts
+                            ?: 0) + (agentStatsObject.ability?.ability1Casts
+                            ?: 0),
+                        (existingStats.ability?.ability2Casts
+                            ?: 0) + (agentStatsObject.ability?.ability2Casts
+                            ?: 0),
+                        (existingStats.ability?.grenadeCasts
+                            ?: 0) + (agentStatsObject.ability?.grenadeCasts
+                            ?: 0),
+                        (existingStats.ability?.ultimateCasts
+                            ?: 0) + (agentStatsObject.ability?.ultimateCasts
+                            ?: 0)
+                    )
+                    val updatedStats = AgentStats(
+                        agentStatsObject.id,
+                        newTimesPlayed,
+                        newKills,
+                        newDeaths,
+                        newAssists,
+                        newAbilityCasts
+                    )
 
-            val rank = player.competitiveTier
-            val card = player.playerCard
-            rankCount[rank] = rankCount.getOrDefault(rank, 0) + 1
-            playerCardsCount[card] = playerCardsCount.getOrDefault(card, 0) + 1
+                    agentsStatsMap[agentStatsObject.id] = updatedStats
+                } else {
+                    agentsStatsMap[agentStatsObject.id] = agentStatsObject
+                }
+
+                val rank = player.competitiveTier
+                val card = player.playerCard
+                rankCount[rank] = rankCount.getOrDefault(rank, 0) + 1
+                playerCardsCount[card] = playerCardsCount.getOrDefault(card, 0) + 1
+            }
+        } catch (e: Exception) {
+            // Do nothing ??
         }
     }
 
@@ -309,7 +307,7 @@ class RecentMatchesList : AppCompatActivity() {
         }
     }
 
-    private suspend fun getMatch2(matchID: String): ValorantMatch? {
+    private fun getMatch2(matchID: String): ValorantMatch? {
         val url =
             "https://$region.api.riotgames.com/val/match/v1/matches/$matchID?api_key=$riotKey"
         val json = JSONObject(URL(url).readText())

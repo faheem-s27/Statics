@@ -49,7 +49,6 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.tabs.TabLayout
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
@@ -581,7 +580,7 @@ class LiveStatsFragment : Fragment() {
                     val accessoryAdapter =
                         handleAccessoryStore(json.getJSONObject("AccessoryStore"))
 
-                    var nightAdapter: WeaponSkinOfferAdapter? = null
+                    var nightAdapter: WeaponNightSkinOfferAdapter? = null
                     val NightMarket = json.optJSONObject("BonusStore")
                     if (NightMarket != null) {
                         val nightSeconds = NightMarket.getInt("BonusStoreRemainingDurationInSeconds")
@@ -669,7 +668,14 @@ class LiveStatsFragment : Fragment() {
     }
 
     // Define your PagerAdapter
-    private class PagerAdapter(fm: FragmentManager?, context: Context, offersAdapter: WeaponSkinOfferAdapter, bundleOfferAdapter: BundleOfferAdapter, accessoryAdapter: BundleOfferAdapter, nightAdapter: WeaponSkinOfferAdapter?) :
+    private class PagerAdapter(
+        fm: FragmentManager?,
+        context: Context,
+        offersAdapter: WeaponSkinOfferAdapter,
+        bundleOfferAdapter: BundleOfferAdapter,
+        accessoryAdapter: BundleOfferAdapter,
+        nightAdapter: WeaponNightSkinOfferAdapter?
+    ) :
         FragmentPagerAdapter(fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val fragments: MutableList<Fragment> = ArrayList()
         private val fragmentTitles: MutableList<String> = ArrayList()
@@ -701,25 +707,26 @@ class LiveStatsFragment : Fragment() {
         }
     }
 
-    private fun handleNightMarket(data: JSONObject): WeaponSkinOfferAdapter? {
-        val weaponSkins = ArrayList<WeaponSkinOffer>()
+    private fun handleNightMarket(data: JSONObject): WeaponNightSkinOfferAdapter? {
+        val weaponSkins = ArrayList<NightWeaponSkinOffer>()
         val items = data.getJSONArray("BonusStoreOffers")
-        for (item in items)
-        {
+        for (item in items) {
             val offerID = item.getJSONObject("Offer").getString("OfferID")
             val cost = item.getJSONObject("Offer")
                 .getJSONObject("Cost")
                 .getInt("85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741")
+            val discountedCost =
+                item.getJSONObject("DiscountCosts").getInt("85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741")
             val weapon = getNameAndImageFromOffer(offerID)
             if (weapon == JSONObject()) return null
             val displayName = weapon.getString("displayName")
             val displayIcon = weapon.getString("displayIcon")
             val rarity = getRarity(offerID)
-            val weaponSkinOffer = WeaponSkinOffer(displayName, displayIcon, cost, rarity)
+            val weaponSkinOffer =
+                NightWeaponSkinOffer(displayName, displayIcon, cost, discountedCost, rarity)
             weaponSkins.add(weaponSkinOffer)
         }
-        Toast.makeText(requireActivity(), "Got ${weaponSkins.size} night market weapons", Toast.LENGTH_LONG).show()
-        return WeaponSkinOfferAdapter(requireActivity(), weaponSkins)
+        return WeaponNightSkinOfferAdapter(requireActivity(), weaponSkins)
     }
 
     private fun getBundleNameAndImage(typeID: String, itemID: String): Pair<String?, String?>
@@ -760,23 +767,22 @@ class LiveStatsFragment : Fragment() {
             // Buddies
             "dd3bf334-87f3-40bd-b043-682a57a8dc3a" -> {
                 val buddiesArray = gunBuddies.getJSONArray("data")
-                for (buddy in buddiesArray)
-                {
-                    if (buddy.getString("uuid") == itemID)
-                    {
-                        val name = buddy.getString("displayName")
-                        val image = buddy.getString("displayIcon")
-                        return Pair(name, image)
+                for (buddy in buddiesArray) {
+                    for (level in buddy.getJSONArray("levels")) {
+                        if (level.getString("uuid") == itemID) {
+                            val name = level.getString("displayName")
+                            val image = level.getString("displayIcon")
+                            return Pair(name, image)
+                        }
                     }
                 }
             }
+
             // Gun Skins
             "e7c63390-eda7-46e0-bb7a-a6abdacd2433" -> {
                 val array = gunSkinLevelsJSON.getJSONArray("data")
-                for (gun in array)
-                {
-                    if (gun.getString("uuid") == itemID)
-                    {
+                for (gun in array) {
+                    if (gun.getString("uuid") == itemID) {
                         val name = gun.getString("displayName")
                         val image = gun.getString("displayIcon")
                         return Pair(name, image)
@@ -786,12 +792,23 @@ class LiveStatsFragment : Fragment() {
             // Player Cards
             "3f296c07-64c3-494c-923b-fe692a4fa1bd" -> {
                 val array = playerCardsJSON.getJSONArray("data")
-                for (card in array)
-                {
-                    if (card.getString("uuid") == itemID)
-                    {
+                for (card in array) {
+                    if (card.getString("uuid") == itemID) {
                         val name = card.getString("displayName")
                         val image = "https://media.valorant-api.com/playercards/$itemID/wideart.png"
+                        return Pair(name, image)
+                    }
+                }
+            }
+
+            // Player Titles
+            "de7caa6b-adf7-4588-bbd1-143831e786c6" -> {
+                val array = titlesJSON.getJSONArray("data")
+                for (card in array) {
+                    if (card.getString("uuid") == itemID) {
+                        val name = card.getString("titleText")
+                        val image =
+                            "https://valorantinfo.com/images/us/v10-title_valorant_icon_33475.webp"
                         return Pair(name, image)
                     }
                 }
@@ -802,6 +819,7 @@ class LiveStatsFragment : Fragment() {
 
     private fun handleAccessoryStore(accessoryJSON: JSONObject): BundleOfferAdapter
     {
+        //copyToClipboard(accessoryJSON, "Accessory Store")
         val accessoryItems = ArrayList<BundleOffer>()
         val array = accessoryJSON.getJSONArray("AccessoryStoreOffers")
         for (offer in array)
@@ -921,46 +939,47 @@ class LiveStatsFragment : Fragment() {
         return JSONObject()
     }
 
-    private fun setAccessoryStoreTimer(seconds: Int)
-    {
+    private fun setAccessoryStoreTimer(seconds: Int) {
         val timer = requireView().findViewById<TextView>(R.id.playerStoreAccessoryTimer)
         if (accessoryTimer != null) return
 
         accessoryTimer = object : CountDownTimer((seconds * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                val seconds = millisUntilFinished / 1000
-                val hours = seconds / 3600
-                val minutes = (seconds % 3600) / 60
-                val secs = seconds % 60
-                val time = String.format("%02d:%02d:%02d", hours, minutes, secs)
+                val totalSeconds = millisUntilFinished / 1000
+                val days = totalSeconds / (3600 * 24)
+                val hours = (totalSeconds % (3600 * 24)) / 3600
+                val minutes = (totalSeconds % 3600) / 60
+                val secs = totalSeconds % 60
+                val time = String.format("%dd %dh %dm %ds", days, hours, minutes, secs)
                 timer.text = time
             }
 
             override fun onFinish() {
-                timer.text = "00:00:00"
+                timer.text = "0d 0h 0m 0s"
                 accessoryTimer = null
                 showStoreFront()
             }
         }.start()
     }
 
-    private fun setNightStoreTimer(seconds: Int)
-    {
+
+    private fun setNightStoreTimer(seconds: Int) {
         val timer = requireView().findViewById<TextView>(R.id.playerStoreNightTimer)
         if (nightTimer != null) return
 
         nightTimer = object : CountDownTimer((seconds * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                val seconds = millisUntilFinished / 1000
-                val hours = seconds / 3600
-                val minutes = (seconds % 3600) / 60
-                val secs = seconds % 60
-                val time = String.format("%02d:%02d:%02d", hours, minutes, secs)
+                val totalSeconds = millisUntilFinished / 1000
+                val days = totalSeconds / (3600 * 24)
+                val hours = (totalSeconds % (3600 * 24)) / 3600
+                val minutes = (totalSeconds % 3600) / 60
+                val secs = totalSeconds % 60
+                val time = String.format("%dd %dh %dm %ds", days, hours, minutes, secs)
                 timer.text = time
             }
 
             override fun onFinish() {
-                timer.text = "00:00:00"
+                timer.text = "0d 0h 0m 0s"
                 nightTimer = null
                 showStoreFront()
             }
@@ -968,28 +987,29 @@ class LiveStatsFragment : Fragment() {
     }
 
 
-    private fun setBundleStoreTimer(seconds: Int)
-    {
+    private fun setBundleStoreTimer(seconds: Int) {
         val timer = requireView().findViewById<TextView>(R.id.playerStoreBundleTimer)
         if (bundleTimer != null) return
 
         bundleTimer = object : CountDownTimer((seconds * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                val seconds = millisUntilFinished / 1000
-                val hours = seconds / 3600
-                val minutes = (seconds % 3600) / 60
-                val secs = seconds % 60
-                val time = String.format("%02d:%02d:%02d", hours, minutes, secs)
+                val totalSeconds = millisUntilFinished / 1000
+                val days = totalSeconds / (3600 * 24)
+                val hours = (totalSeconds % (3600 * 24)) / 3600
+                val minutes = (totalSeconds % 3600) / 60
+                val secs = totalSeconds % 60
+                val time = String.format("%dd %dh %dm %ds", days, hours, minutes, secs)
                 timer.text = time
             }
 
             override fun onFinish() {
-                timer.text = "00:00:00"
+                timer.text = "0d 0h 0m 0s"
                 bundleTimer = null
                 showStoreFront()
             }
         }.start()
     }
+
 
     private fun setStoreTimer(seconds: Int) {
         val timer = requireView().findViewById<TextView>(R.id.playerStoreTimer)
@@ -997,16 +1017,17 @@ class LiveStatsFragment : Fragment() {
 
         storeTimer = object : CountDownTimer((seconds * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                val seconds = millisUntilFinished / 1000
-                val hours = seconds / 3600
-                val minutes = (seconds % 3600) / 60
-                val secs = seconds % 60
-                val time = String.format("%02d:%02d:%02d", hours, minutes, secs)
+                val totalSeconds = millisUntilFinished / 1000
+                val days = totalSeconds / (3600 * 24)
+                val hours = (totalSeconds % (3600 * 24)) / 3600
+                val minutes = (totalSeconds % 3600) / 60
+                val secs = totalSeconds % 60
+                val time = String.format("%dd %dh %dm %ds", days, hours, minutes, secs)
                 timer.text = time
             }
 
             override fun onFinish() {
-                timer.text = "00:00:00"
+                timer.text = "0d 0h 0m 0s"
                 storeTimer = null
                 showStoreFront()
             }
@@ -1391,9 +1412,9 @@ class LiveStatsFragment : Fragment() {
         val topSprayImage = view?.findViewById<ImageView>(R.id.imageViewTopSpray)
 
         val LeftSpray = "0814b2fe-4512-60a4-5288-1fbdcec6ca48"
-        val BottomSpray = "04af080a-4071-487b-61c0-5b9c0cfaac74"
+        val TopSpray = "04af080a-4071-487b-61c0-5b9c0cfaac74"
         val RightSpray = "5863985e-43ac-b05d-cb2d-139e72970014"
-        val TopSpray = "7cdc908e-4f69-9140-a604-899bd879eed1"
+        val BottomSpray = "7cdc908e-4f69-9140-a604-899bd879eed1"
 
         for (i in 0 until Sprays.length()) {
             when (Sprays.getJSONObject(i).getString("EquipSlotID")) {
@@ -2816,7 +2837,6 @@ class LiveStatsFragment : Fragment() {
         val clip = ClipData.newPlainText("Copied Text", content.toString())
         clipboard.setPrimaryClip(clip)
         Toast.makeText(requireContext(), "Copied $desc", Toast.LENGTH_SHORT).show()
-
     }
 
     private fun getAvailablePlayerCards(): ArrayList<String> {

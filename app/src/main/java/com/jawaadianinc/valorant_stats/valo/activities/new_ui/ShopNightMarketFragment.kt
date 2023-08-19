@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.jawaadianinc.valorant_stats.R
 
 
 
 class ShopNightMarketFragment : Fragment() {
-    private var adapter: WeaponSkinOfferAdapter? = null
+    private var adapter: WeaponNightSkinOfferAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,7 +22,7 @@ class ShopNightMarketFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(shopAdapter: WeaponSkinOfferAdapter): ShopNightMarketFragment {
+        fun newInstance(shopAdapter: WeaponNightSkinOfferAdapter): ShopNightMarketFragment {
             val fragment = ShopNightMarketFragment()
             fragment.adapter = shopAdapter
             return fragment
