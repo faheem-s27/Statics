@@ -51,6 +51,17 @@ class WeaponNightSkinOfferAdapter(
         val layout = row.findViewById(R.id.playerStoreListView_circle) as View
         layout.setBackgroundColor(android.graphics.Color.parseColor(colourHex))
 
+        VPImage.setColorFilter(
+            android.graphics.Color.parseColor(
+                "#${
+                    colour.substring(
+                        0,
+                        colour.length - 2
+                    )
+                }"
+            )
+        )
+
         // make displayname colour the same colour
         displayName.setTextColor(
             android.graphics.Color.parseColor(
@@ -63,6 +74,17 @@ class WeaponNightSkinOfferAdapter(
             )
         )
         cost.setTextColor(
+            android.graphics.Color.parseColor(
+                "#${
+                    colour.substring(
+                        0,
+                        colour.length - 2
+                    )
+                }"
+            )
+        )
+
+        discountedCostText.setTextColor(
             android.graphics.Color.parseColor(
                 "#${
                     colour.substring(

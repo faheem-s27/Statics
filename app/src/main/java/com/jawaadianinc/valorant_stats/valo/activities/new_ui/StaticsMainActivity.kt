@@ -90,12 +90,13 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription: String =
-            "- Night market discounted prices are now shown with original prices crossed out" +
+            "- A lot of small UI changes that cleans up Statics overall" +
+                    "\n- Night market discounted prices are now shown with original prices crossed out" +
                     "\n- Fixed missing gun buddies & player titles in accessory store" +
                     "\n- All store timers now show days remaining" +
                     "\n- Fixed top and bottom spray being the wrong way around" +
                     "\n- A few more additions to Material You with certain icons tinting, default is also now blue" +
-                    "\n- Fixed clipping issues with some parts of Statics"
+                    "\n- Fixed clipping issues with some texts of Statics"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)

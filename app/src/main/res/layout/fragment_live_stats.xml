@@ -518,6 +518,7 @@
                             android:id="@+id/RPImage"
                             android:layout_width="30dp"
                             android:layout_height="0dp"
+                            app:tint="?attr/colorPrimary"
                             android:layout_alignTop="@+id/textView34"
                             android:layout_alignBottom="@+id/textView34"
                             android:layout_alignParentEnd="true"
@@ -535,7 +536,6 @@
                             android:gravity="center"
                             android:textAlignment="center"
                             android:text="0"
-                            android:fontFamily="@font/valorant"
                             android:textSize="16dp"
                             android:textStyle="bold" />
 
@@ -544,6 +544,7 @@
                             android:id="@+id/VPImage"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
+                            app:tint="?attr/colorPrimary"
                             android:layout_alignTop="@+id/RPTextBalance"
                             android:layout_alignBottom="@+id/RPTextBalance"
                             android:layout_marginEnd="16dp"
@@ -559,7 +560,6 @@
                             android:layout_marginTop="0dp"
                             android:layout_marginEnd="4dp"
                             android:layout_toStartOf="@+id/VPImage"
-                            android:fontFamily="@font/valorant"
                             android:gravity="center"
                             android:text="0"
                             android:textAlignment="center"
@@ -575,7 +575,7 @@
                             android:layout_alignBottom="@+id/RPTextBalance"
                             android:layout_marginEnd="16dp"
                             android:layout_toStartOf="@+id/VPTextBalance"
-                            android:backgroundTint="?attr/colorPrimary" />
+                            app:tint="?attr/colorPrimary" />
 
                         <!-- A textview next to that called "VPText" -->
                         <TextView
@@ -587,7 +587,6 @@
                             android:layout_marginTop="0dp"
                             android:layout_marginEnd="4dp"
                             android:layout_toStartOf="@+id/KPImage"
-                            android:fontFamily="@font/valorant"
                             android:gravity="center"
                             android:text="0"
                             android:textAlignment="center"

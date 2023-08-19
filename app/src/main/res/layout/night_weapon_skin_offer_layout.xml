@@ -71,7 +71,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/weapon_skin_cost_discount"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/weapon_skin_cost_discount"
-                tools:srcCompat="@tools:sample/avatars" />
+                app:tint="?attr/colorPrimary"
+                tools:srcCompat="@drawable/agentesicon" />
 
             <TextView
                 android:id="@+id/weapon_skin_cost_discount"

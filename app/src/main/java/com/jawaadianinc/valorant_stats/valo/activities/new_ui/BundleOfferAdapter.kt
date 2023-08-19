@@ -54,6 +54,8 @@ class BundleOfferAdapter(
                 .centerInside()
                 .into(layout)
         }
+
+
 //        else
 //        {
 //            layout.setBackgroundColor(context.resources.getColor(R.color.Valorant_SplashColourBackground))

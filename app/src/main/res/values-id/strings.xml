@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="s6">Pelajari lebih lanjut tentang \n&lt;a href=\"https://statics-fd699.web.app/privacy.html\"&gt;Statics Kebijakan Privasi&lt;/a&gt;</string>
+  <string name="s6">Pelajari lebih lanjut tentang \n&lt;a href=\"https://statics-fd699.web.app/privacy.html\"&gt;Kebijakan privasi Statics&lt;/a&gt;</string>
   <string name="s5">Statics tidak didukung oleh Riot Games dan tidak mencerminkan penayangan atau opini dari Riot Games atau siapapun yang secara resmi terlibat dalam produksi atau mengelola properti Riot Games. Riot Games, Dan semua properti yang terkait adalah merek dagang atau merek dagang terdaftar dari Riot Games, Inc.</string>
   <string name="s4">Saya telah membaca dan menyetujui S&amp;K yang terkait dibawah</string>
   <string name="s3">Masuk dengan Riot</string>
@@ -11,6 +11,7 @@
   <string name="starting">Memulai</string>
   <string name="s8">Bagaimana itu bekerja</string>
   <string name="s9">Tekan tombol untuk membuktikan bahwa anda makhluk hidup</string>
+    <string name="s10">Saatnya mencuri data anda</string>
   <string name="s11">Memberi anda gun buddies</string>
   <string name="s12">Mengatur akun anda ke Iron</string>
   <string name="s13">Kamu berhasil</string>
@@ -24,7 +25,7 @@
   <string name="menu_live">Siaran langsung</string>
   <string name="menu_assets">Harta</string>
   <string name="menu_premier">Perdana</string>
-  <string name="menu_extras">Penambahan</string>
+    <string name="menu_extras">Ekstra</string>
   <string name="s20">Pembaruan berikutnya dalam </string>
   <string name="s22">Keterangan Pemain</string>
   <string name="s23">Laporan Peringkat</string>
@@ -244,14 +245,27 @@ TL; DR: Anda harus mengambil kata-kata saya untuk itu. 🦆♥️. Jika Anda mas
   <string name="could_not_get_your_load_outs">Tidak bisa mendapatkan perlengkapan anda</string>
   <string name="penalty">Penalti</string>
   <string name="banned_for">Dilarang untuk </string>
-  <string name="party_in_game">Grup dalam permainan</string>
-  <string name="cannot_queue">Tidak dapat antre</string>
-  <string name="playing">Bermain </string>
-  <string name="end_of_agent_select">Akhir dari pemilihan agen</string>
-  <string name="you">Anda</string>
-  <string name="lock_in_random">Mengunci agen acak</string>
-  <string name="offers">Penawaran harian</string>
-  <string name="bundles">Bundel</string>
-  <string name="night_market">Pasar Malam</string>
-  <string name="accessory">Aksesoris</string>
+    <string name="party_in_game">Grup dalam permainan</string>
+    <string name="cannot_queue">Tidak dapat antre</string>
+    <string name="playing">Bermain </string>
+    <string name="end_of_agent_select">Akhir dari pemilihan agen</string>
+    <string name="you">Anda</string>
+    <string name="lock_in_random">Mengunci agen acak</string>
+    <string name="offers">Penawaran harian</string>
+    <string name="bundles">Bundel</string>
+    <string name="night_market">Pasar Malam</string>
+    <string name="accessory">Aksesoris</string>
+    <string name="weapons">Senjata</string>
+    <string name="reset_language">Setel ulang bahasa</string>
+    <string name="got_cookies">Telah mendapatkan Cookies 🍪</string>
+    <string name="got_access_token">Telah mendapatkan token akses 🎫</string>
+    <string name="got_riot_s_latest_version">Telah mendapatkan versi terbaru Riot 📦</string>
+    <string name="error_getting_entitlement">Kesalahan mendapatkan hak</string>
+    <string name="got_entitlement">Telah mendapatkan hak 📜</string>
+    <string name="error_getting_user_info">Kelasalahan mendapatkan info pengguna ❌</string>
+    <string name="decrypting_user">Mendekripsi Pengguna 👤</string>
+    <string name="error_getting_region">Error mendapatkan wilayah ❌</string>
+    <string name="got_region">Telah mendapatkan wilayah 🌎</string>
+    <string name="hello">Halo </string>
+    <string name="game_modes_unavailable">Mode permainan tidak tersedia</string>
 </resources>

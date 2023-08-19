@@ -8,8 +8,10 @@
   <string name="s7">Khi đăng nhập bằng Riot, các thông tin đăng nhập của bạn được gửi đến server của Riot và một token được gửi về. Token này sau đó sẽ được dùng để lấy những thông tin như tên và chỉ số. Sau đó token sẽ bị xóa khỏi server và sẽ không được lưu trữ ở bất kì đâu. Server chỉ lưu trữ những thông tin về tài khoản của bạn, sau này được dùng để hiện chỉ số của bạn trong app. Statics sẽ không lưu lại bất kì mật khẩu nào!</string>
   <string name="acceptTermsConditions">Chấp nhận điều khoản sử dụng để tiếp tục</string>
   <string name="s1">Đang kết nối với Riot</string>
+  <string name="starting">Đang khởi động</string>
   <string name="s8">Cách ứng dụng này hoạt động</string>
   <string name="s9">Bấm nút nếu bạn đẹp chai</string>
+    <string name="s10">Đang đánh cắp dữ liệu của bạn</string>
   <string name="s11">Đang thêm gun buddy</string>
   <string name="s12">Biến tài khoản của bạn thành rank Sắt</string>
   <string name="s13">Xong rồi!</string>
@@ -166,6 +168,7 @@
   <string name="s165">Đang tải</string>
   <string name="s166">Kho đồ</string>
   <string name="s167">Cửa hàng</string>
+    <string name="s168">Số dư:</string>
   <string name="s169">Shop hàng ngày</string>
   <string name="s170">Lần cuối cập nhật</string>
   <string name="s171">Lần cập nhật tiếp theo</string>
@@ -210,6 +213,7 @@
   <string name="s210">Bị hạ gục</string>
   <string name="s211">Hỗ trợ</string>
   <string name="s212">Tên</string>
+    <string name="s213">Cấp độ</string>
   <string name="s214">Xếp hạng</string>
   <string name="s215">Đang tải chỉ số của người chơi</string>
   <string name="s216">Chọn 1 chế độ</string>
@@ -229,6 +233,7 @@
   <string name="s230">Bom nổ</string>
   <string name="s231">Bom đặt bởi</string>
   <string name="s232">Xem bản đồ gỡ bom</string>
+    <string name="s233">Cấp độ</string>
   <string name="s234">Xếp hạng</string>
   <string name="s235">tuần trước</string>
   <string name="s236">Quan trọng</string>
@@ -236,13 +241,23 @@
   <string name="live_is_loading">Đang tải chế độ Trực tiếp :)</string>
   <string name="could_not_get_your_load_outs">Không thể tải kho đồ của bạn</string>
   <string name="penalty">Phạt</string>
-  <string name="banned_for">Bị cấm do </string>
-  <string name="party_in_game">Tổ đội trong game</string>
-  <string name="cannot_queue">Không thể ghép trận</string>
-  <string name="playing">Đang chơi </string>
-  <string name="end_of_agent_select">Kết thúc lượt chọn đặc vụ</string>
-  <string name="you">Bạn</string>
-  <string name="lock_in_random">Chọn ngẫu nhiên</string>
-  <string name="bundles">Bundles</string>
-  <string name="night_market">Chợ Đêm</string>
+    <string name="banned_for">Bị cấm do </string>
+    <string name="party_in_game">Tổ đội trong game</string>
+    <string name="cannot_queue">Không thể ghép trận</string>
+    <string name="playing">Đang chơi </string>
+    <string name="end_of_agent_select">Kết thúc lượt chọn đặc vụ</string>
+    <string name="you">Bạn</string>
+    <string name="lock_in_random">Chọn ngẫu nhiên</string>
+    <string name="offers">Shop hàng ngày</string>
+    <string name="bundles">Bundles</string>
+    <string name="night_market">Chợ Đêm</string>
+    <string name="accessory">Phụ kiện</string>
+    <string name="weapons">Súng</string>
+    <string name="reset_language">Đặt lại ngôn ngữ</string>
+    <string name="got_cookies">Lấy được cookie 🍪</string>
+    <string name="got_access_token">Lấy được token 🎫</string>
+    <string name="got_riot_s_latest_version">Lấy được Riot phiên bản mới nhất 📦</string>
+    <string name="error_getting_entitlement">Có lỗi khi lấy quyền ❌</string>
+    <string name="got_entitlement">Lấy được quyền 📜</string>
+    <string name="error_getting_user_info">Có lỗi khi lấy thông tin người chơi ❌</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.Activity
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -50,7 +49,36 @@ class WeaponSkinOfferAdapter(
         layout.setBackgroundColor(android.graphics.Color.parseColor(colourHex))
 
         // make displayname colour the same colour
-        displayName.setTextColor(android.graphics.Color.parseColor("#${colour.substring(0, colour.length - 2)}"))
+        displayName.setTextColor(
+            android.graphics.Color.parseColor(
+                "#${
+                    colour.substring(
+                        0,
+                        colour.length - 2
+                    )
+                }"
+            )
+        )
+        cost.setTextColor(
+            android.graphics.Color.parseColor(
+                "#${
+                    colour.substring(
+                        0,
+                        colour.length - 2
+                    )
+                }"
+            )
+        )
+        VPImage.setColorFilter(
+            android.graphics.Color.parseColor(
+                "#${
+                    colour.substring(
+                        0,
+                        colour.length - 2
+                    )
+                }"
+            )
+        )
 
         Picasso
             .get()
