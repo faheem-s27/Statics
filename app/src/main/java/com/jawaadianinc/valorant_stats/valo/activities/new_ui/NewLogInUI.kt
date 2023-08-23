@@ -1,5 +1,6 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
+import ValorantMatch
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -10,16 +11,20 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityNewLogInUiBinding
-import com.jawaadianinc.valorant_stats.main.Account
-import com.jawaadianinc.valorant_stats.valo.Henrik
+import com.jawaadianinc.valorant_stats.main.ValorantApiService
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.Database.ContentLocalisationDatabase
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.ValorantLocalisation.Contents
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -31,13 +36,16 @@ import org.json.JSONObject
 import java.net.URL
 
 class NewLogInUI : AppCompatActivity() {
-    lateinit var binding : ActivityNewLogInUiBinding
-    lateinit var webView : WebView
+    lateinit var binding: ActivityNewLogInUiBinding
+    lateinit var webView: WebView
     lateinit var updateText: TextView
     private val clientPlatformToken =
         "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9"
     var RiotURL =
         "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid"
+
+    var region = ""
+    lateinit var ValorantApiService: ValorantApiService
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +112,27 @@ class NewLogInUI : AppCompatActivity() {
         CookieManager.getInstance().setAcceptCookie(true)
         webView.loadUrl(RiotURL)
 
+//        val key = BuildConfig.RIOT_API_KEY
+//
+//        val interceptor = Interceptor { chain ->
+//            val newRequest = chain.request().newBuilder()
+//                .addHeader("X-Riot-Token", key)
+//                .build()
+//            chain.proceed(newRequest)
+//        }
+//
+//        val okHttpClient = OkHttpClient.Builder()
+//            .addInterceptor(interceptor)
+//            .build()
+//
+//        val retrofit = Retrofit.Builder()
+//            .baseUrl("https://eu.api.riotgames.com/")
+//            .client(okHttpClient)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//
+//        ValorantApiService = retrofit.create(ValorantApiService::class.java)
+
     }
 
     private fun addStringToTextView(text: String)
@@ -156,9 +185,8 @@ class NewLogInUI : AppCompatActivity() {
                     addStringToTextView(getString(R.string.decrypting_user))
                 }
             }
-            val name = userInfo.split(":")[1]
             delay(DURATION)
-            val region = getUserRegion(accessToken, idToken)
+            region = getUserRegion(accessToken, idToken)
             if (region == "Error")
             {
                 withContext(Dispatchers.Main) {
@@ -169,16 +197,20 @@ class NewLogInUI : AppCompatActivity() {
             else{
                 withContext(Dispatchers.Main) {
                     addStringToTextView(getString(R.string.got_region))
+                    addTranslations(region)
                 }
             }
             val key = this@NewLogInUI.intent.getStringExtra("key")
             val puuid = userInfo.split(":")[0]
+            val name = userInfo.split(":")[1]
             val tag = userInfo.split(":")[2]
             val intent = Intent(this@NewLogInUI, StaticsMainActivity::class.java)
+            val riotPUUID = getRiotPUUID(name, tag)
+
             intent.putExtra("key", key)
             intent.putExtra("region", region)
             intent.putExtra("playerName", "$name#$tag")
-            intent.putExtra("playerImageID", getPlayerImage("$name#$tag"))
+            intent.putExtra("playerImageID", getPlayerImageRiot(riotPUUID, key!!))
             intent.putExtra("puuid", puuid)
             intent.putExtra("accessToken", accessToken)
             intent.putExtra("entitlement", entitlement)
@@ -186,7 +218,7 @@ class NewLogInUI : AppCompatActivity() {
             intent.putExtra("clientPlatform", clientPlatformToken)
             intent.putExtra("cookies", cookies)
             intent.putExtra("idToken", idToken)
-            intent.putExtra("riotPUUID", getRiotPUUID(name, tag))
+            intent.putExtra("riotPUUID", riotPUUID)
 
             delay(DURATION)
             withContext(Dispatchers.Main) {
@@ -200,8 +232,36 @@ class NewLogInUI : AppCompatActivity() {
         }
     }
 
-    private fun getUserInfo(accessToken: String, build:String, clientVersion:String, entitlement: String, cookies: String): String
-    {
+    private fun addTranslations(region: String) {
+        val translationsDB = ContentLocalisationDatabase(this)
+        val url =
+            "https://$region.api.riotgames.com/val/content/v1/contents?api_key=RGAPI-77322163-520c-492f-aabe-6c29a39f44ff"
+        val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+        coroutineScope.launch {
+            val dbVersion = translationsDB.getVersion()
+            val json = JSONObject(URL(url).readText())
+            val Gson = Gson().fromJson(json.toString(), Contents::class.java)
+            if (dbVersion == "" || dbVersion != Gson.version) {
+                translationsDB.addData(Gson.version, json.toString())
+                withContext(Dispatchers.Main)
+                {
+                    Toast.makeText(
+                        this@NewLogInUI,
+                        "Asset Translations Updated",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun getUserInfo(
+        accessToken: String,
+        build: String,
+        clientVersion: String,
+        entitlement: String,
+        cookies: String
+    ): String {
         return runBlocking(Dispatchers.IO) {
             val client = OkHttpClient()
             val userInfoRequest = Request.Builder()
@@ -315,29 +375,42 @@ class NewLogInUI : AppCompatActivity() {
         }
     }
 
-    private fun getPlayerImage(valoName: String?): String {
-        if (valoName == null) return "9fb348bc-41a0-91ad-8a3e-818035c4e561"
+
+    private fun getPlayerImageRiot(puuid: String, key: String): String {
         // run on main thread blocking
         return runBlocking(Dispatchers.IO) {
             try {
                 val url =
-                    "https://api.henrikdev.xyz/valorant/v1/account/${valoName.split("#")[0]}/${
-                        valoName.split("#")[1]
-                    }"
-                val json = Henrik(this@NewLogInUI).henrikAPI(url)
-                val playerAccount = Gson().fromJson(json.toString(), Account::class.java)
-                return@runBlocking playerAccount.data.card.id
+                    "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/$puuid?api_key=$key"
+                val json = JSONObject(URL(url).readText())
+                val playerHistory = Gson().fromJson(json.toString(), MatchesByPUUID::class.java)
+                val lastMatchID = playerHistory.history[0].matchId
+                return@runBlocking getPlayerCardFromLastMatch(lastMatchID, key, puuid)
             } catch (e: Exception) {
-                Log.d("LoadingActivity", "Error getting player image: $e")
+                Log.d("PlayerImageError", e.message.toString())
                 return@runBlocking "9fb348bc-41a0-91ad-8a3e-818035c4e561"
             }
         }
     }
 
-    private fun getRiotPUUID(name: String, tag: String): String
-    {
+    private fun getPlayerCardFromLastMatch(matchID: String, key: String, puuid: String): String {
+        val url = "https://$region.api.riotgames.com/val/match/v1/matches/$matchID?api_key=$key"
+        val json = JSONObject(URL(url).readText())
+        val matchData = Gson().fromJson(json.toString(), ValorantMatch::class.java)
+
+        for (player in matchData.players) {
+            if (player.puuid == puuid) {
+                return player.playerCard
+            }
+        }
+
+        return "9fb348bc-41a0-91ad-8a3e-818035c4e561"
+    }
+
+    private fun getRiotPUUID(name: String, tag: String): String {
         val key = BuildConfig.RIOT_API_KEY
-        val url = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/$name/$tag?api_key=$key"
+        val url =
+            "https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/$name/$tag?api_key=$key"
         val client = OkHttpClient()
         return runBlocking(Dispatchers.IO) {
             val request = Request.Builder()

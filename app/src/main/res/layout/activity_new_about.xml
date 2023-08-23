@@ -41,7 +41,8 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="?attr/colorSecondaryContainer">
 
                     <TextView
                         android:id="@+id/textView2"
@@ -117,7 +118,8 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="?attr/colorSecondaryContainer">
 
                     <!-- TextView in center saying Translators -->
                     <TextView
@@ -137,12 +139,12 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:clipChildren="false"
                         android:clipToPadding="false"
-                        android:scrollbars="vertical"
                         android:nestedScrollingEnabled="true"
                         android:padding="4dp"
-                        android:clipChildren="false"
-                        android:layout_marginEnd="16dp"
+                        android:scrollbars="vertical"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView43"
@@ -159,9 +161,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="60dp"
+                android:background="?attr/colorSecondaryContainer"
                 android:layout_marginEnd="16dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="8dp"
+                app:cardElevation="12dp"
                 app:cardPreventCornerOverlap="false"
                 app:cardUseCompatPadding="true"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -170,14 +173,17 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="?attr/colorSecondaryContainer">
 
                     <ImageView
                         android:id="@+id/imageView9"
                         android:layout_width="wrap_content"
                         android:layout_height="150dp"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="8dp"
                         android:padding="24dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -190,6 +196,7 @@
                         android:layout_marginTop="24dp"
                         android:text="@string/app_name"
                         android:textSize="30sp"
+                        android:elevation="2dp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toEndOf="@+id/imageView9"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -218,24 +225,13 @@
                         app:srcCompat="@drawable/icons8_discord_50" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/new_about_insta"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:clickable="true"
-                        app:fabSize="mini"
-                        app:layout_constraintStart_toEndOf="@+id/new_about_discord"
-                        app:layout_constraintTop_toBottomOf="@+id/new_about_versionName"
-                        app:srcCompat="@drawable/icons8_instagram_50" />
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/new_about_playstore"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:layout_marginLeft="8dp"
                         android:clickable="true"
-                        app:fabSize="mini"
-                        app:layout_constraintStart_toEndOf="@+id/new_about_insta"
+                        app:layout_constraintStart_toEndOf="@+id/new_about_discord"
                         app:layout_constraintTop_toBottomOf="@+id/new_about_versionName"
                         app:srcCompat="@drawable/icons8_google_play_24" />
 

@@ -313,5 +313,23 @@
     <string name="got_region">Got region 🌎</string>
     <string name="hello">"Hello "</string>
     <string name="game_modes_unavailable">Game modes unavailable</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="enable_dark_mode_for_the_app">Enable dark mode for the app</string>
+    <string name="your_account">Your Account</string>
+    <string name="app_notifications">App Notifications</string>
+    <string name="match_notifications">Match Notifications</string>
+    <string name="show_a_notification_when_a_match_has_been_found">Show a notification when a match has been found</string>
+    <string name="help">Help</string>
+    <string name="app_language">App Language</string>
+    <string name="select_your_preferred_language">Select your preferred language</string>
+    <string name="about_statics">About Statics</string>
+    <string name="donate_to_the_developer">Donate to the developer</string>
+    <string name="using_the_play_store">Using the Play Store</string>
+    <string name="report_technical_issues_or_suggest_new_features">Report technical issues or suggest new features</string>
+    <string name="send_feedback_on_discord">Send feedback on Discord</string>
+    <string name="what_s_new">What\'s new</string>
+    <string name="view_recent_changes">View recent changes</string>
+    <string name="current_app_version">Current App Version</string>
+    <string name="unknown">Unknown</string>
 
 </resources>

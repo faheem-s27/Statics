@@ -14,19 +14,16 @@ import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.color.DynamicColors
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
-import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.Henrik
-import com.jawaadianinc.valorant_stats.valo.activities.LoggingInActivityRSO
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.Database.ContentLocalisationDatabase
 import com.jawaadianinc.valorant_stats.valo.activities.new_ui.NewLogInUI
-import com.jawaadianinc.valorant_stats.valo.activities.new_ui.StaticsMainActivity
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
@@ -50,6 +47,7 @@ class LoadingActivity : AppCompatActivity() {
     private var key = ""
 
     lateinit var assetsDB: AssetsDatabase
+    lateinit var translationsDB: ContentLocalisationDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +61,7 @@ class LoadingActivity : AppCompatActivity() {
         DynamicColors.applyToActivitiesIfAvailable(application)
 
         assetsDB = AssetsDatabase(this)
+        translationsDB = ContentLocalisationDatabase(this)
 
         loadingProgressBar = findViewById(R.id.progressBar4)
         updateText = findViewById(R.id.textView4)
@@ -70,6 +69,25 @@ class LoadingActivity : AppCompatActivity() {
         videoPlayer = findViewById(R.id.videoView3)
 
         key = BuildConfig.RIOT_API_KEY
+
+//        val interceptor = Interceptor { chain ->
+//            val newRequest = chain.request().newBuilder()
+//                .addHeader("X-Riot-Token", key)
+//                .build()
+//            chain.proceed(newRequest)
+//        }
+//
+//        val okHttpClient = OkHttpClient.Builder()
+//            .addInterceptor(interceptor)
+//            .build()
+//
+//        val retrofit = Retrofit.Builder()
+//            .baseUrl("https://eu.api.riotgames.com/")
+//            .client(okHttpClient)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//
+//        val valorantApiService = retrofit.create(ValorantApiService::class.java)
 
         loadUI()
 
@@ -90,6 +108,7 @@ class LoadingActivity : AppCompatActivity() {
             addAssetsToDatabase()
         }
     }
+
 
     private fun loadUI() {
         loadingProgressBar.alpha = 0.0f

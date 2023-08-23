@@ -1,40 +1,21 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.Activity
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.PopupWindow
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.SkuDetailsParams
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.jawaadianinc.valorant_stats.LastMatchWidget
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityStaticsMainBinding
-import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.squareup.picasso.Picasso
 
 
@@ -57,6 +38,10 @@ class StaticsMainActivity : AppCompatActivity() {
 
     private lateinit var toolbar: MaterialToolbar
     private lateinit var toolbarPicture: ImageView
+
+    val statsFragment = StaticsMainMenu()
+    val liveStatsFragment = LiveStatsFragment()
+    val assetsFragment = AssetsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,13 +75,11 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription: String =
-            "- A lot of small UI changes that cleans up Statics overall" +
-                    "\n- Night market discounted prices are now shown with original prices crossed out" +
-                    "\n- Fixed missing gun buddies & player titles in accessory store" +
-                    "\n- All store timers now show days remaining" +
-                    "\n- Fixed top and bottom spray being the wrong way around" +
-                    "\n- A few more additions to Material You with certain icons tinting, default is also now blue" +
-                    "\n- Fixed clipping issues with some texts of Statics"
+            "- Settings page has gotten a complete overhaul! Click on your profile picture to see" +
+                    "\n- New setting to translate Valorant Assets!" +
+                    "\n- New language selector" +
+                    "\n- Improved dark mode to be more stable" +
+                    "\n- Fixed text colouring on certain backgrounds"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
@@ -159,22 +142,7 @@ class StaticsMainActivity : AppCompatActivity() {
             }
         }
 
-        val statsFragment = StaticsMainMenu()
-        val liveStatsFragment = LiveStatsFragment()
-        val assetsFragment = AssetsFragment()
         activeFragment = liveStatsFragment
-
-        val fragmentManager: FragmentManager = supportFragmentManager
-        while (fragmentManager.backStackEntryCount > 0) {
-            fragmentManager.popBackStackImmediate()
-        }
-
-        supportFragmentManager.beginTransaction().apply {
-            add(R.id.container, statsFragment, "1").hide(statsFragment)
-            add(R.id.container, liveStatsFragment, "2")
-            add(R.id.container, assetsFragment, "3").hide(assetsFragment)
-        }.commit()
-
 
         bottomNavBar.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -190,211 +158,43 @@ class StaticsMainActivity : AppCompatActivity() {
                     changeFragment(assetsFragment)
                     true
                 }
+
                 else -> {
                     false
                 }
             }
         }
-
-        // update the widget
-        val intent =
-            Intent(this, LastMatchWidget::class.java)
-        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(
-            ComponentName(applicationContext, LastMatchWidget::class.java)
-        )
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-        sendBroadcast(intent)
-
         toolbar.title = playerName
         Picasso.get().load(playerCardSmall).into(toolbarPicture)
 
         toolbarPicture.setOnClickListener {
-            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val popupView = inflater.inflate(R.layout.layout_statics_main_menu_pfp, null)
-            val width = LinearLayout.LayoutParams.MATCH_PARENT
-            val height = LinearLayout.LayoutParams.MATCH_PARENT
-            val focusable = true
-            val popupWindow = PopupWindow(popupView, width, height, focusable)
-            popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0)
-
-            // animate the popupview in by coming from the top
-            popupView.translationY = -1000f
-            popupView.animate().translationY(0f).setDuration(500)
-                .setInterpolator {
-                    val x = it - 1.0f
-                    x * x * x * x * x + 1.0f
-                }
-                .start()
-
-            val dimLayout = findViewById<LinearLayout>(R.id.dim_layout)
-
-            // set the dim layout to alpha 1f in 500ms
-            dimLayout.animate().alpha(0.5f).setDuration(500).start()
-
-            // set the popup window to dismiss when the back button is pressed
-            popupWindow.setOnDismissListener {
-                dimLayout.animate().alpha(0f).setDuration(500).start()
-                popupView.animate().alpha(0f).setDuration(500).withEndAction {
-                    popupWindow.dismiss()
-                }.start()
-            }
-
-            popupView.alpha = 0f
-            popupView.animate().alpha(1f).setDuration(500).start()
-
-            val logout = popupView.findViewById<Button>(R.id.popup_LogOutButton)
-            logout.setOnClickListener {
-                // Add a confirmation dialog
-                val alert = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-                alert.setTitle(getString(R.string.s55))
-                alert.setMessage(getString(R.string.s56))
-                alert.setPositiveButton("Yes") { _, _ ->
-                    logOut()
-                }
-                alert.setNegativeButton("No") { _, _ -> }
-                alert.show()
-            }
-
-            val purchaseUpdateListener = PurchasesUpdatedListener { billingResult, purchases ->
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-                    // Handle successful purchase
-                    // Process the donation and update UI accordingly
-                    Toast.makeText(
-                        this,
-                        getString(R.string.s162),
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-                    // Handle user cancellation
-                    Toast.makeText(this, getString(R.string.s163), Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    // Handle other billing errors
-                    Toast.makeText(this, getString(R.string.s164), Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-
-
-            val billingClient = BillingClient.newBuilder(this)
-                .setListener(purchaseUpdateListener)
-                .enablePendingPurchases()
-                .build()
-
-            billingClient.startConnection(object : BillingClientStateListener {
-                override fun onBillingSetupFinished(billingResult: BillingResult) {
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        // The BillingClient is ready. You can query purchases here.
-                    }
-                }
-
-                override fun onBillingServiceDisconnected() {
-                    // Try to restart the connection on the next request to
-                    // Google Play by calling the startConnection() method.
-                }
-            })
-
-            val donate = popupView.findViewById<Button>(R.id.popup_donate)
-            donate.setOnClickListener {
-                val skuList = ArrayList<String>()
-                skuList.add("statics_donations")
-                val params = SkuDetailsParams.newBuilder()
-                params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
-                billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
-                        for (skuDetails in skuDetailsList) {
-                            val flowParams = BillingFlowParams.newBuilder()
-                                .setSkuDetails(skuDetails)
-                                .build()
-                            billingClient.launchBillingFlow(this, flowParams)
-                        }
-                    }
-                }
-            }
-
-            //val wallpaper = popupView.findViewById<ImageView>(R.id.PopUp_LargePlayerPFP)
-            //Picasso.get().load(playerCardLarge).into(wallpaper)
-
-            val leaderBoardsBtn = popupView.findViewById<Button>(R.id.new_Leaderboards)
-            leaderBoardsBtn.setOnClickListener {
-                val intent = Intent(this, LeaderboardsV2::class.java)
-                intent.putExtra("playerName", playerName)
-                intent.putExtra("region", region)
-                intent.putExtra("playerImage", StaticsMainActivity.playerCardID)
-                startActivity(intent)
-                overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            }
-
-            val aboutButton = popupView.findViewById<Button>(R.id.new_About)
-            aboutButton.setOnClickListener {
-                val intent = Intent(this, NewAbout::class.java)
-                startActivity(intent)
-                overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            }
-
-            val resetLanguageButton = popupView.findViewById<Button>(R.id.pfp_reset_language)
-            resetLanguageButton.setOnClickListener {
-                val intent = Intent(this, RecentMatchesList::class.java)
-                intent.putExtra("region", region)
-                startActivity(intent)
-//                val alert = android.app.AlertDialog.Builder(requireActivity())
-//                alert.setTitle("Reset Language")
-//                alert.setMessage("Are you sure you want to reset the language?")
-//                alert.setPositiveButton("Yes") { _, _ ->
-//                    val prefs =
-//                        requireActivity().getSharedPreferences("UserLocale", Context.MODE_PRIVATE)
-//                    val editor = prefs.edit()
-//                    editor.putString("locale", "")
-//                    editor.apply()
-//                    requireActivity().moveTaskToBack(true)
-//                    Handler().postDelayed({
-//                        // Bring the app back to the foreground
-//                        val intent = Intent(requireActivity(), SplashActivity::class.java)
-//                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                        startActivity(intent)
-//                    }, 250)
-//
-//                }
-//                alert.setNegativeButton("No") { _, _ -> }
-//                alert.show()
-            }
-
-            val darkModeSwitch : MaterialSwitch = popupView.findViewById(R.id.switch_darkMode)
-            // Get the current system night mode
-            val currentNightMode = AppCompatDelegate.getDefaultNightMode()
-            darkModeSwitch.isChecked = currentNightMode == AppCompatDelegate.MODE_NIGHT_YES
-            darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
-                val nightMode =
-                    if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-                AppCompatDelegate.setDefaultNightMode(nightMode)
-                finish()
-                val intent = Intent(this, LoadingActivity::class.java)
-                startActivity(intent)
-//                // Finish the current activity
-//                // Finish the current activity
-//                finish()
-//
-//                // Start a new activity after the theme has been applied
-//
-//                // Start a new activity after the theme has been applied
-//                val intent = Intent(this@CurrentActivity, NewActivity::class.java)
-//                startActivity(intent)
-            }
+            requireActivity().startActivity(Intent(requireActivity(), SettingsActivity::class.java))
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.container, statsFragment, "1").hide(statsFragment)
+            add(R.id.container, liveStatsFragment, "2")
+            add(R.id.container, assetsFragment, "3").hide(assetsFragment)
+        }.commitAllowingStateLoss()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val stats = supportFragmentManager.findFragmentByTag("1")
+        val live = supportFragmentManager.findFragmentByTag("2")
+        val assets = supportFragmentManager.findFragmentByTag("3")
+        supportFragmentManager.beginTransaction().apply {
+            if (stats != null) remove(stats)
+            if (live != null) remove(live)
+            if (assets != null) remove(assets)
+        }.commitAllowingStateLoss()
     }
 
     fun requireActivity(): Activity {
         return this
-    }
-
-    private fun logOut() {
-        val intent = Intent(this, NewLogInUI::class.java)
-        intent.putExtra("login", "true")
-        startActivity(intent)
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-        finish()
     }
 
     private fun changeFragment(fragment: Fragment) {

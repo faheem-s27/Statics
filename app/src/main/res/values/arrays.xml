@@ -9,4 +9,84 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <string-array name="language_options">
+        <item>العربية (Arabic)</item>
+        <item>Deutsch (German)</item>
+        <item>Dutch (Nederlands)</item>
+        <item>English (English)</item>
+        <item>Español (Spanish)</item>
+        <item>Français (French)</item>
+        <item>Indonesian (Bahasa Indonesia)</item>
+        <item>Polish (Polski)</item>
+        <item>Portuguese (Português)</item>
+        <item>Portuguese, Brazilian (Português Brasileiro)</item>
+        <item>Russian (Русский)</item>
+        <item>Simplified Chinese (中文简体)</item>
+        <item>Spanish (Español)</item>
+        <item>Turkish (Türkçe)</item>
+        <item>Vietnamese (Tiếng Việt)</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>ar</item>
+        <item>de</item>
+        <item>nl</item>
+        <item>en</item>
+        <item>es</item>
+        <item>fr</item>
+        <item>id</item>
+        <item>pl</item>
+        <item>pt</item>
+        <item>pt-BR</item>
+        <item>ru</item>
+        <item>zh</item>
+        <item>es</item>
+        <item>tr</item>
+        <item>vi</item>
+    </string-array>
+
+    <string-array name="language_options_assets">
+        <item>العربية (Arabic)</item>
+        <item>Deutsch (German)</item>
+        <item>English (United States)</item>
+        <item>Español (Spain)</item>
+        <item>Español (Mexico)</item>
+        <item>Français (France)</item>
+        <item>Bahasa Indonesia (Indonesian)</item>
+        <item>Italiano (Italian)</item>
+        <item>日本語 (Japanese)</item>
+        <item>한국어 (Korean)</item>
+        <item>Polski (Polish)</item>
+        <item>Português (Portuguese)</item>
+        <item>Português (Brazilian)</item>
+        <item>Русский (Russian)</item>
+        <item>ไทย (Thai)</item>
+        <item>Türkçe (Turkish)</item>
+        <item>Tiếng Việt (Vietnamese)</item>
+        <item>中文 (Simplified Chinese)</item>
+        <item>中文 (Traditional Chinese)</item>
+    </string-array>
+
+    <string-array name="language_values_assets">
+        <item>ar-AE</item>
+        <item>de-DE</item>
+        <item>en-US</item>
+        <item>es-ES</item>
+        <item>es-MX</item>
+        <item>fr-FR</item>
+        <item>id-ID</item>
+        <item>it-IT</item>
+        <item>ja-JP</item>
+        <item>ko-KR</item>
+        <item>pl-PL</item>
+        <item>pt-PT</item>
+        <item>pt-BR</item>
+        <item>ru-RU</item>
+        <item>th-TH</item>
+        <item>tr-TR</item>
+        <item>vi-VN</item>
+        <item>zh-CN</item>
+        <item>zh-TW</item>
+    </string-array>
 </resources>

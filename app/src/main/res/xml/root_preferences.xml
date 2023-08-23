@@ -1,21 +1,90 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <SwitchPreference
+        app:key="dark_mode"
+        app:summary="@string/enable_dark_mode_for_the_app"
+        app:title="@string/dark_mode"></SwitchPreference>
+
     <PreferenceCategory
-        android:layout_gravity="center"
-        android:padding="10dp"
-        android:textAlignment="center"
-        app:icon="@drawable/valologo"
-        app:iconSpaceReserved="true"
-        app:title="VALORANT">
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="switch_preference_1"
-            android:title="In development :D" />
+        app:key="riot_account"
+        app:title="@string/your_account">
+
+        <Preference
+            app:key="log_out"
+            app:title="@string/s55" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:icon="@drawable/brawllogo"
-        app:title="Brawlhalla" />
+        app:key="notifications"
+        app:title="@string/app_notifications">
+
+        <CheckBoxPreference
+            app:key="match_notifications"
+            app:summary="@string/show_a_notification_when_a_match_has_been_found"
+            app:title="@string/match_notifications" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="statics_category"
+        app:title="Statics">
+
+        <ListPreference
+            android:defaultValue="en-US"
+            android:entries="@array/language_options_assets"
+            android:entryValues="@array/language_values_assets"
+            android:key="language_assets"
+            android:summary="Select the language to be used for Valorant Assets"
+            android:title="Asset Translations" />
+
+        <Preference
+            app:key="current_version"
+            app:summary="@string/unknown"
+            app:title="@string/current_app_version"> <!-- Replace with the actual version -->
+        </Preference>
+
+        <Preference
+            app:key="latest_statics"
+            app:summary="@string/view_recent_changes"
+            app:title="@string/what_s_new"></Preference>
+
+        <Preference
+            app:key="about_statics"
+            app:title="@string/about_statics"></Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="help_category"
+        app:title="@string/help">
+
+        <ListPreference
+            android:defaultValue="en"
+            android:entries="@array/language_options"
+            android:entryValues="@array/language_values"
+            android:key="language"
+            android:summary="@string/select_your_preferred_language"
+            android:title="@string/app_language" />
+
+
+        <Preference
+            app:key="donate"
+            app:summary="@string/using_the_play_store"
+            app:title="@string/donate_to_the_developer"></Preference>
+
+        <Preference
+            app:key="feedback"
+            app:summary="@string/report_technical_issues_or_suggest_new_features"
+            app:title="@string/send_feedback_on_discord">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://discord.gg/jwfJUQMPP7" />
+        </Preference>
+
+    </PreferenceCategory>
+    >
+
 
 </PreferenceScreen>

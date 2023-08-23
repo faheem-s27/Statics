@@ -41,6 +41,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -50,10 +51,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.Database.ContentLocalisationDatabase
+import com.jawaadianinc.valorant_stats.valo.activities.new_ui.ValorantLocalisation.Contents
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
@@ -151,6 +155,8 @@ class LiveStatsFragment : Fragment() {
 
     private var availableAgents = mutableListOf<String>()
 
+    private var AssetTranslations: Contents? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -182,7 +188,8 @@ class LiveStatsFragment : Fragment() {
                 region.lowercase(Locale.getDefault())
             }
 
-        //loadingDialogStatics.show()
+        val dbTranslations = ContentLocalisationDatabase(requireContext())
+
 
         INITVIEW = requireView().findViewById(R.id.InitView)
         LIVEVIEW = requireView().findViewById(R.id.LiveView)
@@ -190,7 +197,8 @@ class LiveStatsFragment : Fragment() {
         agentPreGameRecyclerView = requireView().findViewById(R.id.new_agentSelectGridRecyclerView)
         agentPreGameRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
 
-        currentLoadoutWeaponsRecyclerView = requireView().findViewById(R.id.currentLoadoutWeaponsRecyclerView)
+        currentLoadoutWeaponsRecyclerView =
+            requireView().findViewById(R.id.currentLoadoutWeaponsRecyclerView)
 
         agentPreGameSelectRecyclerView = requireView().findViewById(R.id.new_agentSelectGridRecyclerView_other_people)
         agentCoreGameRecyclerView = requireView().findViewById(R.id.new_live_partyCoreGameRecyclerView)
@@ -230,6 +238,8 @@ class LiveStatsFragment : Fragment() {
             val json = JSONObject(URL(url).readText())
             ClientVersion = json.getJSONObject("data").getString("riotClientBuild")
             riotClientVersion = json.getJSONObject("data").getString("riotClientVersion")
+
+            AssetTranslations = Gson().fromJson(dbTranslations.getData(), Contents::class.java)
 
             logLIVEStuff("Got client version: $ClientVersion and riot client version: $riotClientVersion")
             withContext(Main) {
@@ -1802,6 +1812,10 @@ class LiveStatsFragment : Fragment() {
     private fun sendNotification(title: String, message: String, channel_name: String, mapImage: String) {
         // check if the notification has been sent
         if (notificationSent) return
+        // Retrieve the preference value from SharedPreferences
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+        val matchNotificationsEnabled = sharedPreferences.getBoolean("match_notifications", false)
+        if (!matchNotificationsEnabled) return
 
         liveModeScope.launch {
             // check if the user has notifications enabled
@@ -1824,7 +1838,7 @@ class LiveStatsFragment : Fragment() {
                 .setContentTitle(title)
                 .setContentText(message)
                 .setLargeIcon(bitmap)
-                .setTimeoutAfter(10000)
+            //.setTimeoutAfter(10000)
 
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
@@ -2886,8 +2900,41 @@ class LiveStatsFragment : Fragment() {
                     val titleID = titleObject.getString("ItemID")
 
                     // convert titleID to title name
+                    val sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(requireActivity())
+                    val selectedLanguageAsset =
+                        sharedPreferences.getString("language_assets", "en-US")
                     val converted = getTitleFromJson(titleID)
-                    availableTitles.add(converted)
+                    if (AssetTranslations != null) {
+                        val playerTitles = AssetTranslations!!.playerTitles
+                        for (playerTitle in playerTitles) {
+                            if (playerTitle.id == titleID) {
+                                val languageAssetToTitleMap = mapOf(
+                                    "ar-AE" to playerTitle.localizedNames.ar_AE,
+                                    "de-DE" to playerTitle.localizedNames.de_DE,
+                                    "en-US" to playerTitle.localizedNames.en_US,
+                                    "es-ES" to playerTitle.localizedNames.es_ES,
+                                    "es-MX" to playerTitle.localizedNames.es_MX,
+                                    "fr-FR" to playerTitle.localizedNames.fr_FR,
+                                    "id-ID" to playerTitle.localizedNames.id_ID,
+                                    "it-IT" to playerTitle.localizedNames.it_IT,
+                                    "ja-JP" to playerTitle.localizedNames.ja_JP,
+                                    "ko-KR" to playerTitle.localizedNames.ko_KR,
+                                    "pl-PL" to playerTitle.localizedNames.pl_PL,
+                                    "pt-BR" to playerTitle.localizedNames.pt_BR,
+                                    "ru-RU" to playerTitle.localizedNames.ru_RU,
+                                    "th-TH" to playerTitle.localizedNames.th_TH,
+                                    "vi_VN" to playerTitle.localizedNames.vi_VN,
+                                    "zh_CN" to playerTitle.localizedNames.zh_CN,
+                                    "zh_TW" to playerTitle.localizedNames.zh_TW
+                                )
+                                val localisedTitle =
+                                    languageAssetToTitleMap[selectedLanguageAsset] ?: converted
+                                availableTitles.add(localisedTitle)
+                            }
+                        }
+                    } else availableTitles.add(converted)
+
                 }
                 // sort titles alphabetically
                 availableTitles.sort()

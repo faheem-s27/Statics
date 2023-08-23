@@ -3,7 +3,6 @@ package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 import android.content.pm.PackageInfo
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -36,8 +35,6 @@ class NewAbout : AppCompatActivity() {
             findViewById<TextView>(com.jawaadianinc.valorant_stats.R.id.new_about_versionName)
         val discordFAB =
             findViewById<FloatingActionButton>(com.jawaadianinc.valorant_stats.R.id.new_about_discord)
-        val instaFAB =
-            findViewById<FloatingActionButton>(com.jawaadianinc.valorant_stats.R.id.new_about_insta)
         val playstoreFAB =
             findViewById<FloatingActionButton>(com.jawaadianinc.valorant_stats.R.id.new_about_playstore)
 
@@ -48,15 +45,6 @@ class NewAbout : AppCompatActivity() {
             val intent = android.content.Intent(
                 android.content.Intent.ACTION_VIEW,
                 android.net.Uri.parse(discord)
-            )
-            startActivity(intent)
-        }
-
-        instaFAB.setOnClickListener {
-            val insta = "https://www.instagram.com/faheem.s27/"
-            val intent = android.content.Intent(
-                android.content.Intent.ACTION_VIEW,
-                android.net.Uri.parse(insta)
             )
             startActivity(intent)
         }

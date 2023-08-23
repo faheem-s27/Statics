@@ -103,7 +103,7 @@ class StaticsMainMenu : Fragment() {
             withContext(Dispatchers.Main)
             {
                 getCurrentSeason()
-                setup()
+                if (activity != null) setup()
             }
         }
 //
@@ -281,6 +281,7 @@ class StaticsMainMenu : Fragment() {
         dissapearViews()
 
         doAsync {
+            if (context == null) return@doAsync
             val lastMatchData = Henrik(requireContext()).henrikAPI(allmatches)
             val ranksData = Henrik(requireContext()).henrikAPI(ranksURL)
 
@@ -294,6 +295,7 @@ class StaticsMainMenu : Fragment() {
                     REFRESHING = false
                 } else {
                     // show alert dialog
+                    if (context == null) return@uiThread
                     val builder = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                     builder.setTitle("Error")
                     builder.setMessage(
@@ -341,7 +343,7 @@ class StaticsMainMenu : Fragment() {
         val matchDataArray: JSONObject
         // hashmap of player name and score
         val playerScore = HashMap<String, Int>()
-
+        if (context == null) return
         // check if the size of the data array is 0 and tell the user to play a match
         if (matchData.getJSONArray("data").length() == 0) {
             val smol =
@@ -388,6 +390,7 @@ class StaticsMainMenu : Fragment() {
         } catch (e: Exception) {
             Log.d("newMainMenu", "Error from playerDetails: ${e.message}")
             // if there is an error, show the error message
+            if (context == null) return
             Toast.makeText(
                 requireContext(),
                 "Error happened while loading player data",
@@ -449,6 +452,7 @@ class StaticsMainMenu : Fragment() {
     }
 
     private fun loadPlayerDetails(currentPlayer: JSONObject) {
+        if (context == null) return
         val db = AssetsDatabase(requireContext())
         val title = db.retrieveName(currentPlayer.getString("player_title"))
         val image = currentPlayer.getJSONObject("assets").getJSONObject("card").getString("large")
@@ -734,7 +738,7 @@ class StaticsMainMenu : Fragment() {
         val newMatchRegionText = view?.findViewById<TextView>(R.id.new_matchRegion)
         val newMatchMapDate = view?.findViewById<TextView>(R.id.new_matchMapDate)
         val newMatchKDAText = view?.findViewById<TextView>(R.id.new_matchKDA)
-
+        if (context == null) return
         val db = AssetsDatabase(requireContext())
 
         val metaData = lastMatchData.getJSONObject("metadata")

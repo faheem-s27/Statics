@@ -459,6 +459,7 @@
                         android:layout_marginTop="26dp"
                         android:fontFamily="@font/lalezar"
                         android:text="69"
+                        android:textColor="#FFFFFF"
                         android:textSize="20dp" />
 
 
@@ -590,6 +591,7 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/lalezar"
                         android:gravity="center"
+                        android:textColor="#FFFFFF"
                         android:textSize="25sp"
                         android:textStyle="bold"
                         tools:text="54/12/23" />
