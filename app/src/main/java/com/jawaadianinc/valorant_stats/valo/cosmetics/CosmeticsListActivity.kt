@@ -16,6 +16,7 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.preference.PreferenceManager
 import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.activities.ValorantMainMenu
@@ -48,11 +49,7 @@ class CosmeticsListActivity : AppCompatActivity() {
         }
 
         // get the language from shared preferences
-        val sharedPref = getSharedPreferences("UserLocale", MODE_PRIVATE)
-        LANGUAGE = sharedPref.getString("locale", "").toString()
-        if (LANGUAGE == "") {
-            LANGUAGE = "en-US"
-        } else if (LANGUAGE == "pt-PT") LANGUAGE = "pt-BR"
+        LANGUAGE = getLanguageLocale()
         LANGUAGE = "?language=$LANGUAGE"
 
         //Toast.makeText(this, "Language: $LANGUAGE", Toast.LENGTH_SHORT).show()
@@ -145,6 +142,11 @@ class CosmeticsListActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    private fun getLanguageLocale(): String {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        return sharedPreferences.getString("language_assets", "en-US")!!
     }
 
     private fun getBorders() {

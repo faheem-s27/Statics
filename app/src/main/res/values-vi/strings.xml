@@ -11,7 +11,7 @@
   <string name="starting">Đang khởi động</string>
   <string name="s8">Cách ứng dụng này hoạt động</string>
   <string name="s9">Bấm nút nếu bạn đẹp chai</string>
-    <string name="s10">Đang đánh cắp dữ liệu của bạn</string>
+  <string name="s10">Đang đánh cắp dữ liệu của bạn</string>
   <string name="s11">Đang thêm gun buddy</string>
   <string name="s12">Biến tài khoản của bạn thành rank Sắt</string>
   <string name="s13">Xong rồi!</string>
@@ -231,16 +231,16 @@
   <string name="s228">Bỏ qua</string>
   <string name="s229">Gỡ được bom</string>
   <string name="s230">Bom nổ</string>
-  <string name="s231">Bom đặt bởi</string>
-  <string name="s232">Xem bản đồ gỡ bom</string>
+    <string name="s231">Bom đặt bởi</string>
+    <string name="s232">Xem bản đồ gỡ bom</string>
     <string name="s233">Cấp độ</string>
-  <string name="s234">Xếp hạng</string>
-  <string name="s235">tuần trước</string>
-  <string name="s236">Quan trọng</string>
-  <string name="s237">Nhớ bấm \"Lưu đăng nhập\" khi đăng nhập</string>
-  <string name="live_is_loading">Đang tải chế độ Trực tiếp :)</string>
-  <string name="could_not_get_your_load_outs">Không thể tải kho đồ của bạn</string>
-  <string name="penalty">Phạt</string>
+    <string name="s234">Xếp hạng</string>
+    <string name="s235">tuần trước</string>
+    <string name="s236">Quan trọng</string>
+    <string name="s237">Nhớ bấm \"Lưu đăng nhập\" khi đăng nhập</string>
+    <string name="live_is_loading">Đang tải chế độ Trực tiếp :)</string>
+    <string name="could_not_get_your_load_outs">Không thể tải kho đồ của bạn</string>
+    <string name="penalty">Phạt</string>
     <string name="banned_for">Bị cấm do </string>
     <string name="party_in_game">Tổ đội trong game</string>
     <string name="cannot_queue">Không thể ghép trận</string>
@@ -260,4 +260,8 @@
     <string name="error_getting_entitlement">Có lỗi khi lấy quyền ❌</string>
     <string name="got_entitlement">Lấy được quyền 📜</string>
     <string name="error_getting_user_info">Có lỗi khi lấy thông tin người chơi ❌</string>
+    <string name="decrypting_user">Giải mã người chơi 👤</string>
+    <string name="error_getting_region">Có lỗi khi lấy thông tin người chơi ❌</string>
+    <string name="got_region">Lấy được khu vực 🌎</string>
+    <string name="hello">Xin chào </string>
 </resources>

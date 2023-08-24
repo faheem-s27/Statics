@@ -263,14 +263,33 @@
   <string name="accessory">عناصر تجميلية</string>
   <string name="weapons">أسلحة</string>
   <string name="reset_language">إعادة اللغة</string>
-  <string name="got_cookies">الحصول على الكوكيز 🍪</string>
-  <string name="got_access_token">الحصول على التوكن 🎫</string>
-  <string name="got_riot_s_latest_version">الحصول على أحدث إصدار لريوت 📦</string>
-  <string name="error_getting_entitlement">خطأ في الحصول على الاستحقاق ❌</string>
-  <string name="got_entitlement">تم الحصول على المستحقات 📜</string>
-  <string name="error_getting_user_info">خطأ في الحصول على معلومات المستخدم ❌</string>
-  <string name="decrypting_user">فك تشفير المستخدم 👤</string>
-  <string name="error_getting_region">خطأ في الحصول على المنطقة ❌</string>
-  <string name="got_region">الحصول على المنطقة 🌎</string>
-  <string name="hello">مرحباً </string>
+    <string name="got_cookies">الحصول على الكوكيز 🍪</string>
+    <string name="got_access_token">الحصول على التوكن 🎫</string>
+    <string name="got_riot_s_latest_version">الحصول على أحدث إصدار لريوت 📦</string>
+    <string name="error_getting_entitlement">خطأ في الحصول على الاستحقاق ❌</string>
+    <string name="got_entitlement">تم الحصول على المستحقات 📜</string>
+    <string name="error_getting_user_info">خطأ في الحصول على معلومات المستخدم ❌</string>
+    <string name="decrypting_user">فك تشفير المستخدم 👤</string>
+    <string name="error_getting_region">خطأ في الحصول على المنطقة ❌</string>
+    <string name="got_region">الحصول على المنطقة 🌎</string>
+    <string name="hello">مرحباً </string>
+    <string name="game_modes_unavailable">أوضاع اللعب غير متوفرة</string>
+    <string name="dark_mode">الوضع الداكن</string>
+    <string name="enable_dark_mode_for_the_app">تمكين الوضع الداكن للتطبيق</string>
+    <string name="your_account">حسابك</string>
+    <string name="app_notifications">إشعارات التطبيق</string>
+    <string name="match_notifications">إشعارات المباريات</string>
+    <string name="show_a_notification_when_a_match_has_been_found">إظهار إشعار عند العثور على مباراة</string>
+    <string name="help">المساعدة</string>
+    <string name="app_language">لغة التطبيق</string>
+    <string name="select_your_preferred_language">أختر لغتك المفضلة</string>
+    <string name="about_statics">حول ستاتكس</string>
+    <string name="donate_to_the_developer">تبرع للمطور</string>
+    <string name="using_the_play_store">باستخدام متجر بلاي</string>
+    <string name="report_technical_issues_or_suggest_new_features">الإبلاغ عن المشاكل التقنية أو تقدمة اقتراحات جديدة</string>
+    <string name="send_feedback_on_discord">أرسل الملاخظات على ديسكورد</string>
+    <string name="what_s_new">ما الجديد</string>
+    <string name="view_recent_changes">عرض التغييرات الأخيرة</string>
+    <string name="current_app_version">الإصدار الحالي للتطبيق</string>
+    <string name="unknown">مجهول</string>
 </resources>

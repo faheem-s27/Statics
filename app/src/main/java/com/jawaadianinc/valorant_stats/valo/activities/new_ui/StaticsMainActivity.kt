@@ -75,8 +75,8 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription: String =
-            "- Settings page has gotten a complete overhaul! Click on your profile picture to see" +
-                    "\n- New setting to translate Valorant Assets!" +
+            "- Settings page has gotten a complete overhaul! Click on your profile picture on the top right to see!" +
+                    "\n- New setting to translate Valorant Assets" +
                     "\n- New language selector" +
                     "\n- Improved dark mode to be more stable" +
                     "\n- Fixed text colouring on certain backgrounds"
@@ -179,6 +179,7 @@ class StaticsMainActivity : AppCompatActivity() {
             add(R.id.container, liveStatsFragment, "2")
             add(R.id.container, assetsFragment, "3").hide(assetsFragment)
         }.commitAllowingStateLoss()
+        bottomNavBar.selectedItemId = R.id.new_Live
     }
 
     override fun onPause() {
@@ -200,7 +201,6 @@ class StaticsMainActivity : AppCompatActivity() {
     private fun changeFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction().apply {
-            setCustomAnimations(R.anim.bounce_in, 0);
             hide(activeFragment)
             show(fragment)
         }.commit()

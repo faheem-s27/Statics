@@ -1,6 +1,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--    <com.jawaadianinc.valorant_stats.valo.activities.new_ui.ProfilePicturePreference.ProfilePicturePreference-->
+    <!--        android:key="profile_picture"-->
+    <!--        android:title=""-->
+    <!--        android:layout="@layout/preference_screen_with_picture" />-->
+
     <SwitchPreference
         app:key="dark_mode"
         app:summary="@string/enable_dark_mode_for_the_app"
@@ -36,8 +41,8 @@
             android:entries="@array/language_options_assets"
             android:entryValues="@array/language_values_assets"
             android:key="language_assets"
-            android:summary="Select the language to be used for Valorant Assets"
-            android:title="Asset Translations" />
+            android:summary="@string/select_the_language_to_be_used_for_valorant_assets"
+            android:title="@string/asset_translations" />
 
         <Preference
             app:key="current_version"

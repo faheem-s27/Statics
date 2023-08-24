@@ -51,13 +51,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import com.google.gson.Gson
-import com.jawaadianinc.valorant_stats.ProgressDialogStatics
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
 import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
 import com.jawaadianinc.valorant_stats.valo.activities.new_ui.Database.ContentLocalisationDatabase
-import com.jawaadianinc.valorant_stats.valo.activities.new_ui.ValorantLocalisation.Contents
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
@@ -142,7 +139,6 @@ class LiveStatsFragment : Fragment() {
     private lateinit var spraysJSON: JSONObject
     private lateinit var playerCardsJSON: JSONObject
 
-    private lateinit var loadingDialogStatics: androidx.appcompat.app.AlertDialog
     private lateinit var currentLoadoutWeaponsRecyclerView: RecyclerView
 
     private lateinit var RequestLogsDatabase: RequestLogsDatabase
@@ -154,8 +150,9 @@ class LiveStatsFragment : Fragment() {
     private var agentSelectTimer: CountDownTimer? = null
 
     private var availableAgents = mutableListOf<String>()
-
-    private var AssetTranslations: Contents? = null
+    lateinit var db: ContentLocalisationDatabase
+    lateinit var sharedPreferences: SharedPreferences
+    lateinit var selectedLanguageAsset: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -175,11 +172,11 @@ class LiveStatsFragment : Fragment() {
         region = activity?.intent?.getStringExtra("region") ?: return
         authPreferences = requireActivity().getSharedPreferences("auth", Context.MODE_PRIVATE)
 
-        loadingDialogStatics = ProgressDialogStatics().setProgressDialog(requireActivity(), "Getting live data")
-
-        RequestLogsDatabase = RequestLogsDatabase(requireContext())
-
         liveModeScope = CoroutineScope(IO)
+
+        db = ContentLocalisationDatabase(requireActivity())
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+        selectedLanguageAsset = sharedPreferences.getString("language_assets", "en-US")!!
 
         shard =
             if (region.lowercase(Locale.ROOT) == "latam" || region.lowercase(Locale.getDefault()) == "br") {
@@ -187,9 +184,6 @@ class LiveStatsFragment : Fragment() {
             } else {
                 region.lowercase(Locale.getDefault())
             }
-
-        val dbTranslations = ContentLocalisationDatabase(requireContext())
-
 
         INITVIEW = requireView().findViewById(R.id.InitView)
         LIVEVIEW = requireView().findViewById(R.id.LiveView)
@@ -209,21 +203,24 @@ class LiveStatsFragment : Fragment() {
         val partyPlayerNameTV = requireView().findViewById<TextView>(R.id.new_partyPlayerName)
         val partyPlayerTagTV = requireView().findViewById<TextView>(R.id.new_partyPlayerTag)
         partyPlayerNameTV.text = playerName.split("#")[0]
-        partyPlayerTagTV.text = "#"+playerName.split("#")[1]
+        partyPlayerTagTV.text = "#" + playerName.split("#")[1]
 
         PlayerUUID = activity?.intent?.getStringExtra("puuid")
         accessToken = activity?.intent?.getStringExtra("accessToken")
         entitlementToken = activity?.intent?.getStringExtra("entitlement")
+        ClientVersion = activity?.intent?.getStringExtra("clientVersion")!!
+        riotClientVersion = activity?.intent?.getStringExtra("clientVersionRiot")!!
 
         // add the game modes to the array
-        gameModes = ArrayList(listOf(
-            "Unrated",
-            "Competitive",
-            "Team Deathmatch",
-            "Swift Play",
-            "Spike Rush",
-            "Deathmatch",
-            "Escalation",
+        gameModes = ArrayList(
+            listOf(
+                "Unrated",
+                "Competitive",
+                "Team Deathmatch",
+                "Swift Play",
+                "Spike Rush",
+                "Deathmatch",
+                "Escalation",
             "Replication"
         ))
 
@@ -234,14 +231,6 @@ class LiveStatsFragment : Fragment() {
         progressDialog.progress = 0
 
         liveModeScope.launch {
-            val url = "https://valorant-api.com/v1/version"
-            val json = JSONObject(URL(url).readText())
-            ClientVersion = json.getJSONObject("data").getString("riotClientBuild")
-            riotClientVersion = json.getJSONObject("data").getString("riotClientVersion")
-
-            AssetTranslations = Gson().fromJson(dbTranslations.getData(), Contents::class.java)
-
-            logLIVEStuff("Got client version: $ClientVersion and riot client version: $riotClientVersion")
             withContext(Main) {
                 progressDialog.progress = 10
             }
@@ -342,7 +331,7 @@ class LiveStatsFragment : Fragment() {
                 progressDialog.progress = 90
             }
 
-            availableAgents = getAvailableAgents()
+
             withContext(Main)
             {
                 progressDialog.progress = 100
@@ -487,12 +476,12 @@ class LiveStatsFragment : Fragment() {
             logLIVEStuff("Storefront done")
             //getPenalties()
             logLIVEStuff("Penalties done")
+            availableAgents = getAvailableAgents()
             // Throw an exception as a test
 //            throw Exception("Hello Discord, this is a test so that next time you get an error\n\nYou do the following:\n\n1. Click on 'Copy & Send'\n2. Send it in channel 'bugs and issues'" +
 //                    "\n\nBoom! I'll now be able to help out much more!")
 
         } catch (e: Exception) {
-            loadingDialogStatics.dismiss()
             if (context != null) {
                 val msg = "${getString(R.string.s47)} ${e.message} ${e.cause} $e"
                 val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
@@ -1083,9 +1072,12 @@ class LiveStatsFragment : Fragment() {
         val data = weaponsJSONObject.getJSONArray("data")
         for (weapon in data)
         {
-            if (weapon.getString("uuid") == weaponID)
-            {
-                return weapon.getString("displayName")
+            if (weapon.getString("uuid") == weaponID) {
+                val name = db.getTranslatedString(
+                    selectedLanguageAsset.replace("-", "_"),
+                    weaponID.toUpperCase()
+                )
+                return name ?: weapon.getString("displayName")
             }
         }
         return ""
@@ -2884,6 +2876,8 @@ class LiveStatsFragment : Fragment() {
         val titleID = "de7caa6b-adf7-4588-bbd1-143831e786c6\t"
         val url = "https://pd.${shard}.a.pvp.net/store/v1/entitlements/${PlayerUUID}/$titleID"
 
+
+
         return runBlocking(IO) {
             val response = APIRequestValorant(url)
             if (response != null) {
@@ -2905,36 +2899,15 @@ class LiveStatsFragment : Fragment() {
                     val selectedLanguageAsset =
                         sharedPreferences.getString("language_assets", "en-US")
                     val converted = getTitleFromJson(titleID)
-                    if (AssetTranslations != null) {
-                        val playerTitles = AssetTranslations!!.playerTitles
-                        for (playerTitle in playerTitles) {
-                            if (playerTitle.id == titleID) {
-                                val languageAssetToTitleMap = mapOf(
-                                    "ar-AE" to playerTitle.localizedNames.ar_AE,
-                                    "de-DE" to playerTitle.localizedNames.de_DE,
-                                    "en-US" to playerTitle.localizedNames.en_US,
-                                    "es-ES" to playerTitle.localizedNames.es_ES,
-                                    "es-MX" to playerTitle.localizedNames.es_MX,
-                                    "fr-FR" to playerTitle.localizedNames.fr_FR,
-                                    "id-ID" to playerTitle.localizedNames.id_ID,
-                                    "it-IT" to playerTitle.localizedNames.it_IT,
-                                    "ja-JP" to playerTitle.localizedNames.ja_JP,
-                                    "ko-KR" to playerTitle.localizedNames.ko_KR,
-                                    "pl-PL" to playerTitle.localizedNames.pl_PL,
-                                    "pt-BR" to playerTitle.localizedNames.pt_BR,
-                                    "ru-RU" to playerTitle.localizedNames.ru_RU,
-                                    "th-TH" to playerTitle.localizedNames.th_TH,
-                                    "vi_VN" to playerTitle.localizedNames.vi_VN,
-                                    "zh_CN" to playerTitle.localizedNames.zh_CN,
-                                    "zh_TW" to playerTitle.localizedNames.zh_TW
-                                )
-                                val localisedTitle =
-                                    languageAssetToTitleMap[selectedLanguageAsset] ?: converted
-                                availableTitles.add(localisedTitle)
-                            }
-                        }
-                    } else availableTitles.add(converted)
-
+                    val string = db.getTranslatedString(
+                        selectedLanguageAsset!!.replace("-", "_"),
+                        titleID.toUpperCase()
+                    )
+                    if (string == null) {
+                        availableTitles.add(converted)
+                    } else {
+                        availableTitles.add(string)
+                    }
                 }
                 // sort titles alphabetically
                 availableTitles.sort()

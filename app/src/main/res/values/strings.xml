@@ -331,5 +331,8 @@
     <string name="view_recent_changes">View recent changes</string>
     <string name="current_app_version">Current App Version</string>
     <string name="unknown">Unknown</string>
+    <string name="select_the_language_to_be_used_for_valorant_assets">Select the language to be used for Valorant Assets</string>
+    <string name="asset_translations">Asset Translations</string>
+    <string name="updating_translations">Updating translations 🛂</string>
 
 </resources>

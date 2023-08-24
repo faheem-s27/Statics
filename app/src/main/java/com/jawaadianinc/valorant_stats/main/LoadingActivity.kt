@@ -47,7 +47,7 @@ class LoadingActivity : AppCompatActivity() {
     private var key = ""
 
     lateinit var assetsDB: AssetsDatabase
-    lateinit var translationsDB: ContentLocalisationDatabase
+    lateinit var localeDB: ContentLocalisationDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +61,7 @@ class LoadingActivity : AppCompatActivity() {
         DynamicColors.applyToActivitiesIfAvailable(application)
 
         assetsDB = AssetsDatabase(this)
-        translationsDB = ContentLocalisationDatabase(this)
+
 
         loadingProgressBar = findViewById(R.id.progressBar4)
         updateText = findViewById(R.id.textView4)
@@ -69,25 +69,6 @@ class LoadingActivity : AppCompatActivity() {
         videoPlayer = findViewById(R.id.videoView3)
 
         key = BuildConfig.RIOT_API_KEY
-
-//        val interceptor = Interceptor { chain ->
-//            val newRequest = chain.request().newBuilder()
-//                .addHeader("X-Riot-Token", key)
-//                .build()
-//            chain.proceed(newRequest)
-//        }
-//
-//        val okHttpClient = OkHttpClient.Builder()
-//            .addInterceptor(interceptor)
-//            .build()
-//
-//        val retrofit = Retrofit.Builder()
-//            .baseUrl("https://eu.api.riotgames.com/")
-//            .client(okHttpClient)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//
-//        val valorantApiService = retrofit.create(ValorantApiService::class.java)
 
         loadUI()
 

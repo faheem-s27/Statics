@@ -6,25 +6,22 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.webkit.CookieManager
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityNewLogInUiBinding
-import com.jawaadianinc.valorant_stats.main.ValorantApiService
 import com.jawaadianinc.valorant_stats.valo.activities.new_ui.Database.ContentLocalisationDatabase
-import com.jawaadianinc.valorant_stats.valo.activities.new_ui.ValorantLocalisation.Contents
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -45,7 +42,6 @@ class NewLogInUI : AppCompatActivity() {
         "https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid"
 
     var region = ""
-    lateinit var ValorantApiService: ValorantApiService
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +51,8 @@ class NewLogInUI : AppCompatActivity() {
 
         webView = binding.riotSignInWebVIEW
         updateText = binding.statusText
+
+        val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
 
         webView.settings.javaScriptEnabled = true
         webView.webViewClient = object : WebViewClient() {
@@ -73,6 +71,7 @@ class NewLogInUI : AppCompatActivity() {
                     val cookies = CookieManager.getInstance().getCookie(RiotURL)
                     val accessToken = url.split("access_token=")[1].split("&")[0]
                     val idToken = url.split("id_token=")[1].split("&")[0]
+                    prefs.edit().putBoolean("2faIssue", true).apply()
                     authoriseUser(accessToken, cookies, idToken)
                 }
                 // else if the url doesn't contain the code, load the url
@@ -88,10 +87,11 @@ class NewLogInUI : AppCompatActivity() {
         val intentString = intent.getStringExtra("login")
         if (intentString == "true") {
             RiotURL += "&prompt=login"
+            prefs.edit().putBoolean("2faIssue", false).apply()
         }
 
         // check if its the first time the user has opened the new UI
-        val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+
         val firstTime = prefs.getBoolean("firstTimeRSO", true)
         if (firstTime)
         {
@@ -108,36 +108,27 @@ class NewLogInUI : AppCompatActivity() {
             prefs.edit().putBoolean("firstTimeRSO", false).apply()
         }
 
+        val _2faIssue = prefs.getBoolean("2faIssue", false)
+        if (!_2faIssue) {
+            val dialog = MaterialAlertDialogBuilder(this)
+            dialog.setTitle(getString(R.string.s236))
+            dialog.setMessage(
+                "There's some known issues with 2FA & Statics, to fix it please disable 2FA when logging in" +
+                        " and after logging in you can re-enable 2FA\n\nThis will be fixed in a future update 🦆"
+            )
+            dialog.setPositiveButton("OK") { dialog, which ->
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
         // track cookies
         CookieManager.getInstance().setAcceptCookie(true)
         webView.loadUrl(RiotURL)
-
-//        val key = BuildConfig.RIOT_API_KEY
-//
-//        val interceptor = Interceptor { chain ->
-//            val newRequest = chain.request().newBuilder()
-//                .addHeader("X-Riot-Token", key)
-//                .build()
-//            chain.proceed(newRequest)
-//        }
-//
-//        val okHttpClient = OkHttpClient.Builder()
-//            .addInterceptor(interceptor)
-//            .build()
-//
-//        val retrofit = Retrofit.Builder()
-//            .baseUrl("https://eu.api.riotgames.com/")
-//            .client(okHttpClient)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//
-//        ValorantApiService = retrofit.create(ValorantApiService::class.java)
-
     }
 
     private fun addStringToTextView(text: String)
     {
-        updateText.text = updateText.text.toString() + "\n" + text
+        updateText.text = text
     }
 
     fun authoriseUser(accessToken: String, cookies: String, idToken: String)
@@ -194,11 +185,11 @@ class NewLogInUI : AppCompatActivity() {
                     return@withContext
                 }
             }
-            else{
+            else {
                 withContext(Dispatchers.Main) {
                     addStringToTextView(getString(R.string.got_region))
-                    addTranslations(region)
                 }
+                addTranslations(region)
             }
             val key = this@NewLogInUI.intent.getStringExtra("key")
             val puuid = userInfo.split(":")[0]
@@ -215,6 +206,7 @@ class NewLogInUI : AppCompatActivity() {
             intent.putExtra("accessToken", accessToken)
             intent.putExtra("entitlement", entitlement)
             intent.putExtra("clientVersion", RiotVersion.first)
+            intent.putExtra("clientVersionRiot", RiotVersion.second)
             intent.putExtra("clientPlatform", clientPlatformToken)
             intent.putExtra("cookies", cookies)
             intent.putExtra("idToken", idToken)
@@ -232,27 +224,70 @@ class NewLogInUI : AppCompatActivity() {
         }
     }
 
-    private fun addTranslations(region: String) {
-        val translationsDB = ContentLocalisationDatabase(this)
+    private fun changeLanguage(lang: String): String {
+        return lang.replace("_", "-")
+    }
+
+    private suspend fun addTranslations(region: String) {
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar_translations)
+        val localeDB = ContentLocalisationDatabase(this)
         val url =
             "https://$region.api.riotgames.com/val/content/v1/contents?api_key=RGAPI-77322163-520c-492f-aabe-6c29a39f44ff"
-        val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-        coroutineScope.launch {
-            val dbVersion = translationsDB.getVersion()
-            val json = JSONObject(URL(url).readText())
-            val Gson = Gson().fromJson(json.toString(), Contents::class.java)
-            if (dbVersion == "" || dbVersion != Gson.version) {
-                translationsDB.addData(Gson.version, json.toString())
+
+        val languageCodesDB = arrayOf(
+            "ar_AE", "de_DE", "en_US", "es_ES", "es_MX", "fr_FR", "id_ID",
+            "it_IT", "ja_JP", "ko_KR", "pl_PL", "pt_BR", "ru_RU", "th_TH", "tr_TR",
+            "vi_VN", "zh_CN", "zh_TW"
+        )
+
+        val array = arrayOf(
+            //"acts",
+            //"ceremonies",
+            //"characters",
+            //"charmLevels",
+            //"charms",
+            "equips",
+            //"chromas",
+            "gameModes",
+            "maps",
+            //"playerCards",
+            "playerTitles",
+            //"skinLevels",
+            //"skins",
+            //"sprayLevels",
+            //"sprays"
+        )
+
+        progressBar.max = languageCodesDB.size * array.size
+
+        val json = JSONObject(URL(url).readText())
+        //Log.d("ContentDatabase", "Loaded JSON")
+
+        withContext(Dispatchers.Main) {
+            addStringToTextView(getString(R.string.updating_translations))
+            progressBar.visibility = View.VISIBLE
+        }
+
+        for (item in array) {
+            for (lang in languageCodesDB) {
+                val dataArray = json.optJSONArray(item)
+                if (dataArray != null) {
+                    for (j in 0 until dataArray.length()) {
+                        val string = dataArray.getJSONObject(j)
+                        val uuid = string.getString("id")
+                        val translated = string.optJSONObject("localizedNames")
+                            ?.optString(changeLanguage(lang))
+                        localeDB.addString(lang, uuid, translated, localeDB)
+                    }
+                }
                 withContext(Dispatchers.Main)
                 {
-                    Toast.makeText(
-                        this@NewLogInUI,
-                        "Asset Translations Updated",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    progressBar.progress++
                 }
             }
         }
+
+        localeDB.close()
     }
 
     private fun getUserInfo(
