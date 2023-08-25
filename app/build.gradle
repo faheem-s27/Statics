@@ -5,14 +5,14 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.jawaadianinc.valorant_stats"
         minSdk 26
-        targetSdk 33
-        versionCode 337
-        versionName "3.37"
+        targetSdk 34
+        versionCode 338
+        versionName "3.38"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

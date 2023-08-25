@@ -55,6 +55,8 @@ class NewLogInUI : AppCompatActivity() {
         val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
 
         webView.settings.javaScriptEnabled = true
+        webView.settings.userAgentString =
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.48 Mobile Safari/537.36"
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(
                 view: WebView?,
@@ -63,7 +65,6 @@ class NewLogInUI : AppCompatActivity() {
                 if (request != null) {
                     Log.d("RiotSignIn", request.url.toString())
                 }
-
                 val url = request!!.url.toString()
 
                 // check if the url contains the code
@@ -422,7 +423,6 @@ class NewLogInUI : AppCompatActivity() {
                 val lastMatchID = playerHistory.history[0].matchId
                 return@runBlocking getPlayerCardFromLastMatch(lastMatchID, key, puuid)
             } catch (e: Exception) {
-                Log.d("PlayerImageError", e.message.toString())
                 return@runBlocking "9fb348bc-41a0-91ad-8a3e-818035c4e561"
             }
         }

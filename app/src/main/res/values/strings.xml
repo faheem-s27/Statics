@@ -334,5 +334,6 @@
     <string name="select_the_language_to_be_used_for_valorant_assets">Select the language to be used for Valorant Assets</string>
     <string name="asset_translations">Asset Translations</string>
     <string name="updating_translations">Updating translations 🛂</string>
+    <string name="message_exceeds_500_characters">Message exceeds 500 characters</string>
 
 </resources>

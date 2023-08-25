@@ -13,4 +13,10 @@
         android:id="@+id/new_Assets"
         android:icon="@drawable/rioticon"
         android:title="@string/menu_assets" />
+    <item
+        android:id="@+id/new_Chats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/chats"
+        android:title="Chat" />
 </menu>

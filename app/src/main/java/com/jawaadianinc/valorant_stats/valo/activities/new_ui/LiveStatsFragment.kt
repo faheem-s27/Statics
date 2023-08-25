@@ -119,7 +119,7 @@ class LiveStatsFragment : Fragment() {
     private var notificationSent = false
     private var gameModesUpdated = false
 
-    private var timerSeconds: Long = 500
+    private var timerSeconds: Long = 2000
     lateinit var assetsDB: AssetsDatabase
 
     private lateinit var agentPreGameRecyclerView: RecyclerView
@@ -235,13 +235,15 @@ class LiveStatsFragment : Fragment() {
                 progressDialog.progress = 10
             }
 
-            val playerCardsURL = "https://valorant-api.com/v1/playercards"
+            val playerCardsURL =
+                "https://valorant-api.com/v1/playercards?language=$selectedLanguageAsset"
             playerCardsJSON = JSONObject(URL(playerCardsURL).readText())
 
-            val gunSkinLevelsURL = "https://valorant-api.com/v1/weapons/skinlevels"
+            val gunSkinLevelsURL =
+                "https://valorant-api.com/v1/weapons/skinlevels?language=$selectedLanguageAsset"
             gunSkinLevelsJSON = JSONObject(URL(gunSkinLevelsURL).readText())
 
-            val spraysURL = "https://valorant-api.com/v1/sprays"
+            val spraysURL = "https://valorant-api.com/v1/sprays?language=$selectedLanguageAsset"
             val response = JSONObject(URL(spraysURL).readText())
             val spraysData = response.getJSONArray("data")
             for (i in 0 until spraysData.length()) {
@@ -250,7 +252,8 @@ class LiveStatsFragment : Fragment() {
             }
             spraysJSON = response
 
-            val gunBuddiesURL = "https://valorant-api.com/v1/buddies"
+            val gunBuddiesURL =
+                "https://valorant-api.com/v1/buddies?language=$selectedLanguageAsset"
             gunBuddies = JSONObject(URL(gunBuddiesURL).readText())
 
             logLIVEStuff("Got sprays")
@@ -258,7 +261,8 @@ class LiveStatsFragment : Fragment() {
                 progressDialog.progress = 20
             }
 
-            val agentsURL = "https://valorant-api.com/v1/agents?isPlayableCharacter=true"
+            val agentsURL =
+                "https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=$selectedLanguageAsset"
             val agentsJSON = JSONObject(URL(agentsURL).readText())
             val agentsData = agentsJSON.getJSONArray("data")
             for (i in 0 until agentsData.length()) {
@@ -271,7 +275,7 @@ class LiveStatsFragment : Fragment() {
                 progressDialog.progress = 30
             }
 
-            val mapsURL = "https://valorant-api.com/v1/maps"
+            val mapsURL = "https://valorant-api.com/v1/maps?language=$selectedLanguageAsset"
             val mapsJSON = JSONObject(URL(mapsURL).readText())
             val mapsData = mapsJSON.getJSONArray("data")
             for (i in 0 until mapsData.length()) {
@@ -299,7 +303,7 @@ class LiveStatsFragment : Fragment() {
                 progressDialog.progress = 50
             }
 
-            val weaponsURL = "https://valorant-api.com/v1/weapons"
+            val weaponsURL = "https://valorant-api.com/v1/weapons?language=$selectedLanguageAsset"
             weaponsJSONObject = JSONObject(URL(weaponsURL).readText())
 
             logLIVEStuff("Got weapons")
@@ -307,7 +311,8 @@ class LiveStatsFragment : Fragment() {
                 progressDialog.progress = 60
             }
 
-            val contenttierURL = "https://valorant-api.com/v1/contenttiers"
+            val contenttierURL =
+                "https://valorant-api.com/v1/contenttiers?language=$selectedLanguageAsset"
             contenttierJSONObject = JSONObject(URL(contenttierURL).readText())
 
             logLIVEStuff("Got content tiers")
@@ -315,7 +320,8 @@ class LiveStatsFragment : Fragment() {
                 progressDialog.progress = 70
             }
 
-            val weaponSkinsURL = "https://valorant-api.com/v1/weapons/skinlevels/"
+            val weaponSkinsURL =
+                "https://valorant-api.com/v1/weapons/skinlevels?language=$selectedLanguageAsset"
             weaponsSkinLevels = JSONObject(URL(weaponSkinsURL).readText())
 
             logLIVEStuff("Got weapon skins")
@@ -323,7 +329,8 @@ class LiveStatsFragment : Fragment() {
                 progressDialog.progress = 80
             }
 
-            val titlesURL = "https://valorant-api.com/v1/playertitles"
+            val titlesURL =
+                "https://valorant-api.com/v1/playertitles?language=$selectedLanguageAsset"
             titlesJSON = JSONObject(URL(titlesURL).readText())
 
             logLIVEStuff("Got titles")
@@ -1196,17 +1203,22 @@ class LiveStatsFragment : Fragment() {
     }
 
     private fun loadPlayerCard(cardID: String) {
-        val largeURL = "https://media.valorant-api.com/playercards/${cardID}/largeart.png"
-        val smallURL = "https://media.valorant-api.com/playercards/${cardID}/smallart.png"
-        val wideURL = "https://media.valorant-api.com/playercards/${cardID}/wideart.png"
+        try {
+            val largeURL = "https://media.valorant-api.com/playercards/${cardID}/largeart.png"
+            val smallURL = "https://media.valorant-api.com/playercards/${cardID}/smallart.png"
+            val wideURL = "https://media.valorant-api.com/playercards/${cardID}/wideart.png"
 
-        val smolImg = view?.findViewById<ImageView>(R.id.new_playerAvatar)
-        val bigImg = view?.findViewById<ImageView>(R.id.new_LiveStatsBackground)
-        val currentPlayerCardLoadout = view?.findViewById<ImageView>(R.id.CurrentLoadoutPlayerCard)
+            val smolImg = view?.findViewById<ImageView>(R.id.new_playerAvatar)
+            val bigImg = view?.findViewById<ImageView>(R.id.new_LiveStatsBackground)
+            val currentPlayerCardLoadout =
+                view?.findViewById<ImageView>(R.id.CurrentLoadoutPlayerCard)
 
-        Picasso.get().load(smallURL).fit().centerCrop().into(smolImg)
-        Picasso.get().load(largeURL).fit().centerCrop().into(bigImg)
-        Picasso.get().load(wideURL).fit().centerCrop().into(currentPlayerCardLoadout)
+            Picasso.get().load(smallURL).fit().centerCrop().into(smolImg)
+            Picasso.get().load(largeURL).fit().centerCrop().into(bigImg)
+            Picasso.get().load(wideURL).fit().centerCrop().into(currentPlayerCardLoadout)
+        } catch (E: Exception) {
+
+        }
     }
 
     private fun updatePlayerCard(selectedPicture: String) {
@@ -1272,7 +1284,9 @@ class LiveStatsFragment : Fragment() {
                 .setTitle(getString(R.string.s58))
                 .setItems(titlesCharSequence) { _, which ->
                     // get the title id from the selected item
-                    val titleID = assetsDB.retrieveIDTitle(titles[which])
+                    var titleID: String?
+                    titleID = getTranslatedTitleDatabase(titles[which])
+                    if (titleID == null) titleID = assetsDB.retrieveIDTitle(titles[which])
                     // update the title
                     updateTitle(titleID)
                 }
@@ -1286,13 +1300,16 @@ class LiveStatsFragment : Fragment() {
         }
     }
 
+    private fun getTranslatedTitleDatabase(titleName: String): String? {
+        val database = ContentLocalisationDatabase(requireActivity())
+        return database.getUUID(selectedLanguageAsset.replace("-", "_"), titleName)
+    }
+
     private fun getTitleFromJson(titleID: String): String {
         val data = titlesJSON.getJSONArray("data")
-        for (i in 0 until data.length())
-        {
+        for (i in 0 until data.length()) {
             val currentTitle = data.getJSONObject(i)
-            if (currentTitle.getString("uuid") == titleID)
-            {
+            if (currentTitle.getString("uuid") == titleID) {
                 return currentTitle.getString("titleText")
             }
         }
@@ -1778,7 +1795,7 @@ class LiveStatsFragment : Fragment() {
                             startActivity(intent)
                             activity?.finish()
                         } else if (code == 200) {
-                            timerSeconds = 1000
+                            timerSeconds = 2000
                             val partyJSON = JSONObject(body)
                             playerPartyID = partyJSON.getString("CurrentPartyID")
                             getPartyDetails(playerPartyID!!)
@@ -2229,6 +2246,11 @@ class LiveStatsFragment : Fragment() {
 
     private fun getWallet() {
         val url = "https://pd.${shard}.a.pvp.net/store/v1/wallet/${PlayerUUID}"
+
+        val VPText = view?.findViewById<TextView>(R.id.VPTextBalance)
+        val RadiantePointsText = view?.findViewById<TextView>(R.id.RPTextBalance)
+        val KPText = view?.findViewById<TextView>(R.id.KPTextBalance)
+
         liveModeScope.launch {
             val response = APIRequestValorant(url)
             if (response != null) {
@@ -2243,23 +2265,22 @@ class LiveStatsFragment : Fragment() {
                     val RadiantePoints = walletJSON.getInt("e59aa87c-4cbf-517a-5983-6e81511be9b7")
                     val KingdomPoints = walletJSON.getInt("85ca954a-41f2-ce94-9b45-8ca3dd39a00d")
 
-                    val VPText = view?.findViewById<TextView>(R.id.VPTextBalance)
-                    val RadiantePointsText = view?.findViewById<TextView>(R.id.RPTextBalance)
-                    val KPText = view?.findViewById<TextView>(R.id.KPTextBalance)
-
                     VPText?.text = VP.toString()
                     RadiantePointsText?.text = RadiantePoints.toString()
                     KPText?.text = KingdomPoints.toString()
 
-                    Picasso.get()
-                        .load("https://media.valorant-api.com/currencies/85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741/displayicon.png")
-                        .into(view?.findViewById<ImageView>(R.id.VPImage))
-                    Picasso.get()
-                        .load("https://media.valorant-api.com/currencies/e59aa87c-4cbf-517a-5983-6e81511be9b7/displayicon.png")
-                        .into(view?.findViewById<ImageView>(R.id.RPImage))
-                    Picasso.get()
-                        .load("https://media.valorant-api.com/currencies/85ca954a-41f2-ce94-9b45-8ca3dd39a00d/displayicon.png")
-                        .into(view?.findViewById<ImageView>(R.id.KPImage))
+                    try {
+                        Picasso.get()
+                            .load("https://media.valorant-api.com/currencies/85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741/displayicon.png")
+                            .into(view?.findViewById<ImageView>(R.id.VPImage))
+                        Picasso.get()
+                            .load("https://media.valorant-api.com/currencies/e59aa87c-4cbf-517a-5983-6e81511be9b7/displayicon.png")
+                            .into(view?.findViewById<ImageView>(R.id.RPImage))
+                        Picasso.get()
+                            .load("https://media.valorant-api.com/currencies/85ca954a-41f2-ce94-9b45-8ca3dd39a00d/displayicon.png")
+                            .into(view?.findViewById<ImageView>(R.id.KPImage))
+                    } catch (e: Exception) {
+                    }
                 }
             }
         }
@@ -2551,6 +2572,7 @@ class LiveStatsFragment : Fragment() {
     private fun playerCoreGame(matchID: String) {
         val url =
             "https://glz-${region}-1.${shard}.a.pvp.net/core-game/v1/matches/${matchID}"
+        val coreGameBackground = view?.findViewById<ImageView>(R.id.new_partyCurrentGameMapImage)
         liveModeScope.launch {
             val response = APIRequestValorant(url)
             if (response != null) {
@@ -2561,11 +2583,6 @@ class LiveStatsFragment : Fragment() {
                 {
                     val coreGameJSON = JSONObject(body)
                     val mapName = coreGameJSON.getString("MapID")
-                    val coreGameBackground =
-                        view?.findViewById<ImageView>(R.id.new_partyCurrentGameMapImage)
-                    Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop()
-                        .into(coreGameBackground)
-
                     val gameMode = capitaliseGameMode(
                         coreGameJSON.getJSONObject("MatchmakingData").getString("QueueID")
                     )
@@ -2574,6 +2591,11 @@ class LiveStatsFragment : Fragment() {
 
                     val players = coreGameJSON.getJSONArray("Players")
                     handleCoreGameList(players)
+                    try {
+                        Picasso.get().load(MapsImagesID[mapName]).fit().centerCrop()
+                            .into(coreGameBackground)
+                    } catch (e: Exception) {
+                    }
                 }
             }
         }
@@ -3040,12 +3062,17 @@ class LiveStatsFragment : Fragment() {
     // override when application is not in focus
     override fun onPause() {
         super.onPause()
-        timerSeconds = 1000
+        timerSeconds = 5000
+        accessoryTimer = null
+        bundleTimer = null
+        nightTimer = null
+        storeTimer = null
     }
 
     override fun onResume() {
         super.onResume()
         timerSeconds = 1000
+        //showStoreFront()
     }
 }
 

@@ -208,9 +208,9 @@ class StaticsMainMenu : Fragment() {
         val newPlayerRegion = view?.findViewById<TextView>(R.id.new_playerRegion)
 
         // if the playername is longer than 14 characters, make the font size smaller for name and tag
-        if (playerName.length > 14) {
-            newPlayerNameText?.textSize = 12f
-            newPlayerTag?.textSize = 12f
+        if (playerName.length > 12) {
+            newPlayerNameText?.textSize = 10f
+            newPlayerTag?.textSize = 10f
         }
 
         newPlayerNameText?.text = playerName.split("#")[0]

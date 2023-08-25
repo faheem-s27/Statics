@@ -16,6 +16,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityStaticsMainBinding
+import com.jawaadianinc.valorant_stats.valo.activities.chat.ChatsForumActivity
 import com.squareup.picasso.Picasso
 
 
@@ -42,6 +43,7 @@ class StaticsMainActivity : AppCompatActivity() {
     val statsFragment = StaticsMainMenu()
     val liveStatsFragment = LiveStatsFragment()
     val assetsFragment = AssetsFragment()
+    val chatsFragment = ChatsForumActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,11 +77,13 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val updateDescription: String =
-            "- Settings page has gotten a complete overhaul! Click on your profile picture on the top right to see!" +
-                    "\n- New setting to translate Valorant Assets" +
-                    "\n- New language selector" +
-                    "\n- Improved dark mode to be more stable" +
-                    "\n- Fixed text colouring on certain backgrounds"
+            "- The 'Chat' feature has made a comeback for all of my OG Statics fans, talk to anyone else who's also using the app :)) (character limit is 500 for now)" +
+                    "\n- All agent voicelines have been added to the Agents in Assets tab" +
+                    "\n- (Nearly) All Valorant assets will be translated to the language you choose in settings" +
+                    "\n- You can now sign in with Google and other social platforms for your Riot account" +
+                    "\n- Fixed a crash on Android 14 when signing in" +
+                    "\n- Fixed a crash bug when trying to set your Player Title" +
+                    "\n- Fixed a bug with all store timers showing 00:00:00 when coming back from settings"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
@@ -150,12 +154,19 @@ class StaticsMainActivity : AppCompatActivity() {
                     changeFragment(statsFragment)
                     true
                 }
+
                 R.id.new_Live -> {
                     changeFragment(liveStatsFragment)
                     true
                 }
+
                 R.id.new_Assets -> {
                     changeFragment(assetsFragment)
+                    true
+                }
+
+                R.id.new_Chats -> {
+                    changeFragment(chatsFragment)
                     true
                 }
 
@@ -178,6 +189,7 @@ class StaticsMainActivity : AppCompatActivity() {
             add(R.id.container, statsFragment, "1").hide(statsFragment)
             add(R.id.container, liveStatsFragment, "2")
             add(R.id.container, assetsFragment, "3").hide(assetsFragment)
+            add(R.id.container, chatsFragment, "4").hide(chatsFragment)
         }.commitAllowingStateLoss()
         bottomNavBar.selectedItemId = R.id.new_Live
     }
@@ -187,10 +199,12 @@ class StaticsMainActivity : AppCompatActivity() {
         val stats = supportFragmentManager.findFragmentByTag("1")
         val live = supportFragmentManager.findFragmentByTag("2")
         val assets = supportFragmentManager.findFragmentByTag("3")
+        val chats = supportFragmentManager.findFragmentByTag("4")
         supportFragmentManager.beginTransaction().apply {
             if (stats != null) remove(stats)
             if (live != null) remove(live)
             if (assets != null) remove(assets)
+            if (chats != null) remove(chats)
         }.commitAllowingStateLoss()
     }
 

@@ -91,4 +91,22 @@ class ContentLocalisationDatabase
 
         return translatedString
     }
+
+    fun getUUID(language: String, title: String): String? {
+        val query = "SELECT $UUID FROM $language WHERE $translatedString = ?"
+        val db = readableDatabase
+        val cursor = db.rawQuery(query, arrayOf(title))
+
+        var translatedString: String? = null
+
+        if (cursor.moveToFirst()) {
+            val index = cursor.getColumnIndex("UUID")
+            translatedString = cursor.getString(index)
+        }
+
+        cursor.close()
+        db.close()
+
+        return translatedString
+    }
 }

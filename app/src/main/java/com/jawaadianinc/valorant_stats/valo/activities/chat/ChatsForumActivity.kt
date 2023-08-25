@@ -1,12 +1,16 @@
 package com.jawaadianinc.valorant_stats.valo.activities.chat
 
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -14,13 +18,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.jawaadianinc.valorant_stats.R
-import com.jawaadianinc.valorant_stats.databinding.ActivityChatsForumBinding
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 
-class ChatsForumActivity : AppCompatActivity() {
+class ChatsForumActivity : Fragment() {
 
-    private lateinit var binding: ActivityChatsForumBinding
     private lateinit var messagesListView: ListView
     private lateinit var sendMessagesButton: FloatingActionButton
     private lateinit var messageTextBox: EditText
@@ -30,39 +32,34 @@ class ChatsForumActivity : AppCompatActivity() {
     private lateinit var speakerText: TextView
     private lateinit var speakerImage: ImageView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityChatsForumBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.activity_chats_forum, container, false)
+    }
 
-        val toolbar = binding.materialToolbar2
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.title = "Statics Chat"
-        toolbar.setNavigationOnClickListener {
-            // finish and override the transition
-            finish()
-            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        sendMessagesButton = binding.sendMessageFAB
-        messageTextBox = binding.sendMesssageEditText
-        messagesListView = binding.messagesListView
+        sendMessagesButton = requireActivity().findViewById(R.id.sendMessageFAB)
+        messageTextBox = requireActivity().findViewById(R.id.sendMesssageEditText)
+        messagesListView = requireActivity().findViewById(R.id.messagesListView)
         ChatReference = FirebaseDatabase.getInstance().reference.child("VALORANT/Chats/")
-        playerName = intent.getStringExtra("playerName").toString()
-        playerImage = intent.getStringExtra("playerImage").toString()
+        playerName = activity?.intent?.getStringExtra("playerName") ?: return
+        playerImage = activity?.intent?.getStringExtra("playerImageID") ?: return
 
         val playerCardSmall = "https://media.valorant-api.com/playercards/$playerImage/smallart.png"
         val playerCardLarge = "https://media.valorant-api.com/playercards/$playerImage/largeart.png"
 
-        val backGround = binding.imageView3
+        val backGround = requireActivity().findViewById(R.id.imageView3) as ImageView
         Picasso.get().load(playerCardLarge).fit().centerCrop()
-            .transform(BlurTransformation(this)).into(backGround)
+            .transform(BlurTransformation(requireActivity())).into(backGround)
 
-        speakerText = binding.chatSpeaker
+        speakerText = requireActivity().findViewById(R.id.chat_Speaker)
         speakerText.text = "${getString(R.string.s174)}: $playerName"
-        speakerImage = binding.chatSpeakerIcon
+        speakerImage = requireActivity().findViewById(R.id.chat_Speaker_Icon)
         Picasso
             .get()
             .load(playerCardSmall)
@@ -75,8 +72,11 @@ class ChatsForumActivity : AppCompatActivity() {
                 sendMessage(message)
                 // Clear the text box
                 messageTextBox.setText("")
-            } else if (message.length > 1000) {
-                Toast.makeText(this, "Message is too long", Toast.LENGTH_SHORT).show()
+            } else if (message.length > 500) {
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.message_exceeds_500_characters), Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -87,8 +87,12 @@ class ChatsForumActivity : AppCompatActivity() {
                 sendMessage(message)
                 // Clear the text box
                 messageTextBox.setText("")
-            } else if (message.length > 1000) {
-                Toast.makeText(this, "Message is too long", Toast.LENGTH_SHORT).show()
+            } else if (message.length > 500) {
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.message_exceeds_500_characters),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             false
         }
@@ -101,7 +105,7 @@ class ChatsForumActivity : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(
-                    this@ChatsForumActivity,
+                    requireActivity(),
                     "Error: ${error.message}",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -137,10 +141,11 @@ class ChatsForumActivity : AppCompatActivity() {
                     // send to firebase
                     FirebaseDatabase.getInstance().reference.child("Statics/Errors/").child("Chat")
                         .setValue(e.toString())
+                    Log.d("StaticsChats", "Error: ${e.message}")
                 }
             }
             // add the messages to the list view
-            val adapter = MessageAdapter(this, messages)
+            val adapter = MessageAdapter(requireActivity(), messages)
             // sort the messages by time
             messages.sortBy { it.unixTime }
             messagesListView.adapter = adapter
@@ -165,10 +170,5 @@ class ChatsForumActivity : AppCompatActivity() {
 
         // update the messages
         updateMessages()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
     }
 }
