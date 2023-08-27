@@ -13,12 +13,21 @@ class MyApplication : Application() {
         super.onCreate()
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val darkModeEnabled = sharedPreferences.getBoolean("dark_mode", false)
-        if (darkModeEnabled) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        val firstTimeSetUp = sharedPreferences.getBoolean("dark_mode_first", false)
+        if (!firstTimeSetUp) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            val editor = sharedPreferences.edit()
+            editor.putBoolean("dark_mode_first", true)
+            editor.apply()
         } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            val darkModeEnabled = sharedPreferences.getBoolean("dark_mode", false)
+            if (darkModeEnabled) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
         }
+
 
         // Set language
         val selectedLanguage = sharedPreferences.getString("language", "en")

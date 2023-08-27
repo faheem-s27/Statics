@@ -21,6 +21,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetailsParams
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.main.AccountSelectionActivity
 import com.jawaadianinc.valorant_stats.main.MyApplication
 
 
@@ -182,11 +183,10 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun logOut() {
-            val intent = Intent(requireActivity(), NewLogInUI::class.java)
-            intent.putExtra("login", "true")
+            val intent = Intent(requireActivity(), AccountSelectionActivity::class.java)
             startActivity(intent)
             requireActivity().overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-            requireActivity().finish()
+            activity?.finish()
         }
 
         fun thiss(): Activity {

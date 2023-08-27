@@ -114,6 +114,7 @@ class ChatsForumActivity : Fragment() {
     }
 
     private fun updateMessages() {
+        if (context == null) return
         val messages = ArrayList<ChatMessage>()
         val messagesFromDatabase = ChatReference.get()
         messagesFromDatabase.addOnSuccessListener {
@@ -145,6 +146,7 @@ class ChatsForumActivity : Fragment() {
                 }
             }
             // add the messages to the list view
+            if (context == null) return@addOnSuccessListener
             val adapter = MessageAdapter(requireActivity(), messages)
             // sort the messages by time
             messages.sortBy { it.unixTime }
@@ -161,6 +163,7 @@ class ChatsForumActivity : Fragment() {
 
         val playerCardSmall = "https://media.valorant-api.com/playercards/$playerImage/smallart.png"
 
+        if (context == null) return
         // create unique id for the message
         val messageId = ChatReference.push().key.toString()
         ChatReference.child(messageId).child("playerName").setValue(playerName)

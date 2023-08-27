@@ -23,7 +23,6 @@ import com.jawaadianinc.valorant_stats.BuildConfig
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.valo.Henrik
 import com.jawaadianinc.valorant_stats.valo.activities.new_ui.Database.ContentLocalisationDatabase
-import com.jawaadianinc.valorant_stats.valo.activities.new_ui.NewLogInUI
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.PlayerDatabase
 import com.squareup.picasso.Picasso
@@ -213,9 +212,9 @@ class LoadingActivity : AppCompatActivity() {
                 // set the path of the video to be played
                 videoPlayer.setVideoPath(videoPath)
                 videoPlayer.setOnCompletionListener {
-                    val intent = Intent(this, NewLogInUI::class.java)
+                    val intent = Intent(this, AccountSelectionActivity::class.java)
                     intent.putExtra("key", key)
-                    intent.putExtra("login", "login")
+                    intent.putExtra("login", "true")
                     startActivity(intent)
                     overridePendingTransition(R.anim.fadein, R.anim.fadeout)
                     finish()
@@ -224,7 +223,7 @@ class LoadingActivity : AppCompatActivity() {
                     videoPlayer.start()
                 }
             } else {
-                val intent = Intent(this, NewLogInUI::class.java)
+                val intent = Intent(this, AccountSelectionActivity::class.java)
                 intent.putExtra("key", key)
                 backgroundIMG.animate().setDuration(1000).alpha(0f).translationY(-100f)
                     .setInterpolator {
@@ -249,7 +248,7 @@ class LoadingActivity : AppCompatActivity() {
         } else {
             val puuid =
                 PlayerDatabase(this).getPUUID(valoName.split("#")[0], valoName.split("#")[1])
-            val intent = Intent(this, NewLogInUI::class.java)
+            val intent = Intent(this, AccountSelectionActivity::class.java)
             intent.putExtra("key", key)
             intent.putExtra("region", PlayerDatabase(this).getRegion(puuid))
             intent.putExtra("playerName", valoName)

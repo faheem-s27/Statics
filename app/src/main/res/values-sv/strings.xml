@@ -1,2 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="s6">Läs mer om\n&lt;a href=\"https://statics-fd699.web.app/privacy.html\"&gt;Statics privacy policy&lt;/a&gt;</string>
+    <string name="s5">Statiken stöds inte av Riot Games och återspeglar inte åsikter eller åsikter från Riot Games eller någon som är officiellt involverad i att producera eller förvalta Riot Games fastigheter. Riot Games och alla tillhörande fastigheter är varumärken eller registrerade varumärken som tillhör Riot Games, Inc.</string>
+    <string name="s4">Jag har läst och godkänner villkoren nedan</string>
+    <string name="s3">Logga in med Riot</string>
+    <string name="s2">Den första appen med minimap</string>
+    <string name="s7">När du loggar in med Riot, skickas dina uppgifter till Riots servrar och en token returneras. Den här token används sedan för att få dina kontouppgifter som ditt namn.\nToken raderas sedan från servern och lagras inte någonstans. Servern lagrar bara din kontoinformation som används för att visa din statistik i appen.\n\nStatics sparar inga lösenord!</string>
+    <string name="acceptTermsConditions">Vänligen acceptera villkoren för att fortsätta</string>
+    <string name="s1">Ansluter till Riot…</string>
+    <string name="starting">Startar</string>
+    <string name="s8">Så här fungerar det</string>
+    <string name="s9">Klicka på knappen för att bevisa att du lever</string>
+    <string name="s10">Dags att stjäla dina data</string>
+    <string name="s11">Ger dig gun buddies</string>
+    <string name="s12">Ställer in ditt konto till Iron</string>
+    <string name="s13">Du gjorde det</string>
+    <string name="s14">Välkommen</string>
+    <string name="s15">Ett fel inträffade när du sparade :(</string>
+    <string name="s16">Du använder en betaversion av appen</string>
+    <string name="s17">Detta innebär att appen kanske inte fungerar som den ska. Om du hittar några buggar, vänligen rapportera dem till utvecklaren</string>
+    <string name="s18">Nya funktioner för Statics</string>
+    <string name="s19">Denna uppdatering inkluderar:</string>
+    <string name="menu_stats">Statistik</string>
+    <string name="menu_live">Live</string>
+    <string name="menu_assets">Tillgångar</string>
+    <string name="menu_premier">Premier</string>
+    <string name="menu_extras">Övrigt</string>
+    <string name="s20">Nästa uppdatering om </string>
+    <string name="s22">Spelardetaljer</string>
+    <string name="s23">Rank Sammanfattning</string>
+    <string name="s24">Senaste match</string>
+    <string name="s29">Historik</string>
+    <string name="s30">för xx dagar sedan/veckor sedan</string>
+    <string name="s31">Välkommen till Live!</string>
+    <string name="s32">Sätt igång</string>
+    <string name="s33">Varför lösenord?</string>
+    <string name="s34">Tyvärr, Statics behöver ditt Riot användarnamn och lösenord för att använda live-läge eftersom lösenordet krävs för att autentisera ditt konto och används för att hämta data från Valorant. Lösenordet lagras inte någonstans och används bara för att autentisera ditt konto. Jag kommer inte att ha sockerpäls. På grund av hur Statics använder API, Jag anser att det inte finns något annat sätt att logga in än att få folk att skriva in sina referenser direkt. Under dessa omständigheter finns det verkligen inget bra sätt för någon att vara säker på att deras referenser förblir säkra.\n\nFör vad det är värt: - Dina uppgifter lämnar bara din enhet i form av en inloggningsförfrågan direkt till Riot. De lagras eller skickas aldrig någon annanstans. - Du kan aktivera tvåfaktorsautentisering, så att du åtminstone skulle ha ytterligare ett säkerhetslager om det gick dåligt. Koden är öppen källkod och synlig på GitHub (väntande); du kan bygga den själv om du vill vara säker på vad som körs. TL;DR: du måste ta mitt ord för det 🦆❤️. Om du fortfarande inte är bekväm med detta, kan du använda appen utan live-läge.</string>
+    <string name="s35">Varför behöver jag ange mitt lösenord</string>
+    <string name="s36">Användarnamn/lösenord</string>
+    <string name="s37">Ange ditt användarnamn och lösenord</string>
+    <string name="s38">Autentiserar…</string>
+    <string name="s39">Tecknet # är inte tillåtet</string>
+    <string name="s40">Vänligen ange ett användarnamn och lösenord</string>
+    <string name="s41">Svar från Auth cookies</string>
+    <string name="s42">Svaret lyckades men användarnamn eller lösenord är felaktigt</string>
+    <string name="s43">Ett fel uppstod vid inloggning i\n\n\nFelmeddelande:</string>
+    <string name="s44">2FA-kod för %s</string>
+    <string name="s45">Skicka</string>
+    <string name="s46">Felaktig 2FA kod</string>
+    <string name="s47">Ett fel inträffades i live mode: </string>
+    <string name="s48">Skicka till utvecklare på discord!</string>
+    <string name="s49">Copied to Clipboard!</string>
+    <string name="s50">Kopiera &amp; Skicka</string>
+    <string name="s51">Avbryt</string>
+</resources>

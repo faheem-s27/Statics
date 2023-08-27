@@ -19,6 +19,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".main.AccountSelectionActivity"
+            android:exported="false" />
+        <activity
             android:name=".valo.activities.new_ui.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />

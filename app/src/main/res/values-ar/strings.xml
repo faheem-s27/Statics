@@ -253,16 +253,16 @@
   <string name="banned_for">محظور لمدة </string>
   <string name="party_in_game">الفريق في اللعبة</string>
   <string name="cannot_queue">لا يمكنك دخول طابور</string>
-  <string name="playing">يلعب </string>
-  <string name="end_of_agent_select">نهاية اختيار العملاء</string>
-  <string name="you">أنت</string>
-  <string name="lock_in_random">اختَر عشوائياً</string>
-  <string name="offers">العروض اليومية</string>
-  <string name="bundles">الحزم</string>
-  <string name="night_market">النايت ماركت</string>
-  <string name="accessory">عناصر تجميلية</string>
-  <string name="weapons">أسلحة</string>
-  <string name="reset_language">إعادة اللغة</string>
+    <string name="playing">يلعب </string>
+    <string name="end_of_agent_select">نهاية اختيار العملاء</string>
+    <string name="you">أنت</string>
+    <string name="lock_in_random">اختَر عشوائياً</string>
+    <string name="offers">العروض اليومية</string>
+    <string name="bundles">الحزم</string>
+    <string name="night_market">النايت ماركت</string>
+    <string name="accessory">عناصر تجميلية</string>
+    <string name="weapons">أسلحة</string>
+    <string name="reset_language">إعادة اللغة</string>
     <string name="got_cookies">الحصول على الكوكيز 🍪</string>
     <string name="got_access_token">الحصول على التوكن 🎫</string>
     <string name="got_riot_s_latest_version">الحصول على أحدث إصدار لريوت 📦</string>

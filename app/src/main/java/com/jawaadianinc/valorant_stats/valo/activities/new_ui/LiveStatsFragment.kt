@@ -52,7 +52,9 @@ import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.jawaadianinc.valorant_stats.R
+import com.jawaadianinc.valorant_stats.main.AccountSelectionActivity
 import com.jawaadianinc.valorant_stats.main.LoadingActivity
+import com.jawaadianinc.valorant_stats.main.ValorantAccountDatabase
 import com.jawaadianinc.valorant_stats.main.ZoomOutPageTransformer
 import com.jawaadianinc.valorant_stats.valo.activities.new_ui.Database.ContentLocalisationDatabase
 import com.jawaadianinc.valorant_stats.valo.databases.AssetsDatabase
@@ -483,7 +485,7 @@ class LiveStatsFragment : Fragment() {
             logLIVEStuff("Storefront done")
             //getPenalties()
             logLIVEStuff("Penalties done")
-            availableAgents = getAvailableAgents()
+            //availableAgents = getAvailableAgents()
             // Throw an exception as a test
 //            throw Exception("Hello Discord, this is a test so that next time you get an error\n\nYou do the following:\n\n1. Click on 'Copy & Send'\n2. Send it in channel 'bugs and issues'" +
 //                    "\n\nBoom! I'll now be able to help out much more!")
@@ -1059,7 +1061,11 @@ class LiveStatsFragment : Fragment() {
                     if (code == 200) {
                         // show dialog
                         val json = JSONObject(body)
-                        loadSprays(json.getJSONArray("Sprays"))
+                        try {
+                            loadSprays(json.getJSONArray("Sprays"))
+                        } catch (e: Exception) {
+                            loadDefaultSprays()
+                        }
                         loadTitle(json.getJSONObject("Identity").getString("PlayerTitleID"))
                         loadPlayerCard(json.getJSONObject("Identity").getString("PlayerCardID"))
                         loadWeapons(json.getJSONArray("Guns"))
@@ -1075,10 +1081,25 @@ class LiveStatsFragment : Fragment() {
         }
     }
 
+    // Called for newer accounts with no sprays equipped
+    private fun loadDefaultSprays() {
+        val leftSprayImage = view?.findViewById<ImageView>(R.id.imageViewLeftSpray)
+        val bottomSprayImage = view?.findViewById<ImageView>(R.id.imageViewBottomSpray)
+        val rightSprayImage = view?.findViewById<ImageView>(R.id.imageViewRightSpray)
+        val topSprayImage = view?.findViewById<ImageView>(R.id.imageViewTopSpray)
+
+        val defaultURL =
+            "https://media.valorant-api.com/spraylevels/af3a4261-4c81-266d-7963-82ad714b190f/displayicon.png"
+
+        Picasso.get().load(defaultURL).fit().centerInside().into(leftSprayImage)
+        Picasso.get().load(defaultURL).fit().centerInside().into(rightSprayImage)
+        Picasso.get().load(defaultURL).fit().centerInside().into(topSprayImage)
+        Picasso.get().load(defaultURL).fit().centerInside().into(bottomSprayImage)
+    }
+
     private fun getWeaponName(weaponID: String): String {
         val data = weaponsJSONObject.getJSONArray("data")
-        for (weapon in data)
-        {
+        for (weapon in data) {
             if (weapon.getString("uuid") == weaponID) {
                 val name = db.getTranslatedString(
                     selectedLanguageAsset.replace("-", "_"),
@@ -1204,6 +1225,9 @@ class LiveStatsFragment : Fragment() {
 
     private fun loadPlayerCard(cardID: String) {
         try {
+            val database = ValorantAccountDatabase(requireActivity())
+            database.updatePlayerImage(PlayerUUID!!, cardID)
+
             val largeURL = "https://media.valorant-api.com/playercards/${cardID}/largeart.png"
             val smallURL = "https://media.valorant-api.com/playercards/${cardID}/smallart.png"
             val wideURL = "https://media.valorant-api.com/playercards/${cardID}/wideart.png"
@@ -1668,6 +1692,7 @@ class LiveStatsFragment : Fragment() {
             }
         }
 
+        availableAgents = getAvailableAgents()
         agentPreGameRecyclerView.adapter = ImageAdapter(getAgentImages())
 
         val logOut = view?.findViewById<ImageButton>(R.id.new_partyPlayerLogOut)
@@ -1680,8 +1705,7 @@ class LiveStatsFragment : Fragment() {
                     // clear the shared preferences from auth
                     authPreferences.edit().clear().apply()
                     // go to loading screen
-                    val intent = Intent(requireActivity(), NewLogInUI::class.java)
-                    intent.putExtra("login", "true")
+                    val intent = Intent(requireActivity(), AccountSelectionActivity::class.java)
                     startActivity(intent)
                     activity?.overridePendingTransition(R.anim.fadein, R.anim.fadeout)
                     activity?.finish()

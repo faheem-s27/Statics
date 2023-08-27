@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
@@ -16,6 +17,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityStaticsMainBinding
+import com.jawaadianinc.valorant_stats.main.ValorantAccountDatabase
 import com.jawaadianinc.valorant_stats.valo.activities.chat.ChatsForumActivity
 import com.squareup.picasso.Picasso
 
@@ -76,14 +78,18 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardWide = "https://media.valorant-api.com/playercards/$playerImageID/wideart.png"
         playerCardID = playerImageID
 
+        val accountsDB = ValorantAccountDatabase(this)
+        if (!accountsDB.doesPlayerExist(puuid)) {
+            if (accountsDB.addPlayer(playerName, cookies, puuid, playerImageID)) {
+                Toast.makeText(this, "Added account!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         val updateDescription: String =
-            "- The 'Chat' feature has made a comeback for all of my OG Statics fans, talk to anyone else who's also using the app :)) (character limit is 500 for now)" +
-                    "\n- All agent voicelines have been added to the Agents in Assets tab" +
-                    "\n- (Nearly) All Valorant assets will be translated to the language you choose in settings" +
-                    "\n- You can now sign in with Google and other social platforms for your Riot account" +
-                    "\n- Fixed a crash on Android 14 when signing in" +
-                    "\n- Fixed a crash bug when trying to set your Player Title" +
-                    "\n- Fixed a bug with all store timers showing 00:00:00 when coming back from settings"
+            "- Multi account support! :D" +
+                    "\n- Statics will follow your current system theme for new users" +
+                    "\n- Fixed a bug of agents being locked apart from the default ones" +
+                    "\n- Fixed a crash for a new user account who hasn't set any sprays"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
