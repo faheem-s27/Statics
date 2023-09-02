@@ -65,7 +65,6 @@
     </androidx.cardview.widget.CardView>
 
 
-
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar3"
         android:layout_width="match_parent"
@@ -79,6 +78,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:navigationIconTint="?attr/colorOnSurfaceInverse"
         tools:title="Duck#2004" />
 
     <androidx.cardview.widget.CardView
@@ -86,11 +86,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:elevation="12dp"
         android:translationZ="50dp"
+        android:visibility="visible"
+        app:cardBackgroundColor="#00FFFFFF"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/materialToolbar3"
         app:layout_constraintDimensionRatio="1:1"
@@ -101,7 +103,8 @@
             android:id="@+id/statics_toolbar_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:srcCompat="@drawable/icons8_settings_50"
+            app:tint="?attr/colorPrimary" />
 
     </androidx.cardview.widget.CardView>
 

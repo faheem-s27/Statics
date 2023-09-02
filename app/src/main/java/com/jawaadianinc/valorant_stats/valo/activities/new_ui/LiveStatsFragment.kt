@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -1866,25 +1867,25 @@ class LiveStatsFragment : Fragment() {
             val bitmap = withContext(Dispatchers.IO) {
                 Picasso.get().load(mapImage).get()
             }
+
+            val pendingIntent = PendingIntent.getActivity(
+                requireActivity(), 0, Intent(requireActivity(), LoadingActivity::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
             val mBuilder = NotificationCompat.Builder(requireActivity(), channelID)
                 .setSmallIcon(R.drawable.just_statics_alot_smaller)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setLargeIcon(bitmap)
-            //.setTimeoutAfter(10000)
+                .setContentIntent(pendingIntent)
+
 
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return@launch
             }
             notificationManager.notify(notificationID, mBuilder.build())

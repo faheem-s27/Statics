@@ -62,6 +62,17 @@ class ValorantAccountDatabase(context: Context) :
         return updateResult > 0
     }
 
+    fun updatePlayerCookies(puuid: String, cookies: String): Boolean {
+        val db = this.writableDatabase
+        val cv = ContentValues()
+        cv.put(COOKIES, cookies)
+
+        val updateResult = db.update(ACCOUNTS, cv, "$PUUID=?", arrayOf(puuid))
+        db.close()
+
+        return updateResult > 0
+    }
+
     fun getAllValorantAccounts(): List<ValorantAccount> {
         val accountList = mutableListOf<ValorantAccount>()
         val db = this.readableDatabase

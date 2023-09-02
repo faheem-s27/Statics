@@ -19,7 +19,6 @@ import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityStaticsMainBinding
 import com.jawaadianinc.valorant_stats.main.ValorantAccountDatabase
 import com.jawaadianinc.valorant_stats.valo.activities.chat.ChatsForumActivity
-import com.squareup.picasso.Picasso
 
 
 class StaticsMainActivity : AppCompatActivity() {
@@ -79,17 +78,19 @@ class StaticsMainActivity : AppCompatActivity() {
         playerCardID = playerImageID
 
         val accountsDB = ValorantAccountDatabase(this)
+        // If player does not exist, add to database, otherwise update the cookies
         if (!accountsDB.doesPlayerExist(puuid)) {
             if (accountsDB.addPlayer(playerName, cookies, puuid, playerImageID)) {
                 Toast.makeText(this, "Added account!", Toast.LENGTH_SHORT).show()
             }
+        } else {
+            accountsDB.updatePlayerCookies(puuid, cookies)
         }
 
         val updateDescription: String =
-            "- Multi account support! :D" +
-                    "\n- Statics will follow your current system theme for new users" +
-                    "\n- Fixed a bug of agents being locked apart from the default ones" +
-                    "\n- Fixed a crash for a new user account who hasn't set any sprays"
+            "- Added new stats in Overview when looking at match details, shows your headshots, body shots & leg shots percentages" +
+                    "\n- Fixed bug of accounts not staying signed in" +
+                    "\n- Clicking on notification when a match is found will take you back to the app"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
@@ -182,7 +183,7 @@ class StaticsMainActivity : AppCompatActivity() {
             }
         }
         toolbar.title = playerName
-        Picasso.get().load(playerCardSmall).into(toolbarPicture)
+        //Picasso.get().load(playerCardSmall).into(toolbarPicture)
 
         toolbarPicture.setOnClickListener {
             requireActivity().startActivity(Intent(requireActivity(), SettingsActivity::class.java))

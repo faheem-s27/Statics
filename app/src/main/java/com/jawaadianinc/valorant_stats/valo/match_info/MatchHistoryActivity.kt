@@ -2,6 +2,7 @@ package com.jawaadianinc.valorant_stats.valo.match_info
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -46,14 +47,6 @@ class MatchHistoryActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
         progressBar.isIndeterminate = true
 
-
-//        if (hasWon == true) {
-//            // insert winning sound here
-//        } else {
-//            // insert losing sound here
-//        }
-
-
         doAsync {
             val matchID: String = if (IDofMatch == "none") {
                 val jsonMatches = Henrik(this@MatchHistoryActivity).henrikAPI(allmatches)
@@ -64,6 +57,7 @@ class MatchHistoryActivity : AppCompatActivity() {
                 IDofMatch!!
             }
             val matchURl = "https://api.henrikdev.xyz/valorant/v2/match/$matchID"
+            Log.d("HenrikMatch", "URL: $matchURl")
             matchJSON = Henrik(this@MatchHistoryActivity).henrikAPI(matchURl)
             val metadata = matchJSON.getJSONObject("data").getJSONObject("metadata")
             val map = metadata.getString("map")

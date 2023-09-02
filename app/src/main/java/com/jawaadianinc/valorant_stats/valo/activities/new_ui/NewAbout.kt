@@ -72,9 +72,6 @@ class NewAbout : AppCompatActivity() {
                 " for fun and has been mostly a hobby project, but I'm always open to suggestions and feedback\nLots of love ❤️ \nFaheem Saleem\nMy Valorant user is Duck#2004"
         descTextView.gravity = android.view.Gravity.CENTER
 
-        val updateTextView = findViewById<TextView>(R.id.updateDesc)
-        updateTextView.text = "Changes:\n$latestFeatureDescription"
-
         val textFile = assets.open("TranslatersPeople.txt").bufferedReader().use { it.readText() }
         val TranslaterPeople = ArrayList<Translater>()
         val lines = textFile.split("\n")

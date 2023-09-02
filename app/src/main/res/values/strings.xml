@@ -338,5 +338,6 @@
     <string name="select_your_account">Select your account</string>
     <string name="add_an_account_to_get_started">Add an account to get started</string>
     <string name="chat">Chat</string>
+    <string name="settings">Settings</string>
 
 </resources>
