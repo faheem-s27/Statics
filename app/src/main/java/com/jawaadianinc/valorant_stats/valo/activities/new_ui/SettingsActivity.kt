@@ -1,13 +1,13 @@
 package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.CheckBoxPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -62,6 +62,13 @@ class SettingsActivity : AppCompatActivity() {
                 currentVersionPreference.summary = versionName
             }
 
+            val from_play_storePreference = findPreference("from_play_store") as Preference?
+            if (verifyInstallerId(requireActivity())) {
+                from_play_storePreference?.summary = "Yes"
+            } else {
+                from_play_storePreference?.summary = "No"
+            }
+
             val aboutStatics: Preference? = findPreference("about_statics")
             aboutStatics?.setOnPreferenceClickListener {
                 val intent = Intent(requireActivity(), NewAbout::class.java)
@@ -85,6 +92,7 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 true
             }
+
 
             val purchaseUpdateListener = PurchasesUpdatedListener { billingResult, purchases ->
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
@@ -145,13 +153,24 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
 
-            val matchNotificationsPreference: CheckBoxPreference? =
+            val matchNotificationsPreference: SwitchPreference? =
                 findPreference("match_notifications")
             matchNotificationsPreference?.setOnPreferenceChangeListener { _, newValue ->
                 // Store the preference value in SharedPreferences
                 val sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(requireContext())
                 sharedPreferences.edit().putBoolean("match_notifications", newValue as Boolean)
+                    .apply()
+                true // Return true to indicate that the preference change should be saved
+            }
+
+            val chatNotifcationPreference: SwitchPreference? =
+                findPreference("chat_notifications")
+            chatNotifcationPreference?.setOnPreferenceChangeListener { _, newValue ->
+                // Store the preference value in SharedPreferences
+                val sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(requireContext())
+                sharedPreferences.edit().putBoolean("chat_notifications", newValue as Boolean)
                     .apply()
                 true // Return true to indicate that the preference change should be saved
             }
@@ -202,6 +221,19 @@ class SettingsActivity : AppCompatActivity() {
                 e.printStackTrace()
                 "Unknown"
             }
+        }
+
+        fun verifyInstallerId(context: Context): Boolean {
+            // A list with valid installers package name
+            val validInstallers: List<String> =
+                ArrayList(mutableListOf("com.android.vending", "com.google.android.feedback"))
+
+            // The package name of the app that has installed your app
+            val installer: String? =
+                context.packageManager.getInstallerPackageName(context.packageName)
+
+            // true if your app has been downloaded from Play Store
+            return installer != null && validInstallers.contains(installer)
         }
     }
 

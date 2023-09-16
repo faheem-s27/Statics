@@ -26,6 +26,9 @@ import com.jawaadianinc.valorant_stats.valo.adapters.MySliderImageAdapter
 import com.jawaadianinc.valorant_stats.valo.adapters.VoiceLineAdapter
 import com.smarteist.autoimageslider.SliderView
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -168,10 +171,13 @@ class CosmeticsAgentsActivity : AppCompatActivity() {
         )
         voiceLinesListView.adapter = voiceLineAdapter
 
-        listRef.listAll().addOnSuccessListener { listResult ->
-            listResult.items.forEach { item ->
-                voiceLinesArray.add(item.name)
-                voiceLineAdapter.notifyDataSetChanged()
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            listRef.listAll().addOnSuccessListener { listResult ->
+                listResult.items.forEach { item ->
+                    voiceLinesArray.add(item.name)
+                    voiceLineAdapter.notifyDataSetChanged()
+                }
             }
         }
     }

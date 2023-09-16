@@ -4,6 +4,9 @@ import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 import java.util.Locale
 
 
@@ -11,6 +14,21 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        FirebaseApp.initializeApp(this);
+        FirebaseMessaging.getInstance().subscribeToTopic("chat_notification")
+            .addOnCompleteListener {
+            }
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+            // send this token to server
+        })
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val firstTimeSetUp = sharedPreferences.getBoolean("dark_mode_first", false)

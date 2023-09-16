@@ -17,9 +17,13 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+
 
 class ChatsForumActivity : Fragment() {
 
@@ -42,6 +46,15 @@ class ChatsForumActivity : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Inside your activity or where you handle user authentication:
+        // Inside your activity or where you handle user authentication:
+        FirebaseMessaging.getInstance().token.addOnSuccessListener {
+            // The FCM token has been successfully retrieved.
+            // You can now associate this token with the user's account.
+            // Store it in your backend server or use it to send notifications.
+            // Note: This token is unique to the device and user.
+        }
 
         sendMessagesButton = requireActivity().findViewById(R.id.sendMessageFAB)
         messageTextBox = requireActivity().findViewById(R.id.sendMesssageEditText)
@@ -173,5 +186,23 @@ class ChatsForumActivity : Fragment() {
 
         // update the messages
         updateMessages()
+
+        val title = "New message from $playerName"
+        val encodedStringTitle = URLEncoder.encode(title, StandardCharsets.UTF_8.toString())
+        val encodedStringMessage = URLEncoder.encode(message, StandardCharsets.UTF_8.toString())
+
+        // url to send this to
+        val url =
+            "https://statics-server.fly.dev/sendNotification?title=${encodedStringTitle}&body=$encodedStringMessage"
+        // send the message to the server
+        val request = okhttp3.Request.Builder().url(url).build()
+        val client = okhttp3.OkHttpClient()
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: java.io.IOException) {
+            }
+
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+            }
+        })
     }
 }

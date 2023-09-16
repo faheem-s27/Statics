@@ -25,10 +25,18 @@
         app:key="notifications"
         app:title="@string/app_notifications">
 
-        <CheckBoxPreference
+        <SwitchPreference
             app:key="match_notifications"
             app:summary="@string/show_a_notification_when_a_match_has_been_found"
+            android:defaultValue="true"
             app:title="@string/match_notifications" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            app:key="chat_notifications"
+            app:summary="@string/show_a_notification_when_a_new_message_has_been_received"
+            app:title="@string/chat_notifications" />
+        />
 
     </PreferenceCategory>
 
@@ -48,6 +56,12 @@
             app:key="current_version"
             app:summary="@string/unknown"
             app:title="@string/current_app_version"> <!-- Replace with the actual version -->
+        </Preference>
+
+        <Preference
+            app:key="from_play_store"
+            app:summary=""
+            app:title="@string/installed_from_play_store"> <!-- Replace with the actual version -->
         </Preference>
 
         <Preference
