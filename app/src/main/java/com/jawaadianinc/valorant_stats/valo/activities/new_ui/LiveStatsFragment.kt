@@ -2,8 +2,6 @@ package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.Manifest
 import android.app.AlertDialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -1858,11 +1856,6 @@ class LiveStatsFragment : Fragment() {
             if (!areNotificationsEnabled) return@launch
 
             val notificationID = 1
-            val channelID = "statics_live"
-            val channelName = channel_name
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val mChannel = NotificationChannel(channelID, channelName, importance)
-            notificationManager.createNotificationChannel(mChannel)
             // Picasso load the image
             val bitmap = withContext(Dispatchers.IO) {
                 Picasso.get().load(mapImage).get()
@@ -1873,13 +1866,12 @@ class LiveStatsFragment : Fragment() {
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-            val mBuilder = NotificationCompat.Builder(requireActivity(), channelID)
+            val mBuilder = NotificationCompat.Builder(requireActivity(), "match_notification")
                 .setSmallIcon(R.drawable.just_statics_alot_smaller)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setLargeIcon(bitmap)
                 .setContentIntent(pendingIntent)
-
 
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),

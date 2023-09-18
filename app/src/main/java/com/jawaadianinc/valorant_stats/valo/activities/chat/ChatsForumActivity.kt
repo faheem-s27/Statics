@@ -10,14 +10,15 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.messaging.FirebaseMessaging
 import com.jawaadianinc.valorant_stats.R
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
@@ -33,8 +34,7 @@ class ChatsForumActivity : Fragment() {
     private lateinit var ChatReference: DatabaseReference
     private lateinit var playerName: String
     private lateinit var playerImage: String
-    private lateinit var speakerText: TextView
-    private lateinit var speakerImage: ImageView
+    private lateinit var tabLayout: TabLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,37 +47,19 @@ class ChatsForumActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Inside your activity or where you handle user authentication:
-        // Inside your activity or where you handle user authentication:
-        FirebaseMessaging.getInstance().token.addOnSuccessListener {
-            // The FCM token has been successfully retrieved.
-            // You can now associate this token with the user's account.
-            // Store it in your backend server or use it to send notifications.
-            // Note: This token is unique to the device and user.
-        }
-
         sendMessagesButton = requireActivity().findViewById(R.id.sendMessageFAB)
         messageTextBox = requireActivity().findViewById(R.id.sendMesssageEditText)
         messagesListView = requireActivity().findViewById(R.id.messagesListView)
-        ChatReference = FirebaseDatabase.getInstance().reference.child("VALORANT/Chats/")
         playerName = activity?.intent?.getStringExtra("playerName") ?: return
         playerImage = activity?.intent?.getStringExtra("playerImageID") ?: return
+        tabLayout = requireActivity().findViewById(R.id.tabLayout)
 
-        val playerCardSmall = "https://media.valorant-api.com/playercards/$playerImage/smallart.png"
         val playerCardLarge = "https://media.valorant-api.com/playercards/$playerImage/largeart.png"
 
         val backGround = requireActivity().findViewById(R.id.imageView3) as ImageView
         Picasso.get().load(playerCardLarge).fit().centerCrop()
             .transform(BlurTransformation(requireActivity())).into(backGround)
 
-        speakerText = requireActivity().findViewById(R.id.chat_Speaker)
-        speakerText.text = "${getString(R.string.s174)}: $playerName"
-        speakerImage = requireActivity().findViewById(R.id.chat_Speaker_Icon)
-        Picasso
-            .get()
-            .load(playerCardSmall)
-            .fit()
-            .into(speakerImage)
 
         sendMessagesButton.setOnClickListener {
             val message = messageTextBox.text.toString()
@@ -110,6 +92,49 @@ class ChatsForumActivity : Fragment() {
             false
         }
 
+        // Assuming you have three tabs for English, Indonesian, and Russian.
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val language = when (tab?.position) {
+                    0 -> "English"
+                    1 -> "Indonesian"
+                    2 -> "Russian"
+                    3 -> "Dutch"
+                    4 -> "Hungarian"
+                    5 -> "Arabic"
+                    else -> "English" // Default to English if the position is out of bounds
+                }
+                ChatReference =
+                    FirebaseDatabase.getInstance().reference.child("VALORANT/Chats/$language/")
+                ChatReference.keepSynced(true)
+                // listen for changes in the database and update the messages
+                ChatReference.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        updateMessages()
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(
+                            requireActivity(),
+                            "Error: ${error.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                // Not needed, but you can implement if required
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                // Not needed, but you can implement if required
+            }
+        })
+
+        // set the default tab to English
+        ChatReference = FirebaseDatabase.getInstance().reference.child("VALORANT/Chats/English/")
+        ChatReference.keepSynced(true)
         // listen for changes in the database and update the messages
         ChatReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -124,6 +149,30 @@ class ChatsForumActivity : Fragment() {
                 ).show()
             }
         })
+
+        // find what person was clicked on
+        messagesListView.setOnItemClickListener { _, _, position, _ ->
+            val message = messagesListView.getItemAtPosition(position) as ChatMessage
+            val playerName = message.playerMessage
+            val playerImage = message.playerImage
+
+            // show a popup with the player's name and image
+            val dialog = DialogFragment()
+            val dialogView = layoutInflater.inflate(R.layout.chat_dialog, null)
+            dialog.dialog?.setContentView(dialogView)
+            dialog.dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.show(requireActivity().supportFragmentManager, "ChatDialogFragment")
+
+            dialogView.findViewById<TextView>(R.id.textView49).text = playerName
+            val imageView = dialogView.findViewById<ImageView>(R.id.imageView10)
+            Picasso.get().load(playerImage).fit().centerCrop()
+                .into(imageView)
+
+            // dismiss the dialog when the user clicks anywhere
+            dialogView.setOnClickListener {
+                dialog.dismiss()
+            }
+        }
     }
 
     private fun updateMessages() {

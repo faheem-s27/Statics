@@ -166,6 +166,7 @@ class SettingsActivity : AppCompatActivity() {
 
             val chatNotifcationPreference: SwitchPreference? =
                 findPreference("chat_notifications")
+
             chatNotifcationPreference?.setOnPreferenceChangeListener { _, newValue ->
                 // Store the preference value in SharedPreferences
                 val sharedPreferences =
@@ -173,6 +174,19 @@ class SettingsActivity : AppCompatActivity() {
                 sharedPreferences.edit().putBoolean("chat_notifications", newValue as Boolean)
                     .apply()
                 true // Return true to indicate that the preference change should be saved
+            }
+
+            val settingsSystemNotificationPreference: Preference? =
+                findPreference("notification_channel")
+            settingsSystemNotificationPreference?.setOnPreferenceClickListener {
+                // Open the system notification settings
+                val intent = Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                intent.putExtra(
+                    android.provider.Settings.EXTRA_APP_PACKAGE,
+                    requireContext().packageName
+                )
+                startActivity(intent)
+                true
             }
 
             val darkModePreference: SwitchPreference? = findPreference("dark_mode")

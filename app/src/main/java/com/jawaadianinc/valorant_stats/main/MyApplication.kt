@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.color.DynamicColors
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import java.util.Locale
@@ -14,6 +15,8 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        DynamicColors.applyToActivitiesIfAvailable(this)
 
         FirebaseApp.initializeApp(this);
         FirebaseMessaging.getInstance().subscribeToTopic("chat_notification")

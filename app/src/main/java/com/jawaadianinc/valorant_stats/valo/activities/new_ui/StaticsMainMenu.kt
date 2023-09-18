@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
@@ -23,6 +24,7 @@ import android.view.animation.BounceInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -836,12 +838,18 @@ class StaticsMainMenu : Fragment() {
         val url =
             "https://$region.api.riotgames.com/val/match/v1/matchlists/by-puuid/${riotPUUID}?api_key=${key}"
 
+        val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+            requireActivity()
+        )
+        val preferenceValue = sharedPreferences.getInt("default_matches_slider", 10)
+
+
         doAsync {
             val number = JSONObject(URL(url).readText()).getJSONArray("history").length()
             uiThread {
                 seekBar.max = number
                 if (number > 0) {
-                    seekBar.progress = number - 1
+                    seekBar.progress = preferenceValue.coerceAtMost(number)
                 }
             }
         }

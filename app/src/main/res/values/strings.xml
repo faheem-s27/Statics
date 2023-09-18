@@ -342,5 +342,6 @@
     <string name="installed_from_play_store">Installed from Play Store</string>
     <string name="show_a_notification_when_a_new_message_has_been_received">Show a new notification when a message has been received</string>
     <string name="chat_notifications">Chat Notifications</string>
+    <string name="notification_channel">System Notifications</string>
 
 </resources>

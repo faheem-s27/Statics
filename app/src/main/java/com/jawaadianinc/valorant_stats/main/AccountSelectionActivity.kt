@@ -1,7 +1,9 @@
 package com.jawaadianinc.valorant_stats.main
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MenuItem
@@ -37,6 +39,8 @@ class AccountSelectionActivity : AppCompatActivity(), ValorantAccountAdapter.OnI
     private lateinit var adapter: ValorantAccountAdapter
     private lateinit var accountsDB: ValorantAccountDatabase
 
+    val PERMISSION_REQUEST_CODE = 112
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account_selection)
@@ -62,6 +66,15 @@ class AccountSelectionActivity : AppCompatActivity(), ValorantAccountAdapter.OnI
             val intent = Intent(this, NewLogInUI::class.java)
             intent.putExtra("login", "true")
             startActivity(intent)
+        }
+
+        if (Build.VERSION.SDK_INT > 32) {
+            if (!shouldShowRequestPermissionRationale("112")) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    PERMISSION_REQUEST_CODE
+                )
+            }
         }
     }
 

@@ -36,6 +36,10 @@
             app:key="chat_notifications"
             app:summary="@string/show_a_notification_when_a_new_message_has_been_received"
             app:title="@string/chat_notifications" />
+
+        <Preference
+            app:key="notification_channel"
+            app:title="@string/notification_channel" />
         />
 
     </PreferenceCategory>
@@ -43,6 +47,15 @@
     <PreferenceCategory
         app:key="statics_category"
         app:title="Statics">
+
+        <SeekBarPreference
+            android:max="100"
+            app:defaultValue="10"
+            app:key="default_matches_slider"
+            app:min="1"
+            app:showSeekBarValue="true"
+            app:summary="Choose how many matches you want the slider to show by default"
+            app:title="Default matches loading" />
 
         <ListPreference
             android:defaultValue="en-US"

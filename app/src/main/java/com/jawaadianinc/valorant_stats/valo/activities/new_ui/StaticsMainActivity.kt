@@ -88,9 +88,13 @@ class StaticsMainActivity : AppCompatActivity() {
         }
 
         val updateDescription: String =
-            "- Added new stats in Overview when looking at match details, shows your headshots, body shots & leg shots percentages" +
-                    "\n- Fixed bug of accounts not staying signed in" +
-                    "\n- Clicking on notification when a match is found will take you back to the app"
+            "- New languages specific chats! Not everyone has to be confused now :)" +
+                    "\n- Fixed notification bug that still shows a notification after disabling the option" +
+                    "\n- Updated chat notifications description and added relevant system setting" +
+                    "\n- Updated the time stamps to be more readable" +
+                    "\n- Removed the 'Speaking as' as it was not needed" +
+                    "\n- Added a new setting to change the default number past matches to load" +
+                    "\n- Updated chat notifications to be look more clean!"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)

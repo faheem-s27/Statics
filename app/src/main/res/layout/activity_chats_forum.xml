@@ -17,26 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/circley_PFP"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="16dp"
-        android:elevation="12dp"
-        app:cardCornerRadius="200dp"
-        app:layout_constraintBottom_toBottomOf="@+id/chat_Speaker"
-        app:layout_constraintStart_toEndOf="@+id/chat_Speaker"
-        app:layout_constraintTop_toTopOf="@+id/chat_Speaker">
-
-        <ImageView
-            android:id="@+id/chat_Speaker_Icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:srcCompat="@tools:sample/avatars" />
-
-    </androidx.cardview.widget.CardView>
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/circle"
         android:layout_width="0dp"
@@ -64,7 +44,8 @@
             android:backgroundTint="#00FFFFFF"
             android:ems="10"
             android:hint="@string/s183"
-            android:inputType="textPersonName"
+            android:imeOptions="actionSend"
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
             android:paddingStart="15dp" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -84,23 +65,59 @@
         android:id="@+id/messagesListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/circley_PFP"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/circle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-    <TextView
-        android:id="@+id/chat_Speaker"
-        android:layout_width="wrap_content"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:fontFamily="@font/lalezar"
-        android:gravity="center"
-        android:text="@string/s174"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/circle"
-        app:layout_constraintStart_toStartOf="@+id/circle" />
+        android:layout_marginTop="72dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:tabGravity="fill"
+        app:tabIndicatorGravity="bottom"
+        app:tabMode="auto">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/english_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="English" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/indonesia_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Indonesian (Bahasa Indonesia)" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/russian_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Russian (Русский)" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/dutch_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dutch (Nederlands)" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/hungarian_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Magyar (Hungarian)" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/arabic_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="العربية (Arabic)" />
+    </com.google.android.material.tabs.TabLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
