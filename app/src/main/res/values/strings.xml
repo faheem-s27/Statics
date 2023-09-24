@@ -343,5 +343,9 @@
     <string name="show_a_notification_when_a_new_message_has_been_received">Show a new notification when a message has been received</string>
     <string name="chat_notifications">Chat Notifications</string>
     <string name="notification_channel">System Notifications</string>
+    <string name="what_would_you_like_to_do">What would you like to do?</string>
+    <string name="kick">Kick</string>
+    <string name="new_message_from">New message from %1$s</string>
+    <string name="lineups">Lineups</string>
 
 </resources>

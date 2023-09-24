@@ -14,8 +14,8 @@ class ChatMessage(
     fun getDateFormatted(): String {
         val currentTime = Date(unixTime)
         val timeRightNow = Date(System.currentTimeMillis())
-        val dateFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
-        val dateFormat2 = SimpleDateFormat("hh:mm dd MMMM yyyy", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val dateFormat2 = SimpleDateFormat("HH:mm dd MMMM yyyy", Locale.getDefault())
         val dateFormat3 = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
 
         val currentDate = dateFormat3.format(currentTime)

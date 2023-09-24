@@ -20,6 +20,8 @@ import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetailsParams
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.messaging.FirebaseMessaging
 import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.main.AccountSelectionActivity
 import com.jawaadianinc.valorant_stats.main.MyApplication
@@ -168,6 +170,25 @@ class SettingsActivity : AppCompatActivity() {
                 findPreference("chat_notifications")
 
             chatNotifcationPreference?.setOnPreferenceChangeListener { _, newValue ->
+                if (newValue as Boolean) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("chat_notification")
+                        .addOnCompleteListener {
+                            Snackbar.make(
+                                requireActivity().findViewById(android.R.id.content),
+                                "You will now receive chat notifications",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                } else {
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic("chat_notification")
+                        .addOnCompleteListener {
+                            Snackbar.make(
+                                requireActivity().findViewById(android.R.id.content),
+                                "You will no longer receive chat notifications",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                }
                 // Store the preference value in SharedPreferences
                 val sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(requireContext())

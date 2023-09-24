@@ -97,11 +97,14 @@ class ChatsForumActivity : Fragment() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val language = when (tab?.position) {
                     0 -> "English"
-                    1 -> "Indonesian"
-                    2 -> "Russian"
-                    3 -> "Dutch"
-                    4 -> "Hungarian"
-                    5 -> "Arabic"
+                    1 -> "French"
+                    2 -> "German"
+                    3 -> "Indonesian"
+                    4 -> "Finnish"
+                    5 -> "Russian"
+                    6 -> "Dutch"
+                    7 -> "Hungarian"
+                    8 -> "Arabic"
                     else -> "English" // Default to English if the position is out of bounds
                 }
                 ChatReference =
@@ -236,7 +239,7 @@ class ChatsForumActivity : Fragment() {
         // update the messages
         updateMessages()
 
-        val title = "New message from $playerName"
+        val title = getString(R.string.new_message_from, playerName)
         val encodedStringTitle = URLEncoder.encode(title, StandardCharsets.UTF_8.toString())
         val encodedStringMessage = URLEncoder.encode(message, StandardCharsets.UTF_8.toString())
 

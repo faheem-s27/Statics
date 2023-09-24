@@ -19,23 +19,20 @@ class MyApplication : Application() {
         DynamicColors.applyToActivitiesIfAvailable(this)
 
         FirebaseApp.initializeApp(this);
-        FirebaseMessaging.getInstance().subscribeToTopic("chat_notification")
-            .addOnCompleteListener {
-            }
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 return@OnCompleteListener
             }
 
-            // Get new FCM registration token
-            val token = task.result
-            // send this token to server
         })
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val firstTimeSetUp = sharedPreferences.getBoolean("dark_mode_first", false)
         if (!firstTimeSetUp) {
+            FirebaseMessaging.getInstance().subscribeToTopic("chat_notification")
+                .addOnCompleteListener {
+                }
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             val editor = sharedPreferences.edit()
             editor.putBoolean("dark_mode_first", true)

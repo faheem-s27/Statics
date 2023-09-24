@@ -10,7 +10,8 @@ class PartyMember(
     val cardID: String,
     val isReady: Boolean,
     val region: String,
-    val rankImage: String
+    val rankImage: String,
+    val puuid: String
 ) {
     fun getPlayerImage(): String {
         return "https://media.valorant-api.com/playercards/$cardID/smallart.png"

@@ -90,10 +90,28 @@
             android:text="English" />
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/french_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="French (Francais)" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/german_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="German (Deutsch)" />
+
+        <com.google.android.material.tabs.TabItem
             android:id="@+id/indonesia_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Indonesian (Bahasa Indonesia)" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/finnish_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Finnish (Suomi)" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/russian_chat"

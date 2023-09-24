@@ -19,6 +19,7 @@ import com.jawaadianinc.valorant_stats.R
 import com.jawaadianinc.valorant_stats.databinding.ActivityStaticsMainBinding
 import com.jawaadianinc.valorant_stats.main.ValorantAccountDatabase
 import com.jawaadianinc.valorant_stats.valo.activities.chat.ChatsForumActivity
+import com.jawaadianinc.valorant_stats.valo.activities.lineups.LineUpFragment
 
 
 class StaticsMainActivity : AppCompatActivity() {
@@ -44,6 +45,7 @@ class StaticsMainActivity : AppCompatActivity() {
     val statsFragment = StaticsMainMenu()
     val liveStatsFragment = LiveStatsFragment()
     val assetsFragment = AssetsFragment()
+    val lineupsFragment = LineUpFragment()
     val chatsFragment = ChatsForumActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,13 +90,12 @@ class StaticsMainActivity : AppCompatActivity() {
         }
 
         val updateDescription: String =
-            "- New languages specific chats! Not everyone has to be confused now :)" +
-                    "\n- Fixed notification bug that still shows a notification after disabling the option" +
-                    "\n- Updated chat notifications description and added relevant system setting" +
-                    "\n- Updated the time stamps to be more readable" +
-                    "\n- Removed the 'Speaking as' as it was not needed" +
-                    "\n- Added a new setting to change the default number past matches to load" +
-                    "\n- Updated chat notifications to be look more clean!"
+            "- Added French, Finnish & German chats" +
+                    "\n- Made the developer in the chat more vibrant ;)" +
+                    "\n- The time in chat shows in 24 hours" +
+                    "\n- You can kick members out of party in Statics" +
+                    "\n- Fixed bug with the Act - Episode showing the wrong dates & act name" +
+                    "\n- Fixed notification bug constantly showing even after disabling it"
 
         // put the update description in the shared preferences
         val update = getSharedPreferences("LatestFeature", Context.MODE_PRIVATE)
@@ -176,6 +177,11 @@ class StaticsMainActivity : AppCompatActivity() {
                     true
                 }
 
+                R.id.new_Lineups -> {
+                    changeFragment(lineupsFragment)
+                    true
+                }
+
                 R.id.new_Chats -> {
                     changeFragment(chatsFragment)
                     true
@@ -201,6 +207,7 @@ class StaticsMainActivity : AppCompatActivity() {
             add(R.id.container, liveStatsFragment, "2")
             add(R.id.container, assetsFragment, "3").hide(assetsFragment)
             add(R.id.container, chatsFragment, "4").hide(chatsFragment)
+            add(R.id.container, lineupsFragment, "5").hide(lineupsFragment)
         }.commitAllowingStateLoss()
         bottomNavBar.selectedItemId = R.id.new_Live
     }
@@ -211,11 +218,13 @@ class StaticsMainActivity : AppCompatActivity() {
         val live = supportFragmentManager.findFragmentByTag("2")
         val assets = supportFragmentManager.findFragmentByTag("3")
         val chats = supportFragmentManager.findFragmentByTag("4")
+        val lineups = supportFragmentManager.findFragmentByTag("5")
         supportFragmentManager.beginTransaction().apply {
             if (stats != null) remove(stats)
             if (live != null) remove(live)
             if (assets != null) remove(assets)
             if (chats != null) remove(chats)
+            if (lineups != null) remove(lineups)
         }.commitAllowingStateLoss()
     }
 

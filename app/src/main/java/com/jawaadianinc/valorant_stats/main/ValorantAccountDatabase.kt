@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class ValorantAccountDatabase(context: Context) :
-    SQLiteOpenHelper(context, "ValorantAccountDatabase.db", null, 1) {
+    SQLiteOpenHelper(context, "ValorantAccountDatabase_Rank.db", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {
         val createTable =
             "CREATE TABLE $ACCOUNTS ($PUUID TEXT PRIMARY KEY, $NAME TEXT, $IMAGEID TEXT, $COOKIES TEXT)"

@@ -108,19 +108,6 @@ class StaticsMainMenu : Fragment() {
                 if (activity != null) setup()
             }
         }
-//
-//        doAsync {
-//            val URL = "https://valorant-api.com/v1/competitivetiers"
-//            val json = JSONObject(URL(URL).readText()).getJSONArray("data")
-//            // get last element
-//            val last = json.getJSONObject(json.length() - 1)
-//            JSONRanks = last.getJSONArray("tiers")
-//            uiThread {
-//                //testPlayer("BallFondler#His", "eu")
-//                getCurrentSeason()
-//                setup()
-//            }
-//        }
     }
 
     private fun testPlayer(name: String, region: String) {
@@ -643,22 +630,42 @@ class StaticsMainMenu : Fragment() {
         progressAnimator.start()
     }
 
+    // make a function that checks if the start and end time is in between the current time
+    private fun checkSeasonTime(startTime: String, endTime: String): Boolean {
+        // convert the start and end time to unix time
+        val startTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(startTime)?.time
+        val endTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(endTime)?.time
+        val currentTime = System.currentTimeMillis()
+        startTime.let { Log.d("newMainMenu", "Start time is $it") }
+        currentTime.let { Log.d("newMainMenu", "Current time is $it") }
+        endTime.let { Log.d("newMainMenu", "End time is $it") }
+        return currentTime in startTime!!..endTime!!
+    }
+
     private fun getCurrentSeason() {
         val URL = "https://valorant-api.com/v1/seasons"
 
         val newCurrentSeasonText = view?.findViewById<TextView>(R.id.new_currentSeason)
         val newCurrentSeasonEndingText = view?.findViewById<TextView>(R.id.new_currentSeasonEnding)
 
-        //Log.d("newMainMenu", "Getting current season")
-
         doAsync {
             val seasonsJSON = JSONObject(URL(URL).readText()).getJSONArray("data")
-            // go to last index which has parentUUID not null
-            var currentSeason = seasonsJSON.getJSONObject(seasonsJSON.length() - 1)
-            val type = currentSeason.getString("type")
-            if (type != "EAresSeasonType::Act") {
-                currentSeason = seasonsJSON.getJSONObject(seasonsJSON.length() - 2)
+            var index = 1
+            var currentSeason = seasonsJSON.getJSONObject(seasonsJSON.length() - index)
+
+            // loop through the seasons until we find the current season
+            while (index < seasonsJSON.length()) {
+                currentSeason = seasonsJSON.getJSONObject(seasonsJSON.length() - index)
+                if (currentSeason.getString("type") == "EAresSeasonType::Act" && checkSeasonTime(
+                        currentSeason.getString("startTime"),
+                        currentSeason.getString("endTime")
+                    )
+                ) {
+                    break
+                }
+                index++
             }
+
             val seasonName = currentSeason.getString("displayName")
             val seasonEnd = currentSeason.getString("endTime")
             val parentUUID = currentSeason.getString("parentUuid")
@@ -681,56 +688,12 @@ class StaticsMainMenu : Fragment() {
                         val unixTime = date?.time?.div(1000)
                         val timeLeft = timeAgo(unixTime!!)
                         newCurrentSeasonEndingText?.text = "$formattedDate\n($timeLeft)"
-
-                        Log.d(
-                            "newMainMenu",
-                            "Current season is $seasonName, ending on $formattedDate ($timeLeft)"
-                        )
                     }
                     break
                 }
             }
         }
     }
-
-//    private fun updateTimer() {
-//        // only one timer is needed
-//        if (timer != null) {
-//            timer!!.cancel()
-//        }
-//
-//        progressDialog.dismiss()
-//
-//        timer = object : CountDownTimer(60000, 1000) {
-//            override fun onTick(millisUntilFinished: Long) {
-//                if (isAdded) {
-//                    if (ISACTIVE) toolbar.subtitle =
-//                        "${getString(R.string.s20)} ${millisUntilFinished / 1000}"
-//                    else {
-//                        timer?.cancel()
-//                    }
-//                }
-//            }
-//
-//            override fun onFinish() {
-//                if (isAdded) {
-//                    if (ISACTIVE) {
-//                        toolbar.subtitle = getString(R.string.s100)
-//                        getLatestDetails()
-//                    } else {
-//                        timer?.cancel()
-//                    }
-//                }
-//            }
-//        }
-//        (timer as CountDownTimer).start()
-//    }
-//
-//    private fun stopTimer() {
-//        REFRESHING = true
-//        timer?.cancel()
-//        if (ISACTIVE) toolbar.subtitle = getString(R.string.s99)
-//    }
 
     private fun loadMatchDetails(lastMatchData: JSONObject) {
 

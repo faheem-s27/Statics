@@ -1,6 +1,7 @@
 package com.jawaadianinc.valorant_stats.valo.activities.chat
 
 import android.app.Activity
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -34,8 +35,17 @@ class MessageAdapter(
             .fit()
             .into(chatProfile)
 
+        if (message.playerName == "Duck#2004") {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+            val colorPrimary = typedValue.data
+
+            chatName.text = "Duck#2004 (Developer of Statics)"
+            // add a outline to the chatName with style
+            chatName.setTextColor(colorPrimary)
+        } else chatName.text = message.playerName
+
         chatMessage.text = message.playerMessage
-        chatName.text = message.playerName
         chatTime.text = message.getDateFormatted()
 
         if (position == messages.size - 1) {

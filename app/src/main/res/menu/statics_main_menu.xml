@@ -7,14 +7,19 @@
         android:title="@string/menu_live" />
     <item
         android:id="@+id/new_Stats"
-        android:icon="@drawable/players_icon"
+        android:icon="@drawable/user"
         android:title="@string/menu_stats" />
     <item
         android:id="@+id/new_Assets"
         android:icon="@drawable/rioticon"
         android:title="@string/menu_assets" />
     <item
+        android:id="@+id/new_Lineups"
+        android:icon="@drawable/bow_and_arrow"
+        android:title="@string/lineups" />
+
+    <item
         android:id="@+id/new_Chats"
-        android:icon="@drawable/chats"
+        android:icon="@drawable/chat"
         android:title="@string/chat" />
 </menu>

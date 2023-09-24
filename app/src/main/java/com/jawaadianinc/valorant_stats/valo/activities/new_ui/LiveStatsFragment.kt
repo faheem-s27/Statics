@@ -2,7 +2,6 @@ package com.jawaadianinc.valorant_stats.valo.activities.new_ui
 
 import android.Manifest
 import android.app.AlertDialog
-import android.app.PendingIntent
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -1841,13 +1840,9 @@ class LiveStatsFragment : Fragment() {
         fadeRepeat(partyStatus!!)
     }
 
-    private fun sendNotification(title: String, message: String, channel_name: String, mapImage: String) {
+    private fun sendNotification(title: String, message: String, mapImage: String) {
         // check if the notification has been sent
         if (notificationSent) return
-        // Retrieve the preference value from SharedPreferences
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        val matchNotificationsEnabled = sharedPreferences.getBoolean("match_notifications", false)
-        if (!matchNotificationsEnabled) return
 
         liveModeScope.launch {
             // check if the user has notifications enabled
@@ -1861,17 +1856,11 @@ class LiveStatsFragment : Fragment() {
                 Picasso.get().load(mapImage).get()
             }
 
-            val pendingIntent = PendingIntent.getActivity(
-                requireActivity(), 0, Intent(requireActivity(), LoadingActivity::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-
             val mBuilder = NotificationCompat.Builder(requireActivity(), "match_notification")
                 .setSmallIcon(R.drawable.just_statics_alot_smaller)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setLargeIcon(bitmap)
-                .setContentIntent(pendingIntent)
 
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
@@ -1910,7 +1899,6 @@ class LiveStatsFragment : Fragment() {
             return
         }
 
-        //pingListView?.visibility = View.VISIBLE
         pingListView?.adapter = PingListAdapter(requireActivity(), pingList)
     }
 
@@ -1929,6 +1917,7 @@ class LiveStatsFragment : Fragment() {
             val playerTitleID = member.getJSONObject("PlayerIdentity").getString("PlayerTitleID")
             val playerReady = member.getBoolean("IsReady")
             val isModerator = member.getBoolean("IsModerator")
+            val memberUUID = member.getString("Subject")
 
             if (member.getString("Subject") == PlayerUUID)
             {
@@ -1950,7 +1939,8 @@ class LiveStatsFragment : Fragment() {
                     playerCardID,
                     playerReady,
                     region,
-                    rank
+                    rank,
+                    memberUUID
                 )
                 partyMembers.add(partyMemberObj)
 
@@ -1970,8 +1960,49 @@ class LiveStatsFragment : Fragment() {
                         partyMemberListView?.visibility = View.VISIBLE
                         view?.findViewById<TextView>(R.id.new_partyMembersText)?.text =
                             "${members.length()} ${getString(R.string.s63)}"
-                        partyMemberListView?.adapter = PartyMemberAdapter(requireActivity(), partyMembers)
+                        partyMemberListView?.adapter =
+                            PartyMemberAdapter(requireActivity(), partyMembers)
                     }
+                }
+            }
+        }
+
+        // on click listener for the party member list view
+        partyMemberListView?.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, position, _ ->
+                val selectedMember = partyMembers[position]
+                val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+                    .setTitle(selectedMember.gameName)
+                    .setMessage(getString(R.string.what_would_you_like_to_do))
+                    .setPositiveButton(getString(R.string.kick)) { _, _ ->
+                        // kick the player
+                        kickPlayer(
+                            selectedMember.gameName,
+                            selectedMember.gameTag,
+                            selectedMember.puuid
+                        )
+                    }
+//                .setNeutralButton("View Pings")
+//                { _, _ ->
+//                    // get the pings
+//                    getPings(members.getJSONObject(position).getJSONArray("Pings"))
+//                }
+                    .setNegativeButton(getString(R.string.s51), null)
+                dialog.show()
+            }
+    }
+
+    private fun kickPlayer(gameName: String, gameTag: String, playerID: String) {
+        val url = "https://glz-${region}-1.${shard}.a.pvp.net/parties/v1/players/${playerID}"
+        liveModeScope.launch {
+            val response = APIRequestValorant(url, "", delete = true)
+            if (response != null) {
+                withContext(Main) {
+                    Snackbar.make(
+                        requireView(),
+                        "Kicked $gameName#$gameTag",
+                        Snackbar.LENGTH_SHORT
+                    )
                 }
             }
         }
@@ -2346,7 +2377,6 @@ class LiveStatsFragment : Fragment() {
                     sendNotification(
                         "${getString(R.string.s69)} $currentModeSelected",
                         getString(R.string.s70),
-                        "match_found",
                         MapsImagesID[mapName] ?: "",
                     )
 
@@ -3001,7 +3031,8 @@ class LiveStatsFragment : Fragment() {
     suspend fun APIRequestValorant(
         url: String,
         body: String? = null,
-        put: Boolean? = false
+        put: Boolean? = false,
+        delete: Boolean? = false
     ): Response? {
         val request = Request.Builder()
             .url(url)
@@ -3014,6 +3045,7 @@ class LiveStatsFragment : Fragment() {
         when {
             body == null -> request.get()
             put == false -> request.post(body.toRequestBody("application/json".toMediaTypeOrNull()))
+            delete == true -> request.delete(body.toRequestBody("application/json".toMediaTypeOrNull()))
             else -> request.put(body.toRequestBody("application/json".toMediaTypeOrNull()))
         }
 

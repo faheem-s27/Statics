@@ -269,17 +269,14 @@ class ViewMatches : AppCompatActivity() {
                     val sharedPref = getSharedPreferences("cache", Context.MODE_PRIVATE)
                     val alerted = sharedPref.getBoolean("alerted", false)
                     if (!alerted) {
+                        with(sharedPref.edit()) {
+                            putBoolean("alerted", true)
+                            apply()
+                        }
                         val builder = AlertDialog.Builder(this@ViewMatches)
                         builder.setTitle(getString(R.string.s129))
                         builder.setMessage(getString(R.string.s128))
                         builder.setPositiveButton("OK") { _, _ ->
-                            // if it has, delete the database until it goes to 40MB
-                            // set the shared preference to true so that the user doesn't get the alert message again
-                            with(sharedPref.edit()) {
-                                putBoolean("alerted", true)
-                                apply()
-                            }
-
                             while (size > 90) {
                                 matchesDB.deleteOldestMatch()
                                 size = matchesDB.numberOfMatches()
@@ -294,7 +291,7 @@ class ViewMatches : AppCompatActivity() {
                         builder.setNegativeButton("No") { _, _ -> }
                         builder.show()
                     } else {
-                        while (size > 90) {
+                        while (size > 200) {
                             matchesDB.deleteOldestMatch()
                             size = matchesDB.numberOfMatches()
                         }
@@ -383,10 +380,10 @@ class ViewMatches : AppCompatActivity() {
 
                         R.id.spikeRushRadio -> {
                             // only show spike rush matches
-                            val spikeRushAdapter = MatchAdapter(this@ViewMatches,
-                                matchListAll.filter { it.gameMode == "Spikerush" } as ArrayList<Match>)
                             val matchListSpikeRush =
                                 matchListAll.filter { it.gameMode == "Spikerush" } as ArrayList<Match>
+                            val spikeRushAdapter =
+                                MatchAdapter(this@ViewMatches, matchListSpikeRush)
                             matchList.adapter = spikeRushAdapter
                             matches.notifyDataSetChanged()
                             matchList.setOnItemClickListener { _, _, position, _ ->
